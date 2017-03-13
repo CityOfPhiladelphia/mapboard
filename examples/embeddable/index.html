@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Embeddable Example | Mapboard</title>
+    <link rel='icon' type='image/x-icon' href="//cityofphiladelphia.github.io/patterns/images/favicon.ico">
+    <meta name="description" content="">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <!--pattern stylesheet includes foundation css -->
+    <link rel="stylesheet" href="//cityofphiladelphia.github.io/patterns/dist/1.4.1/css/patterns.css">
+    <link rel="canonical" href="">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+
+  <body>
+    <div class="full" id="application">
+      <!-- Begin header -->
+      <header data-swiftype-index='false' class="site-header app">
+        <div class="row">
+          <div class="small-24 columns">
+            <a href="http://alpha.phila.gov/" class="logo">
+              <img data-interchange="[//cityofphiladelphia.github.io/patterns/images/city-of-philadelphia-mobile.png, small], [//cityofphiladelphia.github.io/patterns/images/city-of-philadelphia-white.png, medium]" src="//cityofphiladelphia.github.io/patterns/images/city-of-philadelphia-white.png" alt="City of Philadelphia">
+            </a>
+            <div class="page-title-container">
+              <a href="#/">
+                <h1 class="page-title">Mapboard</h1>
+                <h2 class="page-subtitle">Embeddable Example</h2>
+              </a>
+            </div>
+            <!-- This is the search box from Atlas -->
+            <!-- <div id="search-container">
+              <input type="text" placeholder="Enter an address, intersection, OPA number or regmap ID" id="search-input">
+              <a href="#" id="search-button" class="button no-margin">Go</a>
+            </div> -->
+          </div>
+        </div>
+      </header>
+
+      <!-- Mapboard -->
+      <div id="mapboard"></div>
+
+      <!-- Begin Footer -->
+      <footer data-swiftype-index='false' class="site-footer">
+        <section class="fat">
+          <div class="row">
+            <div class="large-8 columns">
+              <h1>Government</h1>
+              <nav>
+                <ul>
+                  <li><a href="http://alpha.phila.gov">alpha.phila.gov</a></li>
+                  <li><a href="http://alpha.phila.gov/departments">City Government Directory</a></li>
+                  <li><a href="http://www.phila.gov/mayor">Mayor's Office</a></li>
+                  <li><a href="http://iframe.publicstuff.com/#?client_id=242">Report an Issue / 311</a></li>
+                  <li><a href="http://cityofphiladelphia.wordpress.com/">News</a></li>
+                </ul>
+              </nav>
+            </div>
+            <div class="large-16 columns">
+              <h1>Browse alpha.phila.gov</h1>
+              <nav>
+                <ul class="columns-2">
+                  <li><a href="http://alpha.phila.gov/browse/health">Health</a></li>
+                  <li><a href="http://alpha.phila.gov/browse/legal">Legal</a></li>
+                  <li><a href="http://alpha.phila.gov/browse/payments-and-taxes">Payments and Taxes</a></li>
+                  <li><a href="http://alpha.phila.gov/browse/permits-licenses">Permits and Licenses</a></li>
+                  <li><a href="http://alpha.phila.gov/browse/property-housing">Property and Housing</a></li>
+                  <li><a href="http://alpha.phila.gov/browse/public-safety">Public Safety</a></li>
+                  <li><a href="http://alpha.phila.gov/browse/streets-and-utilities">Streets and Utilities</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </section>
+        <div class="row classic center">
+          <div class="columns">
+            <nav>
+              <ul class="inline-list">
+                <li><a href="http://alpha.phila.gov/terms-of-use">Terms of use</a></li>
+                <li><a href="http://www.phila.gov/privacy/pdfs/FinalCityOpenRecords.pdf">Right to know (pdf)</a></li>
+                <li><a href="http://alpha.phila.gov/privacypolicy">Privacy Policy</a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </footer>
+      <!-- End Footer -->
+    </div><!-- end of application div -->
+
+    <!-- JS-->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/foundation/6.1.2/foundation.min.js"></script>
+    <script src="//cityofphiladelphia.github.io/patterns/dist/1.4.1/js/patterns.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/vue/2.2.1/vue.js"></script>
+    <script src="/dist/build.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>
