@@ -1,6 +1,14 @@
 # mapboard
 
-> A Vue.js component for data-rich web mapping
+_(work in progress)_
+
+Mapboard provides a pluggable Vue.js component for data-rich mapping applications. It combines the look and feel of [Atlas]() with a more flexible, config-driven API.
+
+![Atlas](http://i.imgur.com/GcZpsgX.png)
+
+## Example
+
+See [Simple Example](examples/simple.index.html) for an intended usage of the API.
 
 ## Build Setup
 
