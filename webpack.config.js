@@ -41,7 +41,8 @@ module.exports = {
     // }
   },
   externals: {
-    'vue': 'Vue'
+    'vue': 'Vue',
+    'leaflet': 'L'
   },
   devServer: {
     historyApiFallback: true,
