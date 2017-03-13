@@ -1,7 +1,7 @@
 <template>
   <div>
-    <a href="#" class="topic-header">{{ topic.label }}</a>
-    <div class="topic">
+    <a href="#" class="topic-header" @click="activateTopic">{{ topic.label }}</a>
+    <div class="topic-body" v-show="this.$store.state.activeTopic === topic.key">
       <div class="topic-comp" v-for="topicComp in topic.components">
         I'm a {{ topicComp.type }}.
       </div>
@@ -11,7 +11,13 @@
 
 <script>
   export default {
-    props: ['topic']
+    props: ['topic'],
+    methods: {
+      activateTopic() {
+        const key = this.$props.topic.key;
+        this.$store.commit('activateTopic', key);
+      },
+    }
   };
 </script>
 
@@ -34,7 +40,7 @@
     color: inherit;
   }
 
-  .topic {
+  .topic-body {
     padding: 10px;
     margin-bottom: 10px;
   }
