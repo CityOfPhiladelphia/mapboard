@@ -10,19 +10,13 @@ Mapboard.default({
       ]
     },
     {
-      key: 'Recycling',
-      label: 'Recycling',
+      key: 'voting',
+      label: 'Voting',
       components: [
         {
           type: 'horizontal-table'
         }
       ]
     }
-  ],
-  map: {
-    layers: [
-      'parcels',
-
-    ],
-  },
+  ]
 });
