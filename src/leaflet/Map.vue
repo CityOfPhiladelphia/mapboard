@@ -1,5 +1,14 @@
 <template>
-    <div class="map" />
+  <div class="map-container">
+    <!-- the leaflet map -->
+    <div class="map" ref="map" />
+    <!-- container for vue elements wrapping leaflet elements. these aren't
+         actually rendered, they just allow us to make the map reactive.
+    -->
+    <div>
+      <slot />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -9,23 +18,27 @@
     mounted() {
       this.$leafletElement = this.createLeafletElement();
 
-      // TEST
-      this.$leafletElement.setView([39.951618, -75.1650911], 13);
-      L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(this.$leafletElement);
+      // TODO this should come from a prop
+      this.$leafletElement.setView(this.$config.map.defaultXy, 13);
+
+      // signal children to mount
+      for (let child of this.$children) {
+        child.mountTo(this);
+      }
     },
     methods: {
       createLeafletElement() {
-        return new Map(this.$el);
+        return new Map(this.$refs.map);
       }
     }
   };
 </script>
 
-<style scoped>
+<style>
+  .map-container {
+    height: 100%;
+  }
   .map {
     height: 100%;
-    weight: 100%;
   }
 </style>
