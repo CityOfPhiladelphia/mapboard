@@ -1,14 +1,14 @@
 <template>
-    <div id="map" />
+    <div class="map" />
 </template>
 
 <script>
-  import L from 'leaflet';
+  import { Map } from 'leaflet';
 
   export default {
     mounted() {
       this.$leafletElement = this.createLeafletElement();
-      
+
       // TEST
       this.$leafletElement.setView([39.951618, -75.1650911], 13);
       L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
@@ -17,14 +17,14 @@
     },
     methods: {
       createLeafletElement() {
-        return L.map('map');
+        return new Map(this.$el);
       }
     }
   };
 </script>
 
-<style>
-  #map {
+<style scoped>
+  .map {
     height: 100%;
     weight: 100%;
   }
