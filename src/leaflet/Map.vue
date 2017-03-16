@@ -1,20 +1,24 @@
 <template>
-  <div id="map"></div>
+    <div id="map" />
 </template>
 
 <script>
-  const L = require('leaflet');
+  import L from 'leaflet';
 
   export default {
     mounted() {
-      // create leaflet map
-      const map = this.$map = L.map('map');
-
+      this.$leafletElement = this.createLeafletElement();
+      
       // TEST
-      map.setView([39.951618, -75.1650911], 13);
+      this.$leafletElement.setView([39.951618, -75.1650911], 13);
       L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
           attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(map);
+      }).addTo(this.$leafletElement);
+    },
+    methods: {
+      createLeafletElement() {
+        return L.map('map');
+      }
     }
   };
 </script>
