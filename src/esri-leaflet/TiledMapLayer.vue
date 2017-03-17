@@ -19,8 +19,8 @@
           url: this.$config.map.basemap.url
         });
       },
-      mountTo(mapVue) {
-        const map = mapVue.$leafletElement;
+      parentMounted(parent) {
+        const map = parent.$leafletElement;
         this.$leafletElement.addTo(map);
       }
     }

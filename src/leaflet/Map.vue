@@ -23,7 +23,7 @@
 
       // signal children to mount
       for (let child of this.$children) {
-        child.mountTo(this);
+        child.parentMounted(this);
       }
     },
     methods: {
