@@ -1,10 +1,12 @@
-language: generic
-script: ":"
+language: node_js
+node_js:
+  - "node"
+script: "npm run build"
 deploy:
 - provider: s3
   access_key_id: AKIAJNRGPA63RIQAACBA
   secret_access_key:
     secure: "PW58JCfUpku8qbgIqR4fv34+LwKPsHHESlJofcZ0AQggSRhUffZ35IYxMxnwU8nv+BFrVID6AcozEOVvlSyeMmipp1SlVGLWXYWC/SmKu56t0i5EvJCDPR6PeDasvrqrCYFA+tEaBHgWdpAp7E/muz6b/s2qQ1OngChhDoprN77OGc6zy/s5AdjI9LM5/9scbKCo0oQj7DPknECrREyj9LtN071qWEMwmsC99eDQHgZWVPIgeFcqP+/ikXcxQ2hOaFVOA6vLwwVDYPhOgsdmhZEWaEBWGJtU90IRu25CyFe/isfKBORy464L6W5MHTX/D2kdy+3yMBG8VP3RSaENXzLVjqKgkwfjq373XhdFvmCQiU0+fzNybeVnlDtENS6pAEcl2kJzZgIHMlmpWg6TVGfSV9Ll9iGs6KpQxPi17BsnfGTaDR+M+eIgwEVbUc+ZbSWsurVICv5NPvctNTxN6BNm5LIozAZVBSyGrSACybfDgE2AQAViL7ARNIl33SX7sjVVvaCJimS3e8cS0zdRVDW9uYMqzDJnSn1sXVcRu/2FTruua4TOhxOj6k6vGCSyjjkb9I2At+ZSYnfmExJhz4blKxg/kQ8HmIqqWUP/DJIFwWIWwh5HfvsQ8qHHoPTUHtPopeEpQvIygCHEwDSBbsxIL2mJ+GhoxUG3k7LvV6c="
-  bucket: mapboard-embeddable-dev
+  bucket: mapboard-dev
   on:
     branch: develop
