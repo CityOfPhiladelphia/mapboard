@@ -19,7 +19,8 @@
       this.$leafletElement = this.createLeafletElement();
 
       // TODO this should come from a prop
-      this.$leafletElement.setView(this.$config.map.defaultXy, 13);
+      this.$leafletElement.setView(this.$config.map.center,
+                                   this.$config.map.zoom);
 
       // signal children to mount
       for (let child of this.$children) {
