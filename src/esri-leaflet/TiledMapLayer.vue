@@ -4,8 +4,19 @@
   const EsriTiledMapLayer = L.esri.tiledMapLayer;
 
   export default {
+    props: [
+      'url'
+    ],
     mounted() {
-      this.$leafletElement = this.createLeafletElement();
+      const leafletElement = this.$leafletElement = this.createLeafletElement();
+      const map = this.$store.state.map;
+      // REVIEW kind of hacky/not reactive?
+      if (map) {
+        leafletElement.addTo(map);
+      }
+    },
+    destroyed() {
+      this.$leafletElement._map.removeLayer(this.$leafletElement);
     },
     // we don't actually render anything, but need to define either a template
     // or a render function
@@ -15,8 +26,7 @@
     methods: {
       createLeafletElement() {
         return new EsriTiledMapLayer({
-          // TODO this should come from a prop
-          url: this.$config.map.basemap.url
+          url: this.url
         });
       },
       parentMounted(parent) {

@@ -7,12 +7,16 @@ import Vuex from 'vuex';
 const store = new Vuex.Store({
   // initial state
   state: {
-    activeTopic: '',
+    topic: 'dor',
+    map: null,
   },
   getters: {},
   mutations: {
-    activateTopic(state, nextTopic) {
-      state.activeTopic = nextTopic;
+    setTopic(state, payload) {
+      state.topic = payload.topic;
+    },
+    setMap(state, payload) {
+      state.map = payload.map;
     }
   },
   actions: {

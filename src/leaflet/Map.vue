@@ -16,11 +16,15 @@
 
   export default {
     mounted() {
-      this.$leafletElement = this.createLeafletElement();
+      const map = this.$leafletElement = this.createLeafletElement();
+
+      // put in state
+      // REVIEW do we want to do this? is it serializable?
+      this.$store.commit('setMap', { map });
 
       // TODO this should come from a prop
-      this.$leafletElement.setView(this.$config.map.center,
-                                   this.$config.map.zoom);
+      map.setView(this.$config.map.center,
+                  this.$config.map.zoom);
 
       // signal children to mount
       for (let child of this.$children) {
@@ -30,7 +34,12 @@
     methods: {
       createLeafletElement() {
         return new Map(this.$refs.map);
+      },
+      childDidMount(child) {
+        child.addTo(this.$leafletElement);
       }
+    },
+    events: {
     }
   };
 </script>

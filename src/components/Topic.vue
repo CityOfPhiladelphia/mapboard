@@ -1,7 +1,7 @@
 <template>
   <div>
-    <a href="#" class="topic-header" @click="activateTopic">{{ topic.label }}</a>
-    <div class="topic-body" v-show="this.$store.state.activeTopic === topic.key">
+    <a href="#" class="topic-header" @click="setTopic">{{ topic.label }}</a>
+    <div class="topic-body" v-show="this.$store.state.topic === topic.key">
       <div class="topic-comp" v-for="topicComp in topic.components">
         I'm a {{ topicComp.type }}.
       </div>
@@ -10,13 +10,16 @@
 </template>
 
 <script>
+  // import { mapMutations } from 'vuex';
+
   export default {
     props: ['topic'],
     methods: {
-      activateTopic() {
-        const key = this.$props.topic.key;
-        this.$store.commit('activateTopic', key);
-      },
+      // TODO use mapMuptations for less boilerplate
+      setTopic() {
+        const topic = this.$props.topic.key;
+        this.$store.commit('setTopic', { topic });
+      }
     }
   };
 </script>
