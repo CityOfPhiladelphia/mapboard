@@ -1,7 +1,7 @@
 language: node_js
 node_js:
-  - "node"
-script: "npm run build"
+  - node
+script: npm run build
 before_deploy:
   - echo "Removing node_modules..."
   - rm -rf node_modules
