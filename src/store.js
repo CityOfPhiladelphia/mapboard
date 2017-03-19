@@ -7,8 +7,10 @@ import Vuex from 'vuex';
 const store = new Vuex.Store({
   // initial state
   state: {
-    topic: 'dor',
     map: null,
+    base: 'basemap',
+    topic: 'dor',
+    imagery: 'imagery2016',
   },
   getters: {},
   mutations: {
@@ -17,6 +19,9 @@ const store = new Vuex.Store({
     },
     setMap(state, payload) {
       state.map = payload.map;
+    },
+    setBase(state, payload) {
+      state.base = payload;
     }
   },
   actions: {

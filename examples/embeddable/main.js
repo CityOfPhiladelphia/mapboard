@@ -22,9 +22,13 @@ Mapboard.default({
     }
   ],
   map: {
-    center: [39.951618, -75.1650911],
-    zoom: 13,
+    center: [39.952388, -75.163596],
+    zoom: 17,
     // these should go into app config
+    basemapButtonImages: {
+      basemap: "../../src/assets/basemap_small.png",
+      imagery: "../../src/assets/imagery_small.png"
+    },
     basemaps: {
       pwd: {
         url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap/MapServer',
@@ -38,6 +42,11 @@ Mapboard.default({
         //
         // ]
       }
+    },
+    imagery: {
+      imagery2016: {
+        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2016_3in/MapServer',
+      },
     },
     tiledLayers: {
       cityBasemapLabels: {
