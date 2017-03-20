@@ -23,9 +23,10 @@
       const leafletElement = this.$leafletElement = this.createLeafletElement();
       const map = this.$store.state.map;
       // REVIEW kind of hacky/not reactive?
-      if (map) {
-        leafletElement.addTo(map);
-      }
+      // if (map) {
+      //   console.log('basemaptogglebutton test');
+      //   leafletElement.addTo(map);
+      // }
     },
     computed: {
       baseImg() {
@@ -70,7 +71,7 @@
       background: rgba(255,255,255,1);
       box-shadow: 0 0 15px rgba(0,0,0,0.2);
       display: inline-block;
-      float: none;
+      float: right;
   }
 
   .buttom-image {

@@ -13,9 +13,13 @@
                          :key="key"
                          :url="imagery.url"
       />
-      <!--<EasyButton @click="console.log('clicked')"/>-->
-      <!--<ScaleControl />-->
+      <ControlCorner :vSide="'top'" :hSide="'almostright'">
+        <!--<ScaleControl />-->
+      </ControlCorner>
+      <ScaleControl />
       <BasemapToggleButton />
+
+
     </Map_>
   </div>
 </template>
@@ -26,9 +30,8 @@
   import EsriTiledMapLayer from '../esri-leaflet/TiledMapLayer';
   import EasyButton from '../leaflet/EasyButton';
   import BasemapToggleButton from '../leaflet/BasemapToggleButton';
+  import ControlCorner from '../leaflet/ControlCorner';
   import ScaleControl from '../leaflet/ScaleControl';
-
-
 
   export default {
     components: {
@@ -36,6 +39,7 @@
       EsriTiledMapLayer,
       EasyButton,
       BasemapToggleButton,
+      ControlCorner,
       ScaleControl
     },
     computed: {
@@ -62,17 +66,5 @@
         })[0];
       }
     }
-    /*methods: {
-      setBase() {
-        console.log('clicked');
-        //const topic = this.$props.topic.key;
-        console.log(this.$store.state.base);
-        if (this.$store.state.base === 'basemap') {
-          this.$store.commit('setBase', 'imagery');
-        } else {
-          this.$store.commit('setBase', 'basemap');
-        }
-      },
-    }*/
   };
 </script>
