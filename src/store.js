@@ -4,12 +4,13 @@ import Vuex from 'vuex';
 // when you load vuex from a script tag this seems to happen automatically
 // Vue.use(Vuex);
 
+const initialState = {
+  topic: 'dor',
+  map: null
+};
+
 const store = new Vuex.Store({
-  // initial state
-  state: {
-    topic: 'dor',
-    map: null,
-  },
+  state: initialState,
   getters: {},
   mutations: {
     setTopic(state, payload) {
