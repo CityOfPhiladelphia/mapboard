@@ -1,9 +1,13 @@
 import Vue from 'vue';
 import store from './store';
 import ConfigMixin from './util/config-mixin';
+import appConfig from './config';
 import Mapboard from './components/Mapboard';
 
-export default (config) => {
+export default (clientConfig) => {
+  // merge app config and client config
+  const config = Object.assign({}, appConfig, clientConfig);
+
   // make config accessible from each component via this.$config
   Vue.use(ConfigMixin, config);
 
