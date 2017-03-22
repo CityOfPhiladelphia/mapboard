@@ -34,7 +34,7 @@
     methods: {
       // TODO use mapMuptations for less boilerplate
       setTopic() {
-        const topic = this.$props.topic.key;
+        const topic = this.$props.topicKey;
         this.$store.commit('setTopic', { topic });
       }
     }
