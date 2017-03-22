@@ -15,8 +15,14 @@
   import { Map } from 'leaflet';
 
   export default {
+    props: [
+      'zoomControlPosition'
+    ],
     mounted() {
       const map = this.$leafletElement = this.createLeafletElement();
+
+      // move zoom control
+      map.zoomControl.setPosition(this.$props.zoomControlPosition);
 
       // put in state
       // REVIEW do we want to do this? is it serializable?

@@ -18,6 +18,14 @@
 </script>
 
 <style>
+  /*don't highlight any form elements*/
+  input:focus,
+  select:focus,
+  textarea:focus,
+  button:focus {
+    outline: none;
+  }
+
   .mb-root {
     height: 500px;
   }
