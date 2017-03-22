@@ -1,7 +1,7 @@
 <template>
   <div>
     <a href="#" class="topic-header" @click="setTopic">{{ topic.label }}</a>
-    <div class="topic-body" v-show="this.$store.state.topic === topic.key">
+    <div class="topic-body" v-show="this.$store.state.topic === topicKey">
       <div class="topic-comp" v-for="topicComp in topic.components">
         I'm a {{ topicComp.type }}.
       </div>
@@ -13,7 +13,24 @@
   // import { mapMutations } from 'vuex';
 
   export default {
-    props: ['topic'],
+    created() {
+      console.log('created topic', this);
+    },
+    props: ['topicKey'],
+    computed: {
+      // returns the full config object for the topic
+      topic() {
+        const topicKey = this.$props.topicKey;
+        const topicsFiltered = this.$config.topics.filter((topic) => {
+          return topic.key === this.$props.topicKey;
+        });
+        if (topicsFiltered.length !== 1) {
+          throw `Could not get single config object for topic '${topicKey}'.`;
+        }
+        const config = topicsFiltered[0];
+        return config;
+      }
+    },
     methods: {
       // TODO use mapMuptations for less boilerplate
       setTopic() {
