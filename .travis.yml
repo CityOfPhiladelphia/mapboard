@@ -1,18 +1,23 @@
 language: node_js
 node_js:
-- node
+  - node
+install:
+  - yarn
+  - sudo pip install awscli
+before_script:
+  - source ./.travis/s3_utils.sh
+  - S3_BUCKET=$(get_s3_bucket)
+  - aws s3 cp s3://$S3_BUCKET/src/config.js ./src/config.js
 script: npm run build
 before_deploy:
-- echo "Removing node_modules..."
-- rm -rf node_modules
+  - rm -rf node_modules
 deploy:
-- provider: s3
+  provider: s3
   access_key_id: $AWS_ACCESS_KEY_ID
   secret_access_key: $AWS_SECRET_ACCESS_KEY
-  bucket: mapboard-dev
-  on:
-    branch: develop
+  bucket: $S3_BUCKET
   skip_cleanup: true
+  all_branches: true
 env:
   global:
     - AWS_ACCESS_KEY_ID=AKIAJNRGPA63RIQAACBA
