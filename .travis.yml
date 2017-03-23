@@ -1,18 +1,25 @@
 language: node_js
 node_js:
-- node
+  - node
+install:
+  - sudo pip install awscli
+before_script:
+  - echo "Downloading config.js from S3..."
+  # TODO set this based on branch
+  - aws s3 cp s3://mapboard-dev/src/config.js ./src/config.js
+  - npm list | grep cross
 script: npm run build
 before_deploy:
-- echo "Removing node_modules..."
-- rm -rf node_modules
+  - echo "Removing node_modules..."
+  - rm -rf node_modules
 deploy:
-- provider: s3
-  access_key_id: $AWS_ACCESS_KEY_ID
-  secret_access_key: $AWS_SECRET_ACCESS_KEY
-  bucket: mapboard-dev
-  on:
-    branch: develop
-  skip_cleanup: true
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    bucket: mapboard-dev
+    on:
+      branch: develop
+    skip_cleanup: true
 env:
   global:
     - AWS_ACCESS_KEY_ID=AKIAJNRGPA63RIQAACBA
