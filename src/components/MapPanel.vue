@@ -79,8 +79,13 @@
         parcelQuery.run((error, featureCollection, response) => {
           const features = featureCollection.features;
           this.$store.commit('setDorParcels', featureCollection.features);
-        });
 
+          if (this.activeParcelLayer === 'dor') {
+            if (features.length < 1) return;
+            // TODO sort by mapreg, status
+            this.fetchAis(features[0].properties.MAPREG);
+          }
+        });
       },
       getPwdParcelByLatLng(latlng) {
         var url = this.$config._map.featureLayers.pwdParcels.url;
@@ -99,8 +104,30 @@
             }
           }
           this.$store.commit('setPwdParcel', feature);
+
+          if (feature && this.activeParcelLayer === 'pwd') {
+            this.fetchAis(feature.properties.PARCELID);
+          }
         });
-      }
+      },
+      fetchAis(input) {
+        const self = this;
+        const searchConfig = this.$config._geocoder.methods.search;
+        const url = searchConfig.url(input);
+        const data = searchConfig.params;
+        $.ajax({
+          url,
+          data,
+          success(data) {
+            // TODO handle multiple ais results
+            self.$store.commit('setAis', data.features[0])
+          },
+          error(err) {
+            console.log('ais error')
+            self.$store.commit('setAis', null);
+          }
+        });
+      },
     }
   };
 </script>

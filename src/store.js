@@ -7,7 +7,7 @@ import Vuex from 'vuex';
 const initialState = {
   topic: 'dor',
   // the ais feature
-  ais: {},
+  ais: null,
   // the leaflet map object
   map: null,
   dorParcels: [],
@@ -44,6 +44,9 @@ const store = new Vuex.Store({
     },
     setPwdParcel(state, payload) {
       state.pwdParcel = payload;
+    },
+    setAis(state, payload) {
+      state.ais = payload;
     }
   },
   actions: {
