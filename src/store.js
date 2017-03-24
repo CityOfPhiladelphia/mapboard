@@ -6,7 +6,27 @@ import Vuex from 'vuex';
 
 const initialState = {
   topic: 'dor',
-  map: null
+  // the ais feature
+  ais: {},
+  // the leaflet map object
+  map: {},
+  dorParcel: {},
+  pwdParcel: {},
+  topicData: {
+
+  },
+  // mapFeatures: {
+  //   markers: [
+  //     {
+  //       geometry: '',
+  //       // optional - mainly for symbology
+  //       options: {}
+  //     }
+  //   ],
+  //   polygons: [
+  //
+  //   ]
+  // },
 };
 
 const store = new Vuex.Store({
