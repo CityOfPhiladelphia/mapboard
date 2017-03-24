@@ -120,6 +120,10 @@
           data,
           success(data) {
             // TODO handle multiple ais results
+            if (!data.features || data.features.length < 1) {
+              console.log('ais got no features', data);
+              return;
+            }
             self.$store.commit('setAis', data.features[0])
           },
           error(err) {
