@@ -11,17 +11,6 @@ Mapboard.default({
   },
   topics: [
     {
-      key: 'dor',
-      label: 'DOR',
-      components: [
-        {
-          type: 'simple-badge'
-        }
-      ],
-      basemap: 'dor',
-      parcels: 'dor'
-    },
-    {
       key: 'pwd',
       label: 'PWD',
       components: [
@@ -34,6 +23,17 @@ Mapboard.default({
         'stormwater'
       ],
       parcels: 'pwd'
+    },
+    {
+      key: 'dor',
+      label: 'DOR',
+      components: [
+        {
+          type: 'simple-badge'
+        }
+      ],
+      basemap: 'dor',
+      parcels: 'dor'
     }
   ],
   map: {
