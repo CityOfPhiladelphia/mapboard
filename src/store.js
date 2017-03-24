@@ -9,7 +9,7 @@ const initialState = {
   // the ais feature
   ais: {},
   // the leaflet map object
-  map: {},
+  map: null,
   dorParcel: {},
   pwdParcel: {},
   topicData: {
