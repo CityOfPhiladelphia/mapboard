@@ -18,7 +18,8 @@ Mapboard.default({
           type: 'simple-badge'
         }
       ],
-      basemap: 'dor'
+      basemap: 'dor',
+      parcels: 'dor'
     },
     {
       key: 'pwd',
@@ -31,7 +32,8 @@ Mapboard.default({
       basemap: 'pwd',
       dynamicMapLayers: [
         'stormwater'
-      ]
+      ],
+      parcels: 'pwd'
     }
   ],
   map: {
