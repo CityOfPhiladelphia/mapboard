@@ -40,7 +40,8 @@
 
       // bind events
       const events = [
-        'click'
+        'click',
+        'dragend'
       ];
       bindEvents(this, this.$leafletElement, events);
     },
@@ -51,8 +52,6 @@
       childDidMount(child) {
         child.addTo(this.$leafletElement);
       }
-    },
-    events: {
     }
   };
 </script>
