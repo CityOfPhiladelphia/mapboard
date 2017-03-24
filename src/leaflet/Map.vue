@@ -13,6 +13,7 @@
 
 <script>
   import { Map } from 'leaflet';
+  import bindEvents from './utils/bind-events';
 
   export default {
     props: [
@@ -36,6 +37,12 @@
       for (let child of this.$children) {
         child.parentMounted(this);
       }
+
+      // bind events
+      const events = [
+        'click'
+      ];
+      bindEvents(this, this.$leafletElement, events);
     },
     methods: {
       createLeafletElement() {
