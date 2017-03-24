@@ -15,7 +15,7 @@
       />
       <!-- dor parcels -->
       <GeoJson v-for="dorParcel in dorParcels"
-               v-if="activeBasemap === 'dor'"
+               v-if="activeParcelLayer === 'dor'"
                :geojson="dorParcel"
                :color="'green'"
                :weight="2"
@@ -23,7 +23,7 @@
        />
 
        <!-- pwd parcel -->
-       <GeoJson v-if="activeBasemap === 'pwd' && pwdParcel"
+       <GeoJson v-if="activeParcelLayer === 'pwd' && pwdParcel"
                 :geojson="pwdParcel"
                 :color="'blue'"
                 :weight="2"
@@ -56,6 +56,9 @@
         return this.$config.topics.filter((topic) => {
           return topic.key === key;
         })[0];
+      },
+      activeParcelLayer() {
+        return this.activeTopicConfig.parcels;
       },
       dorParcels() {
         return this.$store.state.dorParcels;
