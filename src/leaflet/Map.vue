@@ -40,8 +40,7 @@
 
       // bind events
       const events = [
-        'click',
-        'dragend'
+        'click'
       ];
       bindEvents(this, this.$leafletElement, events);
     },

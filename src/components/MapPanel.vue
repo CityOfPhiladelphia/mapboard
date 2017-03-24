@@ -2,7 +2,6 @@
   <div class="large-12 columns mb-panel mb-panel-map">
     <Map_
       @l-click="handleMapClick"
-      @l-dragend="handleMapDragend"
       :zoomControlPosition="'bottomright'"
     >
       <!-- controls -->
