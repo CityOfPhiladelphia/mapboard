@@ -3,7 +3,8 @@
     <a href="#" class="topic-header" @click="setTopic">{{ topic.label }}</a>
     <div class="topic-body" v-show="this.$store.state.topic === topicKey">
       <div class="topic-comp" v-for="topicComp in topic.components">
-        I'm a {{ topicComp.type }}.
+        <!-- I'm a {{ topicComp.type }}. -->
+        Data goes here.
       </div>
     </div>
   </div>

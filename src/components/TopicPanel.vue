@@ -44,9 +44,9 @@
 <style>
   .mb-panel-topics {
     background: #fff;
-    padding-left: 12px !important;
-    padding-right: 12px !important;
-    overflow: auto;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    overflow-y: auto;
   }
   .mb-panel-topics-greeting {
     padding-top: 20px;
