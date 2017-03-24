@@ -1,4 +1,14 @@
 Mapboard.default({
+  dataSources: {
+    opa: {
+      url: '//data.phila.gov/resource/w7rb-qrn8.json',
+      params: {
+        parcel_number: (aisFeature) => aisFeature.properties.opa_account_num
+      }
+    },
+    liPermits: {},
+    liInspections: {},
+  },
   topics: [
     {
       key: 'dor',
@@ -18,32 +28,14 @@ Mapboard.default({
           type: 'horizontal-table'
         }
       ],
-      basemap: 'pwd'
+      basemap: 'pwd',
+      dynamicMapLayers: [
+        'stormwater'
+      ]
     }
   ],
   map: {
     center: [39.951618, -75.1650911],
-    zoom: 13,
-    // these should go into app config
-    basemaps: {
-      pwd: {
-        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap/MapServer',
-        // tiledLayers: [
-        //   'cityBasemapLabels'
-        // ],
-      },
-      dor: {
-        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/DORBasemap/MapServer',
-        // tiledLayers: [
-        //
-        // ]
-      }
-    },
-    tiledLayers: {
-      cityBasemapLabels: {
-        // type: 'labels',
-        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap_Labels/MapServer'
-      }
-    }
+    zoom: 13
   }
 });
