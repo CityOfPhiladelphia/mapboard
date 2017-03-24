@@ -10,8 +10,8 @@ const initialState = {
   ais: {},
   // the leaflet map object
   map: null,
-  dorParcel: {},
-  pwdParcel: {},
+  dorParcels: [],
+  pwdParcel: null,
   topicData: {
 
   },
@@ -38,6 +38,12 @@ const store = new Vuex.Store({
     },
     setMap(state, payload) {
       state.map = payload.map;
+    },
+    setDorParcels(state, payload) {
+      state.dorParcels = payload;
+    },
+    setPwdParcel(state, payload) {
+      state.pwdParcel = payload;
     }
   },
   actions: {
