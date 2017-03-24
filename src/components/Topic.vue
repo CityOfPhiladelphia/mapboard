@@ -13,9 +13,6 @@
   // import { mapMutations } from 'vuex';
 
   export default {
-    created() {
-      console.log('created topic', this);
-    },
     props: ['topicKey'],
     computed: {
       // returns the full config object for the topic
