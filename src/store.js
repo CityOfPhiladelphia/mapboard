@@ -16,6 +16,8 @@ const initialState = {
   topicData: {
 
   },
+  imageryOn: false,
+  imageryYear: 2016
   // mapFeatures: {
   //   markers: [
   //     {

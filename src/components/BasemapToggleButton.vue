@@ -23,10 +23,6 @@
       const leafletElement = this.$leafletElement = this.createLeafletElement();
       const map = this.$store.state.map;
       // REVIEW kind of hacky/not reactive?
-      // if (map) {
-      //   console.log('basemaptogglebutton test');
-      //   leafletElement.addTo(map);
-      // }
     },
     computed: {
       baseImg() {
@@ -50,10 +46,10 @@
       },
       setBase() {
         var answer;
-        if (this.$store.state.base === 'basemap') {
+        if (!this.$store.state.imageryOn) {
           answer = 'imagery';
         }
-        if (this.$store.state.base === 'imagery') {
+        if (this.$store.state.imageryOn) {
           answer = 'basemap'
         }
         this.$store.commit('setBase', answer);
