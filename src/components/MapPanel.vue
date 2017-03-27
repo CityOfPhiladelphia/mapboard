@@ -5,6 +5,10 @@
       :zoomControlPosition="'bottomright'"
     >
       <!-- controls -->
+      <ControlCorner :vSide="'top'" :hSide="'almostright'">
+        <!--<ScaleControl />-->
+      </ControlCorner>
+      <BasemapToggleButton />
       <SearchControl :position="'topleft'" />
 
       <!-- basemaps -->
@@ -37,6 +41,8 @@
   // vue doesn't like it when you import this as Map (reserved-ish word)
   import Map_ from '../leaflet/Map';
   import SearchControl from './SearchControl';
+  import ControlCorner from './ControlCorner';
+  import BasemapToggleButton from './BasemapToggleButton';
   import EsriTiledMapLayer from '../esri-leaflet/TiledMapLayer';
   import GeoJson from '../leaflet/GeoJson';
 
@@ -44,6 +50,8 @@
     components: {
       Map_,
       SearchControl,
+      ControlCorner,
+      BasemapToggleButton,
       EsriTiledMapLayer,
       GeoJson
     },
