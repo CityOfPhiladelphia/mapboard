@@ -8,7 +8,7 @@
       const container = L.DomUtil.create('div', 'mb-search-control-container');
 
       const input = L.DomUtil.create('input', 'mb-search-control-input');
-      input.placeholder = 'Search Mapboard';
+      input.placeholder = 'Search the map';
 
       const button = L.DomUtil.create('button', 'mb-search-control-button');
       const buttonIcon = L.DomUtil.create('i', 'fa fa-search fa-lg');
