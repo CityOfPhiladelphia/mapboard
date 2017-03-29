@@ -1,11 +1,17 @@
 <template>
   <div>
-    <a href="#" class="topic-header" @click="setTopic">{{ topic.label }}</a>
+    <a href="#" class="topic-header" @click="setTopic">
+      <i :class="['fa', this.icon, 'topic-header-icon']"
+         aria-hidden="true" />
+      {{ topic.label }}
+    </a>
     <div class="topic-body" v-show="this.$store.state.topic === topicKey">
-      <div class="topic-comp" v-for="topicComp in topic.components">
-        <!-- I'm a {{ topicComp.type }}. -->
-        Data goes here.
-      </div>
+      <component v-for="(topicComp, index) in topic.components"
+                 :is="topicComp.type"
+                 class="topic-comp"
+                 :slots="topicComp.slots"
+                 :key="`topic-comp-${topic.key}-${index}`"
+      />
     </div>
   </div>
 </template>
@@ -13,8 +19,15 @@
 <script>
   // import { mapMutations } from 'vuex';
 
+  import Badge from './topic-components/Badge';
+  import HorizontalTable from './topic-components/HorizontalTable';
+
   export default {
     props: ['topicKey'],
+    components: {
+      Badge,
+      HorizontalTable,
+    },
     computed: {
       // returns the full config object for the topic
       topic() {
@@ -27,6 +40,9 @@
         }
         const config = topicsFiltered[0];
         return config;
+      },
+      icon() {
+        return this.topic.icon;
       }
     },
     methods: {
@@ -40,6 +56,8 @@
 </script>
 
 <style scoped>
+  /*REVIEW these aren't prefixed `mb-`because they're scoped, but it feels
+  inconsistent?*/
   .topic-header {
     background: #f5f5f5;
     border: 1px solid #ddd;
@@ -58,8 +76,17 @@
     color: inherit;
   }
 
+  .topic-header-icon {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
   .topic-body {
     padding: 10px;
+    margin-bottom: 20px;
+  }
+
+  .topic-comp {
     margin-bottom: 10px;
   }
 </style>
