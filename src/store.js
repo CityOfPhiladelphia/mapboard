@@ -6,7 +6,7 @@ import Vuex from 'vuex';
 
 const initialState = {
   // TODO get the first topic from config
-  topic: 'pwd',
+  topic: 'litter',
   // the ais feature
   ais: null,
   // the leaflet map object
