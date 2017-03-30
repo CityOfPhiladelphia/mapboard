@@ -1,14 +1,15 @@
 <template>
-  <div id='basemap-toggle' class='leaflet-bar leaflet-control leaflet-control-load basemap-toggle-button'>
-    <a href="#" @click="setBase">
-      <img class='buttom-image' :src="baseImg">
-    </a>
+  <div id='basemap-toggle' class="leaflet-bar easy-button-container leaflet-control">
+    <button class="easy-button-button leaflet-bar-part leaflet-interactive unnamed-state-active" @click="toggleBaseAndImagery">
+      <span class="button-state state-unnamed-state unnamed-state-active">
+        <img class='button-image' :src="baseImg">
+      </span>
+    </button>
   </div>
 </template>
 
 <script>
   import L from 'leaflet';
-  // TODO look into a cleaner way of importing from esri-leaflet
   L.Control.BasemapToggleButton = L.Control.extend({
     onAdd: function() {
       this._div = L.DomUtil.get('basemap-toggle');
@@ -22,15 +23,14 @@
     mounted() {
       const leafletElement = this.$leafletElement = this.createLeafletElement();
       const map = this.$store.state.map;
-      // REVIEW kind of hacky/not reactive?
     },
     computed: {
       baseImg() {
-        if (this.$store.state.base === 'basemap') {
-          return "../assets/imagery_small.png"
+        if (this.$store.state.imageryOn === false) {
+          return "../../src/assets/imagery_small.png"
         }
-        if (this.$store.state.base === 'imagery') {
-          return "../assets/basemap_small.png"
+        if (this.$store.state.imageryOn === true) {
+          return "../../src/assets/basemap_small.png"
         }
       },
     },
@@ -44,15 +44,17 @@
         const map = parent.$leafletElement;
         this.$leafletElement.addTo(map);
       },
-      setBase() {
+      toggleBaseAndImagery(e) {
+        console.log('calling toggleBaseAndImagery');
         var answer;
-        if (!this.$store.state.imageryOn) {
-          answer = 'imagery';
+        if (this.$store.state.imageryOn === false) {
+          answer = true;
         }
-        if (this.$store.state.imageryOn) {
-          answer = 'basemap'
+        if (this.$store.state.imageryOn === true) {
+          answer = false
         }
-        this.$store.commit('setBase', answer);
+        this.$store.commit('toggleBaseAndImagery', answer);
+        e.stopPropagation();
       }
     }
   };
@@ -60,17 +62,80 @@
 </script>
 
 <style scoped>
-  .basemap-toggle-button {
-      width: 30px;
-      height: 30px;
-      background: white;
-      background: rgba(255,255,255,1);
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
-      display: inline-block;
-      float: right;
+
+  .leaflet-bar button,
+  .leaflet-bar button:hover {
+  background-color: #fff;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  width: 26px;
+  height: 26px;
+  line-height: 26px;
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  color: black;
   }
 
-  .buttom-image {
+  .leaflet-bar button {
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  display: block;
+  }
+
+  .leaflet-bar button:hover {
+  background-color: #f4f4f4;
+  }
+
+  .leaflet-bar button:first-of-type {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  }
+
+  .leaflet-bar button:last-of-type {
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-bottom: none;
+  }
+
+  .leaflet-bar.disabled,
+  .leaflet-bar button.disabled {
+  cursor: default;
+  pointer-events: none;
+  opacity: .4;
+  }
+
+  .easy-button-button .button-state{
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  }
+
+
+  .leaflet-touch .leaflet-bar button {
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  }
+
+
+  .basemap-toggle-button {
+    width: 30px;
+    height: 30px;
+    opacity: 0%;
+    /*padding: 0px;
+    margin: 0px;*/
+    /*background: white;*/
+    /*background: rgba(255,255,255,1);*/
+    /* box-shadow: 0 0 15px rgba(0,0,0,0.2); */
+    /*display: inline-block;*/
+    /*float: right;*/
+  }
+
+  .button-image {
     vertical-align: top;
+
   }
 </style>

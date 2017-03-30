@@ -17,7 +17,7 @@ const initialState = {
 
   },
   imageryOn: false,
-  imageryYear: 2016
+  imageryYear: 'imagery2016'
   // mapFeatures: {
   //   markers: [
   //     {
@@ -50,6 +50,12 @@ const store = new Vuex.Store({
     },
     setAis(state, payload) {
       state.ais = payload;
+    },
+    toggleBaseAndImagery(state, payload) {
+      state.imageryOn = payload;
+    },
+    toggleImageryYear(state, payload) {
+      state.imageryYear = payload;
     }
   },
   actions: {

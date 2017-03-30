@@ -9,6 +9,7 @@
         <!--<ScaleControl />-->
       </ControlCorner>
       <BasemapToggleButton />
+      <ImageryToggleBar />
       <SearchControl :position="'topleft'" />
 
       <!-- basemaps -->
@@ -43,6 +44,7 @@
   import SearchControl from './SearchControl';
   import ControlCorner from './ControlCorner';
   import BasemapToggleButton from './BasemapToggleButton';
+  import ImageryToggleBar from './ImageryToggleBar';
   import EsriTiledMapLayer from '../esri-leaflet/TiledMapLayer';
   import GeoJson from '../leaflet/GeoJson';
 
@@ -52,12 +54,17 @@
       SearchControl,
       ControlCorner,
       BasemapToggleButton,
+      ImageryToggleBar,
       EsriTiledMapLayer,
-      GeoJson
+      GeoJson,
     },
     computed: {
       activeBasemap() {
-        return this.activeTopicConfig.basemap;
+        if (this.$store.state.imageryOn) {
+          return this.$store.state.imageryYear;
+        } else {
+          return this.activeTopicConfig.basemap;
+        }
       },
       activeTopicConfig() {
         const key = this.$store.state.topic;
@@ -79,6 +86,9 @@
       handleMapClick(e) {
         this.getDorParcelsByLatLng(e.latlng);
         this.getPwdParcelByLatLng(e.latlng);
+      },
+      toggleBaseAndImage() {
+        console.log('clickedEasyButton');
       },
       getDorParcelsByLatLng(latlng) {
         var url = this.$config._map.featureLayers.dorParcels.url;
