@@ -24,7 +24,6 @@
                          v-if="activeBasemap === key"
                          :key="key"
                          :url="basemap.url"
-                         :min-zoom="basemap.minZoom"
                          :max-zoom="basemap.maxZoom"
       />
 
