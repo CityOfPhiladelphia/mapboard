@@ -1,11 +1,19 @@
 <template>
   <div class="large-12 columns mb-panel mb-panel-map">
-    <Map_
-      @l-click="handleMapClick"
-      :zoomControlPosition="'bottomright'"
+    <Map_ @l-click="handleMapClick"
+          :zoomControlPosition="'bottomright'"
     >
       <!-- controls -->
       <SearchControl :position="'topleft'" />
+
+      <Control :position="'bottomleft'">
+        <button @click="testControlEvent"
+                class="button"
+                style="margin: 0"
+        >
+          I'm a button
+        </button>
+      </Control>
 
       <!-- basemaps -->
       <EsriTiledMapLayer v-for="(basemap, key) in this.$config._map.basemaps"
@@ -13,6 +21,7 @@
                          :key="key"
                          :url="basemap.url"
       />
+
       <!-- dor parcels -->
       <GeoJson v-for="dorParcel in dorParcels"
                v-if="activeParcelLayer === 'dor'"
@@ -36,6 +45,7 @@
 <script>
   // vue doesn't like it when you import this as Map (reserved-ish word)
   import Map_ from '../leaflet/Map';
+  import Control from '../leaflet/Control';
   import SearchControl from './SearchControl';
   import EsriTiledMapLayer from '../esri-leaflet/TiledMapLayer';
   import GeoJson from '../leaflet/GeoJson';
@@ -43,6 +53,7 @@
   export default {
     components: {
       Map_,
+      Control,
       SearchControl,
       EsriTiledMapLayer,
       GeoJson
@@ -131,6 +142,9 @@
             self.$store.commit('setAis', null);
           }
         });
+      },
+      testControlEvent() {
+        alert('Yo, I work');
       },
     }
   };
