@@ -22,7 +22,20 @@ Mapboard.default({
       dynamicMapLayers: [
         'stormwater'
       ],
+      identifyFeature: 'address-marker',
       parcels: 'pwd'
+    },
+    {
+      key: 'dor',
+      label: 'DOR',
+      components: [
+        // {
+        //   type: 'horizontal'
+        // }
+      ],
+      basemap: 'dor',
+      identifyFeature: 'dor-parcel',
+      parcels: 'dor'
     }
   ],
   map: {

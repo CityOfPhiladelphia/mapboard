@@ -1,18 +1,22 @@
 <template>
   <div class="large-12 columns mb-panel mb-panel-map">
     <Map_ @l-click="handleMapClick"
-          :zoomControlPosition="'bottomright'"
+          zoom-control-position="bottomright"
+          :min-zoom="this.$config._map.minZoom"
+          :max-zoom="this.$config._map.maxZoom"
     >
-      <!-- controls -->
-      <SearchControl :position="'topleft'" />
-
-      <Control :position="'bottomleft'">
-        <button @click="testControlEvent"
-                class="button"
-                style="margin: 0"
-        >
-          I'm a button
-        </button>
+      <!-- search control -->
+      <Control position="topleft">
+        <div class="mb-search-control-container">
+          <form @submit.prevent="handleSearchFormSubmit">
+              <input class="mb-search-control-input"
+                     placeholder="Search the map"
+              />
+              <button class="mb-search-control-button">
+                <i class="fa fa-search fa-lg"></i>
+              </button>
+          </form>
+        </div>
       </Control>
 
       <!-- basemaps -->
@@ -20,11 +24,13 @@
                          v-if="activeBasemap === key"
                          :key="key"
                          :url="basemap.url"
+                         :min-zoom="basemap.minZoom"
+                         :max-zoom="basemap.maxZoom"
       />
 
       <!-- dor parcels -->
       <GeoJson v-for="dorParcel in dorParcels"
-               v-if="activeParcelLayer === 'dor'"
+               v-if="identifyFeature === 'dor-parcel' && activeParcelLayer === 'dor'"
                :geojson="dorParcel"
                :color="'green'"
                :weight="2"
@@ -32,11 +38,18 @@
        />
 
        <!-- pwd parcel -->
-       <GeoJson v-if="activeParcelLayer === 'pwd' && pwdParcel"
+       <GeoJson v-if="identifyFeature === 'pwd-parcel' && activeParcelLayer === 'pwd' && pwdParcel"
                 :geojson="pwdParcel"
                 :color="'blue'"
                 :weight="2"
                 :key="pwdParcel.properties.PARCELID"
+        />
+
+        <!-- address marker -->
+        <!-- REVIEW why does this need a key? it's not a list... -->
+        <Marker_ v-if="identifyFeature === 'address-marker' && aisGeom"
+                 :latlng="[...aisGeom.coordinates].reverse()"
+                 :key="streetAddress"
         />
     </Map_>
   </div>
@@ -49,6 +62,7 @@
   import SearchControl from './SearchControl';
   import EsriTiledMapLayer from '../esri-leaflet/TiledMapLayer';
   import GeoJson from '../leaflet/GeoJson';
+  import Marker_ from '../leaflet/Marker';
 
   export default {
     components: {
@@ -56,11 +70,15 @@
       Control,
       SearchControl,
       EsriTiledMapLayer,
-      GeoJson
+      GeoJson,
+      Marker_
     },
     computed: {
       activeBasemap() {
         return this.activeTopicConfig.basemap;
+      },
+      identifyFeature() {
+        return this.activeTopicConfig.identifyFeature;
       },
       activeTopicConfig() {
         const key = this.$store.state.topic;
@@ -76,12 +94,30 @@
       },
       pwdParcel() {
         return this.$store.state.pwdParcel;
-      }
+      },
+      aisGeom() {
+        return (this.$store.state.ais || {}).geometry;;
+      },
+      streetAddress() {
+        return this.$store.state.ais.properties.street_address;
+      },
     },
     methods: {
       handleMapClick(e) {
+        // console.log('handleMapClick', e);
+
+        // TODO figure out why form submits via enter key are generating a map
+        // click event and remove this
+        if (e.originalEvent.keyCode === 13) {
+          return;
+        }
+
         this.getDorParcelsByLatLng(e.latlng);
         this.getPwdParcelByLatLng(e.latlng);
+      },
+      handleSearchFormSubmit(e) {
+        const input = e.target[0].value;
+        this.fetchAis(input);
       },
       getDorParcelsByLatLng(latlng) {
         var url = this.$config._map.featureLayers.dorParcels.url;
@@ -143,9 +179,35 @@
           }
         });
       },
-      testControlEvent() {
-        alert('Yo, I work');
+      zoomed() {
+        console.log('zoomed', this.$store.state.map.getZoom());
       },
     }
   };
 </script>
+
+<style scoped>
+  .mb-search-control-container {
+    height: 48px;
+    border-radius: 2px;
+    box-shadow:0 2px 4px rgba(0,0,0,0.2),0 -1px 0px rgba(0,0,0,0.02);
+  }
+
+  .mb-search-control-button {
+    width: 50px;
+    background: #ccc;
+    line-height: 48px;
+  }
+
+  .mb-search-control-input {
+    border: 0;
+    height: 48px !important;
+    line-height: 48px;
+    padding: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    font-family: 'Montserrat', 'Tahoma', sans-serif;
+    font-size: 16px;
+    width: 400px;
+  }
+</style>
