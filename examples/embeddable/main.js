@@ -11,8 +11,8 @@ Mapboard.default({
   },
   topics: [
     {
-      key: 'litter',
-      label: 'Litter Index',
+      key: 'pwd',
+      label: 'PWD',
       components: [
         // {
         //   type: 'horizontal'
@@ -23,7 +23,6 @@ Mapboard.default({
         'stormwater'
       ],
       parcels: 'pwd'
-    }
     }
   ],
   map: {
