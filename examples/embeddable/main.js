@@ -14,15 +14,16 @@ Mapboard.default({
       key: 'litter',
       label: 'Litter Index',
       components: [
-        {
-          type: 'horizontal-table'
-        }
+        // {
+        //   type: 'horizontal'
+        // }
       ],
       basemap: 'pwd',
       dynamicMapLayers: [
         'stormwater'
       ],
       parcels: 'pwd'
+    }
     }
   ],
   map: {
