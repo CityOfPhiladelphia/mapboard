@@ -6,8 +6,8 @@
   export default {
     props: [
       'url',
-      'minzoom',
-      'maxzoom'
+      'minZoom',
+      'maxZoom'
     ],
     mounted() {
       const leafletElement = this.$leafletElement = this.createLeafletElement();
