@@ -17,11 +17,9 @@
       }
     },
     updated() {
-      console.log('updated')
       this.$leafletElement.setLatLng(this.$props.latlng);
     },
     destroyed() {
-      console.log('destroyed')
       this.$leafletElement._map.removeLayer(this.$leafletElement);
     },
     methods: {
@@ -29,7 +27,6 @@
         return new Marker(this.$props.latlng);
       },
       parentMounted(parent) {
-        console.log('parent mounted')
         const map = parent.$leafletElement;
         this.$leafletElement.addTo(map);
       },
