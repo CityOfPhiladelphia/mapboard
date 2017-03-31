@@ -35,7 +35,9 @@
 
       // signal children to mount
       for (let child of this.$children) {
-        child.parentMounted(this);
+        // REVIEW it seems weird to pass children their own props. trying to
+        // remember why this was necessary... binding issue?
+        child.parentMounted(this, child.$props);
       }
 
       // bind events

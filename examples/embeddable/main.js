@@ -14,9 +14,9 @@ Mapboard.default({
       key: 'pwd',
       label: 'PWD',
       components: [
-        {
-          type: 'horizontal-table'
-        }
+        // {
+        //   type: 'horizontal'
+        // }
       ],
       basemap: 'pwd',
       dynamicMapLayers: [
@@ -28,9 +28,9 @@ Mapboard.default({
       key: 'dor',
       label: 'DOR',
       components: [
-        {
-          type: 'simple-badge'
-        }
+        // {
+        //   type: 'simple-badge'
+        // }
       ],
       basemap: 'dor',
       parcels: 'dor'
