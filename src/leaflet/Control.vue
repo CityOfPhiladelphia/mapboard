@@ -27,7 +27,7 @@ isn't there?
 
       // keep clicks from hitting the map
       DomEvent.disableClickPropagation(el);
-
+      
       return el;
     }
   }
