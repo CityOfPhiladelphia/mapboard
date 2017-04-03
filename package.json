@@ -9,7 +9,7 @@
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
-    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "Leaflet.vector-markers": "^0.0.6",
     "leaflet": "^1.0.3",
     "vue": "^2.2.1",
     "vuex": "^2.2.1"
@@ -17,6 +17,7 @@
   "devDependencies": {
     "babel-core": "^6.0.0",
     "babel-loader": "^6.0.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-latest": "^6.0.0",
     "cross-env": "^3.0.0",
     "css-loader": "^0.25.0",
