@@ -66,9 +66,9 @@
 
         <!-- address marker -->
         <!-- REVIEW why does this need a key? it's not a list... -->
-        <Marker_ v-if="identifyFeature === 'address-marker' && aisGeom"
-                 :latlng="[...aisGeom.coordinates].reverse()"
-                 :key="streetAddress"
+        <VectorMarker v-if="identifyFeature === 'address-marker' && aisGeom"
+                      :latlng="[...aisGeom.coordinates].reverse()"
+                      :key="streetAddress"
         />
     </Map_>
   </div>
@@ -84,7 +84,7 @@
   import ImageryToggleBar from './ImageryToggleBar';
   import EsriTiledMapLayer from '../esri-leaflet/TiledMapLayer';
   import GeoJson from '../leaflet/GeoJson';
-  import Marker_ from '../leaflet/Marker';
+  import VectorMarker from './VectorMarker';
 
   export default {
     components: {
@@ -96,6 +96,7 @@
       ImageryToggleBar,
       EsriTiledMapLayer,
       GeoJson,
+      VectorMarker
     },
     computed: {
       activeBasemap() {
