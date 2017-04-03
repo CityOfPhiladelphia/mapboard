@@ -14,7 +14,7 @@ isn't there?
 </template>
 
 <script>
-  import { Control } from 'leaflet';
+  import { Control, DomEvent } from 'leaflet';
 
   // subclass Control to accept an el which gets mounted to the map
   class ControlParent extends Control {
@@ -23,7 +23,12 @@ isn't there?
       this.el = el;
     }
     onAdd() {
-      return this.el;
+      const el = this.el;
+
+      // keep clicks from hitting the map
+      DomEvent.disableClickPropagation(el);
+      
+      return el;
     }
   }
 

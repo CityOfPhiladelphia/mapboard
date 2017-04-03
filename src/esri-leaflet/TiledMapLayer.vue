@@ -5,7 +5,9 @@
 
   export default {
     props: [
-      'url'
+      'url',
+      'minZoom',
+      'maxZoom'
     ],
     mounted() {
       const leafletElement = this.$leafletElement = this.createLeafletElement();
@@ -25,9 +27,8 @@
     },
     methods: {
       createLeafletElement() {
-        return new EsriTiledMapLayer({
-          url: this.url
-        });
+        const props = Object.assign({}, this.$props);
+        return new EsriTiledMapLayer(props);
       },
       parentMounted(parent) {
         const map = parent.$leafletElement;

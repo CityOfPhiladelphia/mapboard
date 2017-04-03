@@ -1,11 +1,13 @@
 <template>
   <div>
     <a href="#" class="topic-header" @click="setTopic">
-      <i :class="['fa', this.icon, 'topic-header-icon']"
-         aria-hidden="true" />
+      <i :class="['fa', icon, 'topic-header-icon']"
+         aria-hidden="true"
+      />
       {{ topic.label }}
     </a>
     <div class="topic-body" v-show="this.$store.state.topic === topicKey">
+      Components go here.
       <component v-for="(topicComp, index) in topic.components"
                  :is="topicComp.type"
                  class="topic-comp"

@@ -17,7 +17,9 @@
 
   export default {
     props: [
-      'zoomControlPosition'
+      'zoomControlPosition',
+      'minZoom',
+      'maxZoom'
     ],
     mounted() {
       const map = this.$leafletElement = this.createLeafletElement();
@@ -41,14 +43,50 @@
       }
 
       // bind events
+      // http://leafletjs.com/reference.html#map-click
       const events = [
-        'click'
+        'click',
+        'dblclick',
+        'mousedown',
+        'mouseup',
+        'mouseover',
+        'mouseout',
+        'mousemove',
+        'contextmenu',
+        'focus',
+        'blur',
+        'preclick',
+        'load',
+        'unload',
+        'viewreset',
+        'movestart',
+        'move',
+        'moveend',
+        'dragstart',
+        'drag',
+        'dragend',
+        'zoomstart',
+        'zoomend',
+        'zoomlevelschange',
+        'resize',
+        'autopanstart',
+        'layeradd',
+        'layerremove',
+        'baselayerchange',
+        'overlayadd',
+        'overlayremove',
+        'locationfound',
+        'locationerror',
+        'popupopen',
+        'popupclose'
       ];
+
       bindEvents(this, this.$leafletElement, events);
     },
     methods: {
       createLeafletElement() {
-        return new Map(this.$refs.map);
+        const { zoomControlPosition, ...options } = this.$props;
+        return new Map(this.$refs.map, options);
       },
       childDidMount(child) {
         child.addTo(this.$leafletElement);

@@ -11,18 +11,38 @@ Mapboard.default({
   },
   topics: [
     {
-      key: 'pwd',
-      label: 'PWD',
+      key: 'ais',
+      icon: 'fa-map-marker',
+      label: 'AIS',
       components: [
-        // {
-        //   type: 'horizontal'
-        // }
       ],
       basemap: 'pwd',
-      dynamicMapLayers: [
-        'stormwater'
-      ],
+      identifyFeature: 'address-marker',
+      // we might not need this anymore, now that we have identifyFeature
       parcels: 'pwd'
+    },
+    {
+      key: 'pwd',
+      icon: 'fa-tint',
+      label: 'PWD',
+      components: [
+      ],
+      basemap: 'pwd',
+      // dynamicMapLayers: [
+      //   'stormwater'
+      // ],
+      identifyFeature: 'pwd-parcel',
+      parcels: 'pwd'
+    },
+    {
+      key: 'dor',
+      icon: 'fa-book',
+      label: 'DOR',
+      components: [
+      ],
+      basemap: 'dor',
+      identifyFeature: 'dor-parcel',
+      parcels: 'dor'
     }
   ],
   map: {
