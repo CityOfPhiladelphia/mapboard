@@ -6,7 +6,8 @@
           :max-zoom="this.$config._map.maxZoom"
     >
       <!-- controls -->
-      <ControlCorner :vSide="'top'" :hSide="'almostright'" />
+      <ControlCorner :vSide="'top'" :hSide="'almostright'">
+      </ControlCorner>
       <ImageryToggleBar />
       <Control position="topleft">
         <div class="mb-search-control-container">
@@ -20,11 +21,11 @@
           </form>
         </div>
       </Control>
+      <!-- <Control :position="'topalmostright'">
+        <ImageryToggleBar />
+      </Control> -->
       <Control :position="'topright'">
         <BasemapToggleButton />
-      </Control>
-      <Control :position="'topalmostright'">
-        <!-- <ImageryToggleBar /> -->
       </Control>
 
       <!-- basemaps -->
