@@ -6,20 +6,8 @@
           :max-zoom="this.$config._map.maxZoom"
     >
       <!-- controls -->
-      <ControlCorner :vSide="'top'" :hSide="'almostright'">
-        <!--<ScaleControl />-->
-      </ControlCorner>
+      <ControlCorner :vSide="'top'" :hSide="'almostright'" />
       <ImageryToggleBar />
-      <SearchControl :position="'topleft'" />
-
-      <Control :position="'bottomleft'">
-        <button @click="testControlEvent"
-                class="button"
-                style="margin: 0"
-        >
-          I'm a button
-        </button>
-      <!-- search control -->
       <Control position="topleft">
         <div class="mb-search-control-container">
           <form @submit.prevent="handleSearchFormSubmit">

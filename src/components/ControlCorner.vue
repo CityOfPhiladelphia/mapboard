@@ -16,7 +16,7 @@
     methods: {
       parentMounted(parent) {
         const map = parent.$leafletElement;
-        console.log(map._controlContainer)
+        //console.log(map._controlContainer)
         map._controlCorners[this.vSide + this.hSide] = L.DomUtil.create('div', 'leaflet-'+this.vSide+' leaflet-'+this.hSide, map._controlContainer);
       }
     }
