@@ -7,7 +7,6 @@
       <ControlCorner :vSide="'top'" :hSide="'almostright'">
         <!--<ScaleControl />-->
       </ControlCorner>
-      <BasemapToggleButton />
       <ImageryToggleBar />
       <SearchControl :position="'topleft'" />
 
@@ -18,6 +17,12 @@
         >
           I'm a button
         </button>
+      </Control>
+      <Control :position="'topright'">
+        <BasemapToggleButton />
+      </Control>
+      <Control :position="'topalmostright'">
+        <ImageryToggleBar />
       </Control>
 
       <!-- basemaps -->

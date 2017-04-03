@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import store from './store';
+import createStore from './store';
 import ConfigMixin from './util/config-mixin';
 import appConfig from './config';
 import Mapboard from './components/Mapboard';
@@ -10,6 +10,9 @@ export default (clientConfig) => {
 
   // make config accessible from each component via this.$config
   Vue.use(ConfigMixin, config);
+
+  // create store
+  const store = createStore(config);
 
   // mount main vue
   new Vue({

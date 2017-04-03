@@ -23,17 +23,6 @@ Mapboard.default({
         'stormwater'
       ],
       parcels: 'pwd'
-    },
-    {
-      key: 'dor',
-      label: 'DOR',
-      components: [
-        // {
-        //   type: 'simple-badge'
-        // }
-      ],
-      basemap: 'dor',
-      parcels: 'dor'
     }
   ],
   map: {

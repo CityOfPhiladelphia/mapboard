@@ -1,29 +1,16 @@
 <template>
-  <div id='basemap-toggle' class="leaflet-bar easy-button-container leaflet-control">
+  <!-- <div id='basemap-toggle' class="leaflet-bar easy-button-container leaflet-control"> -->
     <button class="easy-button-button leaflet-bar-part leaflet-interactive unnamed-state-active" @click="toggleBaseAndImagery">
       <span class="button-state state-unnamed-state unnamed-state-active">
         <img class='button-image' :src="baseImg">
       </span>
     </button>
-  </div>
+  <!-- </div> -->
 </template>
 
 <script>
-  import L from 'leaflet';
-  L.Control.BasemapToggleButton = L.Control.extend({
-    onAdd: function() {
-      this._div = L.DomUtil.get('basemap-toggle');
-    	return this._div;
-    }
-  });
-  const BasemapToggleButton = L.Control.BasemapToggleButton;
-
   export default {
     props: ['baseImg'],
-    mounted() {
-      const leafletElement = this.$leafletElement = this.createLeafletElement();
-      const map = this.$store.state.map;
-    },
     computed: {
       baseImg() {
         if (this.$store.state.imageryOn === false) {
@@ -35,15 +22,6 @@
       },
     },
     methods: {
-      createLeafletElement() {
-        return new BasemapToggleButton({
-          position: 'topright'
-        })
-      },
-      parentMounted(parent) {
-        const map = parent.$leafletElement;
-        this.$leafletElement.addTo(map);
-      },
       toggleBaseAndImagery(e) {
         console.log('calling toggleBaseAndImagery');
         var answer;
@@ -108,8 +86,8 @@
 
   .easy-button-button .button-state{
   display: block;
-  width: 100%;
-  height: 100%;
+  width: 30px;
+  height: 30px;
   position: relative;
   }
 

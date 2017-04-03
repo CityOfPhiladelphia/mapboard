@@ -1,80 +1,46 @@
+<!--
+The way this works is: Vue renders the control in a slot below the map, and
+when the map is ready we wrap the control in a Leaflet class and add it to the
+map, which also removes it from the Vue slot.
+
+REVIEW does this break anything with Vue? Because it's expecting a node that
+isn't there?
+-->
+
+<template>
+  <div>
+    <slot />
+  </div>
+</template>
+
 <script>
-  import { Control, DomUtil, DomEvent } from 'leaflet';
+  import { Control } from 'leaflet';
 
-  // convert a vue vnode to a regular htmlelement, via leaflet's domutil
-  function vnodeToEl(vnode, DomUtil, DomEvent) {
-    // get vnode "data" (basically, attributes)
-    const data = vnode.data;
-
-    // create dom node
-    const el = DomUtil.create(vnode.tag);
-
-    // set content
-    // TODO this assumes there's only one child el and it's just html content.
-    // make this recursive to support nested divs
-    const children = vnode.children;
-    if (children.length === 1) {
-      const child = children[0];
-      if (!child.tag) {
-        el.innerHTML = child.text;
-      } else {
-        console.warn('control did not handle child with tag');
-      }
-    } else {
-      console.warn('control did not handle multiple children');
-    }
-
-    // bind events
-    const events = data.on || {};
-    for (let [eventName, callback] of Object.entries(events)) {
-      el.addEventListener(eventName, callback);
-    }
-
-    // don't propagate events (namely to the map)
-    DomEvent.disableClickPropagation(el);
-
-    // style
-    el.className = data.staticClass;
-    const style = data.staticStyle || {};
-    for (let [key, value] of Object.entries(style)) {
-      el.style[key] = value;
-    }
-
-    return el;
-  }
-
+  // subclass Control to accept an el which gets mounted to the map
   class ControlParent extends Control {
-    constructor(children, options) {
+    constructor(el, options) {
       super(options);
-      this.children = children;
-      this.options = options;
+      this.el = el;
     }
     onAdd() {
-      const container = DomUtil.create('div');
-      for (let child of this.children) {
-        const el = vnodeToEl(child, DomUtil, DomEvent);
-        container.appendChild(el);
-      }
-      return container;
+      return this.el;
     }
   }
 
   export default {
     props: ['position'],
-    render(h) {
-      return null;
-    },
     methods: {
       createLeafletElement() {
-        const slots = this.$slots.default;
-        return new ControlParent(slots, {
+        const el = this.$el;
+        return new ControlParent(el, {
           position: this.position
         });
       },
       parentMounted(parent, props) {
-        this.$leafletElement = this.createLeafletElement();
+        const leafletElement = this.createLeafletElement();
+        this.$leafletElement = leafletElement;
         const map = parent.$leafletElement;
-        this.$leafletElement.addTo(map);
+        leafletElement.addTo(map);
       }
     }
   };
