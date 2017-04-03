@@ -24,7 +24,7 @@
         <BasemapToggleButton />
       </Control>
       <Control :position="'topalmostright'">
-        <ImageryToggleBar />
+        <!-- <ImageryToggleBar /> -->
       </Control>
 
       <!-- basemaps -->
