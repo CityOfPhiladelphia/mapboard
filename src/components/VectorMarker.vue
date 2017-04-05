@@ -28,7 +28,6 @@
     },
     methods: {
       createLeafletElement() {
-        console.log(this.$props);
         const icon = L.VectorMarkers.icon({
           icon:  this.$props.icon || 'circle',
           markerColor: this.$props.markerColor || '#2176d2'
