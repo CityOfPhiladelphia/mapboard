@@ -47,11 +47,12 @@
       const events = [
         'click',
         'dblclick',
-        'mousedown',
-        'mouseup',
-        'mouseover',
-        'mouseout',
-        'mousemove',
+        // REVIEW these are chatty
+        // 'mousedown',
+        // 'mouseup',
+        // 'mouseover',
+        // 'mouseout',
+        // 'mousemove',
         'contextmenu',
         'focus',
         'blur',
