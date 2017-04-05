@@ -1,20 +1,41 @@
+const GATEKEEPER_KEY = '35ae5b7bf8f0ff2613134935ce6b4c1e';
+
 Mapboard.default({
+  // baseConfig: '//path/to/config.js',
   dataSources: {
     opa: {
       url: '//data.phila.gov/resource/w7rb-qrn8.json',
       params: {
-        parcel_number: (aisFeature) => aisFeature.properties.opa_account_num
+        parcel_number: feature => feature.properties.opa_account_num
       }
-    },
-    liPermits: {},
-    liInspections: {},
+    }
   },
   topics: [
     {
-      key: 'ais',
-      icon: 'fa-map-marker',
-      label: 'AIS',
+      key: 'opa',
+      icon: 'map-marker',
+      label: 'Property Assessments',
       components: [
+        {
+          type: 'callout',
+          slots: {
+            text: 'This information is provided by the Office of Property Assessments (OPA), the agency responsible for estimating property values in the City of Philadelphia. OPA was formerly a part of the Bureau of Revision of Taxes (BRT) and some City websites may still use that name.'
+          }
+        },
+        {
+          type: 'vertical-table',
+          dataSources: ['opa'],
+          slots: {
+            fields: [
+              {
+                label: 'OPA Account #',
+                value() {
+                  console.log('called value', this);
+                }
+              },
+            ]
+          }
+        }
       ],
       basemap: 'pwd',
       identifyFeature: 'address-marker',
@@ -23,7 +44,7 @@ Mapboard.default({
     },
     {
       key: 'pwd',
-      icon: 'fa-tint',
+      icon: 'tint',
       label: 'PWD',
       components: [
       ],
@@ -36,7 +57,7 @@ Mapboard.default({
     },
     {
       key: 'dor',
-      icon: 'fa-book',
+      icon: 'book',
       label: 'DOR',
       components: [
       ],
@@ -47,6 +68,120 @@ Mapboard.default({
   ],
   map: {
     center: [39.951618, -75.1650911],
-    zoom: 13
-  }
+    zoom: 13,
+    basemaps: {
+      pwd: {
+        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap/MapServer',
+        tiledLayers: [
+          'cityBasemapLabels'
+        ],
+        type: 'featuremap'
+      },
+      dor: {
+        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/DORBasemap/MapServer',
+        tiledLayers: [
+          'dorBasemapLabels'
+        ],
+        type: 'featuremap'
+      },
+      imagery2016: {
+        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2016_3in/MapServer',
+        tiledLayers: [
+          'imageryBasemapLabels'
+        ],
+        type: 'imagery',
+        label: '2016'
+      },
+      imagery2015: {
+        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2015_3in/MapServer',
+        tiledLayers: [
+          'imageryBasemapLabels'
+        ],
+        type: 'imagery',
+        label: '2015'
+      },
+      imagery2012: {
+        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2012_3in/MapServer',
+        tiledLayers: [
+          'imageryBasemapLabels'
+        ],
+        type: 'imagery',
+        label: '2012'
+      },
+      imagery2010: {
+        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2010_3in/MapServer',
+        tiledLayers: [
+          'imageryBasemapLabels'
+        ],
+        type: 'imagery',
+        label: '2010'
+      },
+      imagery2008: {
+        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2008_3in/MapServer',
+        tiledLayers: [
+          'imageryBasemapLabels'
+        ],
+        type: 'imagery',
+        label: '2008'
+      },
+      imagery2004: {
+        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2004_6in/MapServer',
+        tiledLayers: [
+          'imageryBasemapLabels'
+        ],
+        type: 'imagery',
+        label: '2004'
+      },
+      imagery1996: {
+        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_1996_6in/MapServer',
+        tiledLayers: [
+          'imageryBasemapLabels'
+        ],
+        type: 'imagery',
+        label: '1996'
+      }
+    },
+    tiledLayers: {
+      cityBasemapLabels: {
+        // type: 'labels',
+        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap_Labels/MapServer'
+      },
+      dorBasemapLabels: {
+        // type: 'labels',
+        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/DORBasemap_Labels_Test2/MapServer'
+      },
+      imageryBasemapLabels: {
+        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_Labels/MapServer'
+      }
+    },
+    dynamicMapLayers: {
+      stormwater: {
+        url: '//gis.phila.gov/arcgis/rest/services/Water/pv_data/MapServer'
+      }
+    },
+    featureLayers: {
+      dorParcels: {
+        url: '//gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/24'
+      },
+      pwdParcels: {
+        url: '//gis.phila.gov/arcgis/rest/services/Water/pv_data/MapServer/0',
+      }
+    }
+  },
+  geocoder: {
+    methods: {
+      search: {
+        url: (input) => `//api.phila.gov/ais/v1/search/${input}`,
+        params: {
+          gatekeeperKey: GATEKEEPER_KEY
+        }
+      },
+      reverseGeocode: {
+        url: (input) => `//api.phila.gov/ais/v1/reverse_geocode/${input}`,
+        params: {
+          gatekeeperKey: GATEKEEPER_KEY
+        }
+      }
+    }
+  },
 });

@@ -2,8 +2,8 @@
   <div class="large-12 columns mb-panel mb-panel-map">
     <Map_ @l-click="handleMapClick"
           zoom-control-position="bottomright"
-          :min-zoom="this.$config._map.minZoom"
-          :max-zoom="this.$config._map.maxZoom"
+          :min-zoom="this.$config.map.minZoom"
+          :max-zoom="this.$config.map.maxZoom"
     >
       <!-- controls -->
       <ControlCorner :vSide="'top'" :hSide="'almostright'">
@@ -29,7 +29,7 @@
       </Control>
 
       <!-- basemaps -->
-      <EsriTiledMapLayer v-for="(basemap, key) in this.$config._map.basemaps"
+      <EsriTiledMapLayer v-for="(basemap, key) in this.$config.map.basemaps"
                          v-if="activeBasemap === key"
                          :key="key"
                          :url="basemap.url"
@@ -122,16 +122,18 @@
     },
     methods: {
       handleMapClick(e) {
-        // console.log('handleMapClick', e);
-
         // TODO figure out why form submits via enter key are generating a map
         // click event and remove this
         if (e.originalEvent.keyCode === 13) {
           return;
         }
 
+        // METHOD 1: intersect map click latlng with parcel layers
         this.getDorParcelsByLatLng(e.latlng);
         this.getPwdParcelByLatLng(e.latlng);
+
+        // METHOD 2: reverse geocode via AIS
+        // this.getReverseGeocode(e.latlng);
       },
       toggleBaseAndImage() {
         console.log('clickedEasyButton');
@@ -140,8 +142,18 @@
         const input = e.target[0].value;
         this.fetchAis(input);
       },
+      getReverseGeocode(latlng) {
+        const lnglat = [latlng.lng, latlng.lat];
+        const url = this.$config._geocoder.methods.reverseGeocode.url(lnglat);
+        this.$http.get(url.replace('ais', 'ais_test')).then(response => {
+          const data = response.body;
+          this.$store.commit('setAis', data.features[0])
+        }, response => {
+          console.log('reverse geocode error')
+        });
+      },
       getDorParcelsByLatLng(latlng) {
-        var url = this.$config._map.featureLayers.dorParcels.url;
+        var url = this.$config.map.featureLayers.dorParcels.url;
         var parcelQuery = L.esri.query({ url });
         parcelQuery.contains(latlng);
         parcelQuery.run((error, featureCollection, response) => {
@@ -156,7 +168,7 @@
         });
       },
       getPwdParcelByLatLng(latlng) {
-        var url = this.$config._map.featureLayers.pwdParcels.url;
+        var url = this.$config.map.featureLayers.pwdParcels.url;
         var parcelQuery = L.esri.query({ url });
         parcelQuery.contains(latlng);
         parcelQuery.run((error, featureCollection, response) => {
@@ -182,26 +194,45 @@
         const self = this;
         const searchConfig = this.$config._geocoder.methods.search;
         const url = searchConfig.url(input);
-        const data = searchConfig.params;
-        $.ajax({
-          url,
-          data,
-          success(data) {
-            // TODO handle multiple ais results
-            if (!data.features || data.features.length < 1) {
-              console.log('ais got no features', data);
-              return;
-            }
-            self.$store.commit('setAis', data.features[0])
-          },
-          error(err) {
-            console.log('ais error')
-            self.$store.commit('setAis', null);
+        const params = searchConfig.params;
+
+        this.$http.get(url, { params }).then(response => {
+          const data = response.body;
+
+          // TODO handle multiple ais results
+          if (!data.features || data.features.length < 1) {
+            console.log('ais got no features', data);
+            return;
           }
+          // TODO do some checking here
+          const feature = data.features[0];
+          self.$store.commit('setAis', feature);
+
+          // get topics
+          this.fetchTopics(feature);
+        }, response => {
+          console.log('ais error')
+          self.$store.commit('setAis', null);
         });
       },
-      zoomed() {
-        console.log('zoomed', this.$store.state.map.getZoom());
+      fetchTopics(feature) {
+        // get topics
+        const dataSources = this.$config.dataSources;
+        for (let [dataSourceKey, dataSource] of Object.entries(dataSources)) {
+          // evaluate params
+          const params = {};
+          for (let [paramKey, paramFn] of Object.entries(dataSource.params)) {
+            params[paramKey] = paramFn(feature);
+          }
+          const url = dataSource.url;
+
+          this.$http.get(url, { params }).then(response => {
+            const body = response.body;
+            // TODO put in state
+          }, response => {
+            console.log('get topic error', response);
+          });
+        }
       },
     }
   };

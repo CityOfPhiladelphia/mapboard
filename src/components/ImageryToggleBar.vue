@@ -12,7 +12,7 @@
     mounted() {
       this.$buttonArray = []
       const map = this.$store.state.map;
-      const maps = this.$config._map.basemaps
+      const maps = this.$config.map.basemaps
       const imageryBasemaps = Object.values(maps).filter((map) => {
           return map.type === 'imagery';
       })
