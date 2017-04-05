@@ -1,12 +1,12 @@
 <template>
   <div class="large-12 columns mb-panel mb-panel-map">
-    <Map_ @l-click="handleMapClick"
+    <map_ @l-click="handleMapClick"
           zoom-control-position="bottomright"
           :min-zoom="this.$config.map.minZoom"
           :max-zoom="this.$config.map.maxZoom"
     >
       <!-- basemaps -->
-      <EsriTiledMapLayer v-for="(basemap, key) in this.$config.map.basemaps"
+      <esri-tiled-map-layer v-for="(basemap, key) in this.$config.map.basemaps"
                          v-if="activeBasemap === key"
                          :key="key"
                          :url="basemap.url"
@@ -14,7 +14,7 @@
       />
 
       <!-- dor parcels -->
-      <GeoJson v-for="dorParcel in dorParcels"
+      <geojson v-for="dorParcel in dorParcels"
                v-if="identifyFeature === 'dor-parcel' && activeParcelLayer === 'dor'"
                :geojson="dorParcel"
                :color="'green'"
@@ -23,7 +23,7 @@
        />
 
        <!-- pwd parcel -->
-       <GeoJson v-if="identifyFeature === 'pwd-parcel' && activeParcelLayer === 'pwd' && pwdParcel"
+       <geojson v-if="identifyFeature === 'pwd-parcel' && activeParcelLayer === 'pwd' && pwdParcel"
                 :geojson="pwdParcel"
                 :color="'blue'"
                 :weight="2"
@@ -32,7 +32,7 @@
 
         <!-- address marker -->
         <!-- REVIEW why does this need a key? it's not a list... -->
-        <VectorMarker v-if="identifyFeature === 'address-marker' && aisGeom"
+        <vector-marker v-if="identifyFeature === 'address-marker' && aisGeom"
                       :latlng="[...aisGeom.coordinates].reverse()"
                       :key="streetAddress"
         />
@@ -44,7 +44,7 @@
                          :imagery-years="imageryYears"
         />
         <!-- search control -->
-        <Control position="topleft">
+        <control position="topleft">
           <div class="mb-search-control-container">
             <form @submit.prevent="handleSearchFormSubmit">
                 <input class="mb-search-control-input"
@@ -55,8 +55,8 @@
                 </button>
             </form>
           </div>
-        </Control>
-    </Map_>
+        </control>
+    </map_>
   </div>
 </template>
 
@@ -69,7 +69,7 @@
   import BasemapToggleButton from './BasemapToggleButton';
   import ImageryToggleBar from './ImageryToggleBar';
   import EsriTiledMapLayer from '../esri-leaflet/TiledMapLayer';
-  import GeoJson from '../leaflet/GeoJson';
+  import Geojson from '../leaflet/Geojson';
   import VectorMarker from './VectorMarker';
   import BasemapControl from './BasemapControl';
 
@@ -82,7 +82,7 @@
       BasemapToggleButton,
       ImageryToggleBar,
       EsriTiledMapLayer,
-      GeoJson,
+      Geojson,
       VectorMarker,
       BasemapControl
     },
