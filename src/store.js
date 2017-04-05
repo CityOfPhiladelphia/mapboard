@@ -5,8 +5,10 @@ import Vuex from 'vuex';
 // Vue.use(Vuex);
 
 function createStore(config) {
+  const defaultTopic = config.topics[0];
+
   const initialState = {
-    topic: config.topics[0].key,
+    topic: defaultTopic.key,
     // the ais feature
     ais: null,
     // the leaflet map object
@@ -15,8 +17,7 @@ function createStore(config) {
     pwdParcel: null,
     topicData: {
     },
-    imageryOn: false,
-    imageryYear: 'imagery2016',
+    basemap: defaultTopic.basemap,
     // mapFeatures: {
     //   markers: [
     //     {
@@ -31,6 +32,7 @@ function createStore(config) {
     // },
   };
 
+  // TODO standardize how payloads are passed around/handled
   return new Vuex.Store({
     state: initialState,
     getters: {},
@@ -50,11 +52,8 @@ function createStore(config) {
       setAis(state, payload) {
         state.ais = payload;
       },
-      toggleBaseAndImagery(state, payload) {
-        state.imageryOn = payload;
-      },
-      toggleImageryYear(state, payload) {
-        state.imageryYear = payload;
+      setBasemap(state, payload) {
+        state.basemap = payload;
       }
     }
   });

@@ -90,7 +90,7 @@ Mapboard.default({
           'imageryBasemapLabels'
         ],
         type: 'imagery',
-        label: '2016'
+        year: 2016
       },
       imagery2015: {
         url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2015_3in/MapServer',
@@ -98,7 +98,7 @@ Mapboard.default({
           'imageryBasemapLabels'
         ],
         type: 'imagery',
-        label: '2015'
+        year: 2015
       },
       imagery2012: {
         url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2012_3in/MapServer',
@@ -106,7 +106,7 @@ Mapboard.default({
           'imageryBasemapLabels'
         ],
         type: 'imagery',
-        label: '2012'
+        year: 2012
       },
       imagery2010: {
         url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2010_3in/MapServer',
@@ -114,7 +114,7 @@ Mapboard.default({
           'imageryBasemapLabels'
         ],
         type: 'imagery',
-        label: '2010'
+        year: 2010
       },
       imagery2008: {
         url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2008_3in/MapServer',
@@ -122,7 +122,7 @@ Mapboard.default({
           'imageryBasemapLabels'
         ],
         type: 'imagery',
-        label: '2008'
+        year: 2008
       },
       imagery2004: {
         url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2004_6in/MapServer',
@@ -130,7 +130,7 @@ Mapboard.default({
           'imageryBasemapLabels'
         ],
         type: 'imagery',
-        label: '2004'
+        year: '2004'
       },
       imagery1996: {
         url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_1996_6in/MapServer',
@@ -138,7 +138,7 @@ Mapboard.default({
           'imageryBasemapLabels'
         ],
         type: 'imagery',
-        label: '1996'
+        year: '1996'
       }
     },
     tiledLayers: {

@@ -5,29 +5,6 @@
           :min-zoom="this.$config.map.minZoom"
           :max-zoom="this.$config.map.maxZoom"
     >
-      <!-- controls -->
-      <ControlCorner :vSide="'top'" :hSide="'almostright'">
-      </ControlCorner>
-      <ImageryToggleBar />
-      <Control position="topleft">
-        <div class="mb-search-control-container">
-          <form @submit.prevent="handleSearchFormSubmit">
-              <input class="mb-search-control-input"
-                     placeholder="Search the map"
-              />
-              <button class="mb-search-control-button">
-                <i class="fa fa-search fa-lg"></i>
-              </button>
-          </form>
-        </div>
-      </Control>
-      <!-- <Control :position="'topalmostright'">
-        <ImageryToggleBar />
-      </Control> -->
-      <Control :position="'topright'">
-        <BasemapToggleButton />
-      </Control>
-
       <!-- basemaps -->
       <EsriTiledMapLayer v-for="(basemap, key) in this.$config.map.basemaps"
                          v-if="activeBasemap === key"
@@ -59,6 +36,26 @@
                       :latlng="[...aisGeom.coordinates].reverse()"
                       :key="streetAddress"
         />
+
+        <!-- CONTROLS: -->
+        <!-- basemap control -->
+        <basemap-control v-if="hasImageryBasemaps"
+                         :position="'topright'"
+                         :imagery-years="imageryYears"
+        />
+        <!-- search control -->
+        <Control position="topleft">
+          <div class="mb-search-control-container">
+            <form @submit.prevent="handleSearchFormSubmit">
+                <input class="mb-search-control-input"
+                       placeholder="Search the map"
+                />
+                <button class="mb-search-control-button">
+                  <i class="fa fa-search fa-lg"></i>
+                </button>
+            </form>
+          </div>
+        </Control>
     </Map_>
   </div>
 </template>
@@ -74,6 +71,7 @@
   import EsriTiledMapLayer from '../esri-leaflet/TiledMapLayer';
   import GeoJson from '../leaflet/GeoJson';
   import VectorMarker from './VectorMarker';
+  import BasemapControl from './BasemapControl';
 
   export default {
     components: {
@@ -85,15 +83,30 @@
       ImageryToggleBar,
       EsriTiledMapLayer,
       GeoJson,
-      VectorMarker
+      VectorMarker,
+      BasemapControl
     },
     computed: {
       activeBasemap() {
-        if (this.$store.state.imageryOn) {
-          return this.$store.state.imageryYear;
-        } else {
-          return this.activeTopicConfig.basemap;
-        }
+        return this.$store.state.basemap;
+        // if (this.$store.state.imageryOn) {
+        //   return this.$store.state.imageryYear;
+        // } else {
+        //   return this.activeTopicConfig.basemap;
+        // }
+      },
+      basemaps() {
+        return Object.values(this.$config.map.basemaps);
+      },
+      imageryBasemaps() {
+        return this.basemaps.filter(basemap => basemap.type === 'imagery');
+      },
+      hasImageryBasemaps() {
+        return this.imageryBasemaps.length > 0;
+      },
+      imageryYears() {
+        // pluck year from basemap objects
+        return this.imageryBasemaps.map(x => x.year);
       },
       identifyFeature() {
         return this.activeTopicConfig.identifyFeature;

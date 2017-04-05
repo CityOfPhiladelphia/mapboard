@@ -14,37 +14,38 @@ isn't there?
 </template>
 
 <script>
-  import { Control, DomEvent } from 'leaflet';
-
-  // subclass Control to accept an el which gets mounted to the map
-  class ControlParent extends Control {
-    constructor(el, options) {
-      super(options);
-      this.el = el;
-    }
-    onAdd() {
-      const el = this.el;
-
-      // keep clicks from hitting the map
-      DomEvent.disableClickPropagation(el);
-      
-      return el;
-    }
-  }
+  import L from 'leaflet';
 
   export default {
     props: ['position'],
     methods: {
-      createLeafletElement() {
+      createLeafletElement(L) {
+        // subclass Control to accept an el which gets mounted to the map
+        class ControlParent extends L.Control {
+          constructor(el, options) {
+            super(options);
+            this.el = el;
+          }
+          onAdd() {
+            const el = this.el;
+
+            // keep clicks from hitting the map
+            L.DomEvent.disableClickPropagation(el);
+
+            return el;
+          }
+        }
+
         const el = this.$el;
         return new ControlParent(el, {
           position: this.position
         });
       },
       parentMounted(parent, props) {
-        const leafletElement = this.createLeafletElement();
+        const leafletElement = this.createLeafletElement(L);
         this.$leafletElement = leafletElement;
         const map = parent.$leafletElement;
+        console.log('CONTROL parent mounted', map);
         leafletElement.addTo(map);
       }
     }
