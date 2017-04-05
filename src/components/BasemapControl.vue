@@ -1,11 +1,23 @@
 <template>
-  <div>
-    <div id="basemap-toggle" class="leaflet-bar easy-button-container leaflet-control">
+  <div style="display: inline">
+    <div class="year-selector-container"
+         v-show="activeBasemap.startsWith('imagery')"
+    >
+      <ul>
+        <li v-for="imageryYear in imageryYears"
+            :class="{ active: activeBasemap === 'imagery' + imageryYear }"
+            @click="handleImageryYearClick"
+        >
+          {{ imageryYear }}
+        </li>
+      </ul>
+    </div>
+    <div class="leaflet-bar easy-button-container leaflet-control">
       <button class="easy-button-button leaflet-bar-part leaflet-interactive unnamed-state-active"
               @click="handleToggleButtonClick"
       >
         <span class="button-state state-unnamed-state unnamed-state-active">
-          <img class='button-image' :src="toggleButtonImgSrc">
+          <img class="button-image" :src="toggleButtonImgSrc">
         </span>
       </button>
     </div>
@@ -28,7 +40,8 @@
     ],
     computed: {
       activeBasemap() {
-        return this.$store.state.basemap;
+        const basemap = this.$store.state.basemap;
+        return basemap;
       },
       toggleButtonImgSrc() {
         const basemap = this.activeBasemap;
@@ -69,25 +82,42 @@
           nextBasemap = activeTopicConfig.basemap;
         }
 
-
         this.$store.commit('setBasemap', nextBasemap);
+      },
 
-        // console.log('calling toggleBaseAndImagery');
-        // var answer;
-        // if (this.$store.state.imageryOn === false) {
-        //   answer = true;
-        // }
-        // if (this.$store.state.imageryOn === true) {
-        //   answer = false
-        // }
-        // this.$store.commit('toggleBaseAndImagery', answer);
-        // e.stopPropagation();
-      }
+      handleImageryYearClick(e) {
+        const year = e.target.innerText;
+        const nextBasemap = 'imagery' + year;
+        this.$store.commit('setBasemap', nextBasemap);
+      },
     })
   };
 </script>
 
 <style scoped>
+  .year-selector-container {
+    /*border: 1px solid #222;*/
+    display: inline-block;
+    margin-right: 20px;
+  }
+
+  ul {
+    margin: 0;
+    list-style-type: none;
+    text-align: center;
+  }
+
+  li {
+    background: #cfcfcf;
+    border: 1px solid #fff;
+    border-bottom: none;
+    padding: 8px;
+  }
+
+  li.active {
+    background: #FFF;
+  }
+
   .leaflet-bar button,
   .leaflet-bar button:hover {
     background-color: #fff;
@@ -96,7 +126,7 @@
     width: 26px;
     height: 26px;
     line-height: 26px;
-    display: block;
+    /*display: block;*/
     text-align: center;
     text-decoration: none;
     color: black;
@@ -106,7 +136,7 @@
     background-position: 50% 50%;
     background-repeat: no-repeat;
     overflow: hidden;
-    display: block;
+    /*display: block;*/
   }
 
   .leaflet-bar button:hover {
