@@ -148,16 +148,13 @@
         // METHOD 2: reverse geocode via AIS
         // this.getReverseGeocode(e.latlng);
       },
-      toggleBaseAndImage() {
-        console.log('clickedEasyButton');
-      },
       handleSearchFormSubmit(e) {
         const input = e.target[0].value;
         this.fetchAis(input);
       },
       getReverseGeocode(latlng) {
         const lnglat = [latlng.lng, latlng.lat];
-        const url = this.$config._geocoder.methods.reverseGeocode.url(lnglat);
+        const url = this.$config.geocoder.methods.reverseGeocode.url(lnglat);
         this.$http.get(url.replace('ais', 'ais_test')).then(response => {
           const data = response.body;
           this.$store.commit('setAis', data.features[0])
@@ -205,7 +202,7 @@
       },
       fetchAis(input) {
         const self = this;
-        const searchConfig = this.$config._geocoder.methods.search;
+        const searchConfig = this.$config.geocoder.methods.search;
         const url = searchConfig.url(input);
         const params = searchConfig.params;
 
