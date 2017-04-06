@@ -40,11 +40,12 @@
         <!-- CONTROLS: -->
         <!-- basemap control -->
         <basemap-control v-if="hasImageryBasemaps"
+                         v-once
                          :position="'topright'"
                          :imagery-years="imageryYears"
         />
         <!-- search control -->
-        <control position="topleft">
+        <control v-once position="topleft">
           <div class="mb-search-control-container">
             <form @submit.prevent="handleSearchFormSubmit">
                 <input class="mb-search-control-input"

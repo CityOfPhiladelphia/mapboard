@@ -45,7 +45,6 @@ isn't there?
         const leafletElement = this.createLeafletElement(L);
         this.$leafletElement = leafletElement;
         const map = parent.$leafletElement;
-        console.log('CONTROL parent mounted', map);
         leafletElement.addTo(map);
       }
     }

@@ -130,7 +130,7 @@ Mapboard.default({
           'imageryBasemapLabels'
         ],
         type: 'imagery',
-        year: '2004'
+        year: 2004
       },
       imagery1996: {
         url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_1996_6in/MapServer',
@@ -138,7 +138,7 @@ Mapboard.default({
           'imageryBasemapLabels'
         ],
         type: 'imagery',
-        year: '1996'
+        year: 1996
       }
     },
     tiledLayers: {
