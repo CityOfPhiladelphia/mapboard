@@ -66,9 +66,6 @@
   import Map_ from '../leaflet/Map';
   import Control from '../leaflet/Control';
   import SearchControl from './SearchControl';
-  import ControlCorner from './ControlCorner';
-  import BasemapToggleButton from './BasemapToggleButton';
-  import ImageryToggleBar from './ImageryToggleBar';
   import EsriTiledMapLayer from '../esri-leaflet/TiledMapLayer';
   import Geojson from '../leaflet/Geojson';
   import VectorMarker from './VectorMarker';
@@ -79,9 +76,6 @@
       Map_,
       Control,
       SearchControl,
-      ControlCorner,
-      BasemapToggleButton,
-      ImageryToggleBar,
       EsriTiledMapLayer,
       Geojson,
       VectorMarker,
