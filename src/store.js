@@ -18,6 +18,10 @@ function createStore(config) {
     topicData: {
     },
     basemap: defaultTopic.basemap,
+    cyclomediaActive: false,
+    cyclomediaViewer: null,
+    // we need this to know whether or not to force an update on the first show
+    pictometryActive: false
     // mapFeatures: {
     //   markers: [
     //     {
@@ -54,6 +58,15 @@ function createStore(config) {
       },
       setBasemap(state, payload) {
         state.basemap = payload;
+      },
+      setCyclomediaActive(state, payload) {
+        state.cyclomediaActive = payload;
+      },
+      setCyclomediaViewer(state, payload) {
+        state.cyclomediaViewer = payload;
+      },
+      setPictometryActive(state, payload) {
+        state.pictometryActive = payload;
       }
     }
   });

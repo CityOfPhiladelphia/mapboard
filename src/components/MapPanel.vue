@@ -1,9 +1,11 @@
 <template>
   <div class="large-12 columns mb-panel mb-panel-map">
-    <map_ @l-click="handleMapClick"
+    <map_ :class="{ 'mb-map-with-widget': this.$store.state.cyclomediaActive || this.$store.state.pictometryActive }"
+          @l-click="handleMapClick"
           zoom-control-position="bottomright"
           :min-zoom="this.$config.map.minZoom"
           :max-zoom="this.$config.map.maxZoom"
+
     >
       <!-- basemaps -->
       <esri-tiled-map-layer v-for="(basemap, key) in this.$config.map.basemaps"
@@ -44,6 +46,20 @@
                          :position="'topright'"
                          :imagery-years="imageryYears"
         />
+
+        <pictometry-button v-once
+                         :position="'topright'"
+                         :link="'pictometry'"
+                         :imgSrc="'../../src/assets/pictometry.png'"
+        />
+
+        <cyclomedia-button v-once
+                         :position="'topright'"
+                         :link="'cyclomedia'"
+                         :imgSrc="'../../src/assets/cyclomedia.png'"
+        />
+
+
         <!-- search control -->
         <control v-once position="topleft">
           <div class="mb-search-control-container">
@@ -58,6 +74,7 @@
           </div>
         </control>
     </map_>
+    <slot class='widget-slot' name="cycloWidget" /><slot class='widget-slot' name="pictWidget" />
   </div>
 </template>
 
@@ -70,6 +87,10 @@
   import Geojson from '../leaflet/Geojson';
   import VectorMarker from './VectorMarker';
   import BasemapControl from './BasemapControl';
+  import CyclomediaButton from '../cyclomedia/Button';
+  import PictometryButton from '../pictometry/Button';
+  //import CyclomediaRecordingsLayer from '../cyclomedia/RecordingsLayer'
+
 
   export default {
     components: {
@@ -79,7 +100,11 @@
       EsriTiledMapLayer,
       Geojson,
       VectorMarker,
-      BasemapControl
+      BasemapControl,
+      PictometryButton,
+      CyclomediaButton
+      //CyclomediaMarker,
+      //CyclomediaRecordingsLayer
     },
     computed: {
       activeBasemap() {
@@ -267,4 +292,14 @@
     font-size: 16px;
     width: 400px;
   }
+
+  .mb-map-with-widget {
+    height: 50%;
+  }
+
+  .widget-slot {
+    display: inline-block;
+    float: left;
+  }
+
 </style>

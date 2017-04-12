@@ -4,3 +4,5 @@ dist/
 npm-debug.log
 yarn-error.log
 src/config.js
+secret.js
+src/util/streetsmart.js

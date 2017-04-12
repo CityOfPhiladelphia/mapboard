@@ -1,0 +1,23 @@
+
+
+
+<script>
+  //import L from 'leaflet';
+  import VectorMarker from '../components/VectorMarker';
+
+  export default {
+    extends: VectorMarker,
+
+    props: [
+      'fov',
+      'yaw'
+    ],
+    methods: {
+      createLeafletElement() {
+        return L.marker(this.$props.latlng);
+      }
+    }
+
+
+  }
+</script>

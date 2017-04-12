@@ -1,6 +1,7 @@
 <template>
   <div class="large-12 columns mb-panel mb-panel-topics">
     <div class="row">
+    <!-- <div class="row" :class="{ 'row-with-widget': this.$store.state.pictometryActive }"> -->
       <!-- before search -->
       <div class="mb-panel-topics-greeting" v-show="!ais">
         <div class="columns medium-18 medium-centered">
@@ -20,6 +21,7 @@
       </div>
 
     </div>
+    <!-- <slot name="pictWidget" /> -->
   </div>
 </template>
 
@@ -51,4 +53,9 @@
   .mb-panel-topics-greeting {
     padding-top: 20px;
   }
+
+  .row-with-widget {
+    height: 50%;
+  }
+
 </style>
