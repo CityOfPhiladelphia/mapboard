@@ -56,11 +56,11 @@ module.exports = {
     hints: false
   },
   devtool: '#eval-source-map',
-  plugins: [
-    new webpack.DefinePlugin({
-      andytesting: require(path.resolve(__dirname, './secret'))
-    })
-  ]
+  // plugins: [
+  //   new webpack.DefinePlugin({
+  //     andytesting: require(path.resolve(__dirname, './secret'))
+  //   })
+  // ]
 }
 
 if (process.env.NODE_ENV === 'production') {
