@@ -1,18 +1,17 @@
 <template>
   <div>
     <a href="#" class="topic-header" @click="setTopic">
-      <i :class="['fa', icon, 'topic-header-icon']"
+      <i :class="['fa', 'fa-' + icon, 'topic-header-icon']"
          aria-hidden="true"
       />
       {{ topic.label }}
     </a>
     <div class="topic-body" v-show="this.$store.state.topic === topicKey">
-      Components go here.
-      <component v-for="(topicComp, index) in topic.components"
+      <component v-for="(topicComp, topicCompIndex) in topic.components"
                  :is="topicComp.type"
                  class="topic-comp"
                  :slots="topicComp.slots"
-                 :key="`topic-comp-${topic.key}-${index}`"
+                 :key="`topic-comp-${topic.key}-${topicCompIndex}`"
       />
     </div>
   </div>
@@ -23,12 +22,16 @@
 
   import Badge from './topic-components/Badge';
   import HorizontalTable from './topic-components/HorizontalTable';
+  import VerticalTable from './topic-components/VerticalTable';
+  import Callout from './topic-components/Callout';
 
   export default {
     props: ['topicKey'],
     components: {
       Badge,
       HorizontalTable,
+      VerticalTable,
+      Callout
     },
     computed: {
       // returns the full config object for the topic

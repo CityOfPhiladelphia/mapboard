@@ -20,22 +20,42 @@ Mapboard.default({
           type: 'callout',
           slots: {
             text: 'This information is provided by the Office of Property Assessments (OPA), the agency responsible for estimating property values in the City of Philadelphia. OPA was formerly a part of the Bureau of Revision of Taxes (BRT) and some City websites may still use that name.'
+            // text: state => `Here will be OPA info for ${state.ais.properties.street_address}`
           }
         },
         {
-          type: 'vertical-table',
-          dataSources: ['opa'],
+          type: 'callout',
           slots: {
-            fields: [
-              {
-                label: 'OPA Account #',
-                value() {
-                  console.log('called value', this);
-                }
-              },
-            ]
+            // text: 'This information is provided by the Office of Property Assessments (OPA), the agency responsible for estimating property values in the City of Philadelphia. OPA was formerly a part of the Bureau of Revision of Taxes (BRT) and some City websites may still use that name.'
+            text: state => `Here will be OPA info for ${state.ais.properties.street_address}`
           }
-        }
+        },
+        // {
+        //   type: 'vertical-table',
+        //   // dataSources: ['opa'],
+        //   slots: {
+        //     title: 'Account',
+        //     fields: [
+        //       {
+        //         label: 'OPA Account #',
+        //         value(state) {
+        //           // if (!state.ais) return;
+        //           console.log('value fn for opa acct', this);
+        //           return state.ais.properties.opa_account_num;
+        //         }
+        //       },
+        //       // {
+        //       //   label: 'Owners',
+        //       //   value(state) {
+        //       //     // if (!state.ais) return;
+        //       //     const owners = state.ais.properties.opa_owners;
+        //       //     const ownersJoined = owners.join(', ');
+        //       //     return ownersJoined;
+        //       //   }
+        //       // },
+        //     ]
+        //   }
+        // }
       ],
       basemap: 'pwd',
       identifyFeature: 'address-marker',
