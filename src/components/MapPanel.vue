@@ -255,10 +255,15 @@
             params[paramKey] = paramFn(feature);
           }
           const url = dataSource.url;
+          const success = dataSource.success;
 
           this.$http.get(url, { params }).then(response => {
-            const body = response.body;
-            // TODO put in state
+            const data = response.body;
+
+            this.$store.commit('setTopicData', {
+              key: dataSourceKey,
+              data: success(data),
+            });
           }, response => {
             console.log('get topic error', response);
           });

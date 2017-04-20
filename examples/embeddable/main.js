@@ -7,9 +7,12 @@ Mapboard.default({
   // baseConfig: '//path/to/config.js',
   dataSources: {
     opa: {
-      url: '//data.phila.gov/resource/w7rb-qrn8.json',
+      url: 'https://data.phila.gov/resource/w7rb-qrn8.json',
       params: {
         parcel_number: feature => feature.properties.opa_account_num
+      },
+      success(data) {
+        return data[0];
       }
     }
   },
@@ -18,6 +21,8 @@ Mapboard.default({
       key: 'opa',
       icon: 'map-marker',
       label: 'Property Assessments',
+      // REVIEW can these be calculated from vue deps?
+      dataSources: ['opa'],
       components: [
         {
           type: 'callout',
@@ -27,13 +32,45 @@ Mapboard.default({
         },
         {
           type: 'vertical-table',
-          dataSources: ['opa'],
           slots: {
+            title: 'Account',
             fields: [
               {
                 label: 'OPA Account #',
-                value() {
-                  console.log('called value', this);
+                value(state) {
+                  return state.ais.properties.opa_account_num;
+                }
+              },
+              {
+                label: 'OPA Address',
+                value(state) {
+                  return state.ais.properties.opa_address;
+                }
+              },
+              {
+                label: 'Owners',
+                value(state) {
+                  const owners = state.ais.properties.opa_owners;
+                  const ownersJoined = owners.join(', ');
+                  return ownersJoined;
+                }
+              },
+              {
+                label: `Assessed Value (${new Date().getFullYear()})`,
+                value(state) {
+                  return state.topicData.opa.market_value;
+                }
+              },
+              {
+                label: 'Sale Date',
+                value(state) {
+                  return state.topicData.opa.sale_date;
+                }
+              },
+              {
+                label: 'Sale Price',
+                value(state) {
+                  return state.topicData.opa.sale_price;
                 }
               },
             ]
