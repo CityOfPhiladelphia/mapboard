@@ -2,7 +2,7 @@
   <div class="large-12 columns mb-panel mb-panel-topics">
     <div class="row">
       <!-- before search -->
-      <div class="mb-panel-topics-greeting" v-show="!ais">
+      <div class="mb-panel-topics-greeting" v-if="!ais">
         <div class="columns medium-18 medium-centered">
           <div class="callout">
             <p>To start your search, type an address into the search box or click anywhere on the map.</p>
@@ -11,14 +11,14 @@
       </div>
 
       <!-- after search -->
-      <div v-show="ais">
+      <div v-if="ais">
         <h1 v-if="address">{{ address }}</h1>
-        <Topic v-for="topic in this.$config.topics"
+        <topic v-for="topic in this.$config.topics"
+               v-if="shouldShowTopic(topic)"
                :topicKey="topic.key"
                :key="topic.key"
         />
       </div>
-
     </div>
   </div>
 </template>
@@ -28,6 +28,19 @@
 
   export default {
     components: { Topic },
+    methods: {
+      shouldShowTopic(topic) {
+        const requiredTopicKeys = topic.dataSources || [];
+
+        // if there aren't any required topics, show it
+        if (requiredTopicKeys.length === 0) {
+          return true;
+        }
+
+        const topicData = this.$store.state.topicData;
+        return requiredTopicKeys.every(key => topicData[key])
+      }
+    },
     computed: {
       ais() {
         return this.$store.state.ais;

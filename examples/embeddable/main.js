@@ -18,47 +18,61 @@ Mapboard.default({
       key: 'opa',
       icon: 'map-marker',
       label: 'Property Assessments',
+      // REVIEW can these be calculated from vue deps?
+      dataSources: ['opa'],
       components: [
         {
           type: 'callout',
           slots: {
             text: 'This information is provided by the Office of Property Assessments (OPA), the agency responsible for estimating property values in the City of Philadelphia. OPA was formerly a part of the Bureau of Revision of Taxes (BRT) and some City websites may still use that name.'
-            // text: state => `Here will be OPA info for ${state.ais.properties.street_address}`
           }
         },
         {
-          type: 'callout',
+          type: 'vertical-table',
           slots: {
-            // text: 'This information is provided by the Office of Property Assessments (OPA), the agency responsible for estimating property values in the City of Philadelphia. OPA was formerly a part of the Bureau of Revision of Taxes (BRT) and some City websites may still use that name.'
-            text: state => `Here will be OPA info for ${state.ais.properties.street_address}`
+            title: 'Account',
+            fields: [
+              {
+                label: 'OPA Account #',
+                value(state) {
+                  return state.ais.properties.opa_account_num;
+                }
+              },
+              {
+                label: 'OPA Address',
+                value(state) {
+                  return state.ais.properties.opa_address;
+                }
+              },
+              {
+                label: 'Owners',
+                value(state) {
+                  const owners = state.ais.properties.opa_owners;
+                  const ownersJoined = owners.join(', ');
+                  return ownersJoined;
+                }
+              },
+              {
+                label: `Assessed Value (${new Date().getFullYear()})`,
+                value(state) {
+                  return state.topicData.opa.market_value;
+                }
+              },
+              {
+                label: 'Sale Date',
+                value(state) {
+                  return state.topicData.opa.sale_date;
+                }
+              },
+              {
+                label: 'Sale Price',
+                value(state) {
+                  return state.topicData.opa.sale_price;
+                }
+              },
+            ]
           }
-        },
-        // {
-        //   type: 'vertical-table',
-        //   // dataSources: ['opa'],
-        //   slots: {
-        //     title: 'Account',
-        //     fields: [
-        //       {
-        //         label: 'OPA Account #',
-        //         value(state) {
-        //           // if (!state.ais) return;
-        //           console.log('value fn for opa acct', this);
-        //           return state.ais.properties.opa_account_num;
-        //         }
-        //       },
-        //       // {
-        //       //   label: 'Owners',
-        //       //   value(state) {
-        //       //     // if (!state.ais) return;
-        //       //     const owners = state.ais.properties.opa_owners;
-        //       //     const ownersJoined = owners.join(', ');
-        //       //     return ownersJoined;
-        //       //   }
-        //       // },
-        //     ]
-        //   }
-        // }
+        }
       ],
       basemap: 'pwd',
       identifyFeature: 'address-marker',
