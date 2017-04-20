@@ -4,9 +4,12 @@ Mapboard.default({
   // baseConfig: '//path/to/config.js',
   dataSources: {
     opa: {
-      url: '//data.phila.gov/resource/w7rb-qrn8.json',
+      url: 'https://data.phila.gov/resource/w7rb-qrn8.json',
       params: {
         parcel_number: feature => feature.properties.opa_account_num
+      },
+      success(data) {
+        return data[0];
       }
     }
   },

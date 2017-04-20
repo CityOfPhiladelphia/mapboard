@@ -54,7 +54,12 @@ function createStore(config) {
       },
       setBasemap(state, payload) {
         state.basemap = payload;
-      }
+      },
+      setTopicData(state, payload) {
+        const key = payload.key;
+        const data = payload.data;
+        state.topicData[key] = data;
+      },
     }
   });
 }
