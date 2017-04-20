@@ -209,9 +209,13 @@
             console.log('ais got no features', data);
             return;
           }
+
           // TODO do some checking here
           const feature = data.features[0];
           self.$store.commit('setAis', feature);
+
+          // send geocode result event to host
+          self.$eventBus.$emit('geocodeResult', feature);
 
           // get topics
           this.fetchTopics(feature);

@@ -1,6 +1,6 @@
 const GATEKEEPER_KEY = '35ae5b7bf8f0ff2613134935ce6b4c1e';
 
-Mapboard.default({
+const mapboard = Mapboard.default({
   // baseConfig: '//path/to/config.js',
   dataSources: {
     opa: {
@@ -222,3 +222,17 @@ Mapboard.default({
     }
   },
 });
+
+function handleGeocodeResult(res) {
+  console.log('**HOST** geocode result:', res.properties.street_address);
+  // do something here...
+}
+
+// you can listen for mapboard events
+// mapboard.on('geocodeResult', handleGeocodeResult);
+
+// or remove a specific listener
+// mapboard.off('geocodeResult', handleGeocodeResult);
+
+// or remove *all* listeners for an event
+// mapboard.off('geocodeResult');
