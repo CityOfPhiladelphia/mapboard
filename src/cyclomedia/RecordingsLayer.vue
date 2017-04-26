@@ -1,6 +1,7 @@
 
 
 <script>
+  console.log('hello from RecordingsLayer');
   var wfsClient;
 
   function WFSClient(baseURL_, typename_, srs_, proxy_)
@@ -196,4 +197,95 @@
   	}
 
   };
+
+  wfsClient = new WFSClient(
+  	"https://atlas.cyclomedia.com/Recordings/wfs",
+  	"atlas:Recording",
+  	"EPSG:3857",
+  	""
+  );
+
+  import Circle_ from '../leaflet/Circle';
+  import secret from './secret'
+
+  const {props, methods} = Circle_;
+
+  export default {
+    props: [
+      'latlng',
+      'size',
+      'color',
+      'weight'
+    ],
+    mounted() {
+      //this.$store.commit('setCycloFeatureGroup', { this });
+      //createLeafletElement(this.latlng, this.size, this.color, this.weight)
+      // console.log('recordingLayer.vue is calling Circle parentMounted');
+      // this.parentMounted();
+      const map = this.$store.state.map;
+      this.prepareCycloBbox(map);
+    },
+    render(h) {
+      return;
+    },
+    computed: {
+      // map_() {
+      //   return this.$store.state.map
+      // }
+      // latlng() {
+      //   return this.$config.map.center;
+      // }
+    },
+    methods: Object.assign(methods, {
+      prepareCycloBbox(map) {
+
+        console.log('$$$$$$$$$$$$ this is map', map);
+        const view = map.getBounds();
+        const zoomLevel = map.getZoom();
+        // if (zoomLevel < 19) {
+        //   _cycloFeatureGroup.clearLayers();
+        // };
+        //if (zoomLevel > 18) {
+          var newSWCoord = proj4('EPSG:3857', [view._southWest.lng, view._southWest.lat]);
+          var newNECoord = proj4('EPSG:3857', [view._northEast.lng, view._northEast.lat]);
+          wfsClient.loadBbox(newSWCoord[0], newSWCoord[1], newNECoord[0], newNECoord[1], this.addCycloCircles, secret.username, secret.password);
+        //}
+      },
+      addCycloCircles() {
+        console.log('addCycloCircles is running');
+        // _cycloFeatureGroup.clearLayers();
+        // app.cyclo.recordings = app.cyclo.wfsClient.recordingList;
+        // if (app.cyclo.recordings.length > 0) {
+        //   var b = [];
+        //   for (i=0; i < app.cyclo.recordings.length; i++) {
+        //     var rec = app.cyclo.recordings[i];
+        //     var coordRaw = [rec.lon, rec.lat];
+        //     var coordNotFlipped = proj4('EPSG:3857', 'EPSG:4326', coordRaw);
+        //     var coord = [coordNotFlipped[1], coordNotFlipped[0]];
+        //     var blueCircle = new L.circle(coord, 1.2, {
+        //       color: '#3388ff',
+        //       weight: 1,
+        //     }).on('click', function(coord){
+        //       app.state.map.clickedCircle = 'true';
+        //
+        //       // SET LOCAL STORAGE
+        //       app.map.LSclickedCircle(coord.latlng.lat, coord.latlng.lng);
+        //
+        //       // DIRECTLY CHANGE CYCLO-WINDOW
+        //       app.cyclo.setNewLocation();
+        //
+        //     });
+        //     //blueCircle.on({click: // console.log('clicked a circle')});
+        //     blueCircle.addTo(_cycloFeatureGroup);
+        //   }
+        //   _cycloFeatureGroup.bringToFront();
+        // }
+        // set "circles on" in localStorage
+        //localStorage.setItem('circlesOn', 'true');
+      }
+    })
+  };
+
+
+
 </script>

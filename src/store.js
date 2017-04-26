@@ -20,6 +20,7 @@ function createStore(config) {
     basemap: defaultTopic.basemap,
     cyclomediaActive: false,
     cyclomediaViewer: null,
+    cycloFeatureGroup: null,
     // we need this to know whether or not to force an update on the first show
     pictometryActive: false
     // mapFeatures: {
@@ -73,6 +74,9 @@ function createStore(config) {
         const data = payload.data;
         state.topicData[key] = data;
       },
+      setCycloFeatureGroup(state, payload) {
+        state.cycloFeatureGroup = payload;
+      }
     }
   });
 }

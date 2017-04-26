@@ -9,7 +9,7 @@
                          v-show="cyclomediaActive"
       />
       <pictometry-widget slot="pictWidget"
-      v-show="pictometryActive"
+                         v-show="pictometryActive"
       />
     </map-panel>
   </div>

@@ -42,9 +42,9 @@
         <!-- CONTROLS: -->
         <!-- basemap control -->
         <basemap-control v-if="hasImageryBasemaps"
-                         v-once
-                         :position="'topright'"
-                         :imagery-years="imageryYears"
+        v-once
+        :position="'topright'"
+        :imagery-years="imageryYears"
         />
 
         <pictometry-button v-once
@@ -59,7 +59,6 @@
                          :imgSrc="'../../src/assets/cyclomedia.png'"
         />
 
-
         <!-- search control -->
         <control v-once position="topleft">
           <div class="mb-search-control-container">
@@ -73,6 +72,10 @@
             </form>
           </div>
         </control>
+
+        <cycloFeatureGroup />
+        <cyclomediaRecordingsLayer />
+
     </map_>
     <slot class='widget-slot' name="cycloWidget" /><slot class='widget-slot' name="pictWidget" />
   </div>
@@ -89,7 +92,10 @@
   import BasemapControl from './BasemapControl';
   import CyclomediaButton from '../cyclomedia/Button';
   import PictometryButton from '../pictometry/Button';
-  //import CyclomediaRecordingsLayer from '../cyclomedia/RecordingsLayer'
+  import CyclomediaRecordingsLayer from '../cyclomedia/RecordingsLayer';
+  import FeatureGroup from '../leaflet/FeatureGroup';
+  import Circle_ from '../leaflet/Circle';
+  import CycloFeatureGroup from '../cyclomedia/CycloFeatureGroup';
 
 
   export default {
@@ -102,9 +108,12 @@
       VectorMarker,
       BasemapControl,
       PictometryButton,
-      CyclomediaButton
+      CyclomediaButton,
       //CyclomediaMarker,
-      //CyclomediaRecordingsLayer
+      CyclomediaRecordingsLayer,
+      CycloFeatureGroup,
+      FeatureGroup,
+      Circle_
     },
     computed: {
       activeBasemap() {
