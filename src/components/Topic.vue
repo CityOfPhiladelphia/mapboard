@@ -1,6 +1,10 @@
 <template>
   <div>
-    <a href="#" class="topic-header" @click="setTopic">
+    <a href="#"
+       class="topic-header"
+       @click="setTopic"
+       v-if="shouldShowHeader"
+    >
       <i :class="['fa', 'fa-' + icon, 'topic-header-icon']"
          aria-hidden="true"
       />
@@ -50,6 +54,9 @@
       },
       icon() {
         return this.topic.icon;
+      },
+      shouldShowHeader() {
+        return this.$config.topics.length > 1;
       }
     },
     methods: {
