@@ -1,6 +1,15 @@
 Mapboard.default({
-  dataSources: {
+  rootStyle: {
+    height: '600px'
   },
+  cyclomedia: {
+    enabled: false
+  },
+  pictometry: {
+    enabled: false
+  },
+  baseConfig: '//gist.githubusercontent.com/rbrtmrtn/09b4f35396f97499c3097e2fecaed8e7/raw/b0c28174d21700b2594223dfa9fa2c504c47c78d/config.js',
+  // dataSources: {},
   topics: [
     {
       key: 'litter',
@@ -49,13 +58,8 @@ Mapboard.default({
       ],
       basemap: 'pwd',
       dynamicMapLayers: [
-        // 'stormwater'
       ],
       parcels: 'pwd'
     }
-  ],
-  map: {
-    center: [39.951618, -75.1650911],
-    zoom: 13
-  }
+  ]
 });

@@ -1,7 +1,5 @@
-
 var path = require('path')
 var webpack = require('webpack')
-var secret = require(path.resolve(__dirname, './secret'))
 
 module.exports = {
   entry: './src/main.js',
@@ -49,18 +47,22 @@ module.exports = {
   devServer: {
     historyApiFallback: true,
     noInfo: true,
-    host: secret.HOST,
-    port: 8080
+    host: process.env.WEBPACK_DEV_HOST,
+    port: process.env.WEBPACK_DEV_PORT
   },
   performance: {
     hints: false
   },
   devtool: '#eval-source-map',
-  // plugins: [
-  //   new webpack.DefinePlugin({
-  //     andytesting: require(path.resolve(__dirname, './secret'))
-  //   })
-  // ]
+  plugins: [
+    new webpack.DefinePlugin({
+      // this allows webpack to interpolate the value of the WEBPACK_DEV_HOST
+      // env var during build.
+      'process.env.WEBPACK_DEV_HOST': JSON.stringify(
+                                        process.env.WEBPACK_DEV_HOST
+                                      )
+    })
+  ]
 }
 
 if (process.env.NODE_ENV === 'production') {

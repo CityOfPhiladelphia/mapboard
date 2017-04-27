@@ -9,13 +9,12 @@
 </template>
 
 <script>
-  import secret from './secret'
   export default {
     mounted() {
       StreetSmartApi.init({
-        username: secret.username,
-        password: secret.password,
-        apiKey: secret.apiKey,
+        username: this.$config.cyclomedia.username,
+        password: this.$config.cyclomedia.password,
+        apiKey: this.$config.cyclomedia.apiKey,
         srs: "EPSG:4326",
         locale: 'en-us',
         addressSettings: {
