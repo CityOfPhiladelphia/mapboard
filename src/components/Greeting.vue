@@ -4,7 +4,7 @@
       <!-- <div class="callout">
         <p>To start your search, type an address into the search box or click anywhere on the map.</p>
       </div> -->
-      <component v-for="(topicComp, topicCompIndex) in this.components"
+      <component v-for="(topicComp, topicCompIndex) in components"
                  :is="topicComp.type"
                  class="topic-comp"
                  :slots="topicComp.slots"
