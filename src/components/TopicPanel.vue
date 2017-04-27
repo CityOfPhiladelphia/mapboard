@@ -5,14 +5,14 @@
       <greeting v-show="!ais" />
 
       <!-- after search -->
-      <div v-show="ais">
+      <div v-if="ais">
         <h1 v-if="address">{{ address }}</h1>
-        <Topic v-for="topic in this.$config.topics"
+        <topic v-for="topic in this.$config.topics"
+               v-if="shouldShowTopic(topic)"
                :topicKey="topic.key"
                :key="topic.key"
         />
       </div>
-
     </div>
   </div>
 </template>
@@ -22,9 +22,25 @@
   import Topic from './Topic';
 
   export default {
+<<<<<<< HEAD
     components: {
       Greeting,
       Topic
+=======
+    components: { Topic },
+    methods: {
+      shouldShowTopic(topic) {
+        const requiredTopicKeys = topic.dataSources || [];
+
+        // if there aren't any required topics, show it
+        if (requiredTopicKeys.length === 0) {
+          return true;
+        }
+
+        const topicData = this.$store.state.topicData;
+        return requiredTopicKeys.every(key => topicData[key])
+      }
+>>>>>>> 0b77a2aabdefaed3c16dc045ff5767fd696ba914
     },
     computed: {
       ais() {
