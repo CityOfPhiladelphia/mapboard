@@ -5,11 +5,13 @@
     <topic-panel>
     </topic-panel>
     <map-panel>
-      <cyclomedia-widget slot="cycloWidget"
+      <cyclomedia-widget v-if="this.$config.cyclomedia.enabled"
+                         slot="cycloWidget"
                          v-show="cyclomediaActive"
       />
-      <pictometry-widget slot="pictWidget"
-      v-show="pictometryActive"
+      <pictometry-widget v-if="this.$config.pictometry.enabled"
+                         slot="pictWidget"
+                         v-show="pictometryActive"
       />
     </map-panel>
   </div>
