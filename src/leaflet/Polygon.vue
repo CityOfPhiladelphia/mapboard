@@ -1,13 +1,11 @@
 <script>
-  import L from 'leaflet';
-  // TODO look into a cleaner way of importing from esri-leaflet
-  const EsriTiledMapLayer = L.esri.tiledMapLayer;
+  import { Polygon } from 'leaflet';
 
   export default {
     props: [
-      'url',
-      'minZoom',
-      'maxZoom'
+      'latlngs',
+      'color',
+      'weight'
     ],
     mounted() {
       const leafletElement = this.$leafletElement = this.createLeafletElement();
@@ -27,8 +25,10 @@
     },
     methods: {
       createLeafletElement() {
-        const props = Object.assign({}, this.$props);
-        return new EsriTiledMapLayer(props);
+        return new Polygon(this.$props.latlngs, {
+          color: this.$props.color,
+          weight: this.$props.weight
+        });
       },
       parentMounted(parent) {
         const map = parent.$leafletElement;
@@ -36,4 +36,5 @@
       }
     }
   };
+
 </script>

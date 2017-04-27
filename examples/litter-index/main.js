@@ -4,106 +4,74 @@ Mapboard.default({
   rootStyle: {
     height: '600px'
   },
-  baseConfig: 'https://gist.githubusercontent.com/rbrtmrtn/09b4f35396f97499c3097e2fecaed8e7/raw/ef0ee0b5c5c96350a6cbd50f5e4dd2519e62e177/config.js',
-  dataSources: {
-    opa: {
-      url: 'https://data.phila.gov/resource/w7rb-qrn8.json',
-      params: {
-        parcel_number: feature => feature.properties.opa_account_num
-      },
-      success(data) {
-        return data[0];
+  cyclomedia: {
+    enabled: false
+  },
+  pictometry: {
+    enabled: false
+  },
+  baseConfig: '//gist.githubusercontent.com/rbrtmrtn/09b4f35396f97499c3097e2fecaed8e7/raw/ef0ee0b5c5c96350a6cbd50f5e4dd2519e62e177/config.js',
+  // dataSources: {},
+  greeting: {
+    components: [
+      {
+        type: 'image_',
+        slots: {
+          source: 'front.png'
+        }
       }
-    }
+    ]
   },
   topics: [
     {
-      key: 'opa',
-      icon: 'map-marker',
-      label: 'Property Assessments',
-      // REVIEW can these be calculated from vue deps?
-      dataSources: ['opa'],
+      key: 'litter',
+      label: 'Litter',
+      icon: 'fa-trash-o',
       components: [
         {
-          type: 'callout',
+          type: 'badge',
           slots: {
-            text: 'This information is provided by the Office of Property Assessments (OPA), the agency responsible for estimating property values in the City of Philadelphia. OPA was formerly a part of the Bureau of Revision of Taxes (BRT) and some City websites may still use that name.'
+            title: 'Litter Index',
+            value: 4.3,
+            description: 'out of 10',
           }
         },
         {
-          type: 'vertical-table',
+          type: 'horizontal-table',
           slots: {
-            title: 'Account',
             fields: [
               {
-                label: 'OPA Account #',
-                value(state) {
-                  return state.ais.properties.opa_account_num;
-                }
+                label: 'Trash & Recycling Day',
+                value: 'Wednesday'
               },
               {
-                label: 'OPA Address',
-                value(state) {
-                  return state.ais.properties.opa_address;
-                }
+                label: 'Recycling Diversion Rate',
+                value: '10%'
               },
               {
-                label: 'Owners',
-                value(state) {
-                  const owners = state.ais.properties.opa_owners;
-                  const ownersJoined = owners.join(', ');
-                  return ownersJoined;
-                }
+                label: 'Sanitation District',
+                value: '1A'
               },
               {
-                label: `Assessed Value (${new Date().getFullYear()})`,
-                value(state) {
-                  return state.topicData.opa.market_value;
-                }
+                label: 'Sanitation Convenience Center',
+                value: '1615 S 51st St, Philadelphia, PA 19143'
               },
               {
-                label: 'Sale Date',
-                value(state) {
-                  return state.topicData.opa.sale_date;
-                }
+                label: 'Block Captain',
+                value: 'Jane Doe, 1345 S 52nd St'
               },
               {
-                label: 'Sale Price',
-                value(state) {
-                  return state.topicData.opa.sale_price;
-                }
+                label: 'PMBC Representative',
+                value: 'John Smith, 2145 S 53rd St'
               },
-            ]
+            ],
           }
-        }
+        },
       ],
       basemap: 'pwd',
-      identifyFeature: 'address-marker',
-      // we might not need this anymore, now that we have identifyFeature
-      parcels: 'pwd'
-    },
-    {
-      key: 'pwd',
-      icon: 'tint',
-      label: 'PWD',
-      components: [
+      dynamicMapLayers: [
       ],
-      basemap: 'pwd',
-      // dynamicMapLayers: [
-      //   'stormwater'
-      // ],
-      identifyFeature: 'pwd-parcel',
       parcels: 'pwd'
-    },
-    {
-      key: 'dor',
-      icon: 'book',
-      label: 'DOR',
-      components: [
-      ],
-      basemap: 'dor',
-      identifyFeature: 'dor-parcel',
-      parcels: 'dor'
     }
   ],
   map: {

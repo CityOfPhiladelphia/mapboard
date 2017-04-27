@@ -1,13 +1,13 @@
 <script>
-  import L from 'leaflet';
-  // TODO look into a cleaner way of importing from esri-leaflet
-  const EsriTiledMapLayer = L.esri.tiledMapLayer;
+  import { geoJSON } from 'leaflet';
+  // pascal case
+  const GeoJson = geoJSON;
 
   export default {
     props: [
-      'url',
-      'minZoom',
-      'maxZoom'
+      'geojson',
+      'color',
+      'weight'
     ],
     mounted() {
       const leafletElement = this.$leafletElement = this.createLeafletElement();
@@ -27,8 +27,10 @@
     },
     methods: {
       createLeafletElement() {
-        const props = Object.assign({}, this.$props);
-        return new EsriTiledMapLayer(props);
+        return new GeoJson(this.$props.geojson, {
+          color: this.$props.color,
+          weight: this.$props.weight
+        });
       },
       parentMounted(parent) {
         const map = parent.$leafletElement;
@@ -36,4 +38,6 @@
       }
     }
   };
+
+
 </script>
