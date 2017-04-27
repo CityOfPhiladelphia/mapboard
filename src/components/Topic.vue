@@ -24,6 +24,7 @@
   import HorizontalTable from './topic-components/HorizontalTable';
   import VerticalTable from './topic-components/VerticalTable';
   import Callout from './topic-components/Callout';
+  import Image_ from './topic-components/Image';
 
   export default {
     props: ['topicKey'],
@@ -31,7 +32,8 @@
       Badge,
       HorizontalTable,
       VerticalTable,
-      Callout
+      Callout,
+      Image_
     },
     computed: {
       // returns the full config object for the topic
