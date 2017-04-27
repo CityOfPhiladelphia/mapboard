@@ -67,7 +67,7 @@ function createStore(config) {
       },
       setPictometryActive(state, payload) {
         state.pictometryActive = payload;
-      }
+      },
       setTopicData(state, payload) {
         const key = payload.key;
         const data = payload.data;
