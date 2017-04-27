@@ -2,13 +2,7 @@
   <div class="large-12 columns mb-panel mb-panel-topics">
     <div class="row">
       <!-- before search -->
-      <div class="mb-panel-topics-greeting" v-show="!ais">
-        <div class="columns medium-18 medium-centered">
-          <div class="callout">
-            <p>To start your search, type an address into the search box or click anywhere on the map.</p>
-          </div>
-        </div>
-      </div>
+      <greeting v-show="!ais" />
 
       <!-- after search -->
       <div v-show="ais">
@@ -24,10 +18,14 @@
 </template>
 
 <script>
+  import Greeting from './Greeting';
   import Topic from './Topic';
 
   export default {
-    components: { Topic },
+    components: {
+      Greeting,
+      Topic
+    },
     computed: {
       ais() {
         return this.$store.state.ais;
@@ -47,8 +45,5 @@
     padding-left: 20px !important;
     padding-right: 20px !important;
     overflow-y: auto;
-  }
-  .mb-panel-topics-greeting {
-    padding-top: 20px;
   }
 </style>
