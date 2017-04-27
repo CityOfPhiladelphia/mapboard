@@ -8,7 +8,7 @@ Mapboard.default({
   pictometry: {
     enabled: false
   },
-  baseConfig: '//gist.githubusercontent.com/rbrtmrtn/09b4f35396f97499c3097e2fecaed8e7/raw/b0c28174d21700b2594223dfa9fa2c504c47c78d/config.js',
+  baseConfig: '//gist.githubusercontent.com/rbrtmrtn/09b4f35396f97499c3097e2fecaed8e7/raw/ef0ee0b5c5c96350a6cbd50f5e4dd2519e62e177/config.js',
   // dataSources: {},
   topics: [
     {
