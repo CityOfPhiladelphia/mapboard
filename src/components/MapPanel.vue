@@ -5,6 +5,7 @@
           zoom-control-position="bottomright"
           :min-zoom="this.$config.map.minZoom"
           :max-zoom="this.$config.map.maxZoom"
+          v-once
     >
       <!-- basemaps -->
       <esri-tiled-map-layer v-for="(basemap, key) in this.$config.map.basemaps"
@@ -77,7 +78,7 @@
         <cycloFeatureGroup v-if="this.$config.cyclomedia.enabled" />
         <cyclomediaRecordingsLayer v-if="this.$config.cyclomedia.enabled" />
     </map_>
-    
+
     <slot class='widget-slot' name="cycloWidget" />
     <slot class='widget-slot' name="pictWidget" />
   </div>
@@ -87,7 +88,6 @@
   // vue doesn't like it when you import this as Map (reserved-ish word)
   import Map_ from '../leaflet/Map';
   import Control from '../leaflet/Control';
-  import SearchControl from './SearchControl';
   import EsriTiledMapLayer from '../esri-leaflet/TiledMapLayer';
   import Geojson from '../leaflet/Geojson';
   import VectorMarker from './VectorMarker';
@@ -99,12 +99,10 @@
   import Circle_ from '../leaflet/Circle';
   import CycloFeatureGroup from '../cyclomedia/CycloFeatureGroup';
 
-
   export default {
     components: {
       Map_,
       Control,
-      SearchControl,
       EsriTiledMapLayer,
       Geojson,
       VectorMarker,
