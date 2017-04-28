@@ -5,7 +5,6 @@
           zoom-control-position="bottomright"
           :min-zoom="this.$config.map.minZoom"
           :max-zoom="this.$config.map.maxZoom"
-
     >
       <!-- basemaps -->
       <esri-tiled-map-layer v-for="(basemap, key) in this.$config.map.basemaps"
@@ -42,9 +41,9 @@
         <!-- CONTROLS: -->
         <!-- basemap control -->
         <basemap-control v-if="hasImageryBasemaps"
-        v-once
-        :position="'topright'"
-        :imagery-years="imageryYears"
+                         v-once
+                         :position="'topright'"
+                         :imagery-years="imageryYears"
         />
 
         <pictometry-button v-if="this.$config.pictometry.enabled"
@@ -75,11 +74,12 @@
           </div>
         </control>
 
-        <cycloFeatureGroup />
-        <cyclomediaRecordingsLayer />
-
+        <cycloFeatureGroup v-if="this.$config.cyclomedia.enabled" />
+        <cyclomediaRecordingsLayer v-if="this.$config.cyclomedia.enabled" />
     </map_>
-    <slot class='widget-slot' name="cycloWidget" /><slot class='widget-slot' name="pictWidget" />
+    
+    <slot class='widget-slot' name="cycloWidget" />
+    <slot class='widget-slot' name="pictWidget" />
   </div>
 </template>
 
@@ -259,7 +259,7 @@
       fetchTopics(feature) {
         // get topics
         const dataSources = this.$config.dataSources || {};
-        
+
         for (let [dataSourceKey, dataSource] of Object.entries(dataSources)) {
           // evaluate params
           const params = {};

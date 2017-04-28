@@ -1,10 +1,11 @@
 <template>
   <div class="mb-panel-topics-greeting">
     <div class="columns medium-18 medium-centered">
-      <!-- <div class="callout">
+      <div v-if="!components" class="callout">
         <p>To start your search, type an address into the search box or click anywhere on the map.</p>
-      </div> -->
-      <component v-for="(topicComp, topicCompIndex) in components"
+      </div>
+      <component v-if="components"
+                 v-for="(topicComp, topicCompIndex) in components"
                  :is="topicComp.type"
                  class="topic-comp"
                  :slots="topicComp.slots"
@@ -28,7 +29,8 @@
     },
     computed: {
       components() {
-        return this.$config.greeting.components;
+        const greetingConfig = this.$config.greeting || {};
+        return greetingConfig.components;
       }
     }
   };
