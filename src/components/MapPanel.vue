@@ -5,7 +5,6 @@
           zoom-control-position="bottomright"
           :min-zoom="this.$config.map.minZoom"
           :max-zoom="this.$config.map.maxZoom"
-          v-once
     >
       <!-- basemaps -->
       <esri-tiled-map-layer v-for="(basemap, key) in this.$config.map.basemaps"
@@ -41,11 +40,13 @@
 
         <!-- CONTROLS: -->
         <!-- basemap control -->
-        <basemap-control v-if="hasImageryBasemaps"
-                         v-once
-                         :position="'topright'"
-                         :imagery-years="imageryYears"
-        />
+        <div v-once>
+          <basemap-control v-if="hasImageryBasemaps"
+                           v-once
+                           :position="'topright'"
+                           :imagery-years="imageryYears"
+          />
+        </div>
 
         <pictometry-button v-if="this.$config.pictometry.enabled"
                            v-once
@@ -62,18 +63,23 @@
         />
 
         <!-- search control -->
-        <control v-once position="topleft">
-          <div class="mb-search-control-container">
-            <form @submit.prevent="handleSearchFormSubmit">
-                <input class="mb-search-control-input"
-                       placeholder="Search the map"
-                />
-                <button class="mb-search-control-button">
-                  <i class="fa fa-search fa-lg"></i>
-                </button>
-            </form>
-          </div>
-        </control>
+        <!-- custom components seem to have to be wrapped like this to work
+             with v-once
+        -->
+        <div v-once>
+          <control position="topleft">
+            <div class="mb-search-control-container">
+              <form @submit.prevent="handleSearchFormSubmit">
+                  <input class="mb-search-control-input"
+                         placeholder="Search the map"
+                  />
+                  <button class="mb-search-control-button">
+                    <i class="fa fa-search fa-lg"></i>
+                  </button>
+              </form>
+            </div>
+          </control>
+        </div>
 
         <cycloFeatureGroup v-if="this.$config.cyclomedia.enabled" />
         <cyclomediaRecordingsLayer v-if="this.$config.cyclomedia.enabled" />
