@@ -5,8 +5,8 @@
        @click="setActiveTopic"
        v-if="shouldShowHeader"
     >
-      <span v-show="status === 'waiting'" class="loading-badge">
-        Loading...
+      <span v-show="status === 'waiting'" class="loading">
+        <i class="fa fa-spinner fa-lg spin"></i>
       </span>
       <i :class="['fa', 'fa-' + icon, 'topic-header-icon']"
          aria-hidden="true"
@@ -77,7 +77,6 @@
       shouldShowBody() {
         const hasData = this.status === 'success';
         const should = hasData && this.isActive;
-        console.log('should show body?', should, hasData, this.isActive);
         return should;
       },
       shouldShowError() {
@@ -168,8 +167,7 @@
     margin-bottom: 10px;
   }
 
-  .loading-badge {
-    font-style: italic;
+  .loading {
     float: right;
   }
 </style>

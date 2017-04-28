@@ -10,7 +10,12 @@ function createStore(config) {
   // create initial state for sources. data key => {}
   const sourceKeys = Object.keys(config.dataSources || {});
   const sources = sourceKeys.reduce((o, key) => {
-    o[key] = {};
+    o[key] = {
+      // we have to define these here, because vue can't observe properties that
+      // are added later. 
+      status: null,
+      data: null
+    };
     return o;
   }, {});
 
