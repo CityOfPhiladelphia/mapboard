@@ -26,7 +26,7 @@
 
     <!-- error -->
     <div class="topic-body" v-show="shouldShowError">
-      Could not locate records for this address.
+      Could not locate records for that address.
     </div>
   </div>
 </template>
@@ -135,7 +135,13 @@
       // TODO use mapMuptations for less boilerplate
       setActiveTopic() {
         const topic = this.$props.topicKey;
-        this.$store.commit('setActiveTopic', { topic });
+        let nextTopic;
+        if (topic === this.$store.state.activeTopic) {
+          nextTopic = null;
+        } else {
+          nextTopic = topic;
+        }
+        this.$store.commit('setActiveTopic', { topic: nextTopic });
       }
     }
   };
