@@ -16,6 +16,12 @@ Mapboard.default({
       }
     }
   },
+  cyclomedia: {
+    enabled: true
+  },
+  pictometry: {
+    enabled: true
+  },
   topics: [
     {
       key: 'opa',
