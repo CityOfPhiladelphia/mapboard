@@ -206,7 +206,7 @@
   );
 
   import Circle_ from '../leaflet/Circle';
-  import secret from './secret'
+  //import secret from './secret'
 
   const {props, methods} = Circle_;
 
@@ -248,7 +248,7 @@
         //if (zoomLevel > 18) {
           var newSWCoord = proj4('EPSG:3857', [view._southWest.lng, view._southWest.lat]);
           var newNECoord = proj4('EPSG:3857', [view._northEast.lng, view._northEast.lat]);
-          wfsClient.loadBbox(newSWCoord[0], newSWCoord[1], newNECoord[0], newNECoord[1], this.addCycloCircles, secret.username, secret.password);
+          wfsClient.loadBbox(newSWCoord[0], newSWCoord[1], newNECoord[0], newNECoord[1], this.addCycloCircles, this.$config.cyclomedia.username, this.$config.cyclomedia.password);
         //}
       },
       addCycloCircles() {
