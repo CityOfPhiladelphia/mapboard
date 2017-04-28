@@ -47,16 +47,18 @@
         :imagery-years="imageryYears"
         />
 
-        <pictometry-button v-once
-                         :position="'topright'"
-                         :link="'pictometry'"
-                         :imgSrc="'../../src/assets/pictometry.png'"
+        <pictometry-button v-if="this.$config.pictometry.enabled"
+                           v-once
+                           :position="'topright'"
+                           :link="'pictometry'"
+                           :imgSrc="'../../src/assets/pictometry.png'"
         />
 
-        <cyclomedia-button v-once
-                         :position="'topright'"
-                         :link="'cyclomedia'"
-                         :imgSrc="'../../src/assets/cyclomedia.png'"
+        <cyclomedia-button v-if="this.$config.cyclomedia.enabled"
+                           v-once
+                           :position="'topright'"
+                           :link="'cyclomedia'"
+                           :imgSrc="'../../src/assets/cyclomedia.png'"
         />
 
         <!-- search control -->
@@ -256,7 +258,8 @@
       },
       fetchTopics(feature) {
         // get topics
-        const dataSources = this.$config.dataSources;
+        const dataSources = this.$config.dataSources || {};
+        
         for (let [dataSourceKey, dataSource] of Object.entries(dataSources)) {
           // evaluate params
           const params = {};

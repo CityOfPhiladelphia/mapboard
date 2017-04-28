@@ -3,13 +3,7 @@
     <div class="row">
     <!-- <div class="row" :class="{ 'row-with-widget': this.$store.state.pictometryActive }"> -->
       <!-- before search -->
-      <div class="mb-panel-topics-greeting" v-if="!ais">
-        <div class="columns medium-18 medium-centered">
-          <div class="callout">
-            <p>To start your search, type an address into the search box or click anywhere on the map.</p>
-          </div>
-        </div>
-      </div>
+      <greeting v-show="!ais" />
 
       <!-- after search -->
       <div v-if="ais">
@@ -26,10 +20,14 @@
 </template>
 
 <script>
+  import Greeting from './Greeting';
   import Topic from './Topic';
 
   export default {
-    components: { Topic },
+    components: {
+      Greeting,
+      Topic
+    },
     methods: {
       shouldShowTopic(topic) {
         const requiredTopicKeys = topic.dataSources || [];
@@ -63,12 +61,4 @@
     padding-right: 20px !important;
     overflow-y: auto;
   }
-  .mb-panel-topics-greeting {
-    padding-top: 20px;
-  }
-
-  .row-with-widget {
-    height: 50%;
-  }
-
 </style>

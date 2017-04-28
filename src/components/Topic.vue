@@ -1,6 +1,10 @@
 <template>
   <div>
-    <a href="#" class="topic-header" @click="setTopic">
+    <a href="#"
+       class="topic-header"
+       @click="setTopic"
+       v-if="shouldShowHeader"
+    >
       <i :class="['fa', 'fa-' + icon, 'topic-header-icon']"
          aria-hidden="true"
       />
@@ -24,6 +28,7 @@
   import HorizontalTable from './topic-components/HorizontalTable';
   import VerticalTable from './topic-components/VerticalTable';
   import Callout from './topic-components/Callout';
+  import Image_ from './topic-components/Image';
 
   export default {
     props: ['topicKey'],
@@ -31,7 +36,8 @@
       Badge,
       HorizontalTable,
       VerticalTable,
-      Callout
+      Callout,
+      Image_
     },
     computed: {
       // returns the full config object for the topic
@@ -48,6 +54,9 @@
       },
       icon() {
         return this.topic.icon;
+      },
+      shouldShowHeader() {
+        return this.$config.topics.length > 1;
       }
     },
     methods: {
