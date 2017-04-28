@@ -1,7 +1,4 @@
-
-
 <script>
-  console.log('hello from RecordingsLayer');
   var wfsClient;
 
   function WFSClient(baseURL_, typename_, srs_, proxy_)

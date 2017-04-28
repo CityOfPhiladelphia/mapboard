@@ -2,21 +2,31 @@
   <div>
     <a href="#"
        class="topic-header"
-       @click="setTopic"
+       @click="setActiveTopic"
        v-if="shouldShowHeader"
     >
+      <span v-show="status === 'waiting'" class="loading-badge">
+        Loading...
+      </span>
       <i :class="['fa', 'fa-' + icon, 'topic-header-icon']"
          aria-hidden="true"
       />
       {{ topic.label }}
     </a>
-    <div class="topic-body" v-show="this.$store.state.topic === topicKey">
+
+    <!-- success -->
+    <div class="topic-body" v-if="shouldShowBody">
       <component v-for="(topicComp, topicCompIndex) in topic.components"
                  :is="topicComp.type"
                  class="topic-comp"
                  :slots="topicComp.slots"
                  :key="`topic-comp-${topic.key}-${topicCompIndex}`"
       />
+    </div>
+
+    <!-- error -->
+    <div class="topic-body" v-show="shouldShowError">
+      Error loading topic.
     </div>
   </div>
 </template>
@@ -55,15 +65,69 @@
       icon() {
         return this.topic.icon;
       },
+      isActive() {
+        const key = this.topic.key;
+        const activeTopic = this.$store.state.activeTopic;
+        // console.log('is active?', key === activeTopic);
+        return activeTopic === key;
+      },
       shouldShowHeader() {
         return this.$config.topics.length > 1;
-      }
+      },
+      shouldShowBody() {
+        const hasData = this.status === 'success';
+        const should = hasData && this.isActive;
+        console.log('should show body?', should, hasData, this.isActive);
+        return should;
+      },
+      shouldShowError() {
+        return this.status === 'error';
+      },
+      // REVIEW this is getting cached and not updating when the deps update
+      status: {
+        cache: false,
+        get() {
+          // get the status of each source
+          const dataSources = this.topic.dataSources || [];
+
+          // if no sources, return success
+          if (dataSources.length === 0) {
+            return 'success';
+          }
+
+          let topicStatus;
+
+          const sourceStatuses = dataSources.map(dataSource => {
+            // this is what should be observed. when it changes,
+            // it's not causing this to re-evaluate.
+            return this.$store.state.sources[dataSource].status;
+          });
+
+          // if any sources are still waiting, return waiting
+          if (sourceStatuses.some(x => x === 'waiting')) {
+            topicStatus = 'waiting';
+          }
+
+          // if any sources have errors, return error
+          else if (sourceStatuses.some(x => x === 'error')) {
+            topicStatus = 'error';
+          }
+
+          else {
+            topicStatus = 'success';
+          }
+
+          console.log('topic status', topicStatus)
+
+          return topicStatus;
+        }
+      },
     },
     methods: {
       // TODO use mapMuptations for less boilerplate
-      setTopic() {
+      setActiveTopic() {
         const topic = this.$props.topicKey;
-        this.$store.commit('setTopic', { topic });
+        this.$store.commit('setActiveTopic', { topic });
       }
     }
   };
@@ -102,5 +166,10 @@
 
   .topic-comp {
     margin-bottom: 10px;
+  }
+
+  .loading-badge {
+    font-style: italic;
+    float: right;
   }
 </style>

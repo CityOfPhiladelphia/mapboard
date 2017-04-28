@@ -9,7 +9,6 @@
       <div v-if="ais">
         <h1 v-if="address">{{ address }}</h1>
         <topic v-for="topic in this.$config.topics"
-               v-if="shouldShowTopic(topic)"
                :topicKey="topic.key"
                :key="topic.key"
         />
@@ -30,15 +29,15 @@
     },
     methods: {
       shouldShowTopic(topic) {
-        const requiredTopicKeys = topic.dataSources || [];
+        const requiredSources = topic.dataSources || [];
 
         // if there aren't any required topics, show it
-        if (requiredTopicKeys.length === 0) {
+        if (requiredSources.length === 0) {
           return true;
         }
 
-        const topicData = this.$store.state.topicData;
-        return requiredTopicKeys.every(key => topicData[key])
+        const sources = this.$store.state.sources;
+        return requiredSources.every(key => sources[key].data)
       }
     },
     computed: {

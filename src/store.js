@@ -7,16 +7,22 @@ import Vuex from 'vuex';
 function createStore(config) {
   const defaultTopic = config.topics[0];
 
+  // create initial state for sources. data key => {}
+  const sourceKeys = Object.keys(config.dataSources || {});
+  const sources = sourceKeys.reduce((o, key) => {
+    o[key] = {};
+    return o;
+  }, {});
+
   const initialState = {
-    topic: defaultTopic.key,
+    activeTopic: defaultTopic.key,
     // the ais feature
     ais: null,
     // the leaflet map object
     map: null,
     dorParcels: [],
     pwdParcel: null,
-    topicData: {
-    },
+    sources,
     basemap: defaultTopic.basemap,
     cyclomediaActive: false,
     cyclomediaViewer: null,
@@ -42,8 +48,19 @@ function createStore(config) {
     state: initialState,
     getters: {},
     mutations: {
-      setTopic(state, payload) {
-        state.topic = payload.topic;
+      setActiveTopic(state, payload) {
+        state.activeTopic = payload.topic;
+      },
+      setSourceStatus(state, payload) {
+        const key = payload.key;
+        const status = payload.status;
+        console.log('set source status', status);
+        state.sources[key].status = status;
+      },
+      setSourceData(state, payload) {
+        const key = payload.key;
+        const data = payload.data;
+        state.sources[key].data = data;
       },
       setMap(state, payload) {
         state.map = payload.map;
@@ -68,11 +85,6 @@ function createStore(config) {
       },
       setPictometryActive(state, payload) {
         state.pictometryActive = payload;
-      },
-      setTopicData(state, payload) {
-        const key = payload.key;
-        const data = payload.data;
-        state.topicData[key] = data;
       },
       setCycloFeatureGroup(state, payload) {
         state.cycloFeatureGroup = payload;

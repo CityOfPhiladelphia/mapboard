@@ -17,10 +17,10 @@ Mapboard.default({
     }
   },
   cyclomedia: {
-    enabled: true
+    enabled: false
   },
   pictometry: {
-    enabled: true
+    enabled: false
   },
   topics: [
     {
@@ -64,19 +64,23 @@ Mapboard.default({
               {
                 label: `Assessed Value (${new Date().getFullYear()})`,
                 value(state) {
-                  return state.topicData.opa.market_value;
+                  const data = state.sources.opa.data;
+                  console.log('assess value', data, state);
+                  return data.market_value;
                 }
               },
               {
                 label: 'Sale Date',
                 value(state) {
-                  return state.topicData.opa.sale_date;
+                  const data = state.sources.opa.data;
+                  return data.sale_date;
                 }
               },
               {
                 label: 'Sale Price',
                 value(state) {
-                  return state.topicData.opa.sale_price;
+                  const data = state.sources.opa.data;
+                  return data.sale_price;
                 }
               },
             ]

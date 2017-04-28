@@ -77,7 +77,7 @@
         }
         // imagery => feature map
         else {
-          const activeTopic = this.$store.state.topic;
+          const activeTopic = this.$store.state.activeTopic;
           const activeTopicConfig = this.$config.topics.filter(topic => topic.key === activeTopic)[0];
           nextBasemap = activeTopicConfig.basemap;
         }

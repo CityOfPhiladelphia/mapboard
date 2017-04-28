@@ -147,7 +147,7 @@
         return this.activeTopicConfig.identifyFeature;
       },
       activeTopicConfig() {
-        const key = this.$store.state.topic;
+        const key = this.$store.state.activeTopic;
         return this.$config.topics.filter((topic) => {
           return topic.key === key;
         })[0];
@@ -261,6 +261,7 @@
         });
       },
       fetchTopics(feature) {
+        console.log('fetch topics')
         // get topics
         const dataSources = this.$config.dataSources || {};
 
@@ -273,15 +274,40 @@
           const url = dataSource.url;
           const success = dataSource.success;
 
+          // set topic status to `waiting`
+          this.$store.commit('setSourceStatus', {
+            key: dataSourceKey,
+            status: 'waiting'
+          });
+
           this.$http.get(url, { params }).then(response => {
             const data = response.body;
 
-            this.$store.commit('setTopicData', {
+            // put data in state
+            this.$store.commit('setSourceData', {
               key: dataSourceKey,
               data: success(data),
             });
+
+            // update status
+            this.$store.commit('setSourceStatus', {
+              key: dataSourceKey,
+              status: 'success'
+            });
           }, response => {
             console.log('get topic error', response);
+
+            // null out data in state
+            this.$store.commit('setSourceData', {
+              key: dataSourceKey,
+              data: null,
+            });
+
+            // update status
+            this.$store.commit('setSourceStatus', {
+              key: dataSourceKey,
+              status: 'error'
+            });
           });
         }
       },
@@ -322,5 +348,4 @@
     display: inline-block;
     float: left;
   }
-
 </style>
