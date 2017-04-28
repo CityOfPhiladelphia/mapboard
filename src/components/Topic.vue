@@ -26,7 +26,7 @@
 
     <!-- error -->
     <div class="topic-body" v-show="shouldShowError">
-      Error loading topic.
+      Could not locate records for this address.
     </div>
   </div>
 </template>
@@ -74,13 +74,22 @@
       shouldShowHeader() {
         return this.$config.topics.length > 1;
       },
+      dataSources() {
+        return this.topic.dataSources || [];
+      },
+      hasData() {
+        return this.dataSources.every(dataSource => {
+          return this.$store.state.sources[dataSource].data;
+        });
+      },
       shouldShowBody() {
-        const hasData = this.status === 'success';
-        const should = hasData && this.isActive;
+        const succeeded = this.status === 'success';
+        const hasData = this.hasData;
+        const should = succeeded && hasData && this.isActive;
         return should;
       },
       shouldShowError() {
-        return this.status === 'error';
+        return this.status === 'error' || (this.status !== 'waiting' && !this.hasData);
       },
       // REVIEW this is getting cached and not updating when the deps update
       status: {

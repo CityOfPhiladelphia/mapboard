@@ -12,7 +12,7 @@ function createStore(config) {
   const sources = sourceKeys.reduce((o, key) => {
     o[key] = {
       // we have to define these here, because vue can't observe properties that
-      // are added later. 
+      // are added later.
       status: null,
       data: null
     };
@@ -22,7 +22,10 @@ function createStore(config) {
   const initialState = {
     activeTopic: defaultTopic.key,
     // the ais feature
-    ais: null,
+    geocode: {
+      status: null,
+      data: null
+    },
     // the leaflet map object
     map: null,
     dorParcels: [],
@@ -76,8 +79,11 @@ function createStore(config) {
       setPwdParcel(state, payload) {
         state.pwdParcel = payload;
       },
-      setAis(state, payload) {
-        state.ais = payload;
+      setGeocodeStatus(state, payload) {
+        state.geocode.status = payload;
+      },
+      setGeocodeData(state, payload) {
+        state.geocode.data = payload;
       },
       setBasemap(state, payload) {
         state.basemap = payload;

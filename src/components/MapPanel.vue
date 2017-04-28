@@ -6,6 +6,14 @@
           :min-zoom="this.$config.map.minZoom"
           :max-zoom="this.$config.map.maxZoom"
     >
+      <!-- loading mask -->
+      <div v-show="geocoding" class="mb-map-loading-mask">
+        <div class="mb-map-loading-mask-inner">
+          <i class="fa fa-spinner fa-4x spin"></i>
+          <h1>Finding address...</h1>
+        </div>
+      </div>
+
       <!-- basemaps -->
       <esri-tiled-map-layer v-for="(basemap, key) in this.$config.map.basemaps"
                          v-if="activeBasemap === key"
@@ -162,11 +170,14 @@
         return this.$store.state.pwdParcel;
       },
       aisGeom() {
-        return (this.$store.state.ais || {}).geometry;;
+        return (this.$store.state.geocode.data || {}).geometry;;
       },
       streetAddress() {
-        return this.$store.state.ais.properties.street_address;
+        return this.$store.state.geocode.data.properties.street_address;
       },
+      geocoding() {
+        return this.$store.state.geocode.status === 'waiting';
+      }
     },
     methods: {
       handleMapClick(e) {
@@ -192,7 +203,7 @@
         const url = this.$config.geocoder.methods.reverseGeocode.url(lnglat);
         this.$http.get(url.replace('ais', 'ais_test')).then(response => {
           const data = response.body;
-          this.$store.commit('setAis', data.features[0])
+          this.$store.commit('setGeocodeData', data.features[0])
         }, response => {
           console.log('reverse geocode error')
         });
@@ -241,6 +252,9 @@
         const url = searchConfig.url(input);
         const params = searchConfig.params;
 
+        // set status of geocode
+        this.$store.commit('setGeocodeStatus', 'waiting');
+
         this.$http.get(url, { params }).then(response => {
           const data = response.body;
 
@@ -251,13 +265,15 @@
           }
           // TODO do some checking here
           const feature = data.features[0];
-          self.$store.commit('setAis', feature);
+          self.$store.commit('setGeocodeData', feature);
+          self.$store.commit('setGeocodeStatus', 'success');
 
           // get topics
           this.fetchTopics(feature);
         }, response => {
           console.log('ais error')
-          self.$store.commit('setAis', null);
+          self.$store.commit('setGeocodeData', null);
+          self.$store.commit('setGeocodeStatus', 'error');
         });
       },
       fetchTopics(feature) {
@@ -316,6 +332,11 @@
 </script>
 
 <style scoped>
+  .mb-panel-map {
+    /*this allows the loading mask to fill the div*/
+    position: relative;
+  }
+
   .mb-search-control-container {
     height: 48px;
     border-radius: 2px;
@@ -347,5 +368,23 @@
   .widget-slot {
     display: inline-block;
     float: left;
+  }
+
+  .mb-map-loading-mask {
+    /*display: inline;*/
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0 ,0 , 0.25);
+    z-index: 1000;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .mb-map-loading-mask-inner {
+    position: absolute;
+    top: 40%;
+    left: 40%;
   }
 </style>

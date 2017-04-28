@@ -44,19 +44,19 @@ Mapboard.default({
               {
                 label: 'OPA Account #',
                 value(state) {
-                  return state.ais.properties.opa_account_num;
+                  return state.geocode.data.properties.opa_account_num;
                 }
               },
               {
                 label: 'OPA Address',
                 value(state) {
-                  return state.ais.properties.opa_address;
+                  return state.geocode.data.properties.opa_address;
                 }
               },
               {
                 label: 'Owners',
                 value(state) {
-                  const owners = state.ais.properties.opa_owners;
+                  const owners = state.geocode.data.properties.opa_owners;
                   const ownersJoined = owners.join(', ');
                   return ownersJoined;
                 }

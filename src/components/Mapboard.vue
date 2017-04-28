@@ -61,5 +61,4 @@
   .mb-panel-topics-with-widget {
     height: 50%;
   }
-
 </style>

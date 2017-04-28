@@ -42,7 +42,7 @@
     },
     computed: {
       ais() {
-        return this.$store.state.ais;
+        return this.$store.state.geocode.data;
       },
       address() {
         const ais = this.ais;
