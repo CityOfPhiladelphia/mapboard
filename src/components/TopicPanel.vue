@@ -1,7 +1,7 @@
 <template>
   <div class="large-12 columns mb-panel mb-panel-topics">
     <div class="row">
-    <!-- <div class="row" :class="{ 'row-with-widget': this.$store.state.pictometryActive }"> -->
+    <!-- <div class="row" :class="{ 'row-with-widget': this.$store.state.pictometry.active }"> -->
       <!-- before search -->
       <greeting v-show="!ais" />
 

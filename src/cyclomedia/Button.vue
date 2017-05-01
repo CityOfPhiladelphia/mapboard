@@ -25,13 +25,13 @@
     methods: {
       handleButtonClick(e) {
         console.log('clicked cyclomedia button');
-        this.$store.commit('setCyclomediaActive', !this.$store.state.cyclomediaActive);
+        this.$store.commit('setCyclomediaActive', !this.$store.state.cyclomedia.active);
 
         // if the cyclo viewer is off screen when it loads imagery, it won't
         // show anything even once it's on screen. use this to trigger an
         // update.
         this.$nextTick(() => {
-          const viewer = this.$store.state.cyclomediaViewer;
+          const viewer = this.$store.state.cyclomedia.viewer;
           viewer.forceUpdate();
         });
       },

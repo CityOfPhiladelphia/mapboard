@@ -32,11 +32,15 @@ function createStore(config) {
     pwdParcel: null,
     sources,
     basemap: defaultTopic.basemap,
-    cyclomediaActive: false,
-    cyclomediaViewer: null,
-    cycloFeatureGroup: null,
+    cyclomedia: {
+      active: false,
+      viewer: null,
+      recordings: []
+    },
     // we need this to know whether or not to force an update on the first show
-    pictometryActive: false
+    pictometry: {
+      active: false
+    },
     // mapFeatures: {
     //   markers: [
     //     {
@@ -88,18 +92,18 @@ function createStore(config) {
       setBasemap(state, payload) {
         state.basemap = payload;
       },
+      setPictometryActive(state, payload) {
+        state.pictometry.active = payload;
+      },
       setCyclomediaActive(state, payload) {
-        state.cyclomediaActive = payload;
+        state.cyclomedia.active = payload;
       },
       setCyclomediaViewer(state, payload) {
-        state.cyclomediaViewer = payload;
+        state.cyclomedia.viewer = payload;
       },
-      setPictometryActive(state, payload) {
-        state.pictometryActive = payload;
+      setCyclomediaRecordings(state, payload) {
+        state.cyclomedia.recordings = payload;
       },
-      setCycloFeatureGroup(state, payload) {
-        state.cycloFeatureGroup = payload;
-      }
     }
   });
 }

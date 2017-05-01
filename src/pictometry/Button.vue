@@ -25,7 +25,7 @@
     methods: {
       handleButtonClick(e) {
         console.log('clicked pictometry button');
-        this.$store.commit('setPictometryActive', !this.$store.state.pictometryActive);
+        this.$store.commit('setPictometryActive', !this.$store.state.pictometry.active);
       },
     }
   };

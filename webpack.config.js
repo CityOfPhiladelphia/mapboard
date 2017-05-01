@@ -42,7 +42,8 @@ module.exports = {
   },
   externals: {
     'vue': 'Vue',
-    'leaflet': 'L'
+    'leaflet': 'L',
+    'jQuery': '$'
   },
   devServer: {
     historyApiFallback: true,

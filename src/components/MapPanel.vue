@@ -1,7 +1,8 @@
 <template>
   <div class="large-12 columns mb-panel mb-panel-map">
-    <map_ :class="{ 'mb-map-with-widget': this.$store.state.cyclomediaActive || this.$store.state.pictometryActive }"
+    <map_ :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }"
           @l-click="handleMapClick"
+          @l-moveend="handleMapMove"
           zoom-control-position="bottomright"
           :min-zoom="this.$config.map.minZoom"
           :max-zoom="this.$config.map.maxZoom"
@@ -56,19 +57,23 @@
           />
         </div>
 
-        <pictometry-button v-if="this.$config.pictometry.enabled"
-                           v-once
-                           :position="'topright'"
-                           :link="'pictometry'"
-                           :imgSrc="'../../src/assets/pictometry.png'"
-        />
+        <div v-once>
+          <pictometry-button v-if="this.$config.pictometry.enabled"
+                             v-once
+                             :position="'topright'"
+                             :link="'pictometry'"
+                             :imgSrc="'../../src/assets/pictometry.png'"
+          />
+        </div>
 
-        <cyclomedia-button v-if="this.$config.cyclomedia.enabled"
-                           v-once
-                           :position="'topright'"
-                           :link="'cyclomedia'"
-                           :imgSrc="'../../src/assets/cyclomedia.png'"
-        />
+        <div v-once>
+          <cyclomedia-button v-if="this.$config.cyclomedia.enabled"
+                             v-once
+                             :position="'topright'"
+                             :link="'cyclomedia'"
+                             :imgSrc="'../../src/assets/cyclomedia.png'"
+          />
+        </div>
 
         <!-- search control -->
         <!-- custom components seem to have to be wrapped like this to work
@@ -89,8 +94,24 @@
           </control>
         </div>
 
-        <cycloFeatureGroup v-if="this.$config.cyclomedia.enabled" />
-        <cyclomediaRecordingsLayer v-if="this.$config.cyclomedia.enabled" />
+        <!-- <cycloFeatureGroup v-if="this.$config.cyclomedia.enabled" /> -->
+        <!-- <cyclomediaRecordings v-if="this.$config.cyclomedia.enabled && this.$store.state.cyclomedia.active"
+                                   :color="'red'"
+                                   :size="8"
+                                   :weight="2"
+        /> -->
+        <cyclomedia-recording-circle v-for="recording in cyclomediaRecordings"
+                                     :key="recording.imageId"
+                                     :imageId="recording.imageId"
+                                     :latlng="[recording.lat, recording.lng]"
+                                     :size="1"
+                                     :color="'blue'"
+                                     :weight="2"
+        />
+        <!-- :lat="recording.lat"
+        :lng="recording.lng" -->
+        <!-- v-if="this.$config.cyclomedia.enabled && this.$store.state.cyclomedia.active" -->
+
     </map_>
 
     <slot class='widget-slot' name="cycloWidget" />
@@ -108,10 +129,8 @@
   import BasemapControl from './BasemapControl';
   import CyclomediaButton from '../cyclomedia/Button';
   import PictometryButton from '../pictometry/Button';
-  import CyclomediaRecordingsLayer from '../cyclomedia/RecordingsLayer';
-  import FeatureGroup from '../leaflet/FeatureGroup';
-  import Circle_ from '../leaflet/Circle';
-  import CycloFeatureGroup from '../cyclomedia/CycloFeatureGroup';
+  import CyclomediaRecordingCircle from '../cyclomedia/RecordingCircle';
+  import CyclomediaRecordingsClient from '../cyclomedia/recordings-client';
 
   export default {
     components: {
@@ -123,11 +142,7 @@
       BasemapControl,
       PictometryButton,
       CyclomediaButton,
-      //CyclomediaMarker,
-      CyclomediaRecordingsLayer,
-      CycloFeatureGroup,
-      FeatureGroup,
-      Circle_
+      CyclomediaRecordingCircle
     },
     computed: {
       activeBasemap() {
@@ -177,7 +192,19 @@
       },
       geocoding() {
         return this.$store.state.geocode.status === 'waiting';
+      },
+      cyclomediaRecordings() {
+        return this.$store.state.cyclomedia.recordings;
       }
+    },
+    created() {
+      // create cyclomedia recordings client
+      this.$cyclomediaRecordingsClient = new CyclomediaRecordingsClient(
+        this.$config.cyclomedia.recordingsUrl,
+        this.$config.cyclomedia.username,
+        this.$config.cyclomedia.password,
+        4326
+      );
     },
     methods: {
       handleMapClick(e) {
@@ -193,6 +220,26 @@
 
         // METHOD 2: reverse geocode via AIS
         // this.getReverseGeocode(e.latlng);
+      },
+      handleMapMove(e) {
+        // get cyclomedia recordings
+        const map = e.target;
+        // check zoom level
+        const zoom = map.getZoom();
+        console.log(zoom);
+        if (zoom <= 18) {
+          this.$store.commit('setCyclomediaRecordings', [])
+          return;
+        }
+        const bounds = map.getBounds();
+        this.$cyclomediaRecordingsClient.getRecordings(
+          bounds,
+          recordings => {
+            //console.log('got recordings', recordings);
+            // TODO update state
+            this.$store.commit('setCyclomediaRecordings', recordings)
+          }
+        );
       },
       handleSearchFormSubmit(e) {
         const input = e.target[0].value;

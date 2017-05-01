@@ -4,7 +4,7 @@ Mapboard.default({
   rootStyle: {
     height: '600px'
   },
-  baseConfig: 'https://gist.githubusercontent.com/rbrtmrtn/09b4f35396f97499c3097e2fecaed8e7/raw/ef0ee0b5c5c96350a6cbd50f5e4dd2519e62e177/config.js',
+  baseConfig: 'https://gist.githubusercontent.com/rbrtmrtn/09b4f35396f97499c3097e2fecaed8e7/raw/485c5afedde54349d4526424124b76b235f9f4b1/config.js',
   dataSources: {
     opa: {
       url: 'https://data.phila.gov/resource/w7rb-qrn8.json',
@@ -17,7 +17,7 @@ Mapboard.default({
     }
   },
   cyclomedia: {
-    enabled: false
+    enabled: true
   },
   pictometry: {
     enabled: false

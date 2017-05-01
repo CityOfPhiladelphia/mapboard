@@ -32,10 +32,10 @@
     },
     computed: {
       cyclomediaActive() {
-        return this.$store.state.cyclomediaActive
+        return this.$store.state.cyclomedia.active
       },
       pictometryActive() {
-        return this.$store.state.pictometryActive
+        return this.$store.state.pictometry.active
       }
     }
   };
