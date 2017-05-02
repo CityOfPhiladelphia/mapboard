@@ -41,20 +41,36 @@ Mapboard.default({
           }
         },
         {
-          type: 'horizontal-table',
+          type: 'vertical-table',
           slots: {
             fields: [
               {
                 label: 'Trash & Recycling Day',
-                value: 'Wednesday'
+                value(state) {
+                  const day = state.geocode.data.properties.rubbish_recycle_day;
+                  const DAYS_FORMATTED = {
+                    'MON': 'Monday',
+                    'TUE': 'Tuesday',
+                    'WED': 'Wednesday',
+                    'THU': 'Thursday',
+                    'FRI': 'Friday'
+                  };
+                  return DAYS_FORMATTED[day];
+                }
               },
               {
                 label: 'Recycling Diversion Rate',
-                value: '10%'
+                value(state) {
+                  const rate = state.geocode.data.properties.recycling_diversion_rate;
+                  return `${parseInt(rate * 100)}%`;;
+                },
               },
               {
                 label: 'Sanitation District',
-                value: '1A'
+                value(state) {
+                  const district = state.geocode.data.properties.sanitation_district;
+                  return district;
+                }
               },
               {
                 label: 'Sanitation Convenience Center',
