@@ -7,7 +7,10 @@
 
       <!-- after search -->
       <div v-if="ais">
-        <h1 v-if="address">{{ address }}</h1>
+        <div class="address-header" v-if="address">
+          <h1 class="address-header-line-1">{{ address }}</h1>
+          <div class="address-header-line-2 small-text">PHILADELPHIA, PA {{ zipCode }}</div>
+        </div>
         <topic v-for="topic in this.$config.topics"
                :topicKey="topic.key"
                :key="topic.key"
@@ -48,6 +51,13 @@
         const ais = this.ais;
         if (!ais) return null;
         return ais.properties.street_address;
+      },
+      zipCode() {
+        const ais = this.ais;
+        if (!ais) return null;
+        const zipCode = ais.properties.zip_code;
+        const zip4 = ais.properties.zip_4
+        return zipCode + '-' + zip4;
       }
     }
   };
@@ -59,5 +69,18 @@
     padding-left: 20px !important;
     padding-right: 20px !important;
     overflow-y: auto;
+  }
+
+  /*TODO use patterns*/
+  .address-header {
+    color: #666;
+    border-left: 5px solid #58c04d;
+    margin-left: 10px;
+    padding-left: 15px;
+    margin-bottom: 25px;
+  }
+
+  .address-header-line-1 {
+    margin-bottom: 0;
   }
 </style>
