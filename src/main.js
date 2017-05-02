@@ -22,7 +22,6 @@ export default (clientConfig) => {
       // deep merge base config and client config
       //const config = mergeDeep(clientConfig, baseConfig);
       const config = mergeDeep(baseConfig, clientConfig);
-      console.log(config.map);
 
       // make config accessible from each component via this.$config
       Vue.use(configMixin, config);

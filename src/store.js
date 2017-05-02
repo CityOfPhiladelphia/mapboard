@@ -30,18 +30,18 @@ function createStore(config) {
     map: {
       map: null,
       bounds: null,
-      features: {
-        markers: [
-          // {
-          //   geometry: '',
-          //   // optional - mainly for symbology
-          //   options: {}
-          // }
-        ],
-        polygons: [
-
-        ]
-      }
+      // features: {
+      //   markers: [
+      //     // {
+      //     //   geometry: '',
+      //     //   // optional - mainly for symbology
+      //     //   options: {}
+      //     // }
+      //   ],
+      //   polygons: [
+      //
+      //   ]
+      // }
     },
     dorParcels: [],
     pwdParcel: null,

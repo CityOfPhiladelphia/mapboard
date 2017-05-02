@@ -10,7 +10,7 @@
           :max-zoom="this.$config.map.maxZoom"
     >
       <!-- loading mask -->
-      <div v-show="geocoding" class="mb-map-loading-mask">
+      <div v-show="isGeocoding" class="mb-map-loading-mask">
         <div class="mb-map-loading-mask-inner">
           <i class="fa fa-spinner fa-4x spin"></i>
           <h1>Finding address...</h1>
@@ -26,28 +26,42 @@
       />
 
       <!-- dor parcels -->
-      <geojson v-for="dorParcel in dorParcels"
+      <!-- <geojson v-for="dorParcel in dorParcels"
                v-if="identifyFeature === 'dor-parcel' && activeParcelLayer === 'dor'"
                :geojson="dorParcel"
                :color="'green'"
                :weight="2"
                :key="dorParcel.properties.OBJECTID"
-       />
+       /> -->
 
        <!-- pwd parcel -->
-       <geojson v-if="identifyFeature === 'pwd-parcel' && activeParcelLayer === 'pwd' && pwdParcel"
+       <!-- <geojson v-if="identifyFeature === 'pwd-parcel' && activeParcelLayer === 'pwd' && pwdParcel"
                 :geojson="pwdParcel"
                 :color="'blue'"
                 :weight="2"
                 :key="pwdParcel.properties.PARCELID"
-        />
+        /> -->
 
         <!-- address marker -->
         <!-- REVIEW why does this need a key? it's not a list... -->
-        <vector-marker v-if="identifyFeature === 'address-marker' && aisGeom"
-                      :latlng="[...aisGeom.coordinates].reverse()"
+        <!-- <vector-marker v-if="identifyFeature === 'address-marker' && geocodeGeom"
+                      :latlng="[...geocodeGeom.coordinates].reverse()"
                       :key="streetAddress"
+        /> -->
+
+        <!-- NEW METHOD: try rendering markers generically based on marker type -->
+        <!-- vector markers -->
+        <vector-marker v-for="(marker, index) in markers"
+                      :latlng="marker.latlng"
+                      :key="marker.key"
         />
+        <!-- geojson features -->
+        <geojson v-for="geojsonFeature in geojsonFeatures"
+                 :geojson="geojsonFeature.geojson"
+                 :color="geojsonFeature.color"
+                 :weight="2"
+                 :key="geojsonFeature.key"
+         />
 
         <!-- CONTROLS: -->
         <!-- basemap control -->
@@ -162,10 +176,16 @@
         return this.imageryBasemaps.map(x => x.year);
       },
       identifyFeature() {
-        return this.activeTopicConfig.identifyFeature;
+        return (this.activeTopicConfig || {}).identifyFeature;
       },
       activeTopicConfig() {
         const key = this.$store.state.activeTopic;
+
+        // if no active topic, return null
+        if (!key) {
+          return null;
+        }
+
         return this.$config.topics.filter((topic) => {
           return topic.key === key;
         })[0];
@@ -179,13 +199,16 @@
       pwdParcel() {
         return this.$store.state.pwdParcel;
       },
-      aisGeom() {
-        return (this.$store.state.geocode.data || {}).geometry;;
+      geocodeResult() {
+        return this.$store.state.geocode.data;
+      },
+      geocodeGeom() {
+        return (this.geocodeResult || {}).geometry;;
       },
       streetAddress() {
-        return this.$store.state.geocode.data.properties.street_address;
+        return this.geocodeResult.properties.street_address;
       },
-      geocoding() {
+      isGeocoding() {
         return this.$store.state.geocode.status === 'waiting';
       },
       cyclomediaActive() {
@@ -193,7 +216,49 @@
       },
       cyclomediaRecordings() {
         return this.$store.state.cyclomedia.recordings;
-      }
+      },
+      // returns map markers as simple object with a geometry property, key,
+      // and optional properties for symbology
+      markers() {
+        const markers = [];
+
+        // geocoded address marker
+        const geocodeGeom = this.geocodeGeom;
+        if (this.identifyFeature === 'address-marker' && geocodeGeom) {
+          const latlng = [...geocodeGeom.coordinates].reverse();
+          const key = this.geocodeResult.properties.street_address;
+          const addressMarker = {latlng, key};
+          markers.push(addressMarker);
+        }
+
+        return markers;
+      },
+      // returns all geojson features to be rendered on the map along with
+      // necessary props.
+      geojsonFeatures() {
+        const features = [];
+
+        const identifyFeature = this.identifyFeature;
+        const activeParcelLayer = this.activeParcelLayer;
+        // pwd parcel
+        if (identifyFeature === 'pwd-parcel' && activeParcelLayer === 'pwd' && this.pwdParcel) {
+          const geojson = this.pwdParcel;
+          const color = 'blue';
+          const key = geojson.properties.PARCELID;
+          features.push({geojson, color, key});
+        // dor parcel
+        } else if (identifyFeature === 'dor-parcel' && activeParcelLayer === 'dor') {
+          const color = 'green';
+          const dorParcelFeatures = this.dorParcels.map(dorParcel => {
+            const geojson = dorParcel;
+            const key = geojson.properties.OBJECTID;
+            return {geojson, color, key};
+          });
+          features.push.apply(features, dorParcelFeatures);
+        }
+
+        return features;
+      },
     },
     created() {
       // if there's a default address, navigate to it
@@ -268,14 +333,12 @@
         });
       },
       getPwdParcelByLatLng(latlng) {
-        console.log('getPwdParcelsByLatLng');
         const url = this.$config.map.featureLayers.pwdParcels.url;
         const parcelQuery = L.esri.query({ url });
         parcelQuery.contains(latlng);
         parcelQuery.run(this.didGetPwdParcel);
       },
       getPwdParcelById(id) {
-        console.log('getPwdParcelsById');
         const url = this.$config.map.featureLayers.pwdParcels.url;
         const parcelQuery = L.esri.query({ url });
         parcelQuery.where('PARCELID = ' + id);
@@ -283,7 +346,6 @@
       },
       didGetPwdParcel(error, featureCollection, response) {
         const features = featureCollection.features;
-        console.log('pwd features', features);
         let feature;
         if (features.length === 0) {
           feature = null;
