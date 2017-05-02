@@ -125,8 +125,6 @@
             topicStatus = 'success';
           }
 
-          console.log('topic status', topicStatus)
-
           return topicStatus;
         }
       },

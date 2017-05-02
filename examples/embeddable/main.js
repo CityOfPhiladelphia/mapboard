@@ -65,7 +65,6 @@ Mapboard.default({
                 label: `Assessed Value (${new Date().getFullYear()})`,
                 value(state) {
                   const data = state.sources.opa.data;
-                  console.log('assess value', data, state);
                   return data.market_value;
                 }
               },
@@ -117,8 +116,6 @@ Mapboard.default({
     }
   ],
   map: {
-    center: [39.951618, -75.1650911],
-    zoom: 13,
     basemaps: {
       pwd: {
         url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap/MapServer',

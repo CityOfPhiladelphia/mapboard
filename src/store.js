@@ -27,7 +27,22 @@ function createStore(config) {
       data: null
     },
     // the leaflet map object
-    map: null,
+    map: {
+      map: null,
+      bounds: null,
+      features: {
+        markers: [
+          // {
+          //   geometry: '',
+          //   // optional - mainly for symbology
+          //   options: {}
+          // }
+        ],
+        polygons: [
+
+        ]
+      }
+    },
     dorParcels: [],
     pwdParcel: null,
     sources,
@@ -40,19 +55,7 @@ function createStore(config) {
     // we need this to know whether or not to force an update on the first show
     pictometry: {
       active: false
-    },
-    // mapFeatures: {
-    //   markers: [
-    //     {
-    //       geometry: '',
-    //       // optional - mainly for symbology
-    //       options: {}
-    //     }
-    //   ],
-    //   polygons: [
-    //
-    //   ]
-    // },
+    }
   };
 
   // TODO standardize how payloads are passed around/handled
@@ -66,7 +69,6 @@ function createStore(config) {
       setSourceStatus(state, payload) {
         const key = payload.key;
         const status = payload.status;
-        console.log('set source status', status);
         state.sources[key].status = status;
       },
       setSourceData(state, payload) {
@@ -75,7 +77,10 @@ function createStore(config) {
         state.sources[key].data = data;
       },
       setMap(state, payload) {
-        state.map = payload.map;
+        state.map.map = payload.map;
+      },
+      setMapBounds(state, payload) {
+        state.map.bounds = payload.bounds
       },
       setDorParcels(state, payload) {
         state.dorParcels = payload;

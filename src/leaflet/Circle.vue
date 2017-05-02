@@ -11,7 +11,7 @@
     ],
     mounted() {
       const leafletElement = this.$leafletElement = this.createLeafletElement();
-      const map = this.$store.state.map;
+      const map = this.$store.state.map.map;
       if (map) {
         leafletElement.addTo(map);
       }

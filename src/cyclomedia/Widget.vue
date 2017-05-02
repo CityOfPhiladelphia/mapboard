@@ -28,7 +28,7 @@
           this.$store.commit('setCyclomediaViewer', viewer);
 
           // get map center and set location
-          const map = this.$store.state.map;
+          const map = this.$store.state.map.map;
           const center = map.getCenter();
           this.setNewLocation(center);
 

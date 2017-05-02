@@ -1,6 +1,8 @@
 <template>
   <div class="large-12 columns mb-panel mb-panel-map">
     <map_ :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }"
+          :center="this.$config.map.center"
+          :zoom="this.$config.map.zoom"
           @l-click="handleMapClick"
           @l-moveend="handleMapMove"
           zoom-control-position="bottomright"
@@ -235,7 +237,7 @@
         this.updateCyclomediaRecordings();
       },
       updateCyclomediaRecordings() {
-        const map = this.$store.state.map;
+        const map = this.$store.state.map.map;
         const zoom = map.getZoom();
         if (!this.$store.state.cyclomedia.active || zoom <= 18) {
           this.$store.commit('setCyclomediaRecordings', [])
@@ -251,6 +253,8 @@
       },
       handleSearchFormSubmit(e) {
         const input = e.target[0].value;
+        this.$store.commit('setPwdParcel', null);
+        this.$store.commit('setDorParcels', []);
         this.fetchAis(input);
       },
       getReverseGeocode(latlng) {
@@ -263,43 +267,60 @@
           console.log('reverse geocode error')
         });
       },
-      getDorParcelsByLatLng(latlng) {
-        var url = this.$config.map.featureLayers.dorParcels.url;
-        var parcelQuery = L.esri.query({ url });
-        parcelQuery.contains(latlng);
-        parcelQuery.run((error, featureCollection, response) => {
-          const features = featureCollection.features;
-          this.$store.commit('setDorParcels', featureCollection.features);
-
-          if (this.activeParcelLayer === 'dor') {
-            if (features.length < 1) return;
-            // TODO sort by mapreg, status
-            this.fetchAis(features[0].properties.MAPREG);
-          }
-        });
-      },
       getPwdParcelByLatLng(latlng) {
-        var url = this.$config.map.featureLayers.pwdParcels.url;
-        var parcelQuery = L.esri.query({ url });
+        console.log('getPwdParcelsByLatLng');
+        const url = this.$config.map.featureLayers.pwdParcels.url;
+        const parcelQuery = L.esri.query({ url });
         parcelQuery.contains(latlng);
-        parcelQuery.run((error, featureCollection, response) => {
-          const features = featureCollection.features;
-          let feature;
-          if (features.length === 0) {
-            feature = null;
-          } else {
-            feature = features[0]
-            // this shouldn't happen
-            if (features.length > 1) {
-              console.debug('got more than one pwd parcel', features);
-            }
+        parcelQuery.run(this.didGetPwdParcel);
+      },
+      getPwdParcelById(id) {
+        console.log('getPwdParcelsById');
+        const url = this.$config.map.featureLayers.pwdParcels.url;
+        const parcelQuery = L.esri.query({ url });
+        parcelQuery.where('PARCELID = ' + id);
+        parcelQuery.run(this.didGetPwdParcel);
+      },
+      didGetPwdParcel(error, featureCollection, response) {
+        const features = featureCollection.features;
+        console.log('pwd features', features);
+        let feature;
+        if (features.length === 0) {
+          feature = null;
+        } else {
+          feature = features[0]
+          // this shouldn't happen
+          if (features.length > 1) {
+            console.debug('got more than one pwd parcel', features);
           }
-          this.$store.commit('setPwdParcel', feature);
+        }
+        this.$store.commit('setPwdParcel', feature);
 
-          if (feature && this.activeParcelLayer === 'pwd') {
-            this.fetchAis(feature.properties.PARCELID);
-          }
-        });
+        if (feature && this.activeParcelLayer === 'pwd') {
+          this.fetchAis(feature.properties.PARCELID);
+        }
+      },
+      getDorParcelsByLatLng(latlng) {
+        const url = this.$config.map.featureLayers.dorParcels.url;
+        const parcelQuery = L.esri.query({ url });
+        parcelQuery.contains(latlng);
+        parcelQuery.run(this.didGetDorParcels);
+      },
+      getDorParcelsById(id) {
+        const url = this.$config.map.featureLayers.dorParcels.url;
+        const parcelQuery = L.esri.query({ url });
+        parcelQuery.where("MAPREG = '" + id + "'")
+        parcelQuery.run(this.didGetDorParcels);
+      },
+      didGetDorParcels(error, featureCollection, response) {
+        const features = featureCollection.features;
+        this.$store.commit('setDorParcels', featureCollection.features);
+
+        if (this.activeParcelLayer === 'dor') {
+          if (features.length < 1) return;
+          // TODO sort by mapreg, status
+          this.fetchAis(features[0].properties.MAPREG);
+        }
       },
       fetchAis(input) {
         const self = this;
@@ -327,8 +348,23 @@
           // send geocode result event to host
           self.$eventBus.$emit('geocodeResult', feature);
 
+          // check for parcels
+          const dorParcels = this.$store.state.dorParcels;
+          const pwdParcel = this.$store.state.pwdParcel;
+          if (!(dorParcels.length > 0 || pwdParcel)) {
+            const dorParcelId = feature.properties.dor_parcel_id;
+            const pwdParcelId = feature.properties.pwd_parcel_id;
+            this.getDorParcelsById(dorParcelId);
+            this.getPwdParcelById(pwdParcelId);
+          }
+
           // get topics
           this.fetchTopics(feature);
+
+          // create address marker
+          // const geom = feature.geometry;
+          // console.log('create address marker', geom, VectorMarker);
+          // const addressMarker = VectorMarker();
         }, response => {
           console.log('ais error')
           self.$store.commit('setGeocodeData', null);
@@ -336,7 +372,8 @@
         });
       },
       fetchTopics(feature) {
-        console.log('fetch topics')
+        // console.log('fetch topics');
+
         // get topics
         const dataSources = this.$config.dataSources || {};
 

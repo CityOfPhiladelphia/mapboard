@@ -17,6 +17,8 @@
 
   export default {
     props: [
+      'center',
+      'zoom',
       'zoomControlPosition',
       'minZoom',
       'maxZoom'
@@ -31,9 +33,8 @@
       // REVIEW do we want to do this? is it serializable?
       this.$store.commit('setMap', { map });
 
-      // TODO this should come from a prop
-      map.setView(this.$config.map.center,
-                  this.$config.map.zoom);
+      map.setView(this.center,
+                  this.zoom);
 
       // signal children to mount
       for (let child of this.$children) {
@@ -84,6 +85,20 @@
 
       bindEvents(this, this.$leafletElement, events);
     },
+    updated() {
+      // if bounds updated, then call map.fitBounds()
+      //console.log('map updated', this.$children);
+      let children = this.$children;
+      let a = this.findShapes(children);
+      // console.log('a', a);
+    },
+    computed: {
+      bounds() {
+        // return bounds based on all map features
+        let children = this.$children;
+        return children;
+      }
+    },
     methods: {
       createLeafletElement() {
         const { zoomControlPosition, ...options } = this.$props;
@@ -91,6 +106,11 @@
       },
       childDidMount(child) {
         child.addTo(this.$leafletElement);
+      },
+      findShapes(children) {
+        return children.filter((child) => {
+          return child._name === "<Geojson>" || child._name === "<VectorMarker>"
+        });
       }
     }
   };

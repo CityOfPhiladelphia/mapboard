@@ -17,7 +17,7 @@
     },
     mounted() {
       const leafletElement = this.$leafletElement = this.createLeafletElement();
-      const map = this.$store.state.map;
+      const map = this.$store.state.map.map;
       // REVIEW kind of hacky/not reactive?
       if (map) {
         leafletElement.addTo(map);
