@@ -72,6 +72,7 @@
                              :position="'topright'"
                              :link="'cyclomedia'"
                              :imgSrc="'../../src/assets/cyclomedia.png'"
+                             @click="handleCyclomediaButtonClick"
           />
         </div>
 
@@ -101,12 +102,14 @@
                                    :weight="2"
         /> -->
         <cyclomedia-recording-circle v-for="recording in cyclomediaRecordings"
+                                     v-if="cyclomediaActive"
                                      :key="recording.imageId"
                                      :imageId="recording.imageId"
                                      :latlng="[recording.lat, recording.lng]"
-                                     :size="1"
-                                     :color="'blue'"
-                                     :weight="2"
+                                     :size="1.2"
+                                     :color="'#3388ff'"
+                                     :weight="1"
+                                     @l-click="handleCyclomediaRecordingClick"
         />
         <!-- :lat="recording.lat"
         :lng="recording.lng" -->
@@ -193,6 +196,9 @@
       geocoding() {
         return this.$store.state.geocode.status === 'waiting';
       },
+      cyclomediaActive() {
+        return this.$store.state.cyclomedia.active;
+      },
       cyclomediaRecordings() {
         return this.$store.state.cyclomedia.recordings;
       }
@@ -221,13 +227,21 @@
         // METHOD 2: reverse geocode via AIS
         // this.getReverseGeocode(e.latlng);
       },
+      handleCyclomediaButtonClick() {
+        this.updateCyclomediaRecordings();
+      },
+      handleCyclomediaRecordingClick(e) {
+        const latlng = e.latlng;
+
+        // TODO call method on cyclo widget
+      },
       handleMapMove(e) {
-        // get cyclomedia recordings
-        const map = e.target;
-        // check zoom level
+        this.updateCyclomediaRecordings();
+      },
+      updateCyclomediaRecordings() {
+        const map = this.$store.state.map;
         const zoom = map.getZoom();
-        console.log(zoom);
-        if (zoom <= 18) {
+        if (!this.$store.state.cyclomedia.active || zoom <= 18) {
           this.$store.commit('setCyclomediaRecordings', [])
           return;
         }
@@ -235,9 +249,7 @@
         this.$cyclomediaRecordingsClient.getRecordings(
           bounds,
           recordings => {
-            //console.log('got recordings', recordings);
-            // TODO update state
-            this.$store.commit('setCyclomediaRecordings', recordings)
+            this.$store.commit('setCyclomediaRecordings', recordings);
           }
         );
       },

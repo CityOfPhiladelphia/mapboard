@@ -93,9 +93,15 @@ function createStore(config) {
         state.basemap = payload;
       },
       setPictometryActive(state, payload) {
+        if (!config.pictometry.enabled) {
+          return;
+        }
         state.pictometry.active = payload;
       },
       setCyclomediaActive(state, payload) {
+        if (!config.cyclomedia.enabled) {
+          return;
+        }
         state.cyclomedia.active = payload;
       },
       setCyclomediaViewer(state, payload) {
