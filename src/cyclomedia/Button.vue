@@ -12,6 +12,7 @@
 
 <script>
   import Control from '../leaflet/Control';
+  import CyclomediaRecordingsClient from './recordings-client';
 
   export default {
     extends: Control,
@@ -22,18 +23,35 @@
       'link',
       'imgSrc'
     ],
+    created() {
+      // create cyclomedia recordings client
+      this.$cyclomediaRecordingsClient = new CyclomediaRecordingsClient(
+        this.$config.cyclomedia.recordingsUrl,
+        this.$config.cyclomedia.username,
+        this.$config.cyclomedia.password,
+        4326
+      );
+    },
+
     methods: {
       handleButtonClick(e) {
-        console.log('clicked cyclomedia button');
-        this.$store.commit('setCyclomediaActive', !this.$store.state.cyclomedia.active);
+        const willBeActive = !this.$store.state.cyclomedia.active;
+
+        this.$store.commit('setCyclomediaActive', willBeActive);
+
 
         // if the cyclo viewer is off screen when it loads imagery, it won't
         // show anything even once it's on screen. use this to trigger an
         // update.
-        this.$nextTick(() => {
-          const viewer = this.$store.state.cyclomedia.viewer;
-          viewer.forceUpdate();
-        });
+        const viewer = this.$store.state.cyclomedia.viewer;
+        
+        if (willBeActive && viewer) {
+          this.$nextTick(() => {
+            viewer.forceUpdate();
+          });
+        }
+
+        this.$emit('click');
       },
     }
   };
