@@ -4,7 +4,7 @@
 export default (Vue, config) => {
   Vue.mixin({
     created() {
-      this.$config = config
+      this.$config = config;
     }
   });
 };

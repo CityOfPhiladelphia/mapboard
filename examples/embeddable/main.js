@@ -234,4 +234,9 @@ Mapboard.default({
       }
     }
   },
+  // events: {
+  //   geocodeResult(e) {
+  //     console.log('**HOST** geocode result:', e.properties.street_address);
+  //   }
+  // }
 });

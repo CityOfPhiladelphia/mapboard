@@ -86,6 +86,7 @@
               <form @submit.prevent="handleSearchFormSubmit">
                   <input class="mb-search-control-input"
                          placeholder="Search the map"
+                         :value="this.$config.defaultAddress"
                   />
                   <button class="mb-search-control-button">
                     <i class="fa fa-search fa-lg"></i>
@@ -95,12 +96,6 @@
           </control>
         </div>
 
-        <!-- <cycloFeatureGroup v-if="this.$config.cyclomedia.enabled" /> -->
-        <!-- <cyclomediaRecordings v-if="this.$config.cyclomedia.enabled && this.$store.state.cyclomedia.active"
-                                   :color="'red'"
-                                   :size="8"
-                                   :weight="2"
-        /> -->
         <cyclomedia-recording-circle v-for="recording in cyclomediaRecordings"
                                      v-if="cyclomediaActive"
                                      :key="recording.imageId"
@@ -111,12 +106,7 @@
                                      :weight="1"
                                      @l-click="handleCyclomediaRecordingClick"
         />
-        <!-- :lat="recording.lat"
-        :lng="recording.lng" -->
-        <!-- v-if="this.$config.cyclomedia.enabled && this.$store.state.cyclomedia.active" -->
-
     </map_>
-
     <slot class='widget-slot' name="cycloWidget" />
     <slot class='widget-slot' name="pictWidget" />
   </div>
@@ -204,6 +194,12 @@
       }
     },
     created() {
+      // if there's a default address, navigate to it
+      const defaultAddress = this.$config.defaultAddress;
+      if (defaultAddress) {
+        this.fetchAis(defaultAddress);
+      }
+
       // create cyclomedia recordings client
       this.$cyclomediaRecordingsClient = new CyclomediaRecordingsClient(
         this.$config.cyclomedia.recordingsUrl,
@@ -322,10 +318,14 @@
             console.log('ais got no features', data);
             return;
           }
+
           // TODO do some checking here
           const feature = data.features[0];
           self.$store.commit('setGeocodeData', feature);
           self.$store.commit('setGeocodeStatus', 'success');
+
+          // send geocode result event to host
+          self.$eventBus.$emit('geocodeResult', feature);
 
           // get topics
           this.fetchTopics(feature);
