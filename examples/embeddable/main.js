@@ -4,7 +4,7 @@ Mapboard.default({
   rootStyle: {
     height: '600px'
   },
-  baseConfig: 'https://gist.githubusercontent.com/rbrtmrtn/09b4f35396f97499c3097e2fecaed8e7/raw/485c5afedde54349d4526424124b76b235f9f4b1/config.js',
+  baseConfig: 'https://gist.githubusercontent.com/rbrtmrtn/09b4f35396f97499c3097e2fecaed8e7/raw/3c068090d544f3b6e0e31a37acea652a30621c7e/config.js',
   dataSources: {
     opa: {
       url: 'https://data.phila.gov/resource/w7rb-qrn8.json',
