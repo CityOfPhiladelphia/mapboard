@@ -259,6 +259,18 @@
 
         return features;
       },
+      // returns all leaflet markers on the map
+      leafletMarkers() {
+        const markers = [];
+
+        markers.push.apply(markers, this.markers);
+        markers.push.apply(markers, this.geojsonFeatures);
+
+        return markers;
+      },
+      mapBounds() {
+        // TODO calculate map bounds based on leaflet markers above
+      }
     },
     created() {
       // if there's a default address, navigate to it
@@ -345,6 +357,14 @@
         parcelQuery.run(this.didGetPwdParcel);
       },
       didGetPwdParcel(error, featureCollection, response) {
+        if (error) {
+          console.warn('did get pwd parcel error', error);
+          return;
+        }
+        if (!featureCollection) {
+          console.warn('did get pwd parcel, but no features');
+          return;
+        }
         const features = featureCollection.features;
         let feature;
         if (features.length === 0) {
@@ -375,6 +395,14 @@
         parcelQuery.run(this.didGetDorParcels);
       },
       didGetDorParcels(error, featureCollection, response) {
+        if (error) {
+          console.warn('did get dor parcels error', error);
+          return;
+        }
+        if (!featureCollection) {
+          console.warn('did get dor parcels, but no features');
+          return;
+        }
         const features = featureCollection.features;
         this.$store.commit('setDorParcels', featureCollection.features);
 
@@ -423,10 +451,12 @@
           // get topics
           this.fetchTopics(feature);
 
-          // create address marker
-          // const geom = feature.geometry;
-          // console.log('create address marker', geom, VectorMarker);
-          // const addressMarker = VectorMarker();
+          // pan and center map
+          // TODO ideally the map should fit its bounds to the combined extent
+          // of markers/other content, reactively
+          const map = this.$store.state.map.map;
+          const [x, y] = feature.geometry.coordinates;
+          map.setView([y, x]);
         }, response => {
           console.log('ais error')
           self.$store.commit('setGeocodeData', null);

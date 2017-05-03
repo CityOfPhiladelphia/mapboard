@@ -1,6 +1,6 @@
 <script>
   import { Circle }  from 'leaflet';
-  import bindEvents from './utils/bind-events';
+  import bindEvents from './util/bind-events';
 
   export default {
     props: [
@@ -17,16 +17,18 @@
       }
 
       // bind events
-      // TODO bind these lazily based on props
-      const events = [
-        'click',
-        // 'dblclick',
-        // 'mousedown',
-        // 'mouseover',
-        // 'mouseout',
-        // 'contextmenu'
-      ];
-      bindEvents(this, this.$leafletElement, events);
+
+      // const CIRCLE_EVENTS = [
+      //   'click',
+      //   'dblclick',
+      //   'mousedown',
+      //   'mouseover',
+      //   'mouseout',
+      //   'contextmenu'
+      // ];
+
+      // TODO warn if trying to bind an event that doesn't exist
+      bindEvents(this, this.$leafletElement, this._events);
     },
     destroyed() {
       this.$leafletElement._map.removeLayer(this.$leafletElement);
