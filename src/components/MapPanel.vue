@@ -32,103 +32,86 @@
                          :url="tiledLayer.url"
       />
 
-      <!-- dor parcels -->
-      <!-- <geojson v-for="dorParcel in dorParcels"
-               v-if="identifyFeature === 'dor-parcel' && activeParcelLayer === 'dor'"
-               :geojson="dorParcel"
-               :color="'green'"
+      <!-- address marker -->
+      <!-- REVIEW why does this need a key? it's not a list... -->
+      <!-- <vector-marker v-if="identifyFeature === 'address-marker' && geocodeGeom"
+                    :latlng="[...geocodeGeom.coordinates].reverse()"
+                    :key="streetAddress"
+      /> -->
+
+      <!-- NEW METHOD: try rendering markers generically based on marker type -->
+      <!-- vector markers -->
+      <vector-marker v-for="(marker, index) in markers"
+                    :latlng="marker.latlng"
+                    :key="marker.key"
+      />
+      <!-- geojson features -->
+      <geojson v-for="geojsonFeature in geojsonFeatures"
+               :geojson="geojsonFeature.geojson"
+               :color="geojsonFeature.color"
                :weight="2"
-               :key="dorParcel.properties.OBJECTID"
-       /> -->
+               :key="geojsonFeature.key"
+       />
 
-       <!-- pwd parcel -->
-       <!-- <geojson v-if="identifyFeature === 'pwd-parcel' && activeParcelLayer === 'pwd' && pwdParcel"
-                :geojson="pwdParcel"
-                :color="'blue'"
-                :weight="2"
-                :key="pwdParcel.properties.PARCELID"
-        /> -->
-
-        <!-- address marker -->
-        <!-- REVIEW why does this need a key? it's not a list... -->
-        <!-- <vector-marker v-if="identifyFeature === 'address-marker' && geocodeGeom"
-                      :latlng="[...geocodeGeom.coordinates].reverse()"
-                      :key="streetAddress"
-        /> -->
-
-        <!-- NEW METHOD: try rendering markers generically based on marker type -->
-        <!-- vector markers -->
-        <vector-marker v-for="(marker, index) in markers"
-                      :latlng="marker.latlng"
-                      :key="marker.key"
+      <!-- CONTROLS: -->
+      <!-- basemap control -->
+      <div v-once>
+        <basemap-control v-if="hasImageryBasemaps"
+                         v-once
+                         :position="'topright'"
+                         :imagery-years="imageryYears"
         />
-        <!-- geojson features -->
-        <geojson v-for="geojsonFeature in geojsonFeatures"
-                 :geojson="geojsonFeature.geojson"
-                 :color="geojsonFeature.color"
-                 :weight="2"
-                 :key="geojsonFeature.key"
-         />
+      </div>
 
-        <!-- CONTROLS: -->
-        <!-- basemap control -->
-        <div v-once>
-          <basemap-control v-if="hasImageryBasemaps"
+      <div v-once>
+        <pictometry-button v-if="this.$config.pictometry.enabled"
                            v-once
                            :position="'topright'"
-                           :imagery-years="imageryYears"
-          />
-        </div>
-
-        <div v-once>
-          <pictometry-button v-if="this.$config.pictometry.enabled"
-                             v-once
-                             :position="'topright'"
-                             :link="'pictometry'"
-                             :imgSrc="'../../src/assets/pictometry.png'"
-          />
-        </div>
-
-        <div v-once>
-          <cyclomedia-button v-if="this.$config.cyclomedia.enabled"
-                             v-once
-                             :position="'topright'"
-                             :link="'cyclomedia'"
-                             :imgSrc="'../../src/assets/cyclomedia.png'"
-                             @click="handleCyclomediaButtonClick"
-          />
-        </div>
-
-        <!-- search control -->
-        <!-- custom components seem to have to be wrapped like this to work
-             with v-once
-        -->
-        <div v-once>
-          <control position="topleft">
-            <div class="mb-search-control-container">
-              <form @submit.prevent="handleSearchFormSubmit">
-                  <input class="mb-search-control-input"
-                         placeholder="Search the map"
-                         :value="this.$config.defaultAddress"
-                  />
-                  <button class="mb-search-control-button">
-                    <i class="fa fa-search fa-lg"></i>
-                  </button>
-              </form>
-            </div>
-          </control>
-        </div>
-
-        <cyclomedia-recording-circle v-for="recording in cyclomediaRecordings"
-                                     v-if="cyclomediaActive"
-                                     :key="recording.imageId"
-                                     :imageId="recording.imageId"
-                                     :latlng="[recording.lat, recording.lng]"
-                                     :size="1.2"
-                                     :color="'#3388ff'"
-                                     :weight="1"
-                                     @l-click="handleCyclomediaRecordingClick"
+                           :link="'pictometry'"
+                           :imgSrc="'../../src/assets/pictometry.png'"
         />
+      </div>
+
+      <div v-once>
+        <cyclomedia-button v-if="this.$config.cyclomedia.enabled"
+                           v-once
+                           :position="'topright'"
+                           :link="'cyclomedia'"
+                           :imgSrc="'../../src/assets/cyclomedia.png'"
+                           @click="handleCyclomediaButtonClick"
+        />
+      </div>
+
+      <!-- search control -->
+      <!-- custom components seem to have to be wrapped like this to work
+           with v-once
+      -->
+      <div v-once>
+        <control position="topleft">
+          <div class="mb-search-control-container">
+            <form @submit.prevent="handleSearchFormSubmit">
+                <input class="mb-search-control-input"
+                       placeholder="Search the map"
+                       :value="this.$config.defaultAddress"
+                />
+                <button class="mb-search-control-button">
+                  <i class="fa fa-search fa-lg"></i>
+                </button>
+            </form>
+          </div>
+        </control>
+      </div>
+
+      <cyclomedia-recording-circle v-for="recording in cyclomediaRecordings"
+                                   v-if="cyclomediaActive"
+                                   :key="recording.imageId"
+                                   :imageId="recording.imageId"
+                                   :latlng="[recording.lat, recording.lng]"
+                                   :size="1.2"
+                                   :color="'#3388ff'"
+                                   :weight="1"
+                                   @l-click="handleCyclomediaRecordingClick"
+      />
     </map_>
     <slot class='widget-slot' name="cycloWidget" />
     <slot class='widget-slot' name="pictWidget" />
