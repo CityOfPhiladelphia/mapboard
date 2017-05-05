@@ -95,7 +95,7 @@ function createStore(config) {
         state.geocode.data = payload;
       },
       setBasemap(state, payload) {
-        state.basemap = payload;
+        state.map.basemap = payload;
       },
       setPictometryActive(state, payload) {
         if (!config.pictometry.enabled) {
