@@ -40,7 +40,7 @@
     ],
     computed: {
       activeBasemap() {
-        const basemap = this.$store.state.basemap;
+        const basemap = this.$store.state.map.basemap;
         return basemap;
       },
       toggleButtonImgSrc() {

@@ -30,6 +30,7 @@ function createStore(config) {
     map: {
       map: null,
       bounds: null,
+      basemap: defaultTopic.basemap,
       // features: {
       //   markers: [
       //     // {
@@ -46,7 +47,6 @@ function createStore(config) {
     dorParcels: [],
     pwdParcel: null,
     sources,
-    basemap: defaultTopic.basemap,
     cyclomedia: {
       active: false,
       viewer: null,

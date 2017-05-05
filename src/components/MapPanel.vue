@@ -25,6 +25,13 @@
                          :max-zoom="basemap.maxZoom"
       />
 
+      <!-- basemap labels -->
+      <esri-tiled-map-layer v-for="(tiledLayer, key) in this.$config.map.tiledLayers"
+                         v-if="activeLabels === key"
+                         :key="key"
+                         :url="tiledLayer.url"
+      />
+
       <!-- dor parcels -->
       <!-- <geojson v-for="dorParcel in dorParcels"
                v-if="identifyFeature === 'dor-parcel' && activeParcelLayer === 'dor'"
@@ -155,12 +162,15 @@
     },
     computed: {
       activeBasemap() {
-        return this.$store.state.basemap;
+        return this.$store.state.map.basemap;
         // if (this.$store.state.imageryOn) {
         //   return this.$store.state.imageryYear;
         // } else {
         //   return this.activeTopicConfig.basemap;
         // }
+      },
+      activeLabels() {
+        return this.$config.map.basemaps[this.activeBasemap].tiledLayers[0];
       },
       basemaps() {
         return Object.values(this.$config.map.basemaps);
