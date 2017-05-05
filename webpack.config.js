@@ -42,16 +42,28 @@ module.exports = {
   },
   externals: {
     'vue': 'Vue',
-    'leaflet': 'L'
+    'leaflet': 'L',
+    'jQuery': '$'
   },
   devServer: {
     historyApiFallback: true,
-    noInfo: true
+    noInfo: true,
+    host: process.env.WEBPACK_DEV_HOST,
+    port: process.env.WEBPACK_DEV_PORT
   },
   performance: {
     hints: false
   },
-  devtool: '#eval-source-map'
+  devtool: '#eval-source-map',
+  plugins: [
+    new webpack.DefinePlugin({
+      // this allows webpack to interpolate the value of the WEBPACK_DEV_HOST
+      // env var during build.
+      'process.env.WEBPACK_DEV_HOST': JSON.stringify(
+                                        process.env.WEBPACK_DEV_HOST
+                                      )
+    })
+  ]
 }
 
 if (process.env.NODE_ENV === 'production') {

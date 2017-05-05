@@ -1,20 +1,11 @@
 const GATEKEEPER_KEY = '35ae5b7bf8f0ff2613134935ce6b4c1e';
 
+// TODO get user-entered address from url(?)
+const searchInput = '1300 market street';
+
 Mapboard.default({
   rootStyle: {
     height: '600px'
-  },
-  baseConfig: 'https://gist.githubusercontent.com/rbrtmrtn/09b4f35396f97499c3097e2fecaed8e7/raw/3c068090d544f3b6e0e31a37acea652a30621c7e/config.js',
-  dataSources: {
-    opa: {
-      url: 'https://data.phila.gov/resource/w7rb-qrn8.json',
-      params: {
-        parcel_number: feature => feature.properties.opa_account_num
-      },
-      success(data) {
-        return data[0];
-      }
-    }
   },
   cyclomedia: {
     enabled: false
@@ -22,100 +13,91 @@ Mapboard.default({
   pictometry: {
     enabled: false
   },
+  baseConfig: '//gist.githubusercontent.com/rbrtmrtn/09b4f35396f97499c3097e2fecaed8e7/raw/3c068090d544f3b6e0e31a37acea652a30621c7e/config.js',
+  // dataSources: {},
+  greeting: {
+    components: [
+      {
+        type: 'image_',
+        slots: {
+          source: 'front.png'
+        }
+      }
+    ]
+  },
+  defaultAddress: searchInput,
   topics: [
     {
-      key: 'opa',
-      icon: 'map-marker',
-      label: 'Property Assessments',
-      // REVIEW can these be calculated from vue deps?
-      dataSources: ['opa'],
+      key: 'litter',
+      label: 'Litter',
+      icon: 'fa-trash-o',
       components: [
         {
-          type: 'callout',
+          type: 'badge',
           slots: {
-            text: 'This information is provided by the Office of Property Assessments (OPA), the agency responsible for estimating property values in the City of Philadelphia. OPA was formerly a part of the Bureau of Revision of Taxes (BRT) and some City websites may still use that name.'
+            title: 'Litter Index',
+            value: 4.3,
+            description: 'out of 10',
           }
         },
         {
           type: 'vertical-table',
           slots: {
-            title: 'Account',
             fields: [
               {
-                label: 'OPA Account #',
+                label: 'Trash & Recycling Day',
                 value(state) {
-                  return state.geocode.data.properties.opa_account_num;
+                  const day = state.geocode.data.properties.rubbish_recycle_day;
+                  const DAYS_FORMATTED = {
+                    'MON': 'Monday',
+                    'TUE': 'Tuesday',
+                    'WED': 'Wednesday',
+                    'THU': 'Thursday',
+                    'FRI': 'Friday'
+                  };
+                  return DAYS_FORMATTED[day];
                 }
               },
               {
-                label: 'OPA Address',
+                label: 'Recycling Diversion Rate',
                 value(state) {
-                  return state.geocode.data.properties.opa_address;
+                  const rate = state.geocode.data.properties.recycling_diversion_rate;
+                  return `${parseInt(rate * 100)}%`;;
+                },
+              },
+              {
+                label: 'Sanitation District',
+                value(state) {
+                  const district = state.geocode.data.properties.sanitation_district;
+                  return district;
                 }
               },
               {
-                label: 'Owners',
-                value(state) {
-                  const owners = state.geocode.data.properties.opa_owners;
-                  const ownersJoined = owners.join(', ');
-                  return ownersJoined;
-                }
+                label: 'Sanitation Convenience Center',
+                value: '1615 S 51st St, Philadelphia, PA 19143'
               },
               {
-                label: `Assessed Value (${new Date().getFullYear()})`,
-                value(state) {
-                  const data = state.sources.opa.data;
-                  return data.market_value;
-                }
+                label: 'Block Captain',
+                value: 'Jane Doe, 1345 S 52nd St'
               },
               {
-                label: 'Sale Date',
-                value(state) {
-                  const data = state.sources.opa.data;
-                  return data.sale_date;
-                }
+                label: 'PMBC Representative',
+                value: 'John Smith, 2145 S 53rd St'
               },
-              {
-                label: 'Sale Price',
-                value(state) {
-                  const data = state.sources.opa.data;
-                  return data.sale_price;
-                }
-              },
-            ]
+            ],
           }
-        }
+        },
       ],
       basemap: 'pwd',
       identifyFeature: 'address-marker',
-      // we might not need this anymore, now that we have identifyFeature
-      parcels: 'pwd'
-    },
-    {
-      key: 'pwd',
-      icon: 'tint',
-      label: 'PWD',
-      components: [
+      dynamicMapLayers: [
       ],
-      basemap: 'pwd',
-      // dynamicMapLayers: [
-      //   'stormwater'
-      // ],
-      identifyFeature: 'pwd-parcel',
       parcels: 'pwd'
-    },
-    {
-      key: 'dor',
-      icon: 'book',
-      label: 'DOR',
-      components: [
-      ],
-      basemap: 'dor',
-      identifyFeature: 'dor-parcel',
-      parcels: 'dor'
     }
   ],
   map: {
+    center: [39.951618, -75.1650911],
+    zoom: 13,
     basemaps: {
       pwd: {
         url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap/MapServer',
@@ -188,11 +170,6 @@ Mapboard.default({
         year: 1996
       }
     },
-    imagery: {
-      imagery2016: {
-        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2016_3in/MapServer',
-      },
-    },
     tiledLayers: {
       cityBasemapLabels: {
         // type: 'labels',
@@ -236,9 +213,4 @@ Mapboard.default({
       }
     }
   },
-  // events: {
-  //   geocodeResult(e) {
-  //     console.log('**HOST** geocode result:', e.properties.street_address);
-  //   }
-  // }
 });

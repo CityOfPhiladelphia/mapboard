@@ -1,10 +1,32 @@
 <template>
   <div>
-    <a href="#" class="topic-header" @click="setTopic">{{ topic.label }}</a>
-    <div class="topic-body" v-show="this.$store.state.topic === topic.key">
-      <div class="topic-comp" v-for="topicComp in topic.components">
-        I'm a {{ topicComp.type }}.
-      </div>
+    <a href="#"
+       class="topic-header"
+       @click="setActiveTopic"
+       v-if="shouldShowHeader"
+    >
+      <span v-show="status === 'waiting'" class="loading">
+        <i class="fa fa-spinner fa-lg spin"></i>
+      </span>
+      <i :class="['fa', 'fa-' + icon, 'topic-header-icon']"
+         aria-hidden="true"
+      />
+      {{ topic.label }}
+    </a>
+
+    <!-- success -->
+    <div class="topic-body" v-if="shouldShowBody">
+      <component v-for="(topicComp, topicCompIndex) in topic.components"
+                 :is="topicComp.type"
+                 class="topic-comp"
+                 :slots="topicComp.slots"
+                 :key="`topic-comp-${topic.key}-${topicCompIndex}`"
+      />
+    </div>
+
+    <!-- error -->
+    <div class="topic-body" v-show="shouldShowError">
+      Could not locate records for that address.
     </div>
   </div>
 </template>
@@ -12,19 +34,120 @@
 <script>
   // import { mapMutations } from 'vuex';
 
+  import Badge from './topic-components/Badge';
+  import HorizontalTable from './topic-components/HorizontalTable';
+  import VerticalTable from './topic-components/VerticalTable';
+  import Callout from './topic-components/Callout';
+  import Image_ from './topic-components/Image';
+
   export default {
-    props: ['topic'],
+    props: ['topicKey'],
+    components: {
+      Badge,
+      HorizontalTable,
+      VerticalTable,
+      Callout,
+      Image_
+    },
+    computed: {
+      // returns the full config object for the topic
+      topic() {
+        const topicKey = this.$props.topicKey;
+        const topicsFiltered = this.$config.topics.filter((topic) => {
+          return topic.key === this.$props.topicKey;
+        });
+        if (topicsFiltered.length !== 1) {
+          throw `Could not get single config object for topic '${topicKey}'.`;
+        }
+        const config = topicsFiltered[0];
+        return config;
+      },
+      icon() {
+        return this.topic.icon;
+      },
+      isActive() {
+        const key = this.topic.key;
+        const activeTopic = this.$store.state.activeTopic;
+        // console.log('is active?', key === activeTopic);
+        return activeTopic === key;
+      },
+      shouldShowHeader() {
+        return this.$config.topics.length > 1;
+      },
+      dataSources() {
+        return this.topic.dataSources || [];
+      },
+      hasData() {
+        return this.dataSources.every(dataSource => {
+          return this.$store.state.sources[dataSource].data;
+        });
+      },
+      shouldShowBody() {
+        const succeeded = this.status === 'success';
+        const hasData = this.hasData;
+        const should = succeeded && hasData && this.isActive;
+        return should;
+      },
+      shouldShowError() {
+        return this.status === 'error' || (this.status !== 'waiting' && !this.hasData);
+      },
+      // REVIEW this is getting cached and not updating when the deps update
+      status: {
+        cache: false,
+        get() {
+          // get the status of each source
+          const dataSources = this.topic.dataSources || [];
+
+          // if no sources, return success
+          if (dataSources.length === 0) {
+            return 'success';
+          }
+
+          let topicStatus;
+
+          const sourceStatuses = dataSources.map(dataSource => {
+            // this is what should be observed. when it changes,
+            // it's not causing this to re-evaluate.
+            return this.$store.state.sources[dataSource].status;
+          });
+
+          // if any sources are still waiting, return waiting
+          if (sourceStatuses.some(x => x === 'waiting')) {
+            topicStatus = 'waiting';
+          }
+
+          // if any sources have errors, return error
+          else if (sourceStatuses.some(x => x === 'error')) {
+            topicStatus = 'error';
+          }
+
+          else {
+            topicStatus = 'success';
+          }
+
+          return topicStatus;
+        }
+      },
+    },
     methods: {
       // TODO use mapMuptations for less boilerplate
-      setTopic() {
-        const topic = this.$props.topic.key;
-        this.$store.commit('setTopic', { topic });
+      setActiveTopic() {
+        const topic = this.$props.topicKey;
+        let nextTopic;
+        if (topic === this.$store.state.activeTopic) {
+          nextTopic = null;
+        } else {
+          nextTopic = topic;
+        }
+        this.$store.commit('setActiveTopic', { topic: nextTopic });
       }
     }
   };
 </script>
 
 <style scoped>
+  /*REVIEW these aren't prefixed `mb-`because they're scoped, but it feels
+  inconsistent?*/
   .topic-header {
     background: #f5f5f5;
     border: 1px solid #ddd;
@@ -43,8 +166,21 @@
     color: inherit;
   }
 
+  .topic-header-icon {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
   .topic-body {
     padding: 10px;
+    margin-bottom: 20px;
+  }
+
+  .topic-comp {
     margin-bottom: 10px;
+  }
+
+  .loading {
+    float: right;
   }
 </style>
