@@ -130,6 +130,10 @@
       },
     },
     methods: {
+      configForBasemap(key) {
+        return this.$config.map.basemaps[key];
+      },
+
       // TODO use mapMuptations for less boilerplate
       setActiveTopic() {
         const topic = this.$props.topicKey;
@@ -140,7 +144,22 @@
           nextTopic = topic;
         }
         this.$store.commit('setActiveTopic', { topic: nextTopic });
-      }
+
+        // handle basemap
+        const prevBasemap = this.$store.state.map.basemap;
+        const prevBasemapConfig = this.configForBasemap(prevBasemap);
+        const prevBasemapType = prevBasemapConfig.type;
+        let nextBasemap;
+
+        // if featuremap - maybe change
+        if (prevBasemapType === 'featuremap') {
+          const nextTopicConfig = this.$config.topics.filter(top => top.key === nextTopic)[0];
+          nextBasemap = nextTopicConfig.basemap;
+          if (prevBasemap != nextBasemap) {
+            this.$store.commit('setBasemap', nextBasemap);
+          }
+        }
+      },
     }
   };
 </script>

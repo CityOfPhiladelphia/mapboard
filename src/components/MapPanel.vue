@@ -25,11 +25,12 @@
                          :max-zoom="basemap.maxZoom"
       />
 
-      <!-- basemap labels -->
+      <!-- basemap labels and parcels outlines -->
       <esri-tiled-map-layer v-for="(tiledLayer, key) in this.$config.map.tiledLayers"
-                         v-if="activeLabels === key"
+                         v-if="activeTiles.includes(key)"
                          :key="key"
                          :url="tiledLayer.url"
+                         :zIndex="tiledLayer.zIndex"
       />
 
       <!-- address marker -->
@@ -144,27 +145,14 @@
       CyclomediaRecordingCircle
     },
     computed: {
-      baseOrImage() {
-        const toggle = this.$store.state.base;
-        if (toggle === 'basemap'){
-          return this.activeTopicConfig.basemap;
-        } else {
-          return this.$store.state.imagery;
-        }
-      },
-      activeImagery() {
-        return this.$store.state.imagery;
-      },
       activeBasemap() {
         return this.$store.state.map.basemap;
-        // if (this.$store.state.imageryOn) {
-        //   return this.$store.state.imageryYear;
-        // } else {
-        //   return this.activeTopicConfig.basemap;
-        // }
       },
-      activeLabels() {
-        return this.$config.map.basemaps[this.activeBasemap].tiledLayers[0];
+      baseOrImage() {
+        return this.$config.map.basemaps[this.activeBasemap].type
+      },
+      activeTiles() {
+        return this.$config.map.basemaps[this.activeBasemap].tiledLayers;
       },
       basemaps() {
         return Object.values(this.$config.map.basemaps);
