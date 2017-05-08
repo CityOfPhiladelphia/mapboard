@@ -20,6 +20,7 @@ function createStore(config) {
   }, {});
 
   const initialState = {
+    lastClick: null,
     activeTopic: defaultTopic.key,
     // the ais feature
     geocode: {
@@ -50,7 +51,9 @@ function createStore(config) {
     cyclomedia: {
       active: false,
       viewer: null,
-      recordings: []
+      recordings: [],
+      locFromApp: null,
+      locFromViewer: null,
     },
     // we need this to know whether or not to force an update on the first show
     pictometry: {
@@ -63,6 +66,9 @@ function createStore(config) {
     state: initialState,
     getters: {},
     mutations: {
+      setLastClick(state, payload) {
+        state.lastClick = payload;
+      },
       setActiveTopic(state, payload) {
         state.activeTopic = payload.topic;
       },
@@ -114,6 +120,12 @@ function createStore(config) {
       },
       setCyclomediaRecordings(state, payload) {
         state.cyclomedia.recordings = payload;
+      },
+      setCyclomediaLocFromApp(state, payload) {
+        state.cyclomedia.locFromApp = payload;
+      },
+      setCyclomediaLocFromViewer(state, payload) {
+        state.cyclomedia.locFromViewer = payload
       },
     }
   });

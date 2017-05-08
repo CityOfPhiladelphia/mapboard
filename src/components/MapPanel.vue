@@ -46,6 +46,12 @@
                     :latlng="marker.latlng"
                     :key="marker.key"
       />
+
+      <vector-marker v-if="this.cyclomediaActive"
+                    :latlng="this.cycloLoc"
+                    :markerColor="'green'"
+      />
+
       <!-- geojson features -->
       <geojson v-for="geojsonFeature in geojsonFeatures"
                :geojson="geojsonFeature.geojson"
@@ -225,6 +231,10 @@
 
         return markers;
       },
+      cycloLoc() {
+        const xyz=this.$store.state.cyclomedia.viewer.props.orientation.xyz
+        return [xyz[1], xyz[0]];
+      },
       // returns all geojson features to be rendered on the map along with
       // necessary props.
       geojsonFeatures() {
@@ -262,7 +272,7 @@
       },
       mapBounds() {
         // TODO calculate map bounds based on leaflet markers above
-      }
+      },
     },
     created() {
       // if there's a default address, navigate to it
@@ -280,12 +290,48 @@
       );
     },
     methods: {
+      // getLocForCyclo() {
+      //   console.log('getLocForCyclo is running');
+      //   const lastClick = this.$store.state.lastClick;
+      //   console.log('lastClick is', lastClick);
+      //   const viewer = this.$store.state.cyclomedia.viewer;
+      //   const xyz = viewer.props.orientation.xyz;
+      //   console.log('xyz is', xyz);
+      //   const geocodeData = this.$store.state.geocode.data;
+      //   const map = this.$store.state.map.map;
+      //   console.log('map is', map);
+      //   let sendLoc;
+      //
+      //   if (lastClick === 'search') {
+      //     sendLoc = geocodeData.geometry.coordinates
+      //     console.log('the last thing clicked was the searchbar, using geocoded', sendLoc);
+      //   }
+      //   // if viewer does not have xy yet
+      //   else if (xyz[0] === 0) {
+      //     // if geocodeData does not have data yet
+      //     if (!geocodeData) {
+      //       sendLoc = map.getCenter();
+      //       console.log('set sendLoc from center:', sendLoc);
+      //     } else {
+      //       sendLoc = geocodeData.geometry.coordinates
+      //       console.log('set sendLoc from geocodeData:', sendLoc);
+      //     }
+      //   }
+      //   else {
+      //     console.log('running the else');
+      //     sendLoc = [orientationXYZ[1], orientationXYZ[0]];
+      //     console.log('cyclomedia already has an xyz', sendLoc);
+      //   }
+      //   this.$store.commit('setCyclomediaLocFromApp', sendLoc);
+      //   // return sendLoc;
+      // },
       handleMapClick(e) {
         // TODO figure out why form submits via enter key are generating a map
         // click event and remove this
         if (e.originalEvent.keyCode === 13) {
           return;
         }
+        this.$store.commit('setLastClick', 'map')
 
         // METHOD 1: intersect map click latlng with parcel layers
         this.getDorParcelsByLatLng(e.latlng);
@@ -296,6 +342,8 @@
       },
       handleCyclomediaButtonClick() {
         this.updateCyclomediaRecordings();
+
+
       },
       handleCyclomediaRecordingClick(e) {
         const latlng = e.latlng;
@@ -322,8 +370,10 @@
       },
       handleSearchFormSubmit(e) {
         const input = e.target[0].value;
+        this.$store.commit('setLastClick', 'search');
         this.$store.commit('setPwdParcel', null);
         this.$store.commit('setDorParcels', []);
+
         this.fetchAis(input);
       },
       getReverseGeocode(latlng) {

@@ -29,7 +29,6 @@
     methods: {
       createLeafletElement() {
         const props = Object.assign({}, this.$props);
-        console.log(props);
         return new EsriTiledMapLayer(props);
       },
       parentMounted(parent) {

@@ -39,19 +39,54 @@
 
         this.$store.commit('setCyclomediaActive', willBeActive);
 
-
         // if the cyclo viewer is off screen when it loads imagery, it won't
         // show anything even once it's on screen. use this to trigger an
         // update.
         const viewer = this.$store.state.cyclomedia.viewer;
-        
+
         if (willBeActive && viewer) {
           this.$nextTick(() => {
             viewer.forceUpdate();
           });
+          //this.handleCyclomediaOpen();
+          this.setNewLocation(this.$store.state.cyclomedia.locFromApp);
         }
 
         this.$emit('click');
+      },
+      // handleCyclomediaOpen() {
+      //   console.log('handleCyclomediaOpen is running');
+      //   const lastClick = this.$store.state.lastClick;
+      //   const viewer = this.$store.state.cyclomedia.viewer;
+      //   const xyz = viewer.props.orientation.xyz;
+      //   const geocodeData = this.$store.state.geocode.data;
+      //   let sendLoc;
+      //
+      //   // if the searchbar has been used most recently
+      //   if (lastClick === 'search') {
+      //     sendLoc = geocodeData.geometry.coordinates
+      //     console.log('the last thing clicked was the searchbar, using geocoded', sendLoc);
+      //   }
+      //   // if viewer does not have xy yet
+      //   else if (xyz[0] === 0) {
+      //     // if geocodeData does not have data yet
+      //     if (!geocodeData) {
+      //       const map = this.$store.state.map.map;
+      //       sendLoc = map.getCenter();
+      //       console.log('set sendLoc from center:', sendLoc);
+      //     } else {
+      //       sendLoc = geocodeData.geometry.coordinates
+      //       console.log('set sendLoc from geocodeData:', sendLoc);
+      //     }
+      //     this.setNewLocation(sendLoc);
+      //   } else {
+      //     console.log('cyclomedia already has an xyz');
+      //   }
+      // },
+      setNewLocation(latlng) {
+        const viewer = this.$store.state.cyclomedia.viewer;
+        const xy = [latlng.lng, latlng.lat];
+        viewer.openByCoordinate(xy);
       },
     }
   };
