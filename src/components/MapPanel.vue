@@ -47,10 +47,12 @@
                     :key="marker.key"
       />
 
-      <vector-marker v-if="this.cyclomediaActive"
-                    :latlng="this.cycloLoc"
-                    :markerColor="'green'"
+      <png-marker v-if="this.cyclomediaActive"
+                    :icon="'../../src/assets/camera.png'"
+                    :orientation="this.$store.state.cyclomedia.viewer.props.orientation"
       />
+      <!-- :latlng="this.cycloLoc"
+      :rotationAngle="this.cycloRotationAngle" -->
 
       <!-- geojson features -->
       <geojson v-for="geojsonFeature in geojsonFeatures"
@@ -132,6 +134,7 @@
   import EsriTiledMapLayer from '../esri-leaflet/TiledMapLayer';
   import Geojson from '../leaflet/Geojson';
   import VectorMarker from './VectorMarker';
+  import PngMarker from './PngMarker';
   import BasemapControl from './BasemapControl';
   import CyclomediaButton from '../cyclomedia/Button';
   import PictometryButton from '../pictometry/Button';
@@ -145,6 +148,7 @@
       EsriTiledMapLayer,
       Geojson,
       VectorMarker,
+      PngMarker,
       BasemapControl,
       PictometryButton,
       CyclomediaButton,
@@ -232,8 +236,11 @@
         return markers;
       },
       cycloLoc() {
-        const xyz=this.$store.state.cyclomedia.viewer.props.orientation.xyz
+        const xyz=this.$store.state.cyclomedia.viewer.props.orientation.xyz;
         return [xyz[1], xyz[0]];
+      },
+      cycloRotationAngle() {
+        return this.$store.state.cyclomedia.viewer.props.orientation.yaw;
       },
       // returns all geojson features to be rendered on the map along with
       // necessary props.

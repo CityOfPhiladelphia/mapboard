@@ -8,17 +8,20 @@
 
   export default {
     props: [
-      'latlng',
-      'markerColor',
-      'icon'
+      'icon',
+      'orientation'
+      // 'latlng',
+      // 'rotationAngle'
     ],
-    data: function() {
-      return {
-        thelatlng: this.$props.latlng
-      }
-    },
+    // data: function() {
+    //   return {
+    //     thelatlng: this.$props.latlng
+    //   }
+    // },
     render(h) {
-      const a = this.$props.latlng;
+      const a = this.$props.orientation
+      //const a = this.$props.latlng;
+      //const b = this.$props.rotationAngle;
       return;
     },
     mounted() {
@@ -31,7 +34,7 @@
       }
     },
     updated() {
-      // console.log('vectorMarker updated fired, latlng is', this.latlng);
+      console.log('vectorMarker updated fired, latlng is', this.latlng);
       this.$leafletElement._map.removeLayer(this.$leafletElement);
       const leafletElement = this.$leafletElement = this.createLeafletElement();
       const map = this.$store.state.map.map;
@@ -46,16 +49,24 @@
     },
     computed: {
       latlng() {
-        return this.$props.latlng;
+        const xyz = this.$props.orientation.xyz;
+        return [xyz[1], xyz[0]];
+      },
+      rotationAngle() {
+        return this.$props.orientation.yaw * (180/3.14159265359);
       }
     },
     methods: {
       createLeafletElement() {
-        const icon = L.VectorMarkers.icon({
-          icon:  this.$props.icon || 'circle',
-          markerColor: this.$props.markerColor || '#2176d2'
+        const icon = L.icon({
+            iconUrl: this.$props.icon,
+            iconSize: [26, 16],
+            iconAnchor: [11, 8],
+          })
+        return L.marker(this.latlng, {
+          icon: icon,
+          rotationAngle: this.rotationAngle,
         });
-        return L.marker(this.latlng, { icon });
       },
       parentMounted(parent) {
         const map = parent.$leafletElement;
