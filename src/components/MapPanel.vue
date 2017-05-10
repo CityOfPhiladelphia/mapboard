@@ -54,6 +54,10 @@
       <!-- :latlng="this.cycloLoc"
       :rotationAngle="this.cycloRotationAngle" -->
 
+      <svg-marker v-if="this.cyclomediaActive"
+                    :orientation="this.$store.state.cyclomedia.viewer.props.orientation"
+      />
+
       <!-- geojson features -->
       <geojson v-for="geojsonFeature in geojsonFeatures"
                :geojson="geojsonFeature.geojson"
@@ -135,6 +139,7 @@
   import Geojson from '../leaflet/Geojson';
   import VectorMarker from './VectorMarker';
   import PngMarker from './PngMarker';
+  import SvgMarker from './SvgMarker';
   import BasemapControl from './BasemapControl';
   import CyclomediaButton from '../cyclomedia/Button';
   import PictometryButton from '../pictometry/Button';
@@ -149,6 +154,7 @@
       Geojson,
       VectorMarker,
       PngMarker,
+      SvgMarker,
       BasemapControl,
       PictometryButton,
       CyclomediaButton,
