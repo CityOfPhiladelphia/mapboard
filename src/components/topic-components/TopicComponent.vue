@@ -2,7 +2,7 @@
     export default {
     props: ['slots'],
     methods: {
-      evaluateSlot(valOrGetter) {
+      evaluateSlot(valOrGetter, transforms = []) {
         const valOrGetterType = typeof valOrGetter;
         let val;
 
@@ -28,6 +28,23 @@
         // unhandled
         } else {
           throw `Unhandled slot value type: ${valOrGetterType}`;
+        }
+
+        // apply transforms
+        for (let transform of transforms) {
+          // get transform definition from config by name
+          const transformDef = this.$config.transforms[transform];
+          // make object of (relevant) globals by filtering window object
+          const globalNames = transformDef.globals;
+          const globals = Object.keys(window)
+                            .filter(key => globalNames.includes(key))
+                            .reduce((obj, key) => {
+                                obj[key] = window[key];
+                                return obj;
+                            }, {});
+          // run transform
+          const fn = transformDef.transform;
+          val = fn(val, globals);
         }
 
         return val;

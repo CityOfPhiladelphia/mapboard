@@ -1,5 +1,8 @@
 const GATEKEEPER_KEY = '35ae5b7bf8f0ff2613134935ce6b4c1e';
 
+// configure accounting.js
+accounting.settings.currency.precision = 0;
+
 Mapboard.default({
   rootStyle: {
     height: '600px'
@@ -21,6 +24,22 @@ Mapboard.default({
   },
   pictometry: {
     enabled: false
+  },
+  transforms: {
+    currency: {
+      globals: ['accounting'],
+      transform(value, globals) {
+        const accounting = globals.accounting;
+        return accounting.formatMoney(value);
+      }
+    },
+    date: {
+      globals: ['moment'],
+      transform(value, globals) {
+        const moment = globals.moment;
+        return moment(value).format('YYYY-MM-DD');
+      }
+    },
   },
   topics: [
     {
@@ -66,21 +85,30 @@ Mapboard.default({
                 value(state) {
                   const data = state.sources.opa.data;
                   return data.market_value;
-                }
+                },
+                transforms: [
+                  'currency'
+                ]
               },
               {
                 label: 'Sale Date',
                 value(state) {
                   const data = state.sources.opa.data;
                   return data.sale_date;
-                }
+                },
+                transforms: [
+                  'date'
+                ]
               },
               {
                 label: 'Sale Price',
                 value(state) {
                   const data = state.sources.opa.data;
                   return data.sale_price;
-                }
+                },
+                transforms: [
+                  'currency'
+                ]
               },
             ]
           }
