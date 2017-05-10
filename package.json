@@ -1,7 +1,7 @@
 {
   "name": "mapboard",
   "description": "A Vue.js component for data-rich web mapping",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "author": "City of Philadelphia <maps@phila.gov>",
   "private": true,
   "scripts": {
