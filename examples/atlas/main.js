@@ -25,9 +25,12 @@ Mapboard.default({
   pictometry: {
     enabled: false
   },
+  // reusable transforms for topic data. see `topics` section for usage.
   transforms: {
     currency: {
+      // a list of global objects this transform depends on
       globals: ['accounting'],
+      // this is the function that gets called to perform the transform
       transform(value, globals) {
         const accounting = globals.accounting;
         return accounting.formatMoney(value);
