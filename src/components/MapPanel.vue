@@ -47,13 +47,13 @@
                     :key="marker.key"
       />
 
+      <!-- marker using a png and ablility to rotate it -->
       <png-marker v-if="this.cyclomediaActive"
                     :icon="'../../src/assets/camera.png'"
                     :orientation="this.$store.state.cyclomedia.viewer.props.orientation"
       />
-      <!-- :latlng="this.cycloLoc"
-      :rotationAngle="this.cycloRotationAngle" -->
 
+      <!-- marker using custom code extending icons - https://github.com/iatkin/leaflet-svgicon -->
       <svg-marker v-if="this.cyclomediaActive"
                     :orientation="this.$store.state.cyclomedia.viewer.props.orientation"
       />
@@ -164,9 +164,6 @@
       activeBasemap() {
         return this.$store.state.map.basemap;
       },
-      baseOrImage() {
-        return this.$config.map.basemaps[this.activeBasemap].type
-      },
       activeTiles() {
         return this.$config.map.basemaps[this.activeBasemap].tiledLayers;
       },
@@ -241,13 +238,6 @@
 
         return markers;
       },
-      cycloLoc() {
-        const xyz=this.$store.state.cyclomedia.viewer.props.orientation.xyz;
-        return [xyz[1], xyz[0]];
-      },
-      cycloRotationAngle() {
-        return this.$store.state.cyclomedia.viewer.props.orientation.yaw;
-      },
       // returns all geojson features to be rendered on the map along with
       // necessary props.
       geojsonFeatures() {
@@ -303,41 +293,6 @@
       );
     },
     methods: {
-      // getLocForCyclo() {
-      //   console.log('getLocForCyclo is running');
-      //   const lastClick = this.$store.state.lastClick;
-      //   console.log('lastClick is', lastClick);
-      //   const viewer = this.$store.state.cyclomedia.viewer;
-      //   const xyz = viewer.props.orientation.xyz;
-      //   console.log('xyz is', xyz);
-      //   const geocodeData = this.$store.state.geocode.data;
-      //   const map = this.$store.state.map.map;
-      //   console.log('map is', map);
-      //   let sendLoc;
-      //
-      //   if (lastClick === 'search') {
-      //     sendLoc = geocodeData.geometry.coordinates
-      //     console.log('the last thing clicked was the searchbar, using geocoded', sendLoc);
-      //   }
-      //   // if viewer does not have xy yet
-      //   else if (xyz[0] === 0) {
-      //     // if geocodeData does not have data yet
-      //     if (!geocodeData) {
-      //       sendLoc = map.getCenter();
-      //       console.log('set sendLoc from center:', sendLoc);
-      //     } else {
-      //       sendLoc = geocodeData.geometry.coordinates
-      //       console.log('set sendLoc from geocodeData:', sendLoc);
-      //     }
-      //   }
-      //   else {
-      //     console.log('running the else');
-      //     sendLoc = [orientationXYZ[1], orientationXYZ[0]];
-      //     console.log('cyclomedia already has an xyz', sendLoc);
-      //   }
-      //   this.$store.commit('setCyclomediaLocFromApp', sendLoc);
-      //   // return sendLoc;
-      // },
       handleMapClick(e) {
         // TODO figure out why form submits via enter key are generating a map
         // click event and remove this
@@ -356,12 +311,11 @@
       handleCyclomediaButtonClick() {
         this.updateCyclomediaRecordings();
 
-
       },
       handleCyclomediaRecordingClick(e) {
         const latlng = e.latlng;
-
-        // TODO call method on cyclo widget
+        const viewer = this.$store.state.cyclomedia.viewer;
+        viewer.openByCoordinate([latlng.lng, latlng.lat]);
       },
       handleMapMove(e) {
         this.updateCyclomediaRecordings();

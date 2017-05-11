@@ -5,7 +5,7 @@ Mapboard.default({
     height: '600px'
   },
   //baseConfig: 'https://gist.githubusercontent.com/rbrtmrtn/09b4f35396f97499c3097e2fecaed8e7/raw/3c068090d544f3b6e0e31a37acea652a30621c7e/config.js',
-  baseConfig: 'https://gist.githubusercontent.com/ajrothwell/f5df4d85e09f5821c16329a96889368d/raw/319f4ee164bb3289075a8c1a8481ecbba9bb2fbb/config.js',
+  baseConfig: 'https://gist.githubusercontent.com/ajrothwell/f5df4d85e09f5821c16329a96889368d/raw/a4c0594adeafccb0fb220773de2509bfc01852e4/config.js',
   dataSources: {
     opa: {
       url: 'https://data.phila.gov/resource/w7rb-qrn8.json',

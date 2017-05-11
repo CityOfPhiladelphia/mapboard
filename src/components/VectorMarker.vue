@@ -22,7 +22,7 @@
       return;
     },
     mounted() {
-      console.log('vectorMarker mounted fired, latlng is', this.latlng);
+      // console.log('vectorMarker mounted fired, latlng is', this.latlng);
       const leafletElement = this.$leafletElement = this.createLeafletElement();
       const map = this.$store.state.map.map;
       // REVIEW kind of hacky/not reactive?

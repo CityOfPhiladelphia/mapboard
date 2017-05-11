@@ -7,21 +7,6 @@ L.DivIcon.SVGIcon.noCircleIcon = L.DivIcon.SVGIcon.extend({
 
         return options
     },
-    /*_createPathDescription: function() {
-        var height = Number(this.options.iconSize.y)
-        var width = Number(this.options.iconSize.x)
-        var weight = Number(this.options.weight)
-        var margin = weight
-
-        var startPoint = "M " + margin + " " + (height/2) + " "
-        var bottomLeftLine = "L " + (width/2) + " " + (height - margin) + " "
-        var bottomRightLine = "L " + (width - margin) + " " + (height/2) + " "
-        var topLeftLine = "L " + (width/2) + " " + margin + " Z"
-
-        var d = startPoint + bottomLeftLine + bottomRightLine + topLeftLine
-
-        return d
-    }*/
 })
 
 L.divIcon.svgIcon.noCircleIcon = function(options) {
@@ -37,8 +22,6 @@ L.Marker.SVGMarker.NoCircleMarker = L.Marker.SVGMarker.extend({
 L.marker.svgMarker.noCircleMarker = function(latlng, options) {
     return new L.Marker.SVGMarker.noCircleMarker(latlng, options)
 }
-
-
 
 L.DivIcon.SVGIcon.TriangleIcon = L.DivIcon.SVGIcon.extend({
     initialize: function(options) {
@@ -56,16 +39,9 @@ L.DivIcon.SVGIcon.TriangleIcon = L.DivIcon.SVGIcon.extend({
         var weight = Number(this.options.weight)
         var margin = weight
 
-        /*var startPoint = "M " + margin + " " + (height/2) + " "
-        var bottomLeftLine = "L " + (width/2) + " " + (height - margin) + " "
-        var bottomRightLine = "L " + (width - margin) + " " + (height/2) + " "
-        var topLeftLine = "L " + (width/2) + " " + margin + " Z"
-*/
         var startPoint = "M " + margin + " " + (0) + " "
         var leftLine = "L " + (width/2) + " " + (height - margin) + " "
         var rightLine = "L " + (width - margin) + " " + (0) + " Z"
-        //var topLeftLine = "L " + (width/2) + " " + margin + " Z"
-        //var d = startPoint + bottomLeftLine + bottomRightLine + topLeftLine
         var d = startPoint + leftLine + rightLine
 
         return d

@@ -1,6 +1,6 @@
 <!--
-  wraps Leaflet.vector-markers as a vue component
-  https://github.com/hiasinho/Leaflet.vector-markers
+  wraps leaflet svg-icons as a vue component
+  https://github.com/iatkin/leaflet-svgicon
 -->
 
 <script>
@@ -78,3 +78,13 @@
     }
   };
 </script>
+
+<style>
+  .svg-icon-noClick-svg {
+    pointer-events: none;
+  }
+
+  .svg-icon-noClick {
+    pointer-events: none;
+  }
+</style>

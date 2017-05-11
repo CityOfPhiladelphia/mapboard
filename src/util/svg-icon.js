@@ -2,6 +2,7 @@
 //SVG icon for any marker class
 //Ilya Atkin
 //ilya.atkin@unh.edu
+//https://github.com/iatkin/leaflet-svgicon
 
 L.DivIcon.SVGIcon = L.DivIcon.extend({
     options: {
