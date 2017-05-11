@@ -12,7 +12,7 @@ class RecordingsClient {
 	// this takes leaflet map bonds and an EPSG coordinate system id, e.g. 3857
 	// and returns an array of cyclomedia recording points
 	getRecordings(bounds, callback) {
-		console.log('get recordings', bounds);
+		// console.log('get recordings', bounds);
 
 		const swCoord = bounds.getSouthWest();
 		const neCoord = bounds.getNorthEast();
@@ -33,9 +33,9 @@ class RecordingsClient {
 											  </ogc:Filter>
 											 </wfs:Query>
 											</wfs:GetFeature>`;
-		// const url = (this.proxy || '') + this.baseUrl;
+		const url = (this.proxy || '') + this.baseUrl;
 		// TEMP
-		const url = ((this.proxy || '') + this.baseUrl).replace('//', 'https://');
+		// const url = ((this.proxy || '') + this.baseUrl).replace('//', 'https://');
 		const self = this;
 
 		$.ajax({
@@ -85,8 +85,8 @@ class RecordingsClient {
 				callback(recordings);
 			},
 	    error(xhr, ajaxOptions, thrownError) {
-	        console.log(xhr.status);
-	        console.log(thrownError);
+        console.log(xhr.status);
+        console.log(thrownError);
 	    }
 		});
 	}
