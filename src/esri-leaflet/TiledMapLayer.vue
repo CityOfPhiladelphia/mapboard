@@ -7,7 +7,8 @@
     props: [
       'url',
       'minZoom',
-      'maxZoom'
+      'maxZoom',
+      'zIndex',
     ],
     mounted() {
       const leafletElement = this.$leafletElement = this.createLeafletElement();

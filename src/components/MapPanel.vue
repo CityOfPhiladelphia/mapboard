@@ -25,110 +25,106 @@
                          :max-zoom="basemap.maxZoom"
       />
 
-      <!-- basemap labels -->
+      <!-- basemap labels and parcels outlines -->
       <esri-tiled-map-layer v-for="(tiledLayer, key) in this.$config.map.tiledLayers"
-                         v-if="activeLabels === key"
+                         v-if="activeTiles.includes(key)"
                          :key="key"
                          :url="tiledLayer.url"
+                         :zIndex="tiledLayer.zIndex"
       />
 
-      <!-- dor parcels -->
-      <!-- <geojson v-for="dorParcel in dorParcels"
-               v-if="identifyFeature === 'dor-parcel' && activeParcelLayer === 'dor'"
-               :geojson="dorParcel"
-               :color="'green'"
+      <!-- address marker -->
+      <!-- REVIEW why does this need a key? it's not a list... -->
+      <!-- <vector-marker v-if="identifyFeature === 'address-marker' && geocodeGeom"
+                    :latlng="[...geocodeGeom.coordinates].reverse()"
+                    :key="streetAddress"
+      /> -->
+
+      <!-- NEW METHOD: try rendering markers generically based on marker type -->
+      <!-- vector markers -->
+      <vector-marker v-for="(marker, index) in markers"
+                    :latlng="marker.latlng"
+                    :key="marker.key"
+      />
+
+      <!-- marker using a png and ablility to rotate it -->
+      <png-marker v-if="this.cyclomediaActive"
+                    :icon="'../../src/assets/camera.png'"
+                    :orientation="this.$store.state.cyclomedia.viewer.props.orientation"
+      />
+
+      <!-- marker using custom code extending icons - https://github.com/iatkin/leaflet-svgicon -->
+      <svg-marker v-if="this.cyclomediaActive"
+                    :orientation="this.$store.state.cyclomedia.viewer.props.orientation"
+      />
+
+      <!-- geojson features -->
+      <geojson v-for="geojsonFeature in geojsonFeatures"
+               :geojson="geojsonFeature.geojson"
+               :color="geojsonFeature.color"
                :weight="2"
-               :key="dorParcel.properties.OBJECTID"
-       /> -->
+               :key="geojsonFeature.key"
+       />
 
-       <!-- pwd parcel -->
-       <!-- <geojson v-if="identifyFeature === 'pwd-parcel' && activeParcelLayer === 'pwd' && pwdParcel"
-                :geojson="pwdParcel"
-                :color="'blue'"
-                :weight="2"
-                :key="pwdParcel.properties.PARCELID"
-        /> -->
-
-        <!-- address marker -->
-        <!-- REVIEW why does this need a key? it's not a list... -->
-        <!-- <vector-marker v-if="identifyFeature === 'address-marker' && geocodeGeom"
-                      :latlng="[...geocodeGeom.coordinates].reverse()"
-                      :key="streetAddress"
-        /> -->
-
-        <!-- NEW METHOD: try rendering markers generically based on marker type -->
-        <!-- vector markers -->
-        <vector-marker v-for="(marker, index) in markers"
-                      :latlng="marker.latlng"
-                      :key="marker.key"
+      <!-- CONTROLS: -->
+      <!-- basemap control -->
+      <div v-once>
+        <basemap-control v-if="hasImageryBasemaps"
+                         v-once
+                         :position="'topright'"
+                         :imagery-years="imageryYears"
         />
-        <!-- geojson features -->
-        <geojson v-for="geojsonFeature in geojsonFeatures"
-                 :geojson="geojsonFeature.geojson"
-                 :color="geojsonFeature.color"
-                 :weight="2"
-                 :key="geojsonFeature.key"
-         />
+      </div>
 
-        <!-- CONTROLS: -->
-        <!-- basemap control -->
-        <div v-once>
-          <basemap-control v-if="hasImageryBasemaps"
+      <div v-once>
+        <pictometry-button v-if="this.$config.pictometry.enabled"
                            v-once
                            :position="'topright'"
-                           :imagery-years="imageryYears"
-          />
-        </div>
-
-        <div v-once>
-          <pictometry-button v-if="this.$config.pictometry.enabled"
-                             v-once
-                             :position="'topright'"
-                             :link="'pictometry'"
-                             :imgSrc="'../../src/assets/pictometry.png'"
-          />
-        </div>
-
-        <div v-once>
-          <cyclomedia-button v-if="this.$config.cyclomedia.enabled"
-                             v-once
-                             :position="'topright'"
-                             :link="'cyclomedia'"
-                             :imgSrc="'../../src/assets/cyclomedia.png'"
-                             @click="handleCyclomediaButtonClick"
-          />
-        </div>
-
-        <!-- search control -->
-        <!-- custom components seem to have to be wrapped like this to work
-             with v-once
-        -->
-        <div v-once>
-          <control position="topleft">
-            <div class="mb-search-control-container">
-              <form @submit.prevent="handleSearchFormSubmit">
-                  <input class="mb-search-control-input"
-                         placeholder="Search the map"
-                         :value="this.$config.defaultAddress"
-                  />
-                  <button class="mb-search-control-button">
-                    <i class="fa fa-search fa-lg"></i>
-                  </button>
-              </form>
-            </div>
-          </control>
-        </div>
-
-        <cyclomedia-recording-circle v-for="recording in cyclomediaRecordings"
-                                     v-if="cyclomediaActive"
-                                     :key="recording.imageId"
-                                     :imageId="recording.imageId"
-                                     :latlng="[recording.lat, recording.lng]"
-                                     :size="1.2"
-                                     :color="'#3388ff'"
-                                     :weight="1"
-                                     @l-click="handleCyclomediaRecordingClick"
+                           :link="'pictometry'"
+                           :imgSrc="'../../src/assets/pictometry.png'"
         />
+      </div>
+
+      <div v-once>
+        <cyclomedia-button v-if="this.$config.cyclomedia.enabled"
+                           v-once
+                           :position="'topright'"
+                           :link="'cyclomedia'"
+                           :imgSrc="'../../src/assets/cyclomedia.png'"
+                           @click="handleCyclomediaButtonClick"
+        />
+      </div>
+
+      <!-- search control -->
+      <!-- custom components seem to have to be wrapped like this to work
+           with v-once
+      -->
+      <div v-once>
+        <control position="topleft">
+          <div class="mb-search-control-container">
+            <form @submit.prevent="handleSearchFormSubmit">
+                <input class="mb-search-control-input"
+                       placeholder="Search the map"
+                       :value="this.$config.defaultAddress"
+                />
+                <button class="mb-search-control-button">
+                  <i class="fa fa-search fa-lg"></i>
+                </button>
+            </form>
+          </div>
+        </control>
+      </div>
+
+      <cyclomedia-recording-circle v-for="recording in cyclomediaRecordings"
+                                   v-if="cyclomediaActive"
+                                   :key="recording.imageId"
+                                   :imageId="recording.imageId"
+                                   :latlng="[recording.lat, recording.lng]"
+                                   :size="1.2"
+                                   :color="'#3388ff'"
+                                   :weight="1"
+                                   @l-click="handleCyclomediaRecordingClick"
+      />
     </map_>
     <slot class='widget-slot' name="cycloWidget" />
     <slot class='widget-slot' name="pictWidget" />
@@ -142,6 +138,8 @@
   import EsriTiledMapLayer from '../esri-leaflet/TiledMapLayer';
   import Geojson from '../leaflet/Geojson';
   import VectorMarker from './VectorMarker';
+  import PngMarker from './PngMarker';
+  import SvgMarker from './SvgMarker';
   import BasemapControl from './BasemapControl';
   import CyclomediaButton from '../cyclomedia/Button';
   import PictometryButton from '../pictometry/Button';
@@ -155,6 +153,8 @@
       EsriTiledMapLayer,
       Geojson,
       VectorMarker,
+      PngMarker,
+      SvgMarker,
       BasemapControl,
       PictometryButton,
       CyclomediaButton,
@@ -163,14 +163,9 @@
     computed: {
       activeBasemap() {
         return this.$store.state.map.basemap;
-        // if (this.$store.state.imageryOn) {
-        //   return this.$store.state.imageryYear;
-        // } else {
-        //   return this.activeTopicConfig.basemap;
-        // }
       },
-      activeLabels() {
-        return this.$config.map.basemaps[this.activeBasemap].tiledLayers[0];
+      activeTiles() {
+        return this.$config.map.basemaps[this.activeBasemap].tiledLayers;
       },
       basemaps() {
         return Object.values(this.$config.map.basemaps);
@@ -280,7 +275,7 @@
       },
       mapBounds() {
         // TODO calculate map bounds based on leaflet markers above
-      }
+      },
     },
     created() {
       // if there's a default address, navigate to it
@@ -304,6 +299,7 @@
         if (e.originalEvent.keyCode === 13) {
           return;
         }
+        this.$store.commit('setLastClick', 'map')
 
         // METHOD 1: intersect map click latlng with parcel layers
         this.getDorParcelsByLatLng(e.latlng);
@@ -314,11 +310,12 @@
       },
       handleCyclomediaButtonClick() {
         this.updateCyclomediaRecordings();
+
       },
       handleCyclomediaRecordingClick(e) {
         const latlng = e.latlng;
-
-        // TODO call method on cyclo widget
+        const viewer = this.$store.state.cyclomedia.viewer;
+        viewer.openByCoordinate([latlng.lng, latlng.lat]);
       },
       handleMapMove(e) {
         this.updateCyclomediaRecordings();
@@ -340,8 +337,10 @@
       },
       handleSearchFormSubmit(e) {
         const input = e.target[0].value;
+        this.$store.commit('setLastClick', 'search');
         this.$store.commit('setPwdParcel', null);
         this.$store.commit('setDorParcels', []);
+
         this.fetchAis(input);
       },
       getReverseGeocode(latlng) {

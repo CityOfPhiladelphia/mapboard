@@ -10,6 +10,28 @@
 
 <script>
   export default {
+    computed: {
+      locForCyclo() {
+        console.log('computed')
+        const lastClick = this.$store.state.lastClick;
+        const geocodeData = this.$store.state.geocode.data;
+        const map = this.$store.state.map.map;
+        let center;
+        let sendLoc;
+        if (lastClick === 'search') {
+          sendLoc = geocodeData.geometry.coordinates;
+        }
+        else if (!geocodeData) {
+          center = map.getCenter();
+          sendLoc = [center.lng, center.lat];
+        } else {
+          sendLoc = geocodeData.geometry.coordinates;
+        }
+        console.log(sendLoc);
+        //this.setNewLocation(sendLoc);
+        return sendLoc
+      }
+    },
     mounted() {
       StreetSmartApi.init({
         username: this.$config.cyclomedia.username,
@@ -30,7 +52,7 @@
           // get map center and set location
           const map = this.$store.state.map.map;
           const center = map.getCenter();
-          this.setNewLocation(center);
+          this.setNewLocation([center.lng, center.lat]);
 
           // TODO bind CN events to vue
           // viewer.on(StreetSmartApi.Events.panoramaViewer.VIEW_CHANGE, e => {
@@ -49,14 +71,17 @@
         }
       );
     },
+    updated() {
+      console.log('widget.vue updated is firing');
+    },
     methods: {
-      setNewLocation(latlng) {
+      setNewLocation(coords) {
+        // console.log('setNewLocation is running using', coords);
         const viewer = this.$store.state.cyclomedia.viewer;
-        const xy = [latlng.lng, latlng.lat];
-        viewer.openByCoordinate(xy);
-      }
+        viewer.openByCoordinate(coords);
+      },
     }
-    };
+  };
 </script>
 
 <style>

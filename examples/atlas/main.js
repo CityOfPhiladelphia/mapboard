@@ -7,7 +7,8 @@ Mapboard.default({
   rootStyle: {
     height: '600px'
   },
-  baseConfig: 'https://gist.githubusercontent.com/rbrtmrtn/09b4f35396f97499c3097e2fecaed8e7/raw/3c068090d544f3b6e0e31a37acea652a30621c7e/config.js',
+  //baseConfig: 'https://gist.githubusercontent.com/rbrtmrtn/09b4f35396f97499c3097e2fecaed8e7/raw/3c068090d544f3b6e0e31a37acea652a30621c7e/config.js',
+  baseConfig: 'https://gist.githubusercontent.com/ajrothwell/f5df4d85e09f5821c16329a96889368d/raw/a4c0594adeafccb0fb220773de2509bfc01852e4/config.js',
   dataSources: {
     opa: {
       url: 'https://data.phila.gov/resource/w7rb-qrn8.json',
@@ -20,7 +21,7 @@ Mapboard.default({
     }
   },
   cyclomedia: {
-    enabled: false
+    enabled: true
   },
   pictometry: {
     enabled: false
@@ -191,106 +192,6 @@ Mapboard.default({
       parcels: 'dor'
     }
   ],
-  map: {
-    basemaps: {
-      pwd: {
-        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap/MapServer',
-        tiledLayers: [
-          'cityBasemapLabels'
-        ],
-        type: 'featuremap'
-      },
-      dor: {
-        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/DORBasemap/MapServer',
-        tiledLayers: [
-          'dorBasemapLabels'
-        ],
-        type: 'featuremap'
-      },
-      imagery2016: {
-        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2016_3in/MapServer',
-        tiledLayers: [
-          'imageryBasemapLabels'
-        ],
-        type: 'imagery',
-        year: 2016
-      },
-      imagery2015: {
-        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2015_3in/MapServer',
-        tiledLayers: [
-          'imageryBasemapLabels'
-        ],
-        type: 'imagery',
-        year: 2015
-      },
-      imagery2012: {
-        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2012_3in/MapServer',
-        tiledLayers: [
-          'imageryBasemapLabels'
-        ],
-        type: 'imagery',
-        year: 2012
-      },
-      imagery2010: {
-        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2010_3in/MapServer',
-        tiledLayers: [
-          'imageryBasemapLabels'
-        ],
-        type: 'imagery',
-        year: 2010
-      },
-      imagery2008: {
-        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2008_3in/MapServer',
-        tiledLayers: [
-          'imageryBasemapLabels'
-        ],
-        type: 'imagery',
-        year: 2008
-      },
-      imagery2004: {
-        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2004_6in/MapServer',
-        tiledLayers: [
-          'imageryBasemapLabels'
-        ],
-        type: 'imagery',
-        year: 2004
-      },
-      imagery1996: {
-        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_1996_6in/MapServer',
-        tiledLayers: [
-          'imageryBasemapLabels'
-        ],
-        type: 'imagery',
-        year: 1996
-      }
-    },
-    tiledLayers: {
-      cityBasemapLabels: {
-        // type: 'labels',
-        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap_Labels/MapServer'
-      },
-      dorBasemapLabels: {
-        // type: 'labels',
-        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/DORBasemap_Labels_Test2/MapServer'
-      },
-      imageryBasemapLabels: {
-        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_Labels/MapServer'
-      }
-    },
-    dynamicMapLayers: {
-      stormwater: {
-        url: '//gis.phila.gov/arcgis/rest/services/Water/pv_data/MapServer'
-      }
-    },
-    featureLayers: {
-      dorParcels: {
-        url: '//gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/24'
-      },
-      pwdParcels: {
-        url: '//gis.phila.gov/arcgis/rest/services/Water/pv_data/MapServer/0',
-      }
-    }
-  },
   geocoder: {
     methods: {
       search: {
