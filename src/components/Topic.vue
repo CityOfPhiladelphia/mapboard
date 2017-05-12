@@ -41,6 +41,7 @@
   import Callout from './topic-components/Callout';
   import Image_ from './topic-components/Image';
   import CollectionSummary from './topic-components/CollectionSummary';
+  import TabGroup from './topic-components/TabGroup';
 
   export default {
     props: ['topicKey'],
@@ -50,7 +51,8 @@
       VerticalTable,
       Callout,
       Image_,
-      CollectionSummary
+      CollectionSummary,
+      TabGroup
     },
     computed: {
       // returns the full config object for the topic
