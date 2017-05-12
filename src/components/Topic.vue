@@ -20,6 +20,7 @@
                  :is="topicComp.type"
                  class="topic-comp"
                  :slots="topicComp.slots"
+                 :options="topicComp.options"
                  :key="`topic-comp-${topic.key}-${topicCompIndex}`"
       />
     </div>
@@ -39,6 +40,7 @@
   import VerticalTable from './topic-components/VerticalTable';
   import Callout from './topic-components/Callout';
   import Image_ from './topic-components/Image';
+  import CollectionSummary from './topic-components/CollectionSummary';
 
   export default {
     props: ['topicKey'],
@@ -47,7 +49,8 @@
       HorizontalTable,
       VerticalTable,
       Callout,
-      Image_
+      Image_,
+      CollectionSummary
     },
     computed: {
       // returns the full config object for the topic

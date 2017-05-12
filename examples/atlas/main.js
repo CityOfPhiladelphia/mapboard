@@ -123,6 +123,51 @@ Mapboard.default({
       parcels: 'pwd'
     },
     {
+      key: 'deeds',
+      icon: 'book',
+      label: 'Deeds',
+      components: [
+        {
+          type: 'collection-summary',
+          options: {
+            descriptor: 'parcel',
+            // this will include zero quantities
+            // includeZeroes: true,
+            getValue(item) {
+              return item.properties.STATUS;
+            },
+            context: {
+              singular: list => `There is ${list} at this address.`,
+              plural: list => `There are ${list} at this address.`
+            },
+            types: [
+              {
+                value: 1,
+                label: 'active parcel'
+              },
+              {
+                value: 2,
+                label: 'inactive parcel'
+              },
+              {
+                value: 3,
+                label: 'remainder parcel'
+              }
+            ]
+          },
+          slots: {
+            items(state) {
+              return state.dorParcels;
+            }
+          }
+        }
+      ],
+      basemap: 'pwd',
+      identifyFeature: 'address-marker',
+      // we might not need this anymore, now that we have identifyFeature
+      parcels: 'pwd'
+    },
+    {
       key: 'pwd',
       icon: 'tint',
       label: 'PWD',

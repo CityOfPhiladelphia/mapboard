@@ -1,6 +1,6 @@
 <script>
     export default {
-    props: ['slots'],
+    props: ['slots', 'options'],
     methods: {
       evaluateSlot(valOrGetter, transforms = []) {
         const valOrGetterType = typeof valOrGetter;
