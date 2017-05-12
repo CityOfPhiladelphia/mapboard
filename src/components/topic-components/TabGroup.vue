@@ -9,8 +9,7 @@
         <a v-bind:href="'#parcel-' + keyForItem(item)"
            v-on:click="activeItem = keyForItem(item)"
         >
-          <!-- {{ titleForItem(item) }} -->
-          {{ keyForItem(item) }}
+          {{ titleForItem(item) }}
         </a>
       </li>
     </ul>
