@@ -473,10 +473,11 @@
         });
       },
       fetchTopics(feature) {
-        // console.log('fetch topics');
+        //console.log('fetch topics', feature);
 
         // get topics
         const dataSources = this.$config.dataSources || {};
+        //console.log('fetchTopics dataSources', dataSources);
 
         for (let [dataSourceKey, dataSource] of Object.entries(dataSources)) {
           // evaluate params
@@ -493,39 +494,77 @@
             status: 'waiting'
           });
 
-          this.$http.get(url, { params }).then(response => {
-            const data = response.body;
+          if (dataSourceKey === 'opa') {
+            this.$http.get(url, { params }).then(response => {
+              const data = response.body;
 
-            // put data in state
-            this.$store.commit('setSourceData', {
-              key: dataSourceKey,
-              data: success(data),
+              // put data in state
+              this.$store.commit('setSourceData', {
+                key: dataSourceKey,
+                data: success(data),
+              });
+
+              // update status
+              this.$store.commit('setSourceStatus', {
+                key: dataSourceKey,
+                status: 'success'
+              });
+            }, response => {
+              console.log('get topic error', response);
+
+              // null out data in state
+              this.$store.commit('setSourceData', {
+                key: dataSourceKey,
+                data: null,
+              });
+
+              // update status
+              this.$store.commit('setSourceStatus', {
+                key: dataSourceKey,
+                status: 'error'
+              });
             });
 
-            // update status
-            this.$store.commit('setSourceStatus', {
-              key: dataSourceKey,
-              status: 'success'
-            });
-          }, response => {
-            console.log('get topic error', response);
+          } else if (dataSourceKey === 'zoningBase') {
+              const zoningBaseQuery = L.esri.query({url: url});
+              zoningBaseQuery.contains(feature);
+              zoningBaseQuery.run((error, featureCollection, response) => {
+                const data = featureCollection.features[0];
+                console.log(data);
+                console.log(response);
 
-            // null out data in state
-            this.$store.commit('setSourceData', {
-              key: dataSourceKey,
-              data: null,
-            });
+                // put data in state
+                this.$store.commit('setSourceData', {
+                  key: dataSourceKey,
+                  data: success(data),
+                });
 
-            // update status
-            this.$store.commit('setSourceStatus', {
-              key: dataSourceKey,
-              status: 'error'
-            });
-          });
+                // update status
+                this.$store.commit('setSourceStatus', {
+                  key: dataSourceKey,
+                  status: 'success'
+                });
+              }, response => {
+                console.log('get topic error', response);
+
+                // null out data in state
+                this.$store.commit('setSourceData', {
+                  key: dataSourceKey,
+                  data: null,
+                });
+
+                // update status
+                this.$store.commit('setSourceStatus', {
+                  key: dataSourceKey,
+                  status: 'error'
+                });
+              });
+            }
+          }
         }
-      },
-    }
-  };
+      }, // end of methods
+    }; //end of export
+
 </script>
 
 <style scoped>
