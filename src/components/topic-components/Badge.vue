@@ -5,14 +5,17 @@
       <h4 class="alternate">{{ this.title }}</h4>
     </div>
     <div class="mb-badge-body">
-      <h1>{{ this.value }}</h1>
-      <strong>{{ this.description }}</strong>
+      <h1>{{ evaluateSlot(slots.code) }}</h1>
+      <strong>{{ evaluateSlot(slots.description) }}</strong>
     </div>
   </div>
 </template>
 
 <script>
+  import TopicComponent from './TopicComponent';
+
   export default {
+    mixins: [TopicComponent],
     props: ['slots'],
     computed: {
       // TODO make abstract base class or mixin for Topic Comps that

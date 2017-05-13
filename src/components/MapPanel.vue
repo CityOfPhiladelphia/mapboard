@@ -33,6 +33,14 @@
                          :zIndex="tiledLayer.zIndex"
       />
 
+      <esri-dynamic-map-layer v-for="(dynamicLayer, key) in this.$config.map.dynamicMapLayers"
+                          v-if="activeDynamicMaps.includes(key)"
+                         :key="key"
+                         :url="dynamicLayer.url"
+      />
+
+
+
       <!-- address marker -->
       <!-- REVIEW why does this need a key? it's not a list... -->
       <!-- <vector-marker v-if="identifyFeature === 'address-marker' && geocodeGeom"
@@ -136,6 +144,7 @@
   import Map_ from '../leaflet/Map';
   import Control from '../leaflet/Control';
   import EsriTiledMapLayer from '../esri-leaflet/TiledMapLayer';
+  import EsriDynamicMapLayer from '../esri-leaflet/DynamicMapLayer';
   import Geojson from '../leaflet/Geojson';
   import VectorMarker from './VectorMarker';
   import PngMarker from './PngMarker';
@@ -151,6 +160,7 @@
       Map_,
       Control,
       EsriTiledMapLayer,
+      EsriDynamicMapLayer,
       Geojson,
       VectorMarker,
       PngMarker,
@@ -166,6 +176,13 @@
       },
       activeTiles() {
         return this.$config.map.basemaps[this.activeBasemap].tiledLayers;
+      },
+      activeDynamicMaps() {
+        if (!this.activeTopicConfig || !this.activeTopicConfig.dynamicMapLayers) {
+          return [];
+        } else {
+          return this.activeTopicConfig.dynamicMapLayers;
+        }
       },
       basemaps() {
         return Object.values(this.$config.map.basemaps);
@@ -472,11 +489,12 @@
           self.$store.commit('setGeocodeStatus', 'error');
         });
       },
-      fetchTopics(feature) {
-        // console.log('fetch topics');
 
+      fetchTopics(feature) {
+        //console.log('fetch topics', feature);
         // get topics
         const dataSources = this.$config.dataSources || {};
+        //console.log('fetchTopics dataSources', dataSources);
 
         for (let [dataSourceKey, dataSource] of Object.entries(dataSources)) {
           // evaluate params
@@ -486,6 +504,7 @@
           }
           const url = dataSource.url;
           const success = dataSource.success;
+          const type = dataSource.type;
 
           // set topic status to `waiting`
           this.$store.commit('setSourceStatus', {
@@ -493,39 +512,75 @@
             status: 'waiting'
           });
 
-          this.$http.get(url, { params }).then(response => {
-            const data = response.body;
+          // TODO don't repeat so much code
+          if (type === 'ajax') {
+            this.$http.get(url, { params }).then(response => {
+              const data = response.body;
 
-            // put data in state
-            this.$store.commit('setSourceData', {
-              key: dataSourceKey,
-              data: success(data),
-            });
+              // put data in state
+              this.$store.commit('setSourceData', {
+                key: dataSourceKey,
+                data: success(data),
+              });
 
-            // update status
-            this.$store.commit('setSourceStatus', {
-              key: dataSourceKey,
-              status: 'success'
-            });
-          }, response => {
-            console.log('get topic error', response);
+              // update status
+              this.$store.commit('setSourceStatus', {
+                key: dataSourceKey,
+                status: 'success'
+              });
+            }, response => {
+              console.log('get topic error', response);
 
-            // null out data in state
-            this.$store.commit('setSourceData', {
-              key: dataSourceKey,
-              data: null,
-            });
+              // null out data in state
+              this.$store.commit('setSourceData', {
+                key: dataSourceKey,
+                data: null,
+              });
 
-            // update status
-            this.$store.commit('setSourceStatus', {
-              key: dataSourceKey,
-              status: 'error'
+              // update status
+              this.$store.commit('setSourceStatus', {
+                key: dataSourceKey,
+                status: 'error'
+              });
             });
-          });
-        }
-      },
-    }
-  };
+          } else if (type === 'esri') {
+            const lQuery = L.esri.query({url: url});
+            lQuery.contains(feature);
+            lQuery.run((error, featureCollection, response) => {
+              const data = featureCollection.features[0];
+
+              // put data in state
+              this.$store.commit('setSourceData', {
+                key: dataSourceKey,
+                data: success(data),
+              });
+
+              // update status
+              this.$store.commit('setSourceStatus', {
+                key: dataSourceKey,
+                status: 'success'
+              });
+            }, response => {
+              console.log('get topic error', response);
+
+              // null out data in state
+              this.$store.commit('setSourceData', {
+                key: dataSourceKey,
+                data: null,
+              });
+
+              // update status
+              this.$store.commit('setSourceStatus', {
+                key: dataSourceKey,
+                status: 'error'
+              });
+            });
+          } // end of if/elseif
+        } // end of for loop
+      } // end of fetchTopics
+    }, // end of methods
+  }; //end of export
+
 </script>
 
 <style scoped>
