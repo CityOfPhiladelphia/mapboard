@@ -80,7 +80,7 @@ Mapboard.default({
     },
   },
   cyclomedia: {
-    enabled: true
+    enabled: false
   },
   pictometry: {
     enabled: false
@@ -216,6 +216,35 @@ Mapboard.default({
             ]
           },
           slots: {
+            items(state) {
+              return state.dorParcels;
+            }
+          }
+        },
+        {
+          type: 'tab-group',
+          options: {
+            getKey(item) {
+              return item.properties.OBJECTID;
+            },
+            getTitle(item) {
+              return item.properties.MAPREG;
+            },
+            // components for the content pane. this essentially a topic body.
+            components: [
+              {
+                type: 'callout',
+                slots: {
+                  text() {
+                    return 'testing';
+                  }
+                }
+              }
+            ]
+          },
+          slots: {
+            // REVIEW should this go in options? maybe not, since it should be
+            // reactive.
             items(state) {
               return state.dorParcels;
             }
