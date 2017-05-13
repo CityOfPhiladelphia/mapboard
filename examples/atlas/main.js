@@ -47,10 +47,11 @@ Mapboard.default({
     height: '600px'
   },
   //baseConfig: 'https://gist.githubusercontent.com/rbrtmrtn/09b4f35396f97499c3097e2fecaed8e7/raw/3c068090d544f3b6e0e31a37acea652a30621c7e/config.js',
-  baseConfig: 'https://gist.githubusercontent.com/ajrothwell/f5df4d85e09f5821c16329a96889368d/raw/c7095f99ef29f3b81a8921e96b8f2abb1c39fd06/config.js',
+  baseConfig: 'https://gist.githubusercontent.com/ajrothwell/f5df4d85e09f5821c16329a96889368d/raw/3010fbc571c7be93375fd4bc1816401009d944e7/config.js',
   dataSources: {
     opa: {
       url: 'https://data.phila.gov/resource/w7rb-qrn8.json',
+      type: 'ajax',
       params: {
         parcel_number: feature => feature.properties.opa_account_num
       },
@@ -60,13 +61,23 @@ Mapboard.default({
     },
     zoningBase: {
       url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/6/',
+      type: 'esri',
       params: {
-        code: feature => feature.properties.LONG_CODE
       },
       success(data) {
         return data
       }
-    }
+    },
+    zoningCarto: {
+      url: '//phl.carto.com/api/v2/sql',
+      type: 'ajax',
+      params: {
+        q: feature => "select * from zoning_documents_20170420 where address_std = '" + feature.properties.street_address + "' or addrkey = " + feature.properties.li_address_key,
+      },
+      success(data) {
+        return data
+      }
+    },
   },
   cyclomedia: {
     enabled: true
