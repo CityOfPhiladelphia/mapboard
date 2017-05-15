@@ -92,6 +92,14 @@
       </div>
 
       <div v-once>
+        <historicmap-control v-if="hasHistoricBasemaps"
+                         v-once
+                         :position="'topright'"
+                         :historic-years="historicYears"
+        />
+      </div>
+
+      <div v-once>
         <pictometry-button v-if="this.$config.pictometry.enabled"
                            v-once
                            :position="'topright'"
@@ -157,6 +165,7 @@
   import PngMarker from './PngMarker';
   import SvgMarker from './SvgMarker';
   import BasemapControl from './BasemapControl';
+  import HistoricmapControl from './HistoricmapControl';
   import CyclomediaButton from '../cyclomedia/Button';
   import PictometryButton from '../pictometry/Button';
   import CyclomediaRecordingCircle from '../cyclomedia/RecordingCircle';
@@ -173,6 +182,7 @@
       PngMarker,
       SvgMarker,
       BasemapControl,
+      HistoricmapControl,
       PictometryButton,
       CyclomediaButton,
       CyclomediaRecordingCircle
@@ -206,6 +216,16 @@
       imageryYears() {
         // pluck year from basemap objects
         return this.imageryBasemaps.map(x => x.year);
+      },
+      historicBasemaps() {
+        return this.basemaps.filter(basemap => basemap.type === 'historic');
+      },
+      hasHistoricBasemaps() {
+        return this.historicBasemaps.length > 0;
+      },
+      historicYears() {
+        // pluck year from basemap objects
+        return this.historicBasemaps.map(x => x.year);
       },
       identifyFeature() {
         return (this.activeTopicConfig || {}).identifyFeature;

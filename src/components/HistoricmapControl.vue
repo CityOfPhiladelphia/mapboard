@@ -1,20 +1,20 @@
 <template>
   <div style="display: inline">
     <div class="year-selector-container"
-         v-show="activeBasemap.startsWith('imagery')"
+         v-show="activeBasemap.startsWith('landUse')"
     >
       <ul>
-        <li v-for="imageryYear in imageryYears"
-            :class="{ active: activeBasemap === 'imagery' + imageryYear }"
-            @click="handleImageryYearClick"
+        <li v-for="historicYear in historicYears"
+            :class="{ active: activeBasemap === 'landUse' + historicYear }"
+            @click="handleHistoricYearClick"
         >
-          {{ imageryYear }}
+          {{ historicYear }}
         </li>
       </ul>
     </div>
     <div class="leaflet-bar easy-button-container leaflet-control">
       <button class="easy-button-button leaflet-bar-part leaflet-interactive unnamed-state-active"
-              @click="handleImageryToggleButtonClick"
+              @click="handleHistoricToggleButtonClick"
       >
         <span class="button-state state-unnamed-state unnamed-state-active">
           <img class="button-image" :src="toggleButtonImgSrc">
@@ -36,7 +36,7 @@
     // }),
     props: [
       'position',
-      'imageryYears'
+      'historicYears'
     ],
     computed: {
       activeBasemap() {
@@ -49,12 +49,12 @@
         const basemapType = basemapConfig.type;
         let src;
 
-        if (basemapType === 'imagery') {
+        if (basemapType === 'historic') {
           src = "../../src/assets/basemap_small.png"
         }
         //else if (basemapType === 'featuremap') {
         else {
-          src = "../../src/assets/imagery_small.png"
+          src = "../../src/assets/historic_small.png"
         }
 
         return src;
@@ -65,8 +65,8 @@
         return this.$config.map.basemaps[key];
       },
       // return a list of imagery basemap years in descending order
-      handleImageryToggleButtonClick(e) {
-        console.log('handleImageryToggleButtonClick from BasemapControl fired')
+      handleHistoricToggleButtonClick(e) {
+        console.log('handleHistoricToggleButtonClick from HistoricmapControl fired')
         const prevBasemap = this.activeBasemap;
         const prevBasemapConfig = this.configForBasemap(prevBasemap);
         const prevBasemapType = prevBasemapConfig.type;
@@ -74,9 +74,9 @@
 
         // feature map => imagery
         // if (prevBasemapType === 'featuremap') {
-        if (prevBasemapType !== 'imagery') {
-          const years = this.imageryYears;
-          nextBasemap = 'imagery' + years[0];
+        if (prevBasemapType !== 'historic') {
+          const years = this.historicYears;
+          nextBasemap = 'landUse' + years[0];
         }
         // imagery => feature map
         else {
@@ -88,9 +88,9 @@
         this.$store.commit('setBasemap', nextBasemap);
       },
 
-      handleImageryYearClick(e) {
+      handleHistoricYearClick(e) {
         const year = e.target.innerText;
-        const nextBasemap = 'imagery' + year;
+        const nextBasemap = 'landUse' + year;
         this.$store.commit('setBasemap', nextBasemap);
       },
     })

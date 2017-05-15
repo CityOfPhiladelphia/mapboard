@@ -46,7 +46,7 @@ Mapboard.default({
   rootStyle: {
     height: '600px'
   },
-  baseConfig: 'https://gist.githubusercontent.com/ajrothwell/f5df4d85e09f5821c16329a96889368d/raw/bf7022ce587f75125c55b00c623fa24cf96a8b06/config.js',
+  baseConfig: 'https://gist.githubusercontent.com/ajrothwell/f5df4d85e09f5821c16329a96889368d/raw/49e26c2a5f31f20b03e6d84a5910ef9c14d0bcbb/config.js',
   dataSources: {
     nearby: {
       url: 'https://phl.carto.com/api/v2/sql',
@@ -175,7 +175,7 @@ Mapboard.default({
     },
   },
   cyclomedia: {
-    enabled: false
+    enabled: true
   },
   pictometry: {
     enabled: false
