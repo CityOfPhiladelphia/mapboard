@@ -491,7 +491,8 @@
       },
 
       fetchTopics(feature) {
-        //console.log('fetch topics', feature);
+        // console.log('fetch topics', feature);
+
         // get topics
         const dataSources = this.$config.dataSources || {};
         //console.log('fetchTopics dataSources', dataSources);
@@ -512,6 +513,7 @@
             status: 'waiting'
           });
 
+          console.log(dataSourceKey, params);
           // TODO don't repeat so much code
           if (type === 'ajax') {
             this.$http.get(url, { params }).then(response => {
@@ -544,8 +546,7 @@
               });
             });
           } else if (type === 'esri') {
-            const lQuery = L.esri.query({url: url});
-            lQuery.contains(feature);
+            const lQuery = params.query;
             lQuery.run((error, featureCollection, response) => {
               const data = featureCollection.features[0];
 
