@@ -74,6 +74,13 @@
                :key="geojsonFeature.key"
        />
 
+       <vector-marker v-for="marker in threeOneOneMarkers"
+                      v-if="activeTopicConfig.key === 'threeOneOne'"
+                      :latlng="[marker.geometry.coordinates[1], marker.geometry.coordinates[0]]"
+                      :key="marker.id"
+                      :markerColor="'#b2ffb2'"
+       />
+
       <!-- CONTROLS: -->
       <!-- basemap control -->
       <div v-once>
@@ -171,6 +178,9 @@
       CyclomediaRecordingCircle
     },
     computed: {
+      threeOneOneMarkers() {
+        return this.$store.state.sources.threeOneOneData.data
+      },
       activeBasemap() {
         return this.$store.state.map.basemap;
       },
@@ -506,6 +516,8 @@
           const url = dataSource.url;
           const success = dataSource.success;
           const type = dataSource.type;
+          const callback = dataSource.callback;
+          const callbackDataName = dataSource.callbackDataName;
 
           // set topic status to `waiting`
           this.$store.commit('setSourceStatus', {
@@ -513,72 +525,134 @@
             status: 'waiting'
           });
 
-          console.log(dataSourceKey, params);
+          // console.log(dataSourceKey, params);
+
           // TODO don't repeat so much code
-          if (type === 'ajax') {
-            this.$http.get(url, { params }).then(response => {
-              const data = response.body;
+          // if the data is not a callback
+          if (!callback) {
+            if (type === 'ajax') {
+              this.$http.get(url, { params }).then(response => {
+                const data = response.body;
 
-              // put data in state
-              this.$store.commit('setSourceData', {
-                key: dataSourceKey,
-                data: success(data),
+                // put data in state
+                this.$store.commit('setSourceData', {
+                  key: dataSourceKey,
+                  data: success(data),
+                });
+
+                // update status
+                this.$store.commit('setSourceStatus', {
+                  key: dataSourceKey,
+                  status: 'success'
+                });
+              }, response => {
+                console.log('get topic error', response);
+
+                // null out data in state
+                this.$store.commit('setSourceData', {
+                  key: dataSourceKey,
+                  data: null,
+                });
+
+                // update status
+                this.$store.commit('setSourceStatus', {
+                  key: dataSourceKey,
+                  status: 'error'
+                });
+              });
+            } else if (type === 'esri') {
+              const theStore = this.$store
+              const lQuery = params.query;
+              lQuery.run((error, featureCollection, response) => {
+                const data = featureCollection.features[0];
+
+                // put data in state
+                theStore.commit('setSourceData', {
+                  key: dataSourceKey,
+                  data: success(data),
+                });
+
+                // update status
+                theStore.commit('setSourceStatus', {
+                  key: dataSourceKey,
+                  status: 'success'
+                });
+              }, response => {
+                console.log('get topic error', response);
+
+                // null out data in state
+                theStore.commit('setSourceData', {
+                  key: dataSourceKey,
+                  data: null,
+                });
+
+                // update status
+                theStore.commit('setSourceStatus', {
+                  key: dataSourceKey,
+                  status: 'error'
+                });
+              });
+            } // end of if/elseif ajax/esri
+          // if the data is a callback
+          } else {
+            const theStore = this.$store
+            const lQuery = params.query
+            setTimeout(function() {
+              // console.log('callback', dataSourceKey, callbackDataName);
+              const callbackData = theStore.state.sources[callbackDataName].data
+              const callbackDataInside = callbackData['geometries'][0]['rings'][0]
+              let callbackDataFlip = []
+              for (let coord of callbackDataInside) {
+                callbackDataFlip.push([coord[1], coord[0]]);
+              }
+              const buffer = L.polygon(callbackDataFlip, {color: 'green'});
+
+              lQuery.within(buffer)
+              lQuery.run((error, featureCollection, response) => {
+                const data = featureCollection.features;
+
+                // put data in state
+                theStore.commit('setSourceData', {
+                  key: dataSourceKey,
+                  data: success(data),
+                });
+
+                // update status
+                theStore.commit('setSourceStatus', {
+                  key: dataSourceKey,
+                  status: 'success'
+                });
+              }, response => {
+                console.log('get topic error', response);
+                // null out data in state
+                theStore.commit('setSourceData', {
+                // this.$store.commit('setSourceData', {
+                  key: dataSourceKey,
+                  data: null,
+                });
+
+                // update status
+                theStore.commit('setSourceStatus', {
+                  key: dataSourceKey,
+                  status: 'error'
+                });
               });
 
-              // update status
-              this.$store.commit('setSourceStatus', {
-                key: dataSourceKey,
-                status: 'success'
-              });
-            }, response => {
-              console.log('get topic error', response);
+            }, 500)
+          } // end of if/else callback?
 
-              // null out data in state
-              this.$store.commit('setSourceData', {
-                key: dataSourceKey,
-                data: null,
-              });
-
-              // update status
-              this.$store.commit('setSourceStatus', {
-                key: dataSourceKey,
-                status: 'error'
-              });
-            });
-          } else if (type === 'esri') {
-            const lQuery = params.query;
-            lQuery.run((error, featureCollection, response) => {
-              const data = featureCollection.features[0];
-
-              // put data in state
-              this.$store.commit('setSourceData', {
-                key: dataSourceKey,
-                data: success(data),
-              });
-
-              // update status
-              this.$store.commit('setSourceStatus', {
-                key: dataSourceKey,
-                status: 'success'
-              });
-            }, response => {
-              console.log('get topic error', response);
-
-              // null out data in state
-              this.$store.commit('setSourceData', {
-                key: dataSourceKey,
-                data: null,
-              });
-
-              // update status
-              this.$store.commit('setSourceStatus', {
-                key: dataSourceKey,
-                status: 'error'
-              });
-            });
-          } // end of if/elseif
         } // end of for loop
-      } // end of fetchTopics
+      }, // end of fetchTopics
+      flipCoords(coords) {
+        var a = coords[0],
+            b = [];
+        for (var i = 0; i < a.length; i++) {
+          b[i] = []
+          b[i][0] = a[i][1]
+          b[i][1] = a[i][0]
+        }
+        return b;
+      },
     }, // end of methods
   }; //end of export
 

@@ -102,48 +102,47 @@ Mapboard.default({
     //     return data;
     //   }
     // },
-    stormwater: {
-      url: 'https://api.phila.gov/stormwater',
-      type: 'ajax',
-      params: {
-        search: feature => feature.properties.street_address
-      },
-      success(data) {
-        return data[0];
-      }
-    },
+    // stormwater: {
+    //   url: 'https://api.phila.gov/stormwater',
+    //   type: 'ajax',
+    //   params: {
+    //     search: feature => feature.properties.street_address
+    //   },
+    //   success(data) {
+    //     return data[0];
+    //   }
+    // },
     threeOneOneBuffer: {
       url: 'http://192.168.103.143:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer/buffer',
       type: 'ajax',
       params: {
         // query: feature => L.esri.query({url: this.$config.esri.tools.buffer.url}).contains(feature)
         geometries: feature => '['+feature.geometry.coordinates[0]+', '+feature.geometry.coordinates[1]+']',
-        inSR: () => '4326',
-        outSR: () => '4326',
-        bufferSR: () => '4326',
-        distances: () => '.0015',
+        inSR: () => 4326,
+        outSR: () => 4326,
+        bufferSR: () => 4326,
+        distances: () => .0015,
         unionResults: () => true,
         geodesic: () => false,
         f: () => 'json',
       },
-      success(data) {
-        return L.polygon(data['geometries'][0]['rings'][0], {color: 'green'});
+      success(dataString) {
+        // return L.polygon(data['geometries'][0]['rings'][0], {color: 'green'});
+        //return JSON.parse(dataString);
+        return dataString
       }
     },
-    // threeOneOneData: {
-    //   type: 'esri',
-    //   params: {
-    //     // query: feature => L.esri.query({url: 'https://192.168.103.143:6080/arcgis/rest/services/GSG/GIS311_365DAYS/MapServer/0'}).within(state.sources.threeOneOneBuffer)
-    //     query: function() {
-    //       const lQuery = L.esri.query({url: 'https://192.168.103.143:6080/arcgis/rest/services/GSG/GIS311_365DAYS/MapServer/0'});
-    //       //return lQuery.within( value(state) {return state.sources.threeOneOneBuffer} )
-    //       //return 5;
-    //     }
-    //   },
-    //   success(data) {
-    //     return data;
-    //   }
-    // },
+    threeOneOneData: {
+      callback: true,
+      callbackDataName: 'threeOneOneBuffer',
+      type: 'esri',
+      params: {
+        query: feature => L.esri.query({url: 'http://192.168.103.143:6080/arcgis/rest/services/GSG/GIS311_365DAYS/MapServer/0'})//.within(state.sources.threeOneOneBuffer)
+      },
+      success(data) {
+        return data;
+      }
+    },
     vacantLand: {
       type: 'esri',
       params: {
@@ -404,6 +403,16 @@ Mapboard.default({
       ],
       identifyFeature: 'dor-parcel',
       parcels: 'dor'
+    },
+    {
+      key: 'threeOneOne',
+      icon: 'book',
+      label: '311',
+      components: [
+      ],
+      basemap: 'pwd',
+      identifyFeature: 'address-marker',
+      parcels: 'pwd'
     }
   ],
   geocoder: {
