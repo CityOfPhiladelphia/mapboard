@@ -278,7 +278,7 @@ Mapboard.default({
           type: 'badge',
           slots: {
             title: 'Base District',
-            code(state) {
+            value(state) {
               const data = state.sources.zoningBase.data.properties;
               return data.LONG_CODE;
             },

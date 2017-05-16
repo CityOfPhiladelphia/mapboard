@@ -2,10 +2,10 @@
   <!-- REVIEW this uses patterns -->
   <div class="mb-badge panel center">
     <div class="mb-badge-header">
-      <h4 class="alternate">{{ this.title }}</h4>
+      <h4 class="alternate">{{ evaluateSlot(slots.title) }}</h4>
     </div>
     <div class="mb-badge-body">
-      <h1>{{ evaluateSlot(slots.code) }}</h1>
+      <h1>{{ evaluateSlot(slots.value) }}</h1>
       <strong>{{ evaluateSlot(slots.description) }}</strong>
     </div>
   </div>
@@ -15,21 +15,7 @@
   import TopicComponent from './TopicComponent';
 
   export default {
-    mixins: [TopicComponent],
-    props: ['slots'],
-    computed: {
-      // TODO make abstract base class or mixin for Topic Comps that
-      // handles/evaluates slots and sets these programmatically
-      title() {
-        return this.$props.slots.title;
-      },
-      value() {
-        return this.$props.slots.value;
-      },
-      description() {
-        return this.$props.slots.description;
-      },
-    }
+    mixins: [TopicComponent]
   };
 </script>
 
