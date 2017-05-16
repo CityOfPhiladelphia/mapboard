@@ -1,5 +1,5 @@
 <template>
-  <div class="row collapse"
+  <div class="mb-root row collapse"
        :style="this.$config.rootStyle"
   >
     <topic-panel>
@@ -50,9 +50,17 @@
     outline: none;
   }
 
-  /*.mb-root {
-    height: 600px;
-  }*/
+  @media (min-width: 1024px) {
+    .mb-root {
+      height: 600px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .mb-root {
+      height: 600px;
+    }
+  }
 
   .mb-panel {
     height: 100%;

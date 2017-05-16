@@ -589,6 +589,12 @@
     position: relative;
   }
 
+  @media (max-width: 1024px) {
+    .mb-panel-map {
+      height: 600px;
+    }
+  }
+
   .mb-search-control-container {
     height: 48px;
     border-radius: 2px;

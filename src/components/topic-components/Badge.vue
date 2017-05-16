@@ -21,10 +21,22 @@
 
 <style scoped>
   .mb-badge {
-    width: 300px;
+    /*width: 300px;*/
     padding: 0;
     margin: 0 auto;
     margin-bottom: inherit;
+  }
+
+  @media (max-width: 640px) {
+    .mb-badge {
+      width: 100%;
+    }
+  }
+
+  @media (min-width: 640px) {
+    .mb-badge {
+      width: 300px;
+    }
   }
 
   .mb-badge-header {
