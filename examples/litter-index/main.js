@@ -200,13 +200,17 @@ Mapboard.default({
   geocoder: {
     methods: {
       search: {
-        url: (input) => `//api.phila.gov/ais/v1/search/${input}`,
+        url: function (input) {
+          return '//api.phila.gov/ais/v1/search/' + input;
+        },
         params: {
           gatekeeperKey: GATEKEEPER_KEY
         }
       },
       reverseGeocode: {
-        url: (input) => `//api.phila.gov/ais/v1/reverse_geocode/${input}`,
+        url: function (input) {
+          return '//api.phila.gov/ais/v1/reverse_geocode/' + input;
+        },
         params: {
           gatekeeperKey: GATEKEEPER_KEY
         }
