@@ -102,16 +102,16 @@ Mapboard.default({
     //     return data;
     //   }
     // },
-    // stormwater: {
-    //   url: 'https://api.phila.gov/stormwater',
-    //   type: 'ajax',
-    //   params: {
-    //     search: feature => feature.properties.street_address
-    //   },
-    //   success(data) {
-    //     return data[0];
-    //   }
-    // },
+    stormwater: {
+      url: 'https://api.phila.gov/stormwater',
+      type: 'ajax',
+      params: {
+        search: feature => feature.properties.street_address
+      },
+      success(data) {
+        return data[0];
+      }
+    },
     threeOneOneBuffer: {
       url: 'http://192.168.103.143:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer/buffer',
       type: 'ajax',
@@ -152,9 +152,17 @@ Mapboard.default({
         return data;
       }
     },
-    // TODO take this out and use AIS for base zoning district
+    vacantBuilding: {
+      type: 'esri',
+      params: {
+        query: feature => L.esri.query({url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Blgd/FeatureServer/0'}).contains(feature)
+      },
+      success(data) {
+        return data;
+      }
+    },
+    // TODO take zoningBase out and use AIS for base zoning district
     zoningBase: {
-      //url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/6/',
       type: 'esri',
       params: {
         query: feature => L.esri.query({url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/6/'}).contains(feature.geometry)
@@ -163,7 +171,16 @@ Mapboard.default({
         return data;
       }
     },
-    zoningCarto: {
+    zoningOverlay: {
+      type: 'esri',
+      params: {
+        query: feature => L.esri.query({url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/1/'}).contains(feature.geometry)
+      },
+      success(data) {
+        return data;
+      }
+    },
+    zoningDocs: {
       url: 'https://phl.carto.com/api/v2/sql',
       type: 'ajax',
       params: {
@@ -406,7 +423,7 @@ Mapboard.default({
     },
     {
       key: 'threeOneOne',
-      icon: 'book',
+      icon: 'phone',
       label: '311',
       components: [
       ],
