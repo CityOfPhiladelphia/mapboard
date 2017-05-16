@@ -3,6 +3,11 @@
     props: ['slots', 'options'],
     methods: {
       evaluateSlot(valOrGetter, transforms = []) {
+        // check for null val/getter
+        if (!valOrGetter) {
+          return valOrGetter;
+        }
+
         const valOrGetterType = typeof valOrGetter;
         let val;
 
@@ -17,17 +22,8 @@
           // const deps = depsText.map(eval);
 
           val = getter(state);
-        // string
-        } else if (valOrGetterType === 'string' || valOrGetter instanceof String) {
-          val = valOrGetter;
-        // array
-        } else if (Array.isArray(valOrGetter)) {
-          // REVIEW vertical table seems to be working without this since each
-          // field slot gets evaluated individually in a for-loop
-          throw 'Not yet implemented';
-        // unhandled
         } else {
-          throw `Unhandled slot value type: ${valOrGetterType}`;
+          val = valOrGetter;
         }
 
         // apply transforms
