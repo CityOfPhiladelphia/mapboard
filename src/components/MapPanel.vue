@@ -588,12 +588,12 @@
       }, // end of fetchAjax
 
       fetchEsriSpatialQuery(dataSourceKey, url, relationship, targetGeom) {
-        console.log('fetch esri spatial query');
+        // console.log('fetch esri spatial query');
 
         const query = L.esri.query({url})[relationship](targetGeom);
 
         query.run((error, featureCollection, response) => {
-          console.log('did get esri spatial query', response, error);
+          // console.log('did get esri spatial query', response, error);
 
           const data = featureCollection.features;
           const status = error ? 'error' : 'success';
@@ -611,7 +611,7 @@
       },
 
       fetchEsriNearby(feature, dataSource, dataSourceKey) {
-        console.log('fetch esri nearby', feature);
+        // console.log('fetch esri nearby', feature);
 
         //const params = this.evaluateParams(feature, dataSource);
         // const url = dataSource.url;
@@ -630,14 +630,14 @@
           geodesic: () => false,
           f: () => 'json',
         };
-        console.debug('esri nearby params', params);
+        // console.debug('esri nearby params', params);
 
         // get buffer polygon
         const bufferUrl = geometryServerUrl.replace(/\/$/, '') + '/buffer';
-        console.log('im getting the points', bufferUrl);
+        // console.log('im getting the points', bufferUrl);
 
         this.$http.get(bufferUrl, {params}).then(response => {
-          console.log('did get esri nearby buffer', response);
+          // console.log('did get esri nearby buffer', response);
           const data = response.body;
 
           const xyCoords = data['geometries'][0]['rings'][0];
@@ -651,7 +651,7 @@
                                      buffer
           );
         }, response => {
-          console.log('did fetch esri nearby error', response);
+          // console.log('did fetch esri nearby error', response);
           this.didFetchData(dataSource, 'error');
         });
       }, // end of fetchEsriNearby
