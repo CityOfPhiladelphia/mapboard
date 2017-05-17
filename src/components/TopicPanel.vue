@@ -33,6 +33,7 @@
     methods: {
       shouldShowTopic(topic) {
         const requiredSources = topic.dataSources || [];
+        console.log('topicPanel, shouldShowTopic', requiredSources);
 
         // if there aren't any required topics, show it
         if (requiredSources.length === 0) {
