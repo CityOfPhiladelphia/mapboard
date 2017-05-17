@@ -74,12 +74,12 @@
                :key="geojsonFeature.key"
        />
 
-       <vector-marker v-for="marker in threeOneOneMarkers"
+       <!-- <vector-marker v-for="marker in threeOneOneMarkers"
                       v-if="activeTopicConfig.key === 'threeOneOne'"
                       :latlng="[marker.geometry.coordinates[1], marker.geometry.coordinates[0]]"
                       :key="marker.id"
                       :markerColor="'#b2ffb2'"
-       />
+       /> -->
 
       <!-- CONTROLS: -->
       <!-- basemap control -->
@@ -188,9 +188,9 @@
       CyclomediaRecordingCircle
     },
     computed: {
-      threeOneOneMarkers() {
-        return this.$store.state.sources.threeOneOneData.data
-      },
+      // threeOneOneMarkers() {
+      //   return this.$store.state.sources.threeOneOneData.data
+      // },
       activeBasemap() {
         return this.$store.state.map.basemap;
       },
@@ -308,6 +308,8 @@
           });
           features.push.apply(features, dorParcelFeatures);
         }
+
+        // TODO render geojson features from sources
 
         return features;
       },
@@ -505,7 +507,7 @@
           }
 
           // get topics
-          this.fetchTopics(feature);
+          this.fetchData(feature);
 
           // pan and center map
           // TODO ideally the map should fit its bounds to the combined extent
@@ -520,159 +522,139 @@
         });
       },
 
-      fetchTopics(feature) {
-        // console.log('fetch topics', feature);
-
-        // get topics
+      fetchData(feature) {
         const dataSources = this.$config.dataSources || {};
-        //console.log('fetchTopics dataSources', dataSources);
-
         for (let [dataSourceKey, dataSource] of Object.entries(dataSources)) {
-          // evaluate params
-          const params = {};
-          for (let [paramKey, paramFn] of Object.entries(dataSource.params)) {
-            params[paramKey] = paramFn(feature);
-          }
-          const url = dataSource.url;
-          const success = dataSource.success;
           const type = dataSource.type;
-          const callback = dataSource.callback;
-          const callbackDataName = dataSource.callbackDataName;
 
-          // set topic status to `waiting`
           this.$store.commit('setSourceStatus', {
             key: dataSourceKey,
             status: 'waiting'
           });
 
-          // console.log(dataSourceKey, params);
-
-          // TODO don't repeat so much code
-          // if the data is not a callback
-          if (!callback) {
-            if (type === 'ajax') {
-              this.$http.get(url, { params }).then(response => {
-                const data = response.body;
-
-                // put data in state
-                this.$store.commit('setSourceData', {
-                  key: dataSourceKey,
-                  data: success(data),
-                });
-
-                // update status
-                this.$store.commit('setSourceStatus', {
-                  key: dataSourceKey,
-                  status: 'success'
-                });
-              }, response => {
-                console.log('get topic error', response);
-
-                // null out data in state
-                this.$store.commit('setSourceData', {
-                  key: dataSourceKey,
-                  data: null,
-                });
-
-                // update status
-                this.$store.commit('setSourceStatus', {
-                  key: dataSourceKey,
-                  status: 'error'
-                });
-              });
-            } else if (type === 'esri') {
-              const theStore = this.$store
-              const lQuery = params.query;
-              lQuery.run((error, featureCollection, response) => {
-                const data = featureCollection.features[0];
-
-                // put data in state
-                theStore.commit('setSourceData', {
-                  key: dataSourceKey,
-                  data: success(data),
-                });
-
-                // update status
-                theStore.commit('setSourceStatus', {
-                  key: dataSourceKey,
-                  status: 'success'
-                });
-              }, response => {
-                console.log('get topic error', response);
-
-                // null out data in state
-                theStore.commit('setSourceData', {
-                  key: dataSourceKey,
-                  data: null,
-                });
-
-                // update status
-                theStore.commit('setSourceStatus', {
-                  key: dataSourceKey,
-                  status: 'error'
-                });
-              });
-            } // end of if/elseif ajax/esri
-          // if the data is a callback
-          } else {
-            const theStore = this.$store
-            const lQuery = params.query
-            setTimeout(function() {
-              // console.log('callback', dataSourceKey, callbackDataName);
-              const callbackData = theStore.state.sources[callbackDataName].data
-              const callbackDataInside = callbackData['geometries'][0]['rings'][0]
-              let callbackDataFlip = []
-              for (let coord of callbackDataInside) {
-                callbackDataFlip.push([coord[1], coord[0]]);
-              }
-              const buffer = L.polygon(callbackDataFlip, {color: 'green'});
-
-              lQuery.within(buffer)
-              lQuery.run((error, featureCollection, response) => {
-                const data = featureCollection.features;
-
-                // put data in state
-                theStore.commit('setSourceData', {
-                  key: dataSourceKey,
-                  data: success(data),
-                });
-
-                // update status
-                theStore.commit('setSourceStatus', {
-                  key: dataSourceKey,
-                  status: 'success'
-                });
-              }, response => {
-                console.log('get topic error', response);
-                // null out data in state
-                theStore.commit('setSourceData', {
-                // this.$store.commit('setSourceData', {
-                  key: dataSourceKey,
-                  data: null,
-                });
-
-                // update status
-                theStore.commit('setSourceStatus', {
-                  key: dataSourceKey,
-                  status: 'error'
-                });
-              });
-
-            }, 500)
-          } // end of if/else callback?
-
-        } // end of for loop
-      }, // end of fetchTopics
-      flipCoords(coords) {
-        var a = coords[0],
-            b = [];
-        for (var i = 0; i < a.length; i++) {
-          b[i] = []
-          b[i][0] = a[i][1]
-          b[i][1] = a[i][0]
-        }
-        return b;
+          switch(type) {
+            case 'ajax':
+              this.fetchAjax(feature, dataSource, dataSourceKey);
+              break;
+            case 'esri':
+              this.fetchEsri(feature, dataSource, dataSourceKey);
+              break;
+            case 'esri-nearby':
+              this.fetchEsriNearby(feature, dataSource, dataSourceKey);
+              break;
+            default:
+              break;
+          }
+        } // end of loop
       },
+
+      didFetchData(dataSourceKey, status, data) {
+        const stateData = status === 'error' ? null : data;
+
+        // put data in state
+        this.$store.commit('setSourceData', {
+          key: dataSourceKey,
+          data: stateData,
+        });
+
+        // update status
+        this.$store.commit('setSourceStatus', {
+          key: dataSourceKey,
+          status,
+        });
+      },
+
+      evaluateParams(feature, dataSource) {
+        const params = {};
+        for (let [paramKey, paramFn] of Object.entries(dataSource.options.params)) {
+          params[paramKey] = paramFn(feature);
+        }
+        return params;
+      },
+
+      fetchAjax(feature, dataSource, dataSourceKey) {
+        const params = this.evaluateParams(feature, dataSource);
+        const url = dataSource.url;
+        const success = dataSource.success;
+
+        // if the data is not dependent on other data
+        this.$http.get(url, { params }).then(response => {
+          const data = response.body;
+          this.didFetchData(dataSourceKey, 'success', data);
+        }, response => {
+          console.log('error in fetchAjax')
+          this.didFetchData(dataSourceKey, 'error');
+        });
+      }, // end of fetchAjax
+
+      fetchEsriSpatialQuery(dataSourceKey, url, relationship, targetGeom) {
+        console.log('fetch esri spatial query');
+
+        const query = L.esri.query({url})[relationship](targetGeom);
+
+        query.run((error, featureCollection, response) => {
+          console.log('did get esri spatial query', response, error);
+
+          const data = featureCollection.features;
+          const status = error ? 'error' : 'success';
+          this.didFetchData(dataSourceKey, status, data);
+        });
+      },
+
+      fetchEsri(feature, dataSource, dataSourceKey) {
+        const options = dataSource.options;
+        const url = dataSource.url;
+        const relationship = options.relationship;
+        const geom = feature.geometry;
+
+        this.fetchEsriSpatialQuery(dataSourceKey, url, relationship, geom);
+      },
+
+      fetchEsriNearby(feature, dataSource, dataSourceKey) {
+        console.log('fetch esri nearby', feature);
+
+        //const params = this.evaluateParams(feature, dataSource);
+        // const url = dataSource.url;
+        const {options} = dataSource;
+        const dataSourceUrl = dataSource.url;
+        const {geometryServerUrl} = options;
+        // TODO get some of these values from map, etc.
+        const params = {
+          // geometries: feature => '[' + feature.geometry.coordinates[0] + ', ' + feature.geometry.coordinates[1] + ']',
+          geometries: `[${feature.geometry.coordinates.join(', ')}]`,
+          inSR: () => 4326,
+          outSR: () => 4326,
+          bufferSR: () => 4326,
+          distances: () => .0015,
+          unionResults: () => true,
+          geodesic: () => false,
+          f: () => 'json',
+        };
+        console.debug('esri nearby params', params);
+
+        // get buffer polygon
+        const bufferUrl = geometryServerUrl.replace(/\/$/, '') + '/buffer';
+        console.log('im getting the points', bufferUrl);
+
+        this.$http.get(bufferUrl, {params}).then(response => {
+          console.log('did get esri nearby buffer', response);
+          const data = response.body;
+
+          const xyCoords = data['geometries'][0]['rings'][0];
+          const latLngCoords = xyCoords.map(xyCoord => [...xyCoord].reverse());
+
+          // get nearby features using buffer
+          const buffer = L.polygon(latLngCoords);
+          this.fetchEsriSpatialQuery(dataSourceKey,
+                                     dataSourceUrl,
+                                     'within',
+                                     buffer
+          );
+        }, response => {
+          console.log('did fetch esri nearby error', response);
+          this.didFetchData(dataSource, 'error');
+        });
+      }, // end of fetchEsriNearby
     }, // end of methods
   }; //end of export
 

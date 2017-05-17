@@ -49,33 +49,37 @@ Mapboard.default({
   baseConfig: 'https://gist.githubusercontent.com/ajrothwell/f5df4d85e09f5821c16329a96889368d/raw/49e26c2a5f31f20b03e6d84a5910ef9c14d0bcbb/config.js',
   dataSources: {
     nearby: {
-      url: 'https://phl.carto.com/api/v2/sql',
       type: 'ajax',
-      params: {
-        q: function(feature) {
-          const aisX = feature.geometry.coordinates[0];
-          const aisY = feature.geometry.coordinates[1];
-          const table = 'incidents_part1_part2';
-          const distanceFn = "ST_Distance(the_geom_webmercator, ST_Transform(CDB_LatLng(" + aisY + ", " + aisX + "), 3857)) * 3.28084";
-          const where = distanceFn + ' < 500';
-          //fieldMap = activityType.fieldMap,
-          const select = ['ST_X(the_geom) as x',
-                          'ST_Y(the_geom) as y',
-                          distanceFn + "AS distance",
-                        ].join(', ');
-          query = ['SELECT', select, 'FROM', table, 'WHERE', where].join(' ');
-          return (query);
-          }
+      url: 'https://phl.carto.com/api/v2/sql',
+      options: {
+        params: {
+          q: function(feature) {
+            const aisX = feature.geometry.coordinates[0];
+            const aisY = feature.geometry.coordinates[1];
+            const table = 'incidents_part1_part2';
+            const distanceFn = "ST_Distance(the_geom_webmercator, ST_Transform(CDB_LatLng(" + aisY + ", " + aisX + "), 3857)) * 3.28084";
+            const where = distanceFn + ' < 500';
+            //fieldMap = activityType.fieldMap,
+            const select = ['ST_X(the_geom) as x',
+                            'ST_Y(the_geom) as y',
+                            distanceFn + "AS distance",
+                          ].join(', ');
+            query = ['SELECT', select, 'FROM', table, 'WHERE', where].join(' ');
+            return (query);
+            }
+        }
       },
       success(data) {
         return data
       }
     },
     opa: {
-      url: 'https://data.phila.gov/resource/w7rb-qrn8.json',
       type: 'ajax',
-      params: {
-        parcel_number: feature => feature.properties.opa_account_num
+      url: 'https://data.phila.gov/resource/w7rb-qrn8.json',
+      options: {
+        params: {
+          parcel_number: feature => feature.properties.opa_account_num
+        },
       },
       success(data) {
         return data[0];
@@ -103,96 +107,116 @@ Mapboard.default({
     //   }
     // },
     stormwater: {
-      url: 'https://api.phila.gov/stormwater',
       type: 'ajax',
-      params: {
-        search: feature => feature.properties.street_address
+      url: 'https://api.phila.gov/stormwater',
+      options: {
+        params: {
+          search: feature => feature.properties.street_address
+        },
       },
       success(data) {
         return data[0];
       }
     },
-    threeOneOneBuffer: {
-      url: 'http://192.168.103.143:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer/buffer',
+    zoningDocs: {
       type: 'ajax',
-      params: {
-        // query: feature => L.esri.query({url: this.$config.esri.tools.buffer.url}).contains(feature)
-        geometries: feature => '['+feature.geometry.coordinates[0]+', '+feature.geometry.coordinates[1]+']',
-        inSR: () => 4326,
-        outSR: () => 4326,
-        bufferSR: () => 4326,
-        distances: () => .0015,
-        unionResults: () => true,
-        geodesic: () => false,
-        f: () => 'json',
-      },
-      success(dataString) {
-        // return L.polygon(data['geometries'][0]['rings'][0], {color: 'green'});
-        //return JSON.parse(dataString);
-        return dataString
-      }
-    },
-    threeOneOneData: {
-      callback: true,
-      callbackDataName: 'threeOneOneBuffer',
-      type: 'esri',
-      params: {
-        query: feature => L.esri.query({url: 'http://192.168.103.143:6080/arcgis/rest/services/GSG/GIS311_365DAYS/MapServer/0'})//.within(state.sources.threeOneOneBuffer)
+      url: 'https://phl.carto.com/api/v2/sql',
+      options: {
+        params: {
+          q: feature => "select * from zoning_documents_20170420 where address_std = '" + feature.properties.street_address + "' or addrkey = " + feature.properties.li_address_key,
+        },
       },
       success(data) {
         return data;
       }
     },
-    vacantLand: {
-      type: 'esri',
-      params: {
-        query: feature => L.esri.query({url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Land/FeatureServer/0'}).contains(feature)
+    '311': {
+      type: 'esri-nearby',
+      url: 'http://192.168.103.143:6080/arcgis/rest/services/GSG/GIS311_365DAYS/MapServer/0',
+      options: {
+        geometryServerUrl: 'http://192.168.103.143:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer/',
+        radius: 500,
+        units: 'feet',
       },
-      success(data) {
-        return data;
-      }
     },
-    vacantBuilding: {
-      type: 'esri',
-      params: {
-        query: feature => L.esri.query({url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Blgd/FeatureServer/0'}).contains(feature)
-      },
-      success(data) {
-        return data;
-      }
-    },
-    // TODO take zoningBase out and use AIS for base zoning district
-    zoningBase: {
-      type: 'esri',
-      params: {
-        query: feature => L.esri.query({url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/6/'}).contains(feature.geometry)
-      },
-      success(data) {
-        return data;
-      }
-    },
+    // threeOneOneBuffer: {
+    //   url: 'http://192.168.103.143:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer/buffer',
+    //   type: 'ajax',
+    //   dependency: 'threeOneOneData',
+    //   params: {
+    //     // query: feature => L.esri.query({url: this.$config.esri.tools.buffer.url}).contains(feature)
+    //     geometries: feature => '['+feature.geometry.coordinates[0]+', '+feature.geometry.coordinates[1]+']',
+    //     inSR: () => 4326,
+    //     outSR: () => 4326,
+    //     bufferSR: () => 4326,
+    //     distances: () => .0015,
+    //     unionResults: () => true,
+    //     geodesic: () => false,
+    //     f: () => 'json',
+    //   },
+    //   success(dataString) {
+    //     // return L.polygon(data['geometries'][0]['rings'][0], {color: 'green'});
+    //     //return JSON.parse(dataString);
+    //     return dataString
+    //   }
+    // },
+    // threeOneOneData: {
+    //   callback: true,
+    //   callbackDataName: 'threeOneOneBuffer',
+    //   dependentOn: 'threeOneOneBuffer',
+    //   type: 'esri',
+    //   params: {
+    //     query: feature => L.esri.query({url: 'http://192.168.103.143:6080/arcgis/rest/services/GSG/GIS311_365DAYS/MapServer/0'})//.within(state.sources.threeOneOneBuffer)
+    //   },
+    //   success(data) {
+    //     return data;
+    //   }
+    // },
+    // vacantLand: {
+    //   type: 'esri',
+    //   url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Land/FeatureServer/0',
+    //   options: {
+    //     relationship: 'contains',
+    //     // params: {
+    //     //   query: feature => L.esri.query({url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Land/FeatureServer/0'}).contains(feature)
+    //     // },
+    //   },
+    //   success(data) {
+    //     return data;
+    //   }
+    // },
+    // vacantBuilding: {
+    //   type: 'esri',
+    //   params: {
+    //     query: feature => L.esri.query({url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Bldg/FeatureServer/0'}).contains(feature)
+    //   },
+    //   success(data) {
+    //     return data;
+    //   }
+    // },
+    // // TODO take zoningBase out and use AIS for base zoning district
+    // zoningBase: {
+    //   type: 'esri',
+    //   params: {
+    //     query: feature => L.esri.query({url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/6/'}).contains(feature.geometry)
+    //   },
+    //   success(data) {
+    //     return data;
+    //   }
+    // },
     zoningOverlay: {
       type: 'esri',
-      params: {
-        query: feature => L.esri.query({url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/1/'}).contains(feature.geometry)
+      url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/1/',
+      options: {
+        relationship: 'contains',
       },
       success(data) {
         return data;
-      }
-    },
-    zoningDocs: {
-      url: 'https://phl.carto.com/api/v2/sql',
-      type: 'ajax',
-      params: {
-        q: feature => "select * from zoning_documents_20170420 where address_std = '" + feature.properties.street_address + "' or addrkey = " + feature.properties.li_address_key,
-      },
-      success(data) {
-        return data
       }
     },
   },
   cyclomedia: {
-    enabled: true
+    enabled: false
   },
   pictometry: {
     enabled: false
