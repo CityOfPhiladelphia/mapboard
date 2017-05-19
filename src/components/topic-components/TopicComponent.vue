@@ -1,6 +1,6 @@
 <script>
     export default {
-    props: ['slots', 'options'],
+    props: ['slots', 'options', 'item'],
     methods: {
       evaluateSlot(valOrGetter, transforms = []) {
         // check for null val/getter
@@ -21,7 +21,16 @@
           // const depsText = getterText.match(depsRe);
           // const deps = depsText.map(eval);
 
-          val = getter(state);
+          const item = this.item;
+
+          // if this comp is associated with an "item" (generally some object
+          // from a list of things, e.g. dor parcels), pass the item itself
+          // as well when evaluating
+          if (item) {
+            val = getter(state, item);
+          } else {
+            val = getter(state);
+          }
         } else {
           val = valOrGetter;
         }
