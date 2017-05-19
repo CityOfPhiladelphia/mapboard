@@ -31,7 +31,6 @@
       }
     },
     updated() {
-      // console.log('vectorMarker updated fired, latlng is', this.latlng);
       this.$leafletElement._map.removeLayer(this.$leafletElement);
       const leafletElement = this.$leafletElement = this.createLeafletElement();
       const map = this.$store.state.map.map;
@@ -41,13 +40,7 @@
       }
     },
     destroyed() {
-      //console.log('vectorMarker destroyed fired, latlng is', this.latlng);
       this.$leafletElement._map.removeLayer(this.$leafletElement);
-    },
-    computed: {
-      latlng() {
-        return this.$props.latlng;
-      }
     },
     methods: {
       createLeafletElement() {
