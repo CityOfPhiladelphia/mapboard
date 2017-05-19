@@ -483,23 +483,44 @@ Mapboard.default({
           options: {
             fields: [
               {
+                label: 'Date',
+                sourceField: 'REQUESTED_DATETIME',
+                transforms: [
+                  'date'
+                ]
+              },
+              {
+                label: 'Address',
+                sourceField: 'ADDRESS'
+              },
+              {
                 label: 'Subject',
                 sourceField: 'SUBJECT'
               },
               {
-                label: 'Description (not provided to public)',
+                label: 'Description',
                 sourceField: 'DESCRIPTION'
               },
+              {
+                label: 'Distance',
+                sourceField: 'DISTANCE'
+              }
             ]
           },
           slots: {
-            title: 'Nearby 311',
+            title(state) {
+              const data = state.sources['311'].data;
+              const count = data.length;
+              return `Nearby Service Requests (${count})`;
+            },
             items(state) {
               const data = state.sources['311'].data
-              console.log(data);
-              const props = data.map(row => row.properties);
-              console.log(props);
-              return props;
+              const rows = data.map(row => {
+                const props = row.properties;
+                props.DISTANCE = 'TODO';
+                return props;
+              });
+              return rows;
             }
           }
         }
