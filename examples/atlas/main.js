@@ -223,12 +223,12 @@ Mapboard.default({
       options: {
         marker: 'circle',
         style: {
-          radius: 8,
-          fillColor: "red",
-        	color: "#000",
+          radius: 6,
+          fillColor: '#ff3f3f',
+        	color: '#ff0000',
         	weight: 1,
         	opacity: 1,
-        	fillOpacity: 0.8
+        	fillOpacity: 1.0
         },
       },
     },
