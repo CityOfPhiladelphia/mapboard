@@ -475,9 +475,35 @@ Mapboard.default({
       ],
       basemap: 'pwd',
       identifyFeature: 'address-marker',
-      // color: '#000',
       overlays: ['311'],
-      parcels: 'pwd'
+      parcels: 'pwd',
+      components: [
+        {
+          type: 'horizontal-table',
+          options: {
+            fields: [
+              {
+                label: 'Subject',
+                sourceField: 'SUBJECT'
+              },
+              {
+                label: 'Description (not provided to public)',
+                sourceField: 'DESCRIPTION'
+              },
+            ]
+          },
+          slots: {
+            title: 'Nearby 311',
+            items(state) {
+              const data = state.sources['311'].data
+              console.log(data);
+              const props = data.map(row => row.properties);
+              console.log(props);
+              return props;
+            }
+          }
+        }
+      ]
     }
   ],
   geocoder: {
