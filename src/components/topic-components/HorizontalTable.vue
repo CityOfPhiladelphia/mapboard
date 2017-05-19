@@ -9,9 +9,6 @@
       </thead>
       <tbody>
         <tr v-for="item in evaluateSlot(slots.items)">
-          <!-- <td>'dkfslajdfksdafsd'</td>
-          <td>'dkfslajdfksdafsd'</td> -->
-          <!-- <td v-for="value in values(item)">{{ evaluateSlot(value, field.transforms) }}</td> -->
           <td v-for="field in fields">{{ item[field.sourceField] }}</td>
         </tr>
       </tbody>
@@ -24,20 +21,11 @@
 
   export default {
     mixins: [TopicComponent],
-
-    // mounted() {
-    //
-    // },
-    created() {
-      console.log(this.$props);
-    },
-
     computed: {
       fields() {
         return this.options.fields;
       }
     },
-
     methods: {
       values(item) {
         const fields = this.options.fields;
