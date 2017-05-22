@@ -16,7 +16,7 @@
 
     <!-- success -->
     <div class="topic-body" v-if="shouldShowBody">
-      <topic-component-group :components="topic.components" />
+      <topic-component-group :topic-components="topic.components" />
     </div>
 
     <!-- error -->

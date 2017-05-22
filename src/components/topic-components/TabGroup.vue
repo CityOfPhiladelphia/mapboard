@@ -20,8 +20,7 @@
            v-bind:class="{'is-active': itemIsActive(item)}"
            v-bind:id="'parcel-' + keyForItem(item)"
       >
-        <!-- TODO render content. should this be treated like a topic body? -->
-        Content here for parcel <strong>{{ titleForItem(item) }}</strong>
+        <topic-component-group :topic-components="comps" :item="item"/>
       </div>
     </div>
   </div>
@@ -29,9 +28,13 @@
 
 <script>
   import TopicComponent from './TopicComponent';
+  import TopicComponentGroup from '../TopicComponentGroup';
 
   export default {
     mixins: [TopicComponent],
+    components: {
+      TopicComponentGroup
+    },
     // some internal state for things local enough that they shouldn't be in
     // vuex if we can avoid it.
     data() {
@@ -41,10 +44,10 @@
         activeItem: this.keyForItem(items[0]),
       };
     },
-    mounted() {
-      // REVIEW globals. also is this still needed?
-      $(document).foundation();
-    },
+    // mounted() {
+    //   // REVIEW globals. also is this still needed?
+    //   // $(document).foundation();
+    // },
     beforeUpdate() {
       // when items change, update this component's internal state
       const nextFirstItem = this.items[0];
@@ -56,8 +59,8 @@
       items() {
         return this.evaluateSlot(this.slots.items);
       },
-      contentComponents() {
-        return this.options.contentComponents;
+      comps() {
+        return this.options.components;
       }
     },
     methods: {
@@ -84,5 +87,7 @@
 </script>
 
 <style scoped>
-
+  .tabs-panel {
+    padding-top: 10px;
+  }
 </style>
