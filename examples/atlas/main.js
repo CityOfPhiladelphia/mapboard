@@ -195,15 +195,16 @@ Mapboard.default({
     //   }
     // },
     // // TODO take zoningBase out and use AIS for base zoning district
-    // zoningBase: {
-    //   type: 'esri',
-    //   params: {
-    //     query: feature => L.esri.query({url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/6/'}).contains(feature.geometry)
-    //   },
-    //   success(data) {
-    //     return data;
-    //   }
-    // },
+    zoningBase: {
+      type: 'esri',
+      url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/6/',
+      options: {
+        relationship: 'contains',
+      },
+      success(data) {
+        return data;
+      }
+    },
     zoningOverlay: {
       type: 'esri',
       url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/1/',
@@ -213,6 +214,23 @@ Mapboard.default({
       success(data) {
         return data;
       }
+    },
+  },
+  overlays: {
+    '311': {
+      type: 'point',
+      dataSource: '311',
+      options: {
+        marker: 'circle',
+        style: {
+          radius: 6,
+          fillColor: '#ff3f3f',
+        	color: '#ff0000',
+        	weight: 1,
+        	opacity: 1,
+        	fillOpacity: 1.0
+        },
+      },
     },
   },
   cyclomedia: {
@@ -322,6 +340,7 @@ Mapboard.default({
       key: 'deeds',
       icon: 'book',
       label: 'Deeds',
+      dataSources: [],
       components: [
         {
           type: 'collection-summary',
@@ -396,6 +415,7 @@ Mapboard.default({
       key: 'pwd',
       icon: 'tint',
       label: 'PWD',
+      dataSources: [],
       components: [
       ],
       basemap: 'pwd',
@@ -409,6 +429,7 @@ Mapboard.default({
       key: 'dor',
       icon: 'book',
       label: 'DOR',
+      dataSources: [],
       components: [
       ],
       basemap: 'dor',
@@ -419,18 +440,20 @@ Mapboard.default({
       key: 'zoning',
       icon: 'building-o',
       label: 'Zoning',
-      //dataSources: ['zoningBase'],
+      dataSources: ['zoningOverlay',
+                    'zoningDocs'
+                    ],
       components: [
         {
           type: 'badge',
           slots: {
             title: 'Base District',
             value(state) {
-              const data = state.sources.zoningBase.data.properties;
+              const data = state.sources.zoningBase.data[0].properties;
               return data.LONG_CODE;
             },
             description(state) {
-              const data = state.sources.zoningBase.data.properties.LONG_CODE;
+              const data = state.sources.zoningBase.data[0].properties.LONG_CODE;
               return ZONING_CODE_MAP[data];
             },
           }
@@ -444,14 +467,64 @@ Mapboard.default({
       parcels: 'dor'
     },
     {
-      key: 'threeOneOne',
+      key: '311',
       icon: 'phone',
       label: '311',
+      dataSources: ['311'],
       components: [
       ],
       basemap: 'pwd',
       identifyFeature: 'address-marker',
-      parcels: 'pwd'
+      overlays: ['311'],
+      parcels: 'pwd',
+      components: [
+        {
+          type: 'horizontal-table',
+          options: {
+            fields: [
+              {
+                label: 'Date',
+                sourceField: 'REQUESTED_DATETIME',
+                transforms: [
+                  'date'
+                ]
+              },
+              {
+                label: 'Address',
+                sourceField: 'ADDRESS'
+              },
+              {
+                label: 'Subject',
+                sourceField: 'SUBJECT'
+              },
+              {
+                label: 'Description',
+                sourceField: 'DESCRIPTION'
+              },
+              {
+                label: 'Distance',
+                sourceField: 'DISTANCE'
+              }
+            ]
+          },
+          slots: {
+            title(state) {
+              const data = state.sources['311'].data;
+              const count = data.length;
+              return `Nearby Service Requests (${count})`;
+            },
+            items(state) {
+              const data = state.sources['311'].data
+              const rows = data.map(row => {
+                const props = row.properties;
+                props.DISTANCE = 'TODO';
+                return props;
+              });
+              return rows;
+            }
+          }
+        }
+      ]
     }
   ],
   geocoder: {

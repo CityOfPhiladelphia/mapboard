@@ -1,22 +1,37 @@
 <script>
-  import { geoJSON } from 'leaflet';
-  // pascal case
-  const GeoJson = geoJSON;
+  import { CircleMarker }  from 'leaflet';
+  import bindEvents from './util/bind-events';
 
   export default {
     props: [
-      'geojson',
+      'latlng',
+      'radius',
+      'fillColor',
       'color',
       'weight',
-      'overlay'
+      'opacity',
+      'fillOpacity'
     ],
     mounted() {
       const leafletElement = this.$leafletElement = this.createLeafletElement();
       const map = this.$store.state.map.map;
-      // REVIEW kind of hacky/not reactive?
       if (map) {
         leafletElement.addTo(map);
       }
+
+      // bind events
+
+      // const CIRCLE_EVENTS = [
+      //   'click',
+      //   'dblclick',
+      //   'mousedown',
+      //   'mouseover',
+      //   'mouseout',
+      //   'contextmenu'
+      // ];
+
+      // TODO warn if trying to bind an event that doesn't exist
+      bindEvents(this, this.$leafletElement, this._events);
     },
     destroyed() {
       this.$leafletElement._map.removeLayer(this.$leafletElement);
@@ -28,16 +43,13 @@
     },
     methods: {
       createLeafletElement() {
-        // if the geoJSON feature is a point, it needs to be styled through "pointToLayer"
-        const type = this.$props.overlay.type;
-        const style = this.$props.overlay.style;
-        return new GeoJson(this.$props.geojson, {
-          color: this.$props.color,
-          weight: this.$props.weight,
-          // pointToLayer: function (feature, latlng) {
-      		// 	return type(latlng, style)
-          // }
-        });
+        const props = this.$props;
+        const {
+          latlng,
+          ...options
+        } = props;
+
+        return new CircleMarker(latlng, options);
       },
       parentMounted(parent) {
         const map = parent.$leafletElement;
@@ -45,6 +57,4 @@
       }
     }
   };
-
-
 </script>

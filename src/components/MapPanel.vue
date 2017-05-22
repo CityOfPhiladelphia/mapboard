@@ -73,6 +73,20 @@
                :weight="2"
                :key="geojsonFeature.key"
        />
+       <!-- :overlay="geojsonFeature.overlayFeature" -->
+
+       <!-- TODO give these a real key -->
+      <circle-marker v-for="circleMarker in circleMarkers"
+                     :latlng="circleMarker.latlng"
+                     :id="circleMarker.id"
+                     :radius="circleMarker.radius"
+                     :fillColor="circleMarker.fillColor"
+                   	 :color="circleMarker.color"
+                   	 :weight="circleMarker.weight"
+                   	 :opacity="circleMarker.opacity"
+                   	 :fillOpacity="circleMarker.fillOpacity"
+                     :key="Math.random()"
+      />
 
        <!-- <vector-marker v-for="marker in threeOneOneMarkers"
                       v-if="activeTopicConfig.key === 'threeOneOne'"
@@ -161,6 +175,7 @@
   import EsriTiledMapLayer from '../esri-leaflet/TiledMapLayer';
   import EsriDynamicMapLayer from '../esri-leaflet/DynamicMapLayer';
   import Geojson from '../leaflet/Geojson';
+  import CircleMarker from '../leaflet/CircleMarker';
   import VectorMarker from './VectorMarker';
   import PngMarker from './PngMarker';
   import SvgMarker from './SvgMarker';
@@ -178,6 +193,7 @@
       EsriTiledMapLayer,
       EsriDynamicMapLayer,
       Geojson,
+      CircleMarker,
       VectorMarker,
       PngMarker,
       SvgMarker,
@@ -188,9 +204,6 @@
       CyclomediaRecordingCircle
     },
     computed: {
-      // threeOneOneMarkers() {
-      //   return this.$store.state.sources.threeOneOneData.data
-      // },
       activeBasemap() {
         return this.$store.state.map.basemap;
       },
@@ -287,6 +300,41 @@
       },
       // returns all geojson features to be rendered on the map along with
       // necessary props.
+      circleMarkers() {
+        const circleMarkers = [];
+        const overlayKeys = this.activeTopicConfig.overlays || [];
+        const circleOverlayKeys = overlayKeys.filter(overlayKey => {
+          const overlay = this.$config.overlays[overlayKey];
+          const options = overlay.options;
+          return options && options.marker === 'circle';
+        });
+
+        // if active topic has no circle overlays, return
+        if (circleOverlayKeys.length === 0) {
+          return circleMarkers;
+        }
+
+        const sources = this.$store.state.sources;
+
+        // loop over circle overlays
+        for (let circleOverlayKey of circleOverlayKeys) {
+          const circleOverlay = this.$config.overlays[circleOverlayKey];
+          const dataSource = circleOverlay.dataSource
+          const options = circleOverlay.options;
+          const data = sources[dataSource].data;
+
+          for (let row of data) {
+            const [x, y] = row.geometry.coordinates;
+            const latlng = [y, x];
+            const style = options.style;
+            const props = Object.assign({}, style);
+            props.latlng = latlng;
+            circleMarkers.push(props);
+          }
+        }
+
+        return circleMarkers;
+      },
       geojsonFeatures() {
         const features = [];
 
@@ -296,24 +344,51 @@
         if (identifyFeature === 'pwd-parcel' && activeParcelLayer === 'pwd' && this.pwdParcel) {
           const geojson = this.pwdParcel;
           const color = 'blue';
+          const overlayFeature = {
+            type: null,
+            style: {
+              color: 'blue'
+            }
+          };
           const key = geojson.properties.PARCELID;
           features.push({geojson, color, key});
         // dor parcel
         } else if (identifyFeature === 'dor-parcel' && activeParcelLayer === 'dor') {
+          const overlayFeature = {
+            type: null,
+            style: {
+              color: 'green'
+            }
+          };
           const color = 'green';
+          //const type = null;
           const dorParcelFeatures = this.dorParcels.map(dorParcel => {
             const geojson = dorParcel;
             const key = geojson.properties.OBJECTID;
-            return {geojson, color, key};
+            return {geojson, overlayFeature, key};
           });
           features.push.apply(features, dorParcelFeatures);
         }
 
-        // TODO render geojson features from sources
+        // GeoJSON overlays
+        const stateSources = this.$store.state.sources;
+        const dataSourcesConfig = this.$config.dataSources;
 
+        // step through the (possibly multiple) datasources for the active topic
+        for (let dataSource of this.activeTopicConfig.dataSources) {
+          // filter datasources with format geojson
+          if (dataSourcesConfig[dataSource].format === 'geojson') {
+            // step through to add each geojson object to "features"
+            for (let geojson of stateSources[dataSource].data) {
+              let overlayFeature = this.activeTopicConfig.overlayFeature;
+              let key = geojson.id;
+              features.push({geojson, overlayFeature, key});
+            }
+          }
+        }
+        // TODO filter by selected 311, police
         return features;
       },
-      // returns all leaflet markers on the map
       leafletMarkers() {
         const markers = [];
 
@@ -618,6 +693,8 @@
         const {options} = dataSource;
         const dataSourceUrl = dataSource.url;
         const {geometryServerUrl} = options;
+
+        // params.geometries = `[${feature.geometry.coordinates.join(', ')}]`
         // TODO get some of these values from map, etc.
         const params = {
           // geometries: feature => '[' + feature.geometry.coordinates[0] + ', ' + feature.geometry.coordinates[1] + ']',
