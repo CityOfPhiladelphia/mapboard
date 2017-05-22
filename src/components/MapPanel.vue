@@ -344,48 +344,48 @@
         if (identifyFeature === 'pwd-parcel' && activeParcelLayer === 'pwd' && this.pwdParcel) {
           const geojson = this.pwdParcel;
           const color = 'blue';
-          const overlayFeature = {
-            type: null,
-            style: {
-              color: 'blue'
-            }
-          };
+          // const overlayFeature = {
+          //   type: null,
+          //   style: {
+          //     color: 'blue'
+          //   }
+          // };
           const key = geojson.properties.PARCELID;
           features.push({geojson, color, key});
         // dor parcel
         } else if (identifyFeature === 'dor-parcel' && activeParcelLayer === 'dor') {
-          const overlayFeature = {
-            type: null,
-            style: {
-              color: 'green'
-            }
-          };
+          // const overlayFeature = {
+          //   type: null,
+          //   style: {
+          //     color: 'green'
+          //   }
+          // };
           const color = 'green';
           //const type = null;
           const dorParcelFeatures = this.dorParcels.map(dorParcel => {
             const geojson = dorParcel;
             const key = geojson.properties.OBJECTID;
-            return {geojson, overlayFeature, key};
+            return {geojson, color, key};
           });
           features.push.apply(features, dorParcelFeatures);
         }
 
         // GeoJSON overlays
-        const stateSources = this.$store.state.sources;
-        const dataSourcesConfig = this.$config.dataSources;
-
-        // step through the (possibly multiple) datasources for the active topic
-        for (let dataSource of this.activeTopicConfig.dataSources) {
-          // filter datasources with format geojson
-          if (dataSourcesConfig[dataSource].format === 'geojson') {
-            // step through to add each geojson object to "features"
-            for (let geojson of stateSources[dataSource].data) {
-              let overlayFeature = this.activeTopicConfig.overlayFeature;
-              let key = geojson.id;
-              features.push({geojson, overlayFeature, key});
-            }
-          }
-        }
+        // const stateSources = this.$store.state.sources;
+        // const dataSourcesConfig = this.$config.dataSources;
+        //
+        // // step through the (possibly multiple) datasources for the active topic
+        // for (let dataSource of this.activeTopicConfig.dataSources) {
+        //   // filter datasources with format geojson
+        //   if (dataSourcesConfig[dataSource].format === 'geojson') {
+        //     // step through to add each geojson object to "features"
+        //     for (let geojson of stateSources[dataSource].data) {
+        //       let overlayFeature = this.activeTopicConfig.overlayFeature;
+        //       let key = geojson.id;
+        //       features.push({geojson, overlayFeature, key});
+        //     }
+        //   }
+        // }
         // TODO filter by selected 311, police
         return features;
       },
@@ -490,6 +490,7 @@
         parcelQuery.run(this.didGetPwdParcel);
       },
       didGetPwdParcel(error, featureCollection, response) {
+        console.log('didGetPwdParcel is running');
         if (error) {
           console.warn('did get pwd parcel error', error);
           return;
@@ -528,6 +529,7 @@
         parcelQuery.run(this.didGetDorParcels);
       },
       didGetDorParcels(error, featureCollection, response) {
+        console.log('didGetDorParcels is running');
         if (error) {
           console.warn('did get dor parcels error', error);
           return;
@@ -546,6 +548,7 @@
         }
       },
       fetchAis(input) {
+        console.log('fetchAis is running');
         const self = this;
         const searchConfig = this.$config.geocoder.methods.search;
         const url = searchConfig.url(input);

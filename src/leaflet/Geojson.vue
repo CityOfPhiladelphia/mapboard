@@ -8,7 +8,6 @@
       'geojson',
       'color',
       'weight',
-      'overlay'
     ],
     mounted() {
       const leafletElement = this.$leafletElement = this.createLeafletElement();
@@ -29,8 +28,8 @@
     methods: {
       createLeafletElement() {
         // if the geoJSON feature is a point, it needs to be styled through "pointToLayer"
-        const type = this.$props.overlay.type;
-        const style = this.$props.overlay.style;
+        // const type = this.$props.overlay.type;
+        // const style = this.$props.overlay.style;
         return new GeoJson(this.$props.geojson, {
           color: this.$props.color,
           weight: this.$props.weight,
