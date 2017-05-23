@@ -58,7 +58,8 @@ function createStore(config) {
     // we need this to know whether or not to force an update on the first show
     pictometry: {
       active: false
-    }
+    },
+    activeFeature: null,
   };
 
   // TODO standardize how payloads are passed around/handled
@@ -125,7 +126,10 @@ function createStore(config) {
         state.cyclomedia.locFromApp = payload;
       },
       setCyclomediaLocFromViewer(state, payload) {
-        state.cyclomedia.locFromViewer = payload
+        state.cyclomedia.locFromViewer = payload;
+      },
+      setActiveFeature(state, payload) {
+        state.activeFeature = payload;
       },
     }
   });

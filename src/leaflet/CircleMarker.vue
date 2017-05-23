@@ -10,7 +10,8 @@
       'color',
       'weight',
       'opacity',
-      'fillOpacity'
+      'fillOpacity',
+      'data'
     ],
     mounted() {
       const leafletElement = this.$leafletElement = this.createLeafletElement();
@@ -21,14 +22,14 @@
 
       // bind events
 
-      // const CIRCLE_EVENTS = [
-      //   'click',
-      //   'dblclick',
-      //   'mousedown',
-      //   'mouseover',
-      //   'mouseout',
-      //   'contextmenu'
-      // ];
+      const CIRCLE_MARKER_EVENTS = [
+        'click',
+        //'dblclick',
+        //'mousedown',
+        'mouseover',
+        //'mouseout',
+        //'contextmenu'
+      ];
 
       // TODO warn if trying to bind an event that doesn't exist
       bindEvents(this, this.$leafletElement, this._events);

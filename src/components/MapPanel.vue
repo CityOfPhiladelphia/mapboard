@@ -77,8 +77,9 @@
 
        <!-- TODO give these a real key -->
       <circle-marker v-for="circleMarker in circleMarkers"
+                     @l-click="handleCircleMarkerClick"
+                     @l-mouseover="handleCircleMarkerMouseover"
                      :latlng="circleMarker.latlng"
-                     :id="circleMarker.id"
                      :radius="circleMarker.radius"
                      :fillColor="circleMarker.fillColor"
                    	 :color="circleMarker.color"
@@ -86,6 +87,7 @@
                    	 :opacity="circleMarker.opacity"
                    	 :fillOpacity="circleMarker.fillOpacity"
                      :key="Math.random()"
+                     :data="{featureId: circleMarker.featureId}"
       />
 
        <!-- <vector-marker v-for="marker in threeOneOneMarkers"
@@ -323,12 +325,21 @@
           const options = circleOverlay.options;
           const data = sources[dataSource].data;
 
+          const activeFeature = this.$store.state.activeFeature;
+
           for (let row of data) {
             const [x, y] = row.geometry.coordinates;
             const latlng = [y, x];
+
+            // check for active feature TODO - bind style props to state
             const style = options.style;
+            if (row._featureId === activeFeature) {
+              console.log(row._featureId, 'is same as', activeFeature);
+              style.fillColor = 'yellow';
+            }
             const props = Object.assign({}, style);
             props.latlng = latlng;
+            props.featureId = row._featureId;
             circleMarkers.push(props);
           }
         }
@@ -458,6 +469,14 @@
             this.$store.commit('setCyclomediaRecordings', recordings);
           }
         );
+      },
+      handleCircleMarkerClick(e) {
+        console.log('clicked circle marker');
+      },
+      handleCircleMarkerMouseover(e) {
+        console.log('mouseover circle marker', e);
+        const featureId = e.target.options.data.featureId;
+        this.$store.commit('setActiveFeature', featureId);
       },
       handleSearchFormSubmit(e) {
         const input = e.target[0].value;
@@ -626,18 +645,33 @@
         } // end of loop
       },
 
-      didFetchData(dataSourceKey, status, data) {
-        const stateData = status === 'error' ? null : data;
+      assignFeatureIds(features, dataSourceKey) {      //
+        const featuresWithIds = [];
+
+        // REVIEW this was not working with Array.map for some reason
+        for (let i = 0; i < features.length; i++) {
+          const id = `feat-${dataSourceKey}-${i}`;
+          const feature = features[i];
+          feature._featureId = id;
+          featuresWithIds.push(feature);
+        }
+
+        return featuresWithIds;
+      },
+
+      didFetchData(key, status, responseData) {
+        const data = status === 'error' ? null : responseData;
+        const dataWithIds = this.assignFeatureIds(data, key);
 
         // put data in state
         this.$store.commit('setSourceData', {
-          key: dataSourceKey,
-          data: stateData,
+          key,
+          data: dataWithIds,
         });
 
         // update status
         this.$store.commit('setSourceStatus', {
-          key: dataSourceKey,
+          key,
           status,
         });
       },
