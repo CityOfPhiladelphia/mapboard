@@ -16,13 +16,7 @@
 
     <!-- success -->
     <div class="topic-body" v-if="shouldShowBody">
-      <component v-for="(topicComp, topicCompIndex) in topic.components"
-                 :is="topicComp.type"
-                 class="topic-comp"
-                 :slots="topicComp.slots"
-                 :options="topicComp.options"
-                 :key="`topic-comp-${topic.key}-${topicCompIndex}`"
-      />
+      <topic-component-group :topic-components="topic.components" />
     </div>
 
     <!-- error -->
@@ -35,24 +29,12 @@
 <script>
   // import { mapMutations } from 'vuex';
 
-  import Badge from './topic-components/Badge';
-  import HorizontalTable from './topic-components/HorizontalTable';
-  import VerticalTable from './topic-components/VerticalTable';
-  import Callout from './topic-components/Callout';
-  import Image_ from './topic-components/Image';
-  import CollectionSummary from './topic-components/CollectionSummary';
-  import TabGroup from './topic-components/TabGroup';
+  import TopicComponentGroup from './TopicComponentGroup';
 
   export default {
     props: ['topicKey'],
     components: {
-      Badge,
-      HorizontalTable,
-      VerticalTable,
-      Callout,
-      Image_,
-      CollectionSummary,
-      TabGroup
+      TopicComponentGroup
     },
     computed: {
       // returns the full config object for the topic
@@ -198,10 +180,6 @@
   .topic-body {
     padding: 10px;
     margin-bottom: 20px;
-  }
-
-  .topic-comp {
-    margin-bottom: 10px;
   }
 
   .loading {

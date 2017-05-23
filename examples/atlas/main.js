@@ -39,6 +39,59 @@ const ZONING_CODE_MAP = {
   'SP-PO-P': 'Recreation',
 };
 
+function cleanDorAttribute(attr) {
+  // trim leading and trailing whitespace
+  let cleanAttr = attr ? String(attr) : '';
+  cleanAttr = cleanAttr.replace(/\s+/g, '');
+
+  // return null for zeros and empty strings
+  if (['', '0'].indexOf(cleanAttr) > -1) {
+    return null;
+  }
+
+  return cleanAttr;
+}
+
+// TODO put this in base config transforms
+function concatDorAddress(parcel) {
+  const STREET_FIELDS = ['STDIR', 'STNAM', 'STDES', 'STDESSUF'];
+  const props = parcel.properties;
+
+  // handle house num
+  const addressLow = cleanDorAttribute(props.HOUSE);
+  const addressHigh = cleanDorAttribute(props.STEX);
+  const addressSuffix = cleanDorAttribute(props.SUFFIX);
+  let address = addressLow;
+  address = address + (addressHigh ? '-' + addressHigh : '');
+  address = address + (addressSuffix || '');
+
+  // handle unit
+  var unit = cleanDorAttribute(props.UNIT);
+  unit && (unit = '# ' + unit);
+
+  // clean up attributes
+  let comps = STREET_FIELDS.map(streetField => props[streetField]);
+  comps = comps.map(cleanDorAttribute);
+      // TODO handle individual address comps (like mapping stex=2 => 1/2)
+      // addressLow = comps.HOUSE,
+      // addressHigh = comps.STEX,
+      // streetPredir = comps.STDIR,
+      // streetName = comps.STNAM,
+      // streetSuffix = comps.STDES,
+      // streetPostdir = comps.STDESSUF,
+
+  // add address to front
+  comps = [address].concat(comps);
+
+  // add unit to end
+  comps = comps.concat([unit]);
+
+  // remove nulls and concat
+  address = comps.filter(Boolean).join(' ');
+
+  return address;
+}
+
 // configure accounting.js
 accounting.settings.currency.precision = 0;
 
@@ -388,15 +441,91 @@ Mapboard.default({
             // components for the content pane. this essentially a topic body.
             components: [
               {
-                type: 'callout',
+                type: 'vertical-table',
                 slots: {
-                  text() {
-                    return 'testing';
-                  }
-                }
-              }
-            ]
-          },
+                  title: 'Parcel Details',
+                  fields: [
+                    {
+                      label: 'Map Registry #',
+                      value(state, item) {
+                        return item.properties.MAPREG;
+                      },
+                    },
+                    {
+                      label: 'Parcel Address',
+                      value(state, item) {
+                        return concatDorAddress(item);
+                      },
+                    },
+                    {
+                      label: 'Status',
+                      value(state, item) {
+                        const status = item.properties.STATUS;
+                        let desc;
+                        switch(status) {
+                          case 1:
+                            desc = 'Active';
+                            break;
+                          case 2:
+                            desc = 'Inactive';
+                            break;
+                          case 3:
+                            desc = 'Remainder';
+                            break;
+                          default:
+                            break;
+                        }
+                        return desc;
+                      },
+                    },
+                    {
+                      label: 'Origination Date',
+                      value(state, item) {
+                        return item.properties.ORIG_DATE;
+                      },
+                      transforms: [
+                        'date'
+                      ]
+                    },
+                    {
+                      label: 'Inactive Date',
+                      value(state, item) {
+                        return item.properties.INACTDATE;
+                      },
+                      transforms: [
+                        'date'
+                      ]
+                    },
+                    {
+                      label: 'Has Air Rights',
+                      value(state, item) {
+                        const suffix = item.properties.SUFFIX;
+                        return suffix === 'A' ? 'Yes' : 'No';
+                      },
+                    },
+                    {
+                      label: 'Is Condo',
+                      value(state, item) {
+                        return item.properties.CONDOFLAG ? 'Yes' : 'No';
+                      },
+                    },
+                    {
+                      label: 'Perimeter',
+                      value(state, item) {
+                        return 'TODO';
+                      },
+                    },
+                    {
+                      label: 'Area',
+                      value(state, item) {
+                        return 'TODO';
+                      },
+                    },
+                  ]
+                }  // end slots
+              }  // end vertical table
+            ] // end parcel tab content comps
+          }, // end parcel tab options
           slots: {
             // REVIEW should this go in options? maybe not, since it should be
             // reactive.
@@ -404,8 +533,8 @@ Mapboard.default({
               return state.dorParcels;
             }
           }
-        }
-      ],
+        } // end dor parcel tab group comp
+      ], // end deeds comps
       basemap: 'pwd',
       identifyFeature: 'address-marker',
       // we might not need this anymore, now that we have identifyFeature
