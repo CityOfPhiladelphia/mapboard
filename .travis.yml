@@ -19,6 +19,7 @@ deploy:
   - provider: npm
     email: "maps@phila.gov"
     api_key: $NPM_AUTH_TOKEN
+    skip_cleanup: true
     on:
       tags: true
 env:
