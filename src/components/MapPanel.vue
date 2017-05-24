@@ -434,7 +434,7 @@
         if (e.originalEvent.keyCode === 13) {
           return;
         }
-        this.$store.commit('setLastClick', 'map')
+        this.$store.commit('setLastSearchMethod', 'reverseGeocode')
 
         // METHOD 1: intersect map click latlng with parcel layers
         this.getDorParcelsByLatLng(e.latlng);
@@ -484,7 +484,7 @@
       },
       handleSearchFormSubmit(e) {
         const input = e.target[0].value;
-        this.$store.commit('setLastClick', 'search');
+        this.$store.commit('setLastSearchMethod', 'geocode');
         this.$store.commit('setPwdParcel', null);
         this.$store.commit('setDorParcels', []);
 

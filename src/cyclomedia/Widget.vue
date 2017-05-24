@@ -13,12 +13,12 @@
     computed: {
       locForCyclo() {
         console.log('computed')
-        const lastClick = this.$store.state.lastClick;
+        const lastSearchMethod = this.$store.state.lastSearchMethod;
         const geocodeData = this.$store.state.geocode.data;
         const map = this.$store.state.map.map;
         let center;
         let sendLoc;
-        if (lastClick === 'search') {
+        if (lastSearchMethod === 'geocode') {
           sendLoc = geocodeData.geometry.coordinates;
         }
         else if (!geocodeData) {
