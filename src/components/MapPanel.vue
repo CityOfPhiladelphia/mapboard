@@ -474,12 +474,10 @@
         console.log('clicked circle marker');
       },
       handleCircleMarkerMouseover(e) {
-        console.log('mouseover circle marker', e);
         const featureId = e.target.options.data.featureId;
         this.$store.commit('setActiveFeature', featureId);
       },
       handleCircleMarkerMouseout(e) {
-        console.log('mouseout circle marker', e);
         this.$store.commit('setActiveFeature', null);
       },
       handleSearchFormSubmit(e) {
