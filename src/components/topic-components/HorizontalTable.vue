@@ -14,6 +14,7 @@
         <horizontal-table-row v-for="item in evaluateSlot(slots.items)"
                               :item="item"
                               :fields="fields"
+                              :key="item._featureId"
         />
       </tbody>
     </table>
