@@ -79,6 +79,7 @@
       <circle-marker v-for="circleMarker in circleMarkers"
                      @l-click="handleCircleMarkerClick"
                      @l-mouseover="handleCircleMarkerMouseover"
+                     @l-mouseout="handleCircleMarkerMouseout"
                      :latlng="circleMarker.latlng"
                      :radius="circleMarker.radius"
                      :fillColor="circleMarker.fillColor"
@@ -333,11 +334,10 @@
 
             // check for active feature TODO - bind style props to state
             const style = options.style;
-            if (row._featureId === activeFeature) {
-              console.log(row._featureId, 'is same as', activeFeature);
-              style.fillColor = 'yellow';
-            }
             const props = Object.assign({}, style);
+            if (row._featureId === activeFeature) {
+              props.fillColor = 'yellow';
+            }
             props.latlng = latlng;
             props.featureId = row._featureId;
             circleMarkers.push(props);
@@ -477,6 +477,10 @@
         console.log('mouseover circle marker', e);
         const featureId = e.target.options.data.featureId;
         this.$store.commit('setActiveFeature', featureId);
+      },
+      handleCircleMarkerMouseout(e) {
+        console.log('mouseout circle marker', e);
+        this.$store.commit('setActiveFeature', null);
       },
       handleSearchFormSubmit(e) {
         const input = e.target[0].value;
@@ -645,7 +649,7 @@
         } // end of loop
       },
 
-      assignFeatureIds(features, dataSourceKey) {      //
+      assignFeatureIds(features, dataSourceKey) {
         const featuresWithIds = [];
 
         // REVIEW this was not working with Array.map for some reason

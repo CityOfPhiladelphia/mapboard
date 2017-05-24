@@ -27,7 +27,7 @@
         //'dblclick',
         //'mousedown',
         'mouseover',
-        //'mouseout',
+        'mouseout',
         //'contextmenu'
       ];
 
