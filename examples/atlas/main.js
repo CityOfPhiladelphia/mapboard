@@ -181,7 +181,46 @@ Mapboard.default({
         success(data) {
           return data;
         }
+      }
+    },
+    dorDocuments: {
+      type: 'json',
+      url: '//ase.phila.gov/arcgis/rest/services/RTT/MapServer/0/query',
+      options: {
+        params: {
+          where(feature, state) {
+            const parcel = state.dorParcels[0];
+            console.log('going to get dor docs for parcel', parcel);
+            const parcelAddress = concatDorAddress(parcel);
+            let where = `ADDRESS = '${parcelAddress}'`;
+
+            // check for unit num
+            const unitNum = feature.properties.unit_num;
+
+            if (unitNum) {
+              console.log('unit num')
+              where += ` AND CONDO_UNIT = '${unitNum}'`;
+            }
+
+            return where;
+          },
+          outFields: '*',
+          f: 'json'
+        },
+        success(data) {
+          // arcgis server doesn't set application-type headers, so parse json
+          return JSON.parse(data);
+        }
       },
+      // this should return false if anything necessary for the fetch is missing
+      // from state.
+      // REVIEW would this be better handled by a `deps` property?
+      ready(state) {
+        const hasParcel = !!state.dorParcels[0];
+        if (!hasParcel) {
+          return false;
+        }
+        return true;
       }
     },
     '311': {
@@ -268,7 +307,7 @@ Mapboard.default({
       success(data) {
         return data;
       }
-    },
+    }
   },
   overlays: {
     '311': {
