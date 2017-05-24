@@ -634,8 +634,8 @@
           });
 
           switch(type) {
-            case 'ajax':
-              this.fetchAjax(feature, dataSource, dataSourceKey);
+            case 'json':
+              this.fetchJson(feature, dataSource, dataSourceKey);
               break;
             case 'esri':
               this.fetchEsri(feature, dataSource, dataSourceKey);
@@ -688,7 +688,7 @@
         return params;
       },
 
-      fetchAjax(feature, dataSource, dataSourceKey) {
+      fetchJson(feature, dataSource, dataSourceKey) {
         const params = this.evaluateParams(feature, dataSource);
         const url = dataSource.url;
         const success = dataSource.success;
@@ -698,10 +698,10 @@
           const data = response.body;
           this.didFetchData(dataSourceKey, 'success', data);
         }, response => {
-          console.log('error in fetchAjax')
+          console.log('fetch json error', response);
           this.didFetchData(dataSourceKey, 'error');
         });
-      }, // end of fetchAjax
+      }, // end of fetchJson
 
       fetchEsriSpatialQuery(dataSourceKey, url, relationship, targetGeom) {
         // console.log('fetch esri spatial query');

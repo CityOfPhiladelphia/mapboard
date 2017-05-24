@@ -102,7 +102,7 @@ Mapboard.default({
   baseConfig: '//gist.githubusercontent.com/rbrtmrtn/09b4f35396f97499c3097e2fecaed8e7/raw/d36124d006bed52124ead05535bb92d4c562fd00/config.js',
   dataSources: {
     nearby: {
-      type: 'ajax',
+      type: 'json',
       url: 'https://phl.carto.com/api/v2/sql',
       options: {
         params: {
@@ -127,7 +127,7 @@ Mapboard.default({
       }
     },
     opa: {
-      type: 'ajax',
+      type: 'json',
       url: 'https://data.phila.gov/resource/w7rb-qrn8.json',
       options: {
         params: {
@@ -141,7 +141,7 @@ Mapboard.default({
     // TODO elections and divisions
     // elections: {
     //   url: 'https://api.phila.gov/elections',
-    //   type: 'ajax',
+    //   type: 'json',
     //   params: {
     //
     //   },
@@ -151,7 +151,7 @@ Mapboard.default({
     // }
     // divisions: {
     //   url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ServiceAreas/MapServer/22',
-    //   type: 'ajax',
+    //   type: 'json',
     //   params: {
     //
     //   },
@@ -160,7 +160,7 @@ Mapboard.default({
     //   }
     // },
     stormwater: {
-      type: 'ajax',
+      type: 'json',
       url: 'https://api.phila.gov/stormwater',
       options: {
         params: {
@@ -172,7 +172,7 @@ Mapboard.default({
       }
     },
     zoningDocs: {
-      type: 'ajax',
+      type: 'json',
       url: 'https://phl.carto.com/api/v2/sql',
       options: {
         params: {
@@ -194,7 +194,7 @@ Mapboard.default({
     },
     // threeOneOneBuffer: {
     //   url: 'http://192.168.103.143:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer/buffer',
-    //   type: 'ajax',
+    //   type: 'json',
     //   dependency: 'threeOneOneData',
     //   params: {
     //     // query: feature => L.esri.query({url: this.$config.esri.tools.buffer.url}).contains(feature)
