@@ -691,7 +691,8 @@
       fetchJson(feature, dataSource, dataSourceKey) {
         const params = this.evaluateParams(feature, dataSource);
         const url = dataSource.url;
-        const success = dataSource.success;
+        const options = dataSource.options;
+        const success = options.success;
 
         // if the data is not dependent on other data
         this.$http.get(url, { params }).then(response => {

@@ -120,10 +120,10 @@ Mapboard.default({
             query = ['SELECT', select, 'FROM', table, 'WHERE', where].join(' ');
             return (query);
             }
+        },
+        success(data) {
+          return data
         }
-      },
-      success(data) {
-        return data
       }
     },
     opa: {
@@ -133,9 +133,9 @@ Mapboard.default({
         params: {
           parcel_number: feature => feature.properties.opa_account_num
         },
-      },
-      success(data) {
-        return data[0];
+        success(data) {
+          return data[0];
+        }
       }
     },
     // TODO elections and divisions
@@ -166,9 +166,9 @@ Mapboard.default({
         params: {
           search: feature => feature.properties.street_address
         },
-      },
-      success(data) {
-        return data[0];
+        success(data) {
+          return data[0];
+        }
       }
     },
     zoningDocs: {
@@ -178,9 +178,10 @@ Mapboard.default({
         params: {
           q: feature => "select * from zoning_documents_20170420 where address_std = '" + feature.properties.street_address + "' or addrkey = " + feature.properties.li_address_key,
         },
+        success(data) {
+          return data;
+        }
       },
-      success(data) {
-        return data;
       }
     },
     '311': {
