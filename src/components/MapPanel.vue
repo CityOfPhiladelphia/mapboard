@@ -682,9 +682,21 @@
 
       evaluateParams(feature, dataSource) {
         const params = {};
-        for (let [paramKey, paramFn] of Object.entries(dataSource.options.params)) {
-          params[paramKey] = paramFn(feature);
+        const paramEntries = Object.entries(dataSource.options.params);
+        const state = this.$store.state;
+
+        for (let [key, valOrGetter] of paramEntries) {
+          let val;
+
+          if (typeof valOrGetter === 'function') {
+            val = valOrGetter(feature, state);
+          } else {
+            val = valOrGetter;
+          }
+
+          params[key] = val;
         }
+
         return params;
       },
 
