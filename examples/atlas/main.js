@@ -99,10 +99,10 @@ Mapboard.default({
   rootStyle: {
     height: '600px'
   },
-  baseConfig: 'https://gist.githubusercontent.com/ajrothwell/f5df4d85e09f5821c16329a96889368d/raw/49e26c2a5f31f20b03e6d84a5910ef9c14d0bcbb/config.js',
+  baseConfig: '//gist.githubusercontent.com/rbrtmrtn/09b4f35396f97499c3097e2fecaed8e7/raw/d36124d006bed52124ead05535bb92d4c562fd00/config.js',
   dataSources: {
     nearby: {
-      type: 'ajax',
+      type: 'json',
       url: 'https://phl.carto.com/api/v2/sql',
       options: {
         params: {
@@ -120,28 +120,28 @@ Mapboard.default({
             query = ['SELECT', select, 'FROM', table, 'WHERE', where].join(' ');
             return (query);
             }
+        },
+        success(data) {
+          return data
         }
-      },
-      success(data) {
-        return data
       }
     },
     opa: {
-      type: 'ajax',
+      type: 'json',
       url: 'https://data.phila.gov/resource/w7rb-qrn8.json',
       options: {
         params: {
           parcel_number: feature => feature.properties.opa_account_num
         },
-      },
-      success(data) {
-        return data[0];
+        success(data) {
+          return data[0];
+        }
       }
     },
     // TODO elections and divisions
     // elections: {
     //   url: 'https://api.phila.gov/elections',
-    //   type: 'ajax',
+    //   type: 'json',
     //   params: {
     //
     //   },
@@ -151,7 +151,7 @@ Mapboard.default({
     // }
     // divisions: {
     //   url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ServiceAreas/MapServer/22',
-    //   type: 'ajax',
+    //   type: 'json',
     //   params: {
     //
     //   },
@@ -160,27 +160,67 @@ Mapboard.default({
     //   }
     // },
     stormwater: {
-      type: 'ajax',
+      type: 'json',
       url: 'https://api.phila.gov/stormwater',
       options: {
         params: {
           search: feature => feature.properties.street_address
         },
-      },
-      success(data) {
-        return data[0];
+        success(data) {
+          return data[0];
+        }
       }
     },
     zoningDocs: {
-      type: 'ajax',
+      type: 'json',
       url: 'https://phl.carto.com/api/v2/sql',
       options: {
         params: {
           q: feature => "select * from zoning_documents_20170420 where address_std = '" + feature.properties.street_address + "' or addrkey = " + feature.properties.li_address_key,
         },
+        success(data) {
+          return data;
+        }
+      }
+    },
+    dorDocuments: {
+      type: 'json',
+      url: '//ase.phila.gov/arcgis/rest/services/RTT/MapServer/0/query',
+      options: {
+        params: {
+          where(feature, state) {
+            const parcel = state.dorParcels[0];
+            console.log('going to get dor docs for parcel', parcel);
+            const parcelAddress = concatDorAddress(parcel);
+            let where = `ADDRESS = '${parcelAddress}'`;
+
+            // check for unit num
+            const unitNum = feature.properties.unit_num;
+
+            if (unitNum) {
+              console.log('unit num')
+              where += ` AND CONDO_UNIT = '${unitNum}'`;
+            }
+
+            return where;
+          },
+          outFields: '*',
+          f: 'json'
+        },
+        success(data) {
+          // arcgis server doesn't set application-type headers, so parse json
+          return JSON.parse(data);
+        }
       },
-      success(data) {
-        return data;
+      // this should return false if anything necessary for the fetch is missing
+      // from state.
+      // REVIEW would this be better handled by a `deps` property?
+      ready(state) {
+        const hasParcel = !!state.dorParcels[0];
+        if (!hasParcel) {
+          return false;
+        }
+        return true;
       }
     },
     '311': {
@@ -194,7 +234,7 @@ Mapboard.default({
     },
     // threeOneOneBuffer: {
     //   url: 'http://192.168.103.143:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer/buffer',
-    //   type: 'ajax',
+    //   type: 'json',
     //   dependency: 'threeOneOneData',
     //   params: {
     //     // query: feature => L.esri.query({url: this.$config.esri.tools.buffer.url}).contains(feature)
@@ -267,7 +307,7 @@ Mapboard.default({
       success(data) {
         return data;
       }
-    },
+    }
   },
   overlays: {
     '311': {
@@ -668,22 +708,6 @@ Mapboard.default({
       ]
     }
   ],
-  geocoder: {
-    methods: {
-      search: {
-        url: (input) => `//api.phila.gov/ais/v1/search/${input}`,
-        params: {
-          gatekeeperKey: GATEKEEPER_KEY
-        }
-      },
-      reverseGeocode: {
-        url: (input) => `//api.phila.gov/ais/v1/reverse_geocode/${input}`,
-        params: {
-          gatekeeperKey: GATEKEEPER_KEY
-        }
-      }
-    }
-  },
   // events: {
   //   geocodeResult(e) {
   //     console.log('**HOST** geocode result:', e.properties.street_address);

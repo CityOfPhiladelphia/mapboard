@@ -416,7 +416,7 @@
       // if there's a default address, navigate to it
       const defaultAddress = this.$config.defaultAddress;
       if (defaultAddress) {
-        this.fetchAis(defaultAddress);
+        this.geocode(defaultAddress);
       }
 
       // create cyclomedia recordings client
@@ -434,7 +434,7 @@
         if (e.originalEvent.keyCode === 13) {
           return;
         }
-        this.$store.commit('setLastClick', 'map')
+        this.$store.commit('setLastSearchMethod', 'reverseGeocode')
 
         // METHOD 1: intersect map click latlng with parcel layers
         this.getDorParcelsByLatLng(e.latlng);
@@ -482,11 +482,11 @@
       },
       handleSearchFormSubmit(e) {
         const input = e.target[0].value;
-        this.$store.commit('setLastClick', 'search');
+        this.$store.commit('setLastSearchMethod', 'geocode');
         this.$store.commit('setPwdParcel', null);
         this.$store.commit('setDorParcels', []);
 
-        this.fetchAis(input);
+        this.geocode(input);
       },
       getReverseGeocode(latlng) {
         const lnglat = [latlng.lng, latlng.lat];
@@ -511,7 +511,8 @@
         parcelQuery.run(this.didGetPwdParcel);
       },
       didGetPwdParcel(error, featureCollection, response) {
-        console.log('didGetPwdParcel is running');
+        // console.log('did get pwd parcel', featureCollection);
+
         if (error) {
           console.warn('did get pwd parcel error', error);
           return;
@@ -533,8 +534,13 @@
         }
         this.$store.commit('setPwdParcel', feature);
 
-        if (feature && this.activeParcelLayer === 'pwd') {
-          this.fetchAis(feature.properties.PARCELID);
+        const shouldGeocode = (
+          this.activeParcelLayer === 'pwd' &&
+          feature &&
+          this.$store.state.lastSearchMethod === 'reverseGeocode'
+        );
+        if (shouldGeocode) {
+          this.geocode(feature.properties.PARCELID);
         }
       },
       getDorParcelsByLatLng(latlng) {
@@ -550,7 +556,8 @@
         parcelQuery.run(this.didGetDorParcels);
       },
       didGetDorParcels(error, featureCollection, response) {
-        console.log('didGetDorParcels is running');
+        // console.log('did get dor parcels', featureCollection);
+
         if (error) {
           console.warn('did get dor parcels error', error);
           return;
@@ -562,14 +569,19 @@
         const features = featureCollection.features;
         this.$store.commit('setDorParcels', featureCollection.features);
 
-        if (this.activeParcelLayer === 'dor') {
-          if (features.length < 1) return;
+        const shouldGeocode = (
+          this.activeParcelLayer === 'dor' &&
+          features.length < 1 &&
+          this.$store.state.lastSearchMethod === 'reverseGeocode'
+        );
+        if (shouldGeocode) {
           // TODO sort by mapreg, status
-          this.fetchAis(features[0].properties.MAPREG);
+          this.geocode(features[0].properties.MAPREG);
         }
       },
-      fetchAis(input) {
-        console.log('fetchAis is running');
+      geocode(input) {
+        // console.log('geocode', input);
+
         const self = this;
         const searchConfig = this.$config.geocoder.methods.search;
         const url = searchConfig.url(input);
@@ -596,9 +608,14 @@
           self.$eventBus.$emit('geocodeResult', feature);
 
           // check for parcels
-          const dorParcels = this.$store.state.dorParcels;
-          const pwdParcel = this.$store.state.pwdParcel;
-          if (!(dorParcels.length > 0 || pwdParcel)) {
+          // const dorParcels = this.$store.state.dorParcels;
+          // const pwdParcel = this.$store.state.pwdParcel;
+          // if (!(dorParcels.length > 0 || pwdParcel)) {
+
+          // if this is the result of a search (from the search box), get
+          // parcels
+          const lastSearchMethod = this.$store.state.lastSearchMethod;
+          if (lastSearchMethod === 'geocode') {
             const dorParcelId = feature.properties.dor_parcel_id;
             const pwdParcelId = feature.properties.pwd_parcel_id;
             this.getDorParcelsById(dorParcelId);
@@ -626,14 +643,27 @@
         for (let [dataSourceKey, dataSource] of Object.entries(dataSources)) {
           const type = dataSource.type;
 
+          // TODO null out existing data in state
+
+          // check to make sure the data source should run (aka has necessary
+          // state dependencies)
+          const readyFn = dataSource.ready;
+          if (readyFn) {
+            const state = this.$store.state;
+            const isReady = readyFn(state);
+            if (!isReady) {
+              return;
+            }
+          }
+
           this.$store.commit('setSourceStatus', {
             key: dataSourceKey,
             status: 'waiting'
           });
 
           switch(type) {
-            case 'ajax':
-              this.fetchAjax(feature, dataSource, dataSourceKey);
+            case 'json':
+              this.fetchJson(feature, dataSource, dataSourceKey);
               break;
             case 'esri':
               this.fetchEsri(feature, dataSource, dataSourceKey);
@@ -680,26 +710,39 @@
 
       evaluateParams(feature, dataSource) {
         const params = {};
-        for (let [paramKey, paramFn] of Object.entries(dataSource.options.params)) {
-          params[paramKey] = paramFn(feature);
+        const paramEntries = Object.entries(dataSource.options.params);
+        const state = this.$store.state;
+
+        for (let [key, valOrGetter] of paramEntries) {
+          let val;
+
+          if (typeof valOrGetter === 'function') {
+            val = valOrGetter(feature, state);
+          } else {
+            val = valOrGetter;
+          }
+
+          params[key] = val;
         }
+
         return params;
       },
 
-      fetchAjax(feature, dataSource, dataSourceKey) {
+      fetchJson(feature, dataSource, dataSourceKey) {
         const params = this.evaluateParams(feature, dataSource);
         const url = dataSource.url;
-        const success = dataSource.success;
+        const options = dataSource.options;
+        const success = options.success;
 
         // if the data is not dependent on other data
         this.$http.get(url, { params }).then(response => {
           const data = response.body;
           this.didFetchData(dataSourceKey, 'success', data);
         }, response => {
-          console.log('error in fetchAjax')
+          console.log('fetch json error', response);
           this.didFetchData(dataSourceKey, 'error');
         });
-      }, // end of fetchAjax
+      }, // end of fetchJson
 
       fetchEsriSpatialQuery(dataSourceKey, url, relationship, targetGeom) {
         // console.log('fetch esri spatial query');

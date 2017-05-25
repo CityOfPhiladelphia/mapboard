@@ -20,7 +20,6 @@ function createStore(config) {
   }, {});
 
   const initialState = {
-    lastClick: null,
     activeTopic: defaultTopic.key,
     // the ais feature
     geocode: {
@@ -60,6 +59,7 @@ function createStore(config) {
       active: false
     },
     activeFeature: null,
+    lastSearchMethod: null
   };
 
   // TODO standardize how payloads are passed around/handled
@@ -67,9 +67,6 @@ function createStore(config) {
     state: initialState,
     getters: {},
     mutations: {
-      setLastClick(state, payload) {
-        state.lastClick = payload;
-      },
       setActiveTopic(state, payload) {
         state.activeTopic = payload.topic;
       },
@@ -131,6 +128,9 @@ function createStore(config) {
       setActiveFeature(state, payload) {
         state.activeFeature = payload;
       },
+      setLastSearchMethod(state, payload) {
+        state.lastSearchMethod = payload;
+      }
     }
   });
 }
