@@ -641,7 +641,23 @@
       fetchData(feature) {
         const dataSources = this.$config.dataSources || {};
         for (let [dataSourceKey, dataSource] of Object.entries(dataSources)) {
+          const state = this.$store.state;
           const type = dataSource.type;
+          const featuresFn = dataSource.features;
+
+          // if the data sources specifies a features getter, use that to source
+          // features for evaluating params/forming requests. otherwise,
+          // default to the geocode result.
+          let features;
+
+          if (featuresFn) {
+            if (typeof featuresFn !== 'function') {
+              throw new Error(`Invalid features for data source '${dataSourceKey}'`);
+            }
+            features = featuresFn(state);
+          } else {
+            // TODO
+          }
 
           // TODO null out existing data in state
 
@@ -649,7 +665,6 @@
           // state dependencies)
           const readyFn = dataSource.ready;
           if (readyFn) {
-            const state = this.$store.state;
             const isReady = readyFn(state);
             if (!isReady) {
               return;

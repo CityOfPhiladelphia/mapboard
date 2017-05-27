@@ -186,6 +186,9 @@ Mapboard.default({
     dorDocuments: {
       type: 'json',
       url: '//ase.phila.gov/arcgis/rest/services/RTT/MapServer/0/query',
+      features(state) {
+        return state.dorParcels;
+      },
       options: {
         params: {
           where(feature, state) {
