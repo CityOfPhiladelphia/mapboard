@@ -732,11 +732,14 @@
         const params = this.evaluateParams(feature, dataSource);
         const url = dataSource.url;
         const options = dataSource.options;
-        const success = options.success;
+        const successFn = options.success;
 
         // if the data is not dependent on other data
         this.$http.get(url, { params }).then(response => {
-          const data = response.body;
+          let data = response.body;
+          if (successFn) {
+            data = successFn(data);
+          }
           this.didFetchData(dataSourceKey, 'success', data);
         }, response => {
           console.log('fetch json error', response);
