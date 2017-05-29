@@ -541,6 +541,8 @@
         );
         if (shouldGeocode) {
           this.geocode(feature.properties.PARCELID);
+        } else {
+          this.fetchData();
         }
       },
       getDorParcelsByLatLng(latlng) {
@@ -577,6 +579,8 @@
         if (shouldGeocode) {
           // TODO sort by mapreg, status
           this.geocode(features[0].properties.MAPREG);
+        } else {
+          this.fetchData();
         }
       },
       geocode(input) {
@@ -590,70 +594,101 @@
         // set status of geocode
         this.$store.commit('setGeocodeStatus', 'waiting');
 
-        this.$http.get(url, { params }).then(response => {
-          const data = response.body;
-
-          // TODO handle multiple ais results
-          if (!data.features || data.features.length < 1) {
-            console.log('ais got no features', data);
-            return;
-          }
-
-          // TODO do some checking here
-          const feature = data.features[0];
-          self.$store.commit('setGeocodeData', feature);
-          self.$store.commit('setGeocodeStatus', 'success');
-
-          // send geocode result event to host
-          self.$eventBus.$emit('geocodeResult', feature);
-
-          // check for parcels
-          // const dorParcels = this.$store.state.dorParcels;
-          // const pwdParcel = this.$store.state.pwdParcel;
-          // if (!(dorParcels.length > 0 || pwdParcel)) {
-
-          // if this is the result of a search (from the search box), get
-          // parcels
-          const lastSearchMethod = this.$store.state.lastSearchMethod;
-          if (lastSearchMethod === 'geocode') {
-            const dorParcelId = feature.properties.dor_parcel_id;
-            const pwdParcelId = feature.properties.pwd_parcel_id;
-            this.getDorParcelsById(dorParcelId);
-            this.getPwdParcelById(pwdParcelId);
-          }
-
-          // get topics
-          this.fetchData(feature);
-
-          // pan and center map
-          // TODO ideally the map should fit its bounds to the combined extent
-          // of markers/other content, reactively
-          const map = this.$store.state.map.map;
-          const [x, y] = feature.geometry.coordinates;
-          map.setView([y, x]);
-        }, response => {
-          console.log('ais error')
+        this.$http.get(url, { params }).then(this.didGeocode, response => {
+          console.log('geocode error')
           self.$store.commit('setGeocodeData', null);
           self.$store.commit('setGeocodeStatus', 'error');
         });
       },
+      didGeocode(response) {
+        const data = response.body;
+        // TODO handle multiple results
 
-      fetchData(feature) {
+        if (!data.features || data.features.length < 1) {
+          console.log('geocode got no features', data);
+          return;
+        }
+
+        // TODO do some checking here
+        const feature = data.features[0];
+        this.$store.commit('setGeocodeData', feature);
+        this.$store.commit('setGeocodeStatus', 'success');
+
+        // send geocode result event to host
+        this.$eventBus.$emit('geocodeResult', feature);
+
+        // check for parcels
+        // const dorParcels = this.$store.state.dorParcels;
+        // const pwdParcel = this.$store.state.pwdParcel;
+        // if (!(dorParcels.length > 0 || pwdParcel)) {
+
+        // if this is the result of a search (from the search box), get
+        // parcels
+        const lastSearchMethod = this.$store.state.lastSearchMethod;
+        if (lastSearchMethod === 'geocode') {
+          const dorParcelId = feature.properties.dor_parcel_id;
+          const pwdParcelId = feature.properties.pwd_parcel_id;
+          this.getDorParcelsById(dorParcelId);
+          this.getPwdParcelById(pwdParcelId);
+        }
+
+        // fetch data from ready sources
+        console.log('did geocode, going to fetch data', this.$store.state.geocode.data);
+        this.fetchData();
+
+        // pan and center map
+        // TODO ideally the map should fit its bounds to the combined extent
+        // of markers/other content, reactively
+        const map = this.$store.state.map.map;
+        const [x, y] = feature.geometry.coordinates;
+        map.setView([y, x]);
+      },
+      statePathsExist(paths = [], suffix) {
+        const state = this.$store.state;
+
+        return paths.every(path => {
+          // deps can be deep keys, e.g. `dor.parcels`. split on periods to get
+          // a sequence of keys.
+          const pathKeys = path.split('.');
+          // traverse state to get the parent of the data object we need to
+          // check.
+          const stateObj = pathKeys.reduce((acc, pathKey) => {
+            return acc[pathKey];
+          }, state);
+
+          return !!stateObj[suffix];
+        });
+      },
+      dataSourceIsReady(key, options) {
+        const deps = options.deps;
+        const depsMet = this.statePathsExist(deps, 'data');
+        const alreadyResolved = this.$store.state.sources[key].status;
+        return (depsMet && !alreadyResolved);
+      },
+      fetchData() {
+        // console.log('fetch data');
+
+        const geocodeObj = this.$store.state.geocode.data;
+
+        // we always need a good geocode before we can get data, so return
+        // if we don't have one yet.
+        if (!geocodeObj) {
+          // console.log('fetch data but no geocode yet, returning');
+          return;
+        }
+
         const dataSources = this.$config.dataSources || {};
+
+        // get "ready" data sources (ones whose deps have been met)
         for (let [dataSourceKey, dataSource] of Object.entries(dataSources)) {
           const type = dataSource.type;
 
           // TODO null out existing data in state
 
-          // check to make sure the data source should run (aka has necessary
-          // state dependencies)
-          const readyFn = dataSource.ready;
-          if (readyFn) {
-            const state = this.$store.state;
-            const isReady = readyFn(state);
-            if (!isReady) {
-              return;
-            }
+          // check if it's ready
+          const isReady = this.dataSourceIsReady(dataSourceKey, dataSource);
+          if (!isReady) {
+            continue;
           }
 
           this.$store.commit('setSourceStatus', {
@@ -662,19 +697,19 @@
           });
 
           switch(type) {
-            case 'json':
-              this.fetchJson(feature, dataSource, dataSourceKey);
+            case 'http-get':
+              this.fetchHttpGet(geocodeObj, dataSource, dataSourceKey);
               break;
             case 'esri':
-              this.fetchEsri(feature, dataSource, dataSourceKey);
+              this.fetchEsri(geocodeObj, dataSource, dataSourceKey);
               break;
             case 'esri-nearby':
-              this.fetchEsriNearby(feature, dataSource, dataSourceKey);
+              this.fetchEsriNearby(geocodeObj, dataSource, dataSourceKey);
               break;
             default:
               break;
           }
-        } // end of loop
+        }
       },
 
       assignFeatureIds(features, dataSourceKey) {
@@ -692,6 +727,8 @@
       },
 
       didFetchData(key, status, data) {
+        // console.log('did fetch data:', key);
+
         const dataOrNull = status === 'error' ? null : data;
         let stateData = dataOrNull;
 
@@ -711,6 +748,8 @@
           key,
           status,
         });
+
+        this.fetchData();
       },
 
       evaluateParams(feature, dataSource) {
@@ -733,7 +772,7 @@
         return params;
       },
 
-      fetchJson(feature, dataSource, dataSourceKey) {
+      fetchHttpGet(feature, dataSource, dataSourceKey) {
         const params = this.evaluateParams(feature, dataSource);
         const url = dataSource.url;
         const options = dataSource.options;
