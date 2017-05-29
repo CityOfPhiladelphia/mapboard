@@ -190,7 +190,6 @@ Mapboard.default({
         params: {
           where(feature, state) {
             const parcel = state.dorParcels[0];
-            console.log('going to get dor docs for parcel', parcel);
             const parcelAddress = concatDorAddress(parcel);
             let where = `ADDRESS = '${parcelAddress}'`;
 
@@ -198,7 +197,6 @@ Mapboard.default({
             const unitNum = feature.properties.unit_num;
 
             if (unitNum) {
-              console.log('unit num')
               where += ` AND CONDO_UNIT = '${unitNum}'`;
             }
 
@@ -209,7 +207,8 @@ Mapboard.default({
         },
         success(data) {
           // arcgis server doesn't set application-type headers, so parse json
-          return JSON.parse(data);
+          // return JSON.parse(data);
+          return data;
         }
       },
       // this should return false if anything necessary for the fetch is missing
@@ -580,31 +579,31 @@ Mapboard.default({
       // we might not need this anymore, now that we have identifyFeature
       parcels: 'pwd'
     },
-    {
-      key: 'pwd',
-      icon: 'tint',
-      label: 'PWD',
-      dataSources: [],
-      components: [
-      ],
-      basemap: 'pwd',
-      // dynamicMapLayers: [
-      //   'stormwater'
-      // ],
-      identifyFeature: 'pwd-parcel',
-      parcels: 'pwd'
-    },
-    {
-      key: 'dor',
-      icon: 'book',
-      label: 'DOR',
-      dataSources: [],
-      components: [
-      ],
-      basemap: 'dor',
-      identifyFeature: 'dor-parcel',
-      parcels: 'dor'
-    },
+    // {
+    //   key: 'pwd',
+    //   icon: 'tint',
+    //   label: 'PWD',
+    //   dataSources: [],
+    //   components: [
+    //   ],
+    //   basemap: 'pwd',
+    //   // dynamicMapLayers: [
+    //   //   'stormwater'
+    //   // ],
+    //   identifyFeature: 'pwd-parcel',
+    //   parcels: 'pwd'
+    // },
+    // {
+    //   key: 'dor',
+    //   icon: 'book',
+    //   label: 'DOR',
+    //   dataSources: [],
+    //   components: [
+    //   ],
+    //   basemap: 'dor',
+    //   identifyFeature: 'dor-parcel',
+    //   parcels: 'dor'
+    // },
     {
       key: 'zoning',
       icon: 'building-o',
