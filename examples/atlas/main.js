@@ -652,26 +652,38 @@ Mapboard.default({
             fields: [
               {
                 label: 'Date',
-                sourceField: 'REQUESTED_DATETIME',
+                value(state, item) {
+                  return item.properties.REQUESTED_DATETIME;
+
+                },
                 transforms: [
                   'date'
                 ]
               },
               {
                 label: 'Address',
-                sourceField: 'ADDRESS'
+                value(state, item) {
+                  return item.properties.ADDRESS;
+                }
               },
               {
                 label: 'Subject',
-                sourceField: 'SUBJECT'
+                value(state, item) {
+                  return item.properties.SUBJECT;
+                }
               },
               {
                 label: 'Description',
-                sourceField: 'DESCRIPTION'
+                value(state, item) {
+                  return item.properties.DESCRIPTION;
+                }
               },
               {
                 label: 'Distance',
-                sourceField: 'DISTANCE'
+                value(state, item) {
+                  // return item.properties.DISTANCE;
+                  return 'TODO';
+                }
               }
             ]
           },
@@ -684,9 +696,9 @@ Mapboard.default({
             items(state) {
               const data = state.sources['311'].data
               const rows = data.map(row => {
-                const props = row.properties;
-                props.DISTANCE = 'TODO';
-                return props;
+                const itemRow = Object.assign({}, row);
+                itemRow.DISTANCE = 'TODO';
+                return itemRow;
               });
               return rows;
             }

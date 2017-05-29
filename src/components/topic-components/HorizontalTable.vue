@@ -8,9 +8,14 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in evaluateSlot(slots.items)">
-          <td v-for="field in fields">{{ item[field.sourceField] }}</td>
-        </tr>
+        <!-- <tr v-for="item in evaluateSlot(slots.items)"
+            :class="{ active: item._featureId === activeFeature }"
+        > -->
+        <horizontal-table-row v-for="item in evaluateSlot(slots.items)"
+                              :item="item"
+                              :fields="fields"
+                              :key="item._featureId"
+        />
       </tbody>
     </table>
   </div>
@@ -18,9 +23,13 @@
 
 <script>
   import TopicComponent from './TopicComponent';
+  import HorizontalTableRow from './HorizontalTableRow';
 
   export default {
     mixins: [TopicComponent],
+    components: {
+      HorizontalTableRow
+    },
     computed: {
       fields() {
         return this.options.fields;
@@ -37,7 +46,7 @@
 </script>
 
 <style scoped>
-  th, td {
+  th {
     font-size: 15px;
     text-align: left;
   }
