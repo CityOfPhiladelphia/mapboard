@@ -706,14 +706,19 @@
         return featuresWithIds;
       },
 
-      didFetchData(key, status, responseData) {
-        const data = status === 'error' ? null : responseData;
-        const dataWithIds = this.assignFeatureIds(data, key);
+      didFetchData(key, status, data) {
+        const dataOrNull = status === 'error' ? null : data;
+        let stateData = dataOrNull;
+
+        // if this is an array, assign feature ids
+        if (Array.isArray(stateData)) {
+          stateData = this.assignFeatureIds(stateData, key);
+        }
 
         // put data in state
         this.$store.commit('setSourceData', {
           key,
-          data: dataWithIds,
+          data: stateData,
         });
 
         // update status
@@ -747,11 +752,14 @@
         const params = this.evaluateParams(feature, dataSource);
         const url = dataSource.url;
         const options = dataSource.options;
-        const success = options.success;
+        const successFn = options.success;
 
         // if the data is not dependent on other data
         this.$http.get(url, { params }).then(response => {
-          const data = response.body;
+          let data = response.body;
+          if (successFn) {
+            data = successFn(data);
+          }
           this.didFetchData(dataSourceKey, 'success', data);
         }, response => {
           console.log('fetch json error', response);

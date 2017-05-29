@@ -36,19 +36,19 @@
         }
 
         // apply transforms
-        for (let transform of transforms) {
+        for (let transformKey of transforms) {
           // get transform definition from config by name
-          const transformDef = this.$config.transforms[transform];
+          const transform = this.$config.transforms[transformKey];
           // make object of (relevant) globals by filtering window object
-          const globalNames = transformDef.globals;
+          const globalKeys = transform.globals;
           const globals = Object.keys(window)
-                            .filter(key => globalNames.includes(key))
+                            .filter(key => globalKeys.includes(key))
                             .reduce((obj, key) => {
                                 obj[key] = window[key];
                                 return obj;
                             }, {});
           // run transform
-          const fn = transformDef.transform;
+          const fn = transform.transform;
           val = fn(val, globals);
         }
 

@@ -6,8 +6,8 @@
           v-bind:class="{'is-active': itemIsActive(item)}"
           :key="keyForItem(item)"
       >
-        <a v-bind:href="'#parcel-' + keyForItem(item)"
-           v-on:click="activeItem = keyForItem(item)"
+        <a :href="'#parcel-' + keyForItem(item)"
+           @click.prevent="activeItem = keyForItem(item)"
         >
           {{ titleForItem(item) }}
         </a>
@@ -48,12 +48,6 @@
     //   // REVIEW globals. also is this still needed?
     //   // $(document).foundation();
     // },
-    beforeUpdate() {
-      // when items change, update this component's internal state
-      const nextFirstItem = this.items[0];
-      const nextActiveKey = this.keyForItem(nextFirstItem);
-      this.activeItem = nextActiveKey;
-    },
     // props: [],
     computed: {
       items() {
@@ -61,6 +55,14 @@
       },
       comps() {
         return this.options.components;
+      }
+    },
+    watch: {
+      // when items change, update the activeItem
+      items(items) {
+        const nextFirstItem = items[0];
+        const nextActiveKey = this.keyForItem(nextFirstItem);
+        this.activeItem = nextActiveKey;
       }
     },
     methods: {
