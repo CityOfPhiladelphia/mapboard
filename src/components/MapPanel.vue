@@ -800,7 +800,6 @@
           catch(e) {
             // console.warn(dataSourceKey, e)
           }
->>>>>>> threeOneOne
         }, response => {
           console.log('fetch json error', response);
           this.didFetchData(dataSourceKey, 'error');
