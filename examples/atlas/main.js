@@ -346,6 +346,8 @@ Mapboard.default({
       globals: ['moment'],
       transform(value, globals) {
         const moment = globals.moment;
+        const transformed = moment(value).format('YYYY-MM-DD');
+        console.log(value, transformed);
         return moment(value).format('YYYY-MM-DD');
       }
     },
@@ -633,15 +635,11 @@ Mapboard.default({
               {
                 label: 'Date',
                 value(state, item){
-                  const datetime = item.scandate
-                  let date
-                  if (datetime) {
-                    date = datetime.substring(0, datetime.indexOf('T'));
-                  } else {
-                    date = 'Invalid Date';
-                  }
-                  return date
+                  return item.scandate
                 },
+                transforms: [
+                  'date'
+                ]
               },
               {
                 label: 'ID',
