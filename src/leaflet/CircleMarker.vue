@@ -39,7 +39,7 @@
           latlng,
           ...options
         } = props;
-
+        //console.log(new CircleMarker(latlng, options));
         return new CircleMarker(latlng, options);
       },
       parentMounted(parent) {

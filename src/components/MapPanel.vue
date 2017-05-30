@@ -337,6 +337,7 @@
             const props = Object.assign({}, style);
             if (row._featureId === activeFeature) {
               props.fillColor = 'yellow';
+              //props.zIndexOffset = 100;
             }
             props.latlng = latlng;
             props.featureId = row._featureId;
@@ -471,11 +472,27 @@
         );
       },
       handleCircleMarkerClick(e) {
-        console.log('clicked circle marker');
-      },
-      handleCircleMarkerMouseover(e) {
         const featureId = e.target.options.data.featureId;
         this.$store.commit('setActiveFeature', featureId);
+      },
+      bringCircleMarkerToFront(circleMarker) {
+        // put marker on top
+        const el = circleMarker._path;
+
+        // remove from parent
+        const group = circleMarker._renderer._rootGroup;
+        group.removeChild(el);
+
+        // append to end (which brings it to the front)
+        group.appendChild(el);
+      },
+      handleCircleMarkerMouseover(e) {
+        const target = e.target;
+        const featureId = target.options.data.featureId;
+        this.$store.commit('setActiveFeature', featureId);
+
+        // bring to front
+        this.bringCircleMarkerToFront(target);
       },
       handleCircleMarkerMouseout(e) {
         this.$store.commit('setActiveFeature', null);
@@ -681,24 +698,41 @@
         const featuresWithIds = [];
 
         // REVIEW this was not working with Array.map for some reason
+        // it was returning an object when fetchJson was used
+        // that is now converted to an array in fetchJson
         for (let i = 0; i < features.length; i++) {
           const id = `feat-${dataSourceKey}-${i}`;
           const feature = features[i];
-          feature._featureId = id;
+          // console.log(dataSourceKey, feature);
+          try {
+            feature._featureId = id;
+          }
+          catch (e) {
+            console.warn(e);
+          }
           featuresWithIds.push(feature);
         }
 
+        // console.log(dataSourceKey, features, featuresWithIds);
         return featuresWithIds;
       },
 
-      didFetchData(key, status, data) {
-        const dataOrNull = status === 'error' ? null : data;
-        let stateData = dataOrNull;
 
-        // if this is an array, assign feature ids
-        if (Array.isArray(stateData)) {
-          stateData = this.assignFeatureIds(stateData, key);
-        }
+      didFetchData(key, status, responseData) {
+
+        //TODO - pick which of these to useful
+
+        // const dataOrNull = status === 'error' ? null : data;
+        // let stateData = dataOrNull;
+        //
+        // // if this is an array, assign feature ids
+        // if (Array.isArray(stateData)) {
+        //   stateData = this.assignFeatureIds(stateData, key);
+        // }
+
+        const data = status === 'error' ? null : responseData;
+        const dataWithIds = this.assignFeatureIds(data, key);
+        // console.log(key, data, dataWithIds);
 
         // put data in state
         this.$store.commit('setSourceData', {
@@ -734,6 +768,7 @@
       },
 
       fetchJson(feature, dataSource, dataSourceKey) {
+        // console.log('fetchJson is running with', dataSource.url);
         const params = this.evaluateParams(feature, dataSource);
         const url = dataSource.url;
         const options = dataSource.options;
@@ -741,11 +776,31 @@
 
         // if the data is not dependent on other data
         this.$http.get(url, { params }).then(response => {
-          let data = response.body;
-          if (successFn) {
-            data = successFn(data);
+          // TODO pick which to use
+          // let data = response.body;
+          // if (successFn) {
+          //   data = successFn(data);
+          // }
+          // this.didFetchData(dataSourceKey, 'success', data);
+
+          // console.log('fetchJson', dataSourceKey)
+          const dataObject = response.body;
+          // console.log(dataSourceKey, dataObject);
+          let data
+          if (dataSourceKey === 'zoningDocs' || dataSourceKey === 'nearby') {
+            data = Object.keys(dataObject).map(key => dataObject[key])[0];
+            // console.log('if1', dataSourceKey, data);
+          } else {
+            data = dataObject;
+            // console.log('if2', dataSourceKey, data);
           }
-          this.didFetchData(dataSourceKey, 'success', data);
+          try {
+            this.didFetchData(dataSourceKey, 'success', data);
+          }
+          catch(e) {
+            // console.warn(dataSourceKey, e)
+          }
+>>>>>>> threeOneOne
         }, response => {
           console.log('fetch json error', response);
           this.didFetchData(dataSourceKey, 'error');

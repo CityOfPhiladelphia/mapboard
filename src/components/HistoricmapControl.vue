@@ -1,11 +1,11 @@
 <template>
   <div style="display: inline">
     <div class="year-selector-container"
-         v-show="activeBasemap.startsWith('landUse')"
+         v-show="activeBasemap.startsWith('historic')"
     >
       <ul>
         <li v-for="historicYear in historicYears"
-            :class="{ active: activeBasemap === 'landUse' + historicYear }"
+            :class="{ active: activeBasemap === 'historic' + historicYear }"
             @click="handleHistoricYearClick"
         >
           {{ historicYear }}
@@ -76,7 +76,7 @@
         // if (prevBasemapType === 'featuremap') {
         if (prevBasemapType !== 'historic') {
           const years = this.historicYears;
-          nextBasemap = 'landUse' + years[0];
+          nextBasemap = 'historic' + years[0];
         }
         // imagery => feature map
         else {
@@ -90,7 +90,7 @@
 
       handleHistoricYearClick(e) {
         const year = e.target.innerText;
-        const nextBasemap = 'landUse' + year;
+        const nextBasemap = 'historic' + year;
         this.$store.commit('setBasemap', nextBasemap);
       },
     })
