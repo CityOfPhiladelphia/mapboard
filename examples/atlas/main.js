@@ -1,42 +1,42 @@
 const GATEKEEPER_KEY = '35ae5b7bf8f0ff2613134935ce6b4c1e';
 
 const ZONING_CODE_MAP = {
-  'RSD-1': 'Residential Single Family Detached-1',
-  'RSD-2': 'Residential Single Family Detached-2',
-  'RSD-3': 'Residential Single Family Detached-3',
-  'RSA-1': 'Residential Single Family Attached-1',
-  'RSA-2': 'Residential Single Family Attached-2',
-  'RSA-3': 'Residential Single Family Attached-3',
-  'RSA-4': 'Residential Single Family Attached-4',
-  'RSA-5': 'Residential Single Family Attached-5',
-  'RTA-1': 'Residential Two-Family Attached-1',
-  'RM-1': 'Residential Multi-Family-1',
-  'RM-2': 'Residential Multi-Family-2',
-  'RM-3': 'Residential Multi-Family-3',
-  'RM-4': 'Residential Multi-Family-4',
-  'RMX-1': 'Residential Mixed-Use-1',
-  'RMX-2': 'Residential Mixed-Use-2',
-  'RMX-3': 'Residential (Center City) Mixed-Use-3',
-  'CA-1': 'Auto-Oriented Commercial-1',
-  'CA-2': 'Auto-Oriented Commercial-2',
-  'CMX-1': 'Neighborhood Commercial Mixed-Use-1',
-  'CMX-2': 'Neighborhood Commercial Mixed-Use-2',
-  'CMX-2.5': 'Neighborhood Commercial Mixed-Use-2.5',
-  'CMX-3': 'Community Commercial Mixed-Use',
-  'CMX-4': 'Center City Commercial Mixed-Use',
-  'CMX-5': 'Center City Core Commercial Mixed-Use',
-  'I-1': 'Light Industrial',
-  'I-2': 'Medium Industrial',
-  'I-3': 'Heavy Industrial',
-  'I-P': 'Port Industrial',
+  'RSD1': 'Residential Single Family Detached-1',
+  'RSD2': 'Residential Single Family Detached-2',
+  'RSD3': 'Residential Single Family Detached-3',
+  'RSA1': 'Residential Single Family Attached-1',
+  'RSA2': 'Residential Single Family Attached-2',
+  'RSA3': 'Residential Single Family Attached-3',
+  'RSA4': 'Residential Single Family Attached-4',
+  'RSA5': 'Residential Single Family Attached-5',
+  'RTA1': 'Residential Two-Family Attached-1',
+  'RM1': 'Residential Multi-Family-1',
+  'RM2': 'Residential Multi-Family-2',
+  'RM3': 'Residential Multi-Family-3',
+  'RM4': 'Residential Multi-Family-4',
+  'RMX1': 'Residential Mixed-Use-1',
+  'RMX2': 'Residential Mixed-Use-2',
+  'RMX3': 'Residential (Center City) Mixed-Use-3',
+  'CA1': 'Auto-Oriented Commercial-1',
+  'CA2': 'Auto-Oriented Commercial-2',
+  'CMX1': 'Neighborhood Commercial Mixed-Use-1',
+  'CMX2': 'Neighborhood Commercial Mixed-Use-2',
+  'CMX2.5': 'Neighborhood Commercial Mixed-Use-2.5',
+  'CMX3': 'Community Commercial Mixed-Use',
+  'CMX4': 'Center City Commercial Mixed-Use',
+  'CMX5': 'Center City Core Commercial Mixed-Use',
+  'I1': 'Light Industrial',
+  'I2': 'Medium Industrial',
+  'I3': 'Heavy Industrial',
+  'IP': 'Port Industrial',
   'ICMX': 'Industrial Commercial Mixed-Use',
   'IRMX': 'Industrial Residential Mixed-Use',
-  'SP-ENT': 'Commercial Entertainment (Casinos)',
-  'SP-AIR': 'Airport',
-  'SP-INS': 'Institutional Development',
-  'SP-STA': 'Stadium',
-  'SP-PO-A': 'Recreation',
-  'SP-PO-P': 'Recreation',
+  'SPENT': 'Commercial Entertainment (Casinos)',
+  'SPAIR': 'Airport',
+  'SPINS': 'Institutional Development',
+  'SPSTA': 'Stadium',
+  'SPPOA': 'Recreation',
+  'SPPOP': 'Recreation',
 };
 
 function cleanDorAttribute(attr) {
@@ -101,33 +101,33 @@ Mapboard.default({
   },
   baseConfig: '//gist.githubusercontent.com/rbrtmrtn/09b4f35396f97499c3097e2fecaed8e7/raw/d36124d006bed52124ead05535bb92d4c562fd00/config.js',
   dataSources: {
-    nearby: {
-      type: 'json',
-      url: 'https://phl.carto.com/api/v2/sql',
-      options: {
-        params: {
-          q: function(feature) {
-            const aisX = feature.geometry.coordinates[0];
-            const aisY = feature.geometry.coordinates[1];
-            const table = 'incidents_part1_part2';
-            const distanceFn = "ST_Distance(the_geom_webmercator, ST_Transform(CDB_LatLng(" + aisY + ", " + aisX + "), 3857)) * 3.28084";
-            const where = distanceFn + ' < 500';
-            //fieldMap = activityType.fieldMap,
-            const select = ['ST_X(the_geom) as x',
-                            'ST_Y(the_geom) as y',
-                            distanceFn + "AS distance",
-                          ].join(', ');
-            query = ['SELECT', select, 'FROM', table, 'WHERE', where].join(' ');
-            return (query);
-            }
-        },
-        success(data) {
-          return data
-        }
-      }
-    },
+    // nearby: {
+    //   type: 'http-get',
+    //   url: 'https://phl.carto.com/api/v2/sql',
+    //   options: {
+    //     params: {
+    //       q: function(feature) {
+    //         const aisX = feature.geometry.coordinates[0];
+    //         const aisY = feature.geometry.coordinates[1];
+    //         const table = 'incidents_part1_part2';
+    //         const distanceFn = "ST_Distance(the_geom_webmercator, ST_Transform(CDB_LatLng(" + aisY + ", " + aisX + "), 3857)) * 3.28084";
+    //         const where = distanceFn + ' < 500';
+    //         //fieldMap = activityType.fieldMap,
+    //         const select = ['ST_X(the_geom) as x',
+    //                         'ST_Y(the_geom) as y',
+    //                         distanceFn + "AS distance",
+    //                       ].join(', ');
+    //         query = ['SELECT', select, 'FROM', table, 'WHERE', where].join(' ');
+    //         return (query);
+    //         }
+    //     },
+    //     success(data) {
+    //       return data
+    //     }
+    //   }
+    // },
     opa: {
-      type: 'json',
+      type: 'http-get',
       url: 'https://data.phila.gov/resource/w7rb-qrn8.json',
       options: {
         params: {
@@ -141,7 +141,7 @@ Mapboard.default({
     // TODO elections and divisions
     // elections: {
     //   url: 'https://api.phila.gov/elections',
-    //   type: 'json',
+    //   type: 'http-get',
     //   params: {
     //
     //   },
@@ -151,7 +151,7 @@ Mapboard.default({
     // }
     // divisions: {
     //   url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ServiceAreas/MapServer/22',
-    //   type: 'json',
+    //   type: 'http-get',
     //   params: {
     //
     //   },
@@ -159,73 +159,51 @@ Mapboard.default({
     //     return data;
     //   }
     // },
-    stormwater: {
-      type: 'json',
-      url: 'https://api.phila.gov/stormwater',
-      options: {
-        params: {
-          search: feature => feature.properties.street_address
-        },
-        success(data) {
-          return data[0];
-        }
-      }
-    },
-    zoningDocs: {
-      type: 'json',
-      url: 'https://phl.carto.com/api/v2/sql',
-      options: {
-        params: {
-          q: feature => "select * from zoning_documents_20170420 where address_std = '" + feature.properties.street_address + "' or addrkey = " + feature.properties.li_address_key,
-        },
-        success(data) {
-          return data;
-        }
-      }
-    },
-    dorDocuments: {
-      type: 'json',
-      url: '//ase.phila.gov/arcgis/rest/services/RTT/MapServer/0/query',
-      features(state) {
-        return state.dorParcels;
-      },
-      options: {
-        params: {
-          where(feature, state) {
-            const parcel = state.dorParcels[0];
-            console.log('going to get dor docs for parcel', parcel);
-            const parcelAddress = concatDorAddress(parcel);
-            let where = `ADDRESS = '${parcelAddress}'`;
-
-            // check for unit num
-            const unitNum = feature.properties.unit_num;
-
-            if (unitNum) {
-              console.log('unit num')
-              where += ` AND CONDO_UNIT = '${unitNum}'`;
-            }
-
-            return where;
-          },
-          outFields: '*',
-          f: 'json'
-        },
-        success(data) {
-          // arcgis server doesn't set application-type headers, so parse json
-          return JSON.parse(data);
-        }
-      },
-      // this should return false if anything necessary for the fetch is missing
-      // from state.
-      // REVIEW would this be better handled by a `deps` property?
-      ready(state) {
-        const hasParcel = !!state.dorParcels[0];
-        if (!hasParcel) {
-          return false;
-        }
-        return true;
-      }
-    },
+    // stormwater: {
+    //   type: 'http-get',
+    //   url: 'https://api.phila.gov/stormwater',
+    //   options: {
+    //     params: {
+    //       search: feature => feature.properties.street_address
+    //     },
+    //     success(data) {
+    //       return data[0];
+    //     }
+    //   }
+    // },
+    // dorDocuments: {
+    //   type: 'http-get',
+    //   deps: ['dorParcels'],
+    //   targets(state) {
+    //     return state.dorParcels;
+    //   },
+    //   url: '//ase.phila.gov/arcgis/rest/services/RTT/MapServer/0/query',
+    //   options: {
+    //     params: {
+    //       where(feature, state) {
+    //         const parcel = state.dorParcels[0];
+    //         const parcelAddress = concatDorAddress(parcel);
+    //         let where = `ADDRESS = '${parcelAddress}'`;
+    //
+    //         // check for unit num
+    //         const unitNum = feature.properties.unit_num;
+    //
+    //         if (unitNum) {
+    //           where += ` AND CONDO_UNIT = '${unitNum}'`;
+    //         }
+    //
+    //         return where;
+    //       },
+    //       outFields: '*',
+    //       f: 'json'
+    //     },
+    //     success(data) {
+    //       // arcgis server doesn't set application-type headers, so parse json
+    //       // return JSON.parse(data);
+    //       return data;
+    //     }
+    //   },
+    // },
     '311': {
       type: 'esri-nearby',
       url: 'http://192.168.103.143:6080/arcgis/rest/services/GSG/GIS311_365DAYS/MapServer/0',
@@ -235,73 +213,7 @@ Mapboard.default({
         units: 'feet',
       },
     },
-    // threeOneOneBuffer: {
-    //   url: 'http://192.168.103.143:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer/buffer',
-    //   type: 'json',
-    //   dependency: 'threeOneOneData',
-    //   params: {
-    //     // query: feature => L.esri.query({url: this.$config.esri.tools.buffer.url}).contains(feature)
-    //     geometries: feature => '['+feature.geometry.coordinates[0]+', '+feature.geometry.coordinates[1]+']',
-    //     inSR: () => 4326,
-    //     outSR: () => 4326,
-    //     bufferSR: () => 4326,
-    //     distances: () => .0015,
-    //     unionResults: () => true,
-    //     geodesic: () => false,
-    //     f: () => 'json',
-    //   },
-    //   success(dataString) {
-    //     // return L.polygon(data['geometries'][0]['rings'][0], {color: 'green'});
-    //     //return JSON.parse(dataString);
-    //     return dataString
-    //   }
-    // },
-    // threeOneOneData: {
-    //   callback: true,
-    //   callbackDataName: 'threeOneOneBuffer',
-    //   dependentOn: 'threeOneOneBuffer',
-    //   type: 'esri',
-    //   params: {
-    //     query: feature => L.esri.query({url: 'http://192.168.103.143:6080/arcgis/rest/services/GSG/GIS311_365DAYS/MapServer/0'})//.within(state.sources.threeOneOneBuffer)
-    //   },
-    //   success(data) {
-    //     return data;
-    //   }
-    // },
-    // vacantLand: {
-    //   type: 'esri',
-    //   url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Land/FeatureServer/0',
-    //   options: {
-    //     relationship: 'contains',
-    //     // params: {
-    //     //   query: feature => L.esri.query({url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Land/FeatureServer/0'}).contains(feature)
-    //     // },
-    //   },
-    //   success(data) {
-    //     return data;
-    //   }
-    // },
-    // vacantBuilding: {
-    //   type: 'esri',
-    //   params: {
-    //     query: feature => L.esri.query({url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Bldg/FeatureServer/0'}).contains(feature)
-    //   },
-    //   success(data) {
-    //     return data;
-    //   }
-    // },
-    // // TODO take zoningBase out and use AIS for base zoning district
-    zoningBase: {
-      type: 'esri',
-      url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/6/',
-      options: {
-        relationship: 'contains',
-      },
-      success(data) {
-        return data;
-      }
-    },
-    zoningOverlay: {
+    zoningOverlays: {
       type: 'esri',
       url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/1/',
       options: {
@@ -310,7 +222,19 @@ Mapboard.default({
       success(data) {
         return data;
       }
-    }
+    },
+    // zoningDocuments: {
+    //   type: 'http-get',
+    //   url: 'https://phl.carto.com/api/v2/sql',
+    //   options: {
+    //     params: {
+    //       q: feature => "select * from zoning_documents_20170420 where address_std = '" + feature.properties.street_address + "' or addrkey = " + feature.properties.li_address_key,
+    //     },
+    //     success(data) {
+    //       return data;
+    //     }
+    //   }
+    // },
   },
   overlays: {
     '311': {
@@ -436,7 +360,7 @@ Mapboard.default({
       key: 'deeds',
       icon: 'book',
       label: 'Deeds',
-      dataSources: [],
+      // dataSources: ['dorDocuments'],
       components: [
         {
           type: 'collection-summary',
@@ -584,49 +508,23 @@ Mapboard.default({
       parcels: 'pwd'
     },
     {
-      key: 'pwd',
-      icon: 'tint',
-      label: 'PWD',
-      dataSources: [],
-      components: [
-      ],
-      basemap: 'pwd',
-      // dynamicMapLayers: [
-      //   'stormwater'
-      // ],
-      identifyFeature: 'pwd-parcel',
-      parcels: 'pwd'
-    },
-    {
-      key: 'dor',
-      icon: 'book',
-      label: 'DOR',
-      dataSources: [],
-      components: [
-      ],
-      basemap: 'dor',
-      identifyFeature: 'dor-parcel',
-      parcels: 'dor'
-    },
-    {
       key: 'zoning',
       icon: 'building-o',
       label: 'Zoning',
-      dataSources: ['zoningOverlay',
-                    'zoningDocs'
-                    ],
+      dataSources: [
+        'zoningOverlays'
+      ],
       components: [
         {
           type: 'badge',
           slots: {
             title: 'Base District',
             value(state) {
-              const data = state.sources.zoningBase.data[0].properties;
-              return data.LONG_CODE;
+              return state.geocode.data.properties.zoning;
             },
             description(state) {
-              const data = state.sources.zoningBase.data[0].properties.LONG_CODE;
-              return ZONING_CODE_MAP[data];
+              const code = state.geocode.data.properties.zoning;
+              return ZONING_CODE_MAP[code];
             },
           }
         },
@@ -656,26 +554,38 @@ Mapboard.default({
             fields: [
               {
                 label: 'Date',
-                sourceField: 'REQUESTED_DATETIME',
+                value(state, item) {
+                  return item.properties.REQUESTED_DATETIME;
+
+                },
                 transforms: [
                   'date'
                 ]
               },
               {
                 label: 'Address',
-                sourceField: 'ADDRESS'
+                value(state, item) {
+                  return item.properties.ADDRESS;
+                }
               },
               {
                 label: 'Subject',
-                sourceField: 'SUBJECT'
+                value(state, item) {
+                  return item.properties.SUBJECT;
+                }
               },
               {
                 label: 'Description',
-                sourceField: 'DESCRIPTION'
+                value(state, item) {
+                  return item.properties.DESCRIPTION;
+                }
               },
               {
                 label: 'Distance',
-                sourceField: 'DISTANCE'
+                value(state, item) {
+                  // return item.properties.DISTANCE;
+                  return 'TODO';
+                }
               }
             ]
           },
@@ -688,9 +598,9 @@ Mapboard.default({
             items(state) {
               const data = state.sources['311'].data
               const rows = data.map(row => {
-                const props = row.properties;
-                props.DISTANCE = 'TODO';
-                return props;
+                const itemRow = Object.assign({}, row);
+                itemRow.DISTANCE = 'TODO';
+                return itemRow;
               });
               return rows;
             }
