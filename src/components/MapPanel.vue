@@ -737,7 +737,7 @@
         // put data in state
         this.$store.commit('setSourceData', {
           key,
-          data: stateData,
+          data: dataWithIds,
         });
 
         // update status
