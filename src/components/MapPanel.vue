@@ -698,19 +698,29 @@
         const featuresWithIds = [];
 
         // REVIEW this was not working with Array.map for some reason
+        // it was returning an object when fetchJson was used
+        // that is now converted to an array in fetchJson
         for (let i = 0; i < features.length; i++) {
           const id = `feat-${dataSourceKey}-${i}`;
           const feature = features[i];
-          feature._featureId = id;
+          // console.log(dataSourceKey, feature);
+          try {
+            feature._featureId = id;
+          }
+          catch (e) {
+            console.warn(e);
+          }
           featuresWithIds.push(feature);
         }
 
+        // console.log(dataSourceKey, features, featuresWithIds);
         return featuresWithIds;
       },
 
       didFetchData(key, status, responseData) {
         const data = status === 'error' ? null : responseData;
         const dataWithIds = this.assignFeatureIds(data, key);
+        // console.log(key, data, dataWithIds);
 
         // put data in state
         this.$store.commit('setSourceData', {
@@ -746,6 +756,7 @@
       },
 
       fetchJson(feature, dataSource, dataSourceKey) {
+        // console.log('fetchJson is running with', dataSource.url);
         const params = this.evaluateParams(feature, dataSource);
         const url = dataSource.url;
         const options = dataSource.options;
@@ -753,8 +764,23 @@
 
         // if the data is not dependent on other data
         this.$http.get(url, { params }).then(response => {
-          const data = response.body;
-          this.didFetchData(dataSourceKey, 'success', data);
+          // console.log('fetchJson', dataSourceKey)
+          const dataObject = response.body;
+          // console.log(dataSourceKey, dataObject);
+          let data
+          if (dataSourceKey === 'zoningDocs' || dataSourceKey === 'nearby') {
+            data = Object.keys(dataObject).map(key => dataObject[key])[0];
+            // console.log('if1', dataSourceKey, data);
+          } else {
+            data = dataObject;
+            // console.log('if2', dataSourceKey, data);
+          }
+          try {
+            this.didFetchData(dataSourceKey, 'success', data);
+          }
+          catch(e) {
+            // console.warn(dataSourceKey, e)
+          }
         }, response => {
           console.log('fetch json error', response);
           this.didFetchData(dataSourceKey, 'error');

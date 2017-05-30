@@ -99,7 +99,7 @@ Mapboard.default({
   rootStyle: {
     height: '600px'
   },
-  baseConfig: '//gist.githubusercontent.com/rbrtmrtn/09b4f35396f97499c3097e2fecaed8e7/raw/d36124d006bed52124ead05535bb92d4c562fd00/config.js',
+  baseConfig: '//gist.githubusercontent.com/ajrothwell/f5df4d85e09f5821c16329a96889368d/raw/fe924ff508c83c6c96896c1923562005f65871b5/config.js',
   dataSources: {
     nearby: {
       type: 'json',
@@ -626,6 +626,67 @@ Mapboard.default({
               return ZONING_CODE_MAP[data];
             },
           }
+        },
+        {
+          type: 'horizontal-table',
+          options: {
+            fields: [
+              {
+                label: 'Date',
+                value(state, item){
+                  const datetime = item.scandate
+                  let date
+                  if (datetime) {
+                    date = datetime.substring(0, datetime.indexOf('T'));
+                  } else {
+                    date = 'Invalid Date';
+                  }
+                  return date
+                },
+              },
+              {
+                label: 'ID',
+                value(state, item){
+                  return item.appid + '-' + item.docid
+                }
+              },
+              {
+                label: 'Type',
+                value(state, item){
+                  return item.doctype
+                }
+              },
+              {
+                label: '# Pages',
+                value(state, item){
+                  return item.page_numbers
+                }
+              },
+              {
+                label: 'Link',
+                value(state, item){
+                  // return "<a href='//www.washingtonpost.com/'>View Scan</a>"
+                  return "<a target='_blank' href='//www.phila.gov/zoningarchive/Preview.aspx?address=" + item.address + "&&docType=" + item.doctype + "&numofPages=" + item.page_numbers + "&docID=" + item.docid + "&app=" + item.appid +"'>View Scan <i class='fa fa-external-link'></i></a>"
+                }
+              },
+            ],
+          },
+          slots: {
+            title(state) {
+              const data = state.sources['zoningDocs'].data;
+              const count = data.length;
+              return `Documents (${count})`;
+            },
+            items(state) {
+              const data = state.sources['zoningDocs'].data
+              const rows = data.map(row => {
+                const itemRow = Object.assign({}, row);
+                //itemRow.DISTANCE = 'TODO';
+                return itemRow;
+              });
+              return rows;
+            },
+          },
         },
       ],
       basemap: 'dor',

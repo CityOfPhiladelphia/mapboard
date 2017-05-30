@@ -3,8 +3,10 @@
       @mouseover="handleRowMouseover"
       @mouseout="handleRowMouseout"
   >
-    <td v-for="field in fields">
-      {{ evaluateSlot(field.value) }}
+    <td v-for="field in fields"
+        v-html="evaluateSlot(field.value)"
+    >
+      <!-- {{ evaluateSlot(field.value) }} -->
     </td>
   </tr>
 </template>
