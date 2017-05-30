@@ -337,6 +337,7 @@
             const props = Object.assign({}, style);
             if (row._featureId === activeFeature) {
               props.fillColor = 'yellow';
+              //props.zIndexOffset = 100;
             }
             props.latlng = latlng;
             props.featureId = row._featureId;
@@ -471,11 +472,27 @@
         );
       },
       handleCircleMarkerClick(e) {
-        console.log('clicked circle marker');
-      },
-      handleCircleMarkerMouseover(e) {
         const featureId = e.target.options.data.featureId;
         this.$store.commit('setActiveFeature', featureId);
+      },
+      bringCircleMarkerToFront(circleMarker) {
+        // put marker on top
+        const el = circleMarker._path;
+
+        // remove from parent
+        const group = circleMarker._renderer._rootGroup;
+        group.removeChild(el);
+
+        // append to end (which brings it to the front)
+        group.appendChild(el);
+      },
+      handleCircleMarkerMouseover(e) {
+        const target = e.target;
+        const featureId = target.options.data.featureId;
+        this.$store.commit('setActiveFeature', featureId);
+
+        // bring to front
+        this.bringCircleMarkerToFront(target);
       },
       handleCircleMarkerMouseout(e) {
         this.$store.commit('setActiveFeature', null);
