@@ -430,6 +430,7 @@
     },
     methods: {
       handleMapClick(e) {
+        console.log('handleMapClick is running');
         // TODO figure out why form submits via enter key are generating a map
         // click event and remove this
         if (e.originalEvent.keyCode === 13) {
@@ -556,6 +557,7 @@
           feature &&
           this.$store.state.lastSearchMethod === 'reverseGeocode'
         );
+        // console.log('pwd shouldGeocode', shouldGeocode);
         if (shouldGeocode) {
           this.geocode(feature.properties.PARCELID);
         }
@@ -586,11 +588,14 @@
         const features = featureCollection.features;
         this.$store.commit('setDorParcels', featureCollection.features);
 
+        // console.log('!!!!!!!!', this.activeParcelLayer, features.length, this.$store.state.lastSearchMethod);
         const shouldGeocode = (
           this.activeParcelLayer === 'dor' &&
-          features.length < 1 &&
+          //features.length < 1 &&
+          // features.length < 1 &&
           this.$store.state.lastSearchMethod === 'reverseGeocode'
         );
+        // console.log('dor shouldGeocode', shouldGeocode);
         if (shouldGeocode) {
           // TODO sort by mapreg, status
           this.geocode(features[0].properties.MAPREG);
