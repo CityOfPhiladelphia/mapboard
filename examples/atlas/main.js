@@ -183,6 +183,27 @@ Mapboard.default({
         }
       }
     },
+    // // TODO take zoningBase out and use AIS for base zoning district
+    zoningBase: {
+      type: 'esri',
+      url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/6/',
+      options: {
+        relationship: 'contains',
+      },
+      success(data) {
+        return data;
+      }
+    },
+    zoningOverlay: {
+      type: 'esri',
+      url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/1/',
+      options: {
+        relationship: 'contains',
+      },
+      success(data) {
+        return data;
+      }
+    },
     dorDocuments: {
       type: 'json',
       url: '//ase.phila.gov/arcgis/rest/services/RTT/MapServer/0/query',
@@ -190,7 +211,6 @@ Mapboard.default({
         params: {
           where(feature, state) {
             const parcel = state.dorParcels[0];
-            console.log('going to get dor docs for parcel', parcel);
             const parcelAddress = concatDorAddress(parcel);
             let where = `ADDRESS = '${parcelAddress}'`;
 
@@ -198,7 +218,6 @@ Mapboard.default({
             const unitNum = feature.properties.unit_num;
 
             if (unitNum) {
-              console.log('unit num')
               where += ` AND CONDO_UNIT = '${unitNum}'`;
             }
 
@@ -209,7 +228,8 @@ Mapboard.default({
         },
         success(data) {
           // arcgis server doesn't set application-type headers, so parse json
-          return JSON.parse(data);
+          // return JSON.parse(data);
+          return data;
         }
       },
       // this should return false if anything necessary for the fetch is missing
@@ -232,39 +252,6 @@ Mapboard.default({
         units: 'feet',
       },
     },
-    // threeOneOneBuffer: {
-    //   url: 'http://192.168.103.143:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer/buffer',
-    //   type: 'json',
-    //   dependency: 'threeOneOneData',
-    //   params: {
-    //     // query: feature => L.esri.query({url: this.$config.esri.tools.buffer.url}).contains(feature)
-    //     geometries: feature => '['+feature.geometry.coordinates[0]+', '+feature.geometry.coordinates[1]+']',
-    //     inSR: () => 4326,
-    //     outSR: () => 4326,
-    //     bufferSR: () => 4326,
-    //     distances: () => .0015,
-    //     unionResults: () => true,
-    //     geodesic: () => false,
-    //     f: () => 'json',
-    //   },
-    //   success(dataString) {
-    //     // return L.polygon(data['geometries'][0]['rings'][0], {color: 'green'});
-    //     //return JSON.parse(dataString);
-    //     return dataString
-    //   }
-    // },
-    // threeOneOneData: {
-    //   callback: true,
-    //   callbackDataName: 'threeOneOneBuffer',
-    //   dependentOn: 'threeOneOneBuffer',
-    //   type: 'esri',
-    //   params: {
-    //     query: feature => L.esri.query({url: 'http://192.168.103.143:6080/arcgis/rest/services/GSG/GIS311_365DAYS/MapServer/0'})//.within(state.sources.threeOneOneBuffer)
-    //   },
-    //   success(data) {
-    //     return data;
-    //   }
-    // },
     // vacantLand: {
     //   type: 'esri',
     //   url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Land/FeatureServer/0',
@@ -287,27 +274,6 @@ Mapboard.default({
     //     return data;
     //   }
     // },
-    // // TODO take zoningBase out and use AIS for base zoning district
-    zoningBase: {
-      type: 'esri',
-      url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/6/',
-      options: {
-        relationship: 'contains',
-      },
-      success(data) {
-        return data;
-      }
-    },
-    zoningOverlay: {
-      type: 'esri',
-      url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/1/',
-      options: {
-        relationship: 'contains',
-      },
-      success(data) {
-        return data;
-      }
-    }
   },
   overlays: {
     '311': {
@@ -347,6 +313,8 @@ Mapboard.default({
       globals: ['moment'],
       transform(value, globals) {
         const moment = globals.moment;
+        const transformed = moment(value).format('YYYY-MM-DD');
+        console.log(value, transformed);
         return moment(value).format('YYYY-MM-DD');
       }
     },
@@ -580,31 +548,31 @@ Mapboard.default({
       // we might not need this anymore, now that we have identifyFeature
       parcels: 'pwd'
     },
-    {
-      key: 'pwd',
-      icon: 'tint',
-      label: 'PWD',
-      dataSources: [],
-      components: [
-      ],
-      basemap: 'pwd',
-      // dynamicMapLayers: [
-      //   'stormwater'
-      // ],
-      identifyFeature: 'pwd-parcel',
-      parcels: 'pwd'
-    },
-    {
-      key: 'dor',
-      icon: 'book',
-      label: 'DOR',
-      dataSources: [],
-      components: [
-      ],
-      basemap: 'dor',
-      identifyFeature: 'dor-parcel',
-      parcels: 'dor'
-    },
+    // {
+    //   key: 'pwd',
+    //   icon: 'tint',
+    //   label: 'PWD',
+    //   dataSources: [],
+    //   components: [
+    //   ],
+    //   basemap: 'pwd',
+    //   // dynamicMapLayers: [
+    //   //   'stormwater'
+    //   // ],
+    //   identifyFeature: 'pwd-parcel',
+    //   parcels: 'pwd'
+    // },
+    // {
+    //   key: 'dor',
+    //   icon: 'book',
+    //   label: 'DOR',
+    //   dataSources: [],
+    //   components: [
+    //   ],
+    //   basemap: 'dor',
+    //   identifyFeature: 'dor-parcel',
+    //   parcels: 'dor'
+    // },
     {
       key: 'zoning',
       icon: 'building-o',
@@ -634,15 +602,11 @@ Mapboard.default({
               {
                 label: 'Date',
                 value(state, item){
-                  const datetime = item.scandate
-                  let date
-                  if (datetime) {
-                    date = datetime.substring(0, datetime.indexOf('T'));
-                  } else {
-                    date = 'Invalid Date';
-                  }
-                  return date
+                  return item.scandate
                 },
+                transforms: [
+                  'date'
+                ]
               },
               {
                 label: 'ID',

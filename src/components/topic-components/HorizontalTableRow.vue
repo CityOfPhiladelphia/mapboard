@@ -4,7 +4,7 @@
       @mouseout="handleRowMouseout"
   >
     <td v-for="field in fields"
-        v-html="evaluateSlot(field.value)"
+        v-html="evaluateSlot(field.value, field.transforms)"
     >
       <!-- {{ evaluateSlot(field.value) }} -->
     </td>

@@ -717,7 +717,19 @@
         return featuresWithIds;
       },
 
+
       didFetchData(key, status, responseData) {
+
+        //TODO - pick which of these to useful
+
+        // const dataOrNull = status === 'error' ? null : data;
+        // let stateData = dataOrNull;
+        //
+        // // if this is an array, assign feature ids
+        // if (Array.isArray(stateData)) {
+        //   stateData = this.assignFeatureIds(stateData, key);
+        // }
+
         const data = status === 'error' ? null : responseData;
         const dataWithIds = this.assignFeatureIds(data, key);
         // console.log(key, data, dataWithIds);
@@ -760,10 +772,17 @@
         const params = this.evaluateParams(feature, dataSource);
         const url = dataSource.url;
         const options = dataSource.options;
-        const success = options.success;
+        const successFn = options.success;
 
         // if the data is not dependent on other data
         this.$http.get(url, { params }).then(response => {
+          // TODO pick which to use
+          // let data = response.body;
+          // if (successFn) {
+          //   data = successFn(data);
+          // }
+          // this.didFetchData(dataSourceKey, 'success', data);
+
           // console.log('fetchJson', dataSourceKey)
           const dataObject = response.body;
           // console.log(dataSourceKey, dataObject);
