@@ -171,6 +171,18 @@ Mapboard.default({
         }
       }
     },
+    zoningAppeals: {
+      type: 'json',
+      url: 'https://phl.carto.com/api/v2/sql',
+      options: {
+        params: {
+          q: feature => "select * from li_appeals where address = '" + feature.properties.street_address + "'"// + "' or addrkey = " + feature.properties.li_address_key,
+        },
+        success(data) {
+          return data;
+        }
+      }
+    },
     zoningDocs: {
       type: 'json',
       url: 'https://phl.carto.com/api/v2/sql',
@@ -314,7 +326,7 @@ Mapboard.default({
       transform(value, globals) {
         const moment = globals.moment;
         const transformed = moment(value).format('YYYY-MM-DD');
-        console.log(value, transformed);
+        // console.log(value, transformed);
         return moment(value).format('YYYY-MM-DD');
       }
     },
@@ -594,6 +606,96 @@ Mapboard.default({
               return ZONING_CODE_MAP[data];
             },
           }
+        },
+        {
+          type: 'horizontal-table',
+          options: {
+            fields: [
+              {
+                label: 'Name',
+                value(state, item){
+                  return item.properties.OVERLAY_NAME
+                }
+              },
+              {
+                label: 'Code Section',
+                value(state, item){
+                  // return item.properties.CODE_SECTION
+                  return "<a target='_blank' href='"+item.properties.CODE_SECTION_LINK+"'>"+item.properties.CODE_SECTION+" <i class='fa fa-external-link'></i></a>"
+                }
+              },
+            ],
+          },
+          slots: {
+            title(state) {
+              const data = state.sources['zoningOverlay'].data;
+              const count = data.length;
+              return `Overlays (${count})`;
+            },
+            items(state) {
+              const data = state.sources['zoningOverlay'].data
+              const rows = data.map(row => {
+                const itemRow = Object.assign({}, row);
+                //itemRow.DISTANCE = 'TODO';
+                return itemRow;
+              });
+              // console.log('rows', rows);
+              return rows;
+            },
+          },
+        },
+        {
+          type: 'horizontal-table',
+          options: {
+            fields: [
+              {
+                label: 'Date',
+                value(state, item){
+                  return item.processeddate
+                },
+                transforms: [
+                  'date'
+                ]
+              },
+              {
+                label: 'ID',
+                value(state, item){
+                  //return item.appeal_key
+                  return "<a target='_blank' href='//li.phila.gov/#details?entity=zoningboardappeals&eid="+item.appealno+"'>"+item.appealno+"<i class='fa fa-external-link'></i></a>"
+                }
+              },
+              {
+                label: 'Description',
+                value(state, item){
+                  return item.appealgrounds
+                }
+              },
+              {
+                label: 'Status',
+                value(state, item){
+                  // return item.properties.CODE_SECTION
+                  return item.decision
+                }
+              },
+            ],
+          },
+          slots: {
+            title(state) {
+              const data = state.sources['zoningAppeals'].data;
+              const count = data.length;
+              return `Appeals (${count})`;
+            },
+            items(state) {
+              const data = state.sources['zoningAppeals'].data
+              const rows = data.map(row => {
+                const itemRow = Object.assign({}, row);
+                //itemRow.DISTANCE = 'TODO';
+                return itemRow;
+              });
+              // console.log('rows', rows);
+              return rows;
+            },
+          },
         },
         {
           type: 'horizontal-table',
