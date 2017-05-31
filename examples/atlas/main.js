@@ -183,6 +183,27 @@ Mapboard.default({
         }
       }
     },
+    // // TODO take zoningBase out and use AIS for base zoning district
+    zoningBase: {
+      type: 'esri',
+      url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/6/',
+      options: {
+        relationship: 'contains',
+      },
+      success(data) {
+        return data;
+      }
+    },
+    zoningOverlay: {
+      type: 'esri',
+      url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/1/',
+      options: {
+        relationship: 'contains',
+      },
+      success(data) {
+        return data;
+      }
+    },
     dorDocuments: {
       type: 'json',
       url: '//ase.phila.gov/arcgis/rest/services/RTT/MapServer/0/query',
@@ -286,27 +307,6 @@ Mapboard.default({
     //     return data;
     //   }
     // },
-    // // TODO take zoningBase out and use AIS for base zoning district
-    zoningBase: {
-      type: 'esri',
-      url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/6/',
-      options: {
-        relationship: 'contains',
-      },
-      success(data) {
-        return data;
-      }
-    },
-    zoningOverlay: {
-      type: 'esri',
-      url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/1/',
-      options: {
-        relationship: 'contains',
-      },
-      success(data) {
-        return data;
-      }
-    }
   },
   overlays: {
     '311': {
