@@ -171,6 +171,18 @@ Mapboard.default({
         }
       }
     },
+    zoningAppeals: {
+      type: 'json',
+      url: 'https://phl.carto.com/api/v2/sql',
+      options: {
+        params: {
+          q: feature => "select * from li_appeals where address = '" + feature.properties.street_address + "'"// + "' or addrkey = " + feature.properties.li_address_key,
+        },
+        success(data) {
+          return data;
+        }
+      }
+    },
     zoningDocs: {
       type: 'json',
       url: 'https://phl.carto.com/api/v2/sql',
@@ -622,6 +634,59 @@ Mapboard.default({
             },
             items(state) {
               const data = state.sources['zoningOverlay'].data
+              const rows = data.map(row => {
+                const itemRow = Object.assign({}, row);
+                //itemRow.DISTANCE = 'TODO';
+                return itemRow;
+              });
+              // console.log('rows', rows);
+              return rows;
+            },
+          },
+        },
+        {
+          type: 'horizontal-table',
+          options: {
+            fields: [
+              {
+                label: 'Date',
+                value(state, item){
+                  return item.processeddate
+                },
+                transforms: [
+                  'date'
+                ]
+              },
+              {
+                label: 'ID',
+                value(state, item){
+                  //return item.appeal_key
+                  return "<a target='_blank' href='//li.phila.gov/#details?entity=zoningboardappeals&eid="+item.appealno+"'>"+item.appealno+"<i class='fa fa-external-link'></i></a>"
+                }
+              },
+              {
+                label: 'Description',
+                value(state, item){
+                  return item.appealgrounds
+                }
+              },
+              {
+                label: 'Status',
+                value(state, item){
+                  // return item.properties.CODE_SECTION
+                  return item.decision
+                }
+              },
+            ],
+          },
+          slots: {
+            title(state) {
+              const data = state.sources['zoningAppeals'].data;
+              const count = data.length;
+              return `Appeals (${count})`;
+            },
+            items(state) {
+              const data = state.sources['zoningAppeals'].data
               const rows = data.map(row => {
                 const itemRow = Object.assign({}, row);
                 //itemRow.DISTANCE = 'TODO';

@@ -700,6 +700,7 @@
       },
 
       assignFeatureIds(features, dataSourceKey) {
+        // console.log('assignFeatureIds', dataSourceKey)
         const featuresWithIds = [];
 
         // REVIEW this was not working with Array.map for some reason
@@ -792,7 +793,7 @@
           const dataObject = response.body;
           // console.log(dataSourceKey, dataObject);
           let data
-          if (dataSourceKey === 'zoningDocs' || dataSourceKey === 'nearby') {
+          if (dataSourceKey === 'zoningDocs' || dataSourceKey === 'nearby' || dataSourceKey === 'zoningAppeals') {
             data = Object.keys(dataObject).map(key => dataObject[key])[0];
             // console.log('if1', dataSourceKey, data);
           } else {
