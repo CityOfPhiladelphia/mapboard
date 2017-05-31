@@ -252,39 +252,6 @@ Mapboard.default({
         units: 'feet',
       },
     },
-    // threeOneOneBuffer: {
-    //   url: 'http://192.168.103.143:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer/buffer',
-    //   type: 'json',
-    //   dependency: 'threeOneOneData',
-    //   params: {
-    //     // query: feature => L.esri.query({url: this.$config.esri.tools.buffer.url}).contains(feature)
-    //     geometries: feature => '['+feature.geometry.coordinates[0]+', '+feature.geometry.coordinates[1]+']',
-    //     inSR: () => 4326,
-    //     outSR: () => 4326,
-    //     bufferSR: () => 4326,
-    //     distances: () => .0015,
-    //     unionResults: () => true,
-    //     geodesic: () => false,
-    //     f: () => 'json',
-    //   },
-    //   success(dataString) {
-    //     // return L.polygon(data['geometries'][0]['rings'][0], {color: 'green'});
-    //     //return JSON.parse(dataString);
-    //     return dataString
-    //   }
-    // },
-    // threeOneOneData: {
-    //   callback: true,
-    //   callbackDataName: 'threeOneOneBuffer',
-    //   dependentOn: 'threeOneOneBuffer',
-    //   type: 'esri',
-    //   params: {
-    //     query: feature => L.esri.query({url: 'http://192.168.103.143:6080/arcgis/rest/services/GSG/GIS311_365DAYS/MapServer/0'})//.within(state.sources.threeOneOneBuffer)
-    //   },
-    //   success(data) {
-    //     return data;
-    //   }
-    // },
     // vacantLand: {
     //   type: 'esri',
     //   url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Land/FeatureServer/0',
