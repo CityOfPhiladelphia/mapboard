@@ -99,7 +99,7 @@ Mapboard.default({
   rootStyle: {
     height: '600px'
   },
-  baseConfig: '//gist.githubusercontent.com/ajrothwell/f5df4d85e09f5821c16329a96889368d/raw/fe924ff508c83c6c96896c1923562005f65871b5/config.js',
+  baseConfig: '//gist.githubusercontent.com/ajrothwell/f5df4d85e09f5821c16329a96889368d/raw/aef6bdafbfcaf7028f3c1f2d70c413beb845ef5a/config.js',
   dataSources: {
     nearby: {
       type: 'json',
