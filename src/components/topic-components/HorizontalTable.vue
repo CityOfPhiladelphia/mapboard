@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4 v-if="slots.title">{{ evaluateSlot(slots.title) }}</h4>
-    <table>
+    <table role="grid" class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">
       <thead>
         <tr>
           <th v-for="field in fields">{{ evaluateSlot(field.label) }}</th>

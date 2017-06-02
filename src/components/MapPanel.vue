@@ -23,6 +23,7 @@
                          :key="key"
                          :url="basemap.url"
                          :max-zoom="basemap.maxZoom"
+                         :attribution="basemap.attribution"
       />
 
       <!-- basemap labels and parcels outlines -->
@@ -31,12 +32,14 @@
                          :key="key"
                          :url="tiledLayer.url"
                          :zIndex="tiledLayer.zIndex"
+                         :attribution="tiledLayer.attribution"
       />
 
       <esri-dynamic-map-layer v-for="(dynamicLayer, key) in this.$config.map.dynamicMapLayers"
                           v-if="activeDynamicMaps.includes(key)"
                          :key="key"
                          :url="dynamicLayer.url"
+                         :attribution="dynamicLayer.attribution"
       />
 
 
