@@ -10,12 +10,23 @@ function createStore(config) {
   // create initial state for sources. data key => {}
   const sourceKeys = Object.keys(config.dataSources || {});
   const sources = sourceKeys.reduce((o, key) => {
-    o[key] = {
-      // we have to define these here, because vue can't observe properties that
-      // are added later.
-      status: null,
-      data: null
-    };
+    let val;
+    // if the source has targets, just set it to be an empty object
+    if (config.dataSources[key].targets) {
+      val = {
+        children: {}
+      };
+    } else {
+      val = {
+       // we have to define these here, because vue can't observe properties that
+       // are added later.
+       status: null,
+       data: null
+     };
+    }
+    
+    o[key] = val;
+
     return o;
   }, {});
 
@@ -62,6 +73,24 @@ function createStore(config) {
     lastSearchMethod: null
   };
 
+  // this is used by data source setters to get the object they should affect in
+  // state
+  function getOrCreateTargetObj(state, key, targetId) {
+    const sourceObj = state.sources[key];
+    let targetObj = sourceObj;
+    const keyWithId = `${key}-${targetId}`;
+    if (targetId) {
+      if (!Object.keys(state.sources).includes(keyWithId)) {
+        state.sources[keyWithId] = {
+          status: null,
+          data: null
+        };
+      }
+      targetObj = state.sources[keyWithId]
+    }
+    return targetObj;
+  }
+
   // TODO standardize how payloads are passed around/handled
   return new Vuex.Store({
     state: initialState,
@@ -73,12 +102,25 @@ function createStore(config) {
       setSourceStatus(state, payload) {
         const key = payload.key;
         const status = payload.status;
-        state.sources[key].status = status;
+
+        // if a target id was passed in, set the status for that target
+        const targetId = payload.targetId;
+        const targetObj = getOrCreateTargetObj(state, key, targetId);
+
+        // if this is a related query (aka has targets), set the source status to be
+        // the lowest common denominator of all target statuses.
+
+        targetObj.status = status;
       },
       setSourceData(state, payload) {
         const key = payload.key;
         const data = payload.data;
-        state.sources[key].data = data;
+
+        // if a target id was passed in, set the data object for that target
+        const targetId = payload.targetId;
+        const targetObj = getOrCreateTargetObj(state, key, targetId);
+
+        targetObj.data = data;
       },
       setMap(state, payload) {
         state.map.map = payload.map;

@@ -558,7 +558,7 @@
         parcelQuery.run(this.didGetDorParcels);
       },
       didGetDorParcels(error, featureCollection, response) {
-        // console.log('did get dor parcels', featureCollection);
+        console.log('did get dor parcels', featureCollection);
 
         if (error) {
           console.warn('did get dor parcels error', error);
@@ -633,7 +633,6 @@
         }
 
         // fetch data from ready sources
-        console.log('did geocode, going to fetch data', this.$store.state.geocode.data);
         this.fetchData();
 
         // pan and center map
@@ -652,21 +651,37 @@
           const pathKeys = path.split('.');
           // traverse state to get the parent of the data object we need to
           // check.
-          const stateObj = pathKeys.reduce((acc, pathKey) => {
+          let stateObj = pathKeys.reduce((acc, pathKey) => {
             return acc[pathKey];
           }, state);
 
-          return !!stateObj[suffix];
+          if (suffix) {
+            stateObj = stateObj[suffix];
+          }
+
+          return !!stateObj;
         });
       },
       dataSourceIsReady(key, options) {
         const deps = options.deps;
-        const depsMet = this.statePathsExist(deps, 'data');
-        const alreadyResolved = this.$store.state.sources[key].status;
-        return (depsMet && !alreadyResolved);
+        // TODO restructure store so we don't need this logic
+        let depsMet;
+        if (key === 'dorDocuments') {
+          depsMet = this.statePathsExist(deps);
+        } else {
+          depsMet = this.statePathsExist(deps, 'data');
+        }
+        if (depsMet) {
+          // check if it's already resolved
+          if (this.$store.state.sources[key].status) {
+            return true;
+          }
+        }
+        return false;
       },
       fetchData() {
-        // console.log('fetch data');
+        // console.log('FETCH DATA');
+        // console.log('-----------');
 
         const geocodeObj = this.$store.state.geocode.data;
 
@@ -683,20 +698,30 @@
         for (let [dataSourceKey, dataSource] of Object.entries(dataSources)) {
           const state = this.$store.state;
           const type = dataSource.type;
-          const featuresFn = dataSource.features;
+          const targetsDef = dataSource.children;
+
+          // console.log('fetch data for:', dataSourceKey)
 
           // if the data sources specifies a features getter, use that to source
           // features for evaluating params/forming requests. otherwise,
           // default to the geocode result.
-          let features;
+          let targets;
+          let targetIdFn;
+          let targetsFn;
 
-          if (featuresFn) {
-            if (typeof featuresFn !== 'function') {
-              throw new Error(`Invalid features for data source '${dataSourceKey}'`);
+          if (targetsDef) {
+            targetsFn = targetsDef.get;
+            targetIdFn = targetsDef.getChildId;
+
+            if (typeof targetsFn !== 'function') {
+              throw new Error(`Invalid targets getter for data source '${dataSourceKey}'`);
             }
-            features = featuresFn(state);
+            targets = targetsFn(state);
+            if (!Array.isArray(targets)) {
+              throw new Error('Data source targets getter should return an array');
+            }
           } else {
-            // TODO
+            targets = [geocodeObj];
           }
 
           // TODO null out existing data in state
@@ -712,22 +737,26 @@
             status: 'waiting'
           });
 
-          switch(type) {
-            case 'http-get':
-              this.fetchHttpGet(geocodeObj, dataSource, dataSourceKey);
+          for (let target of targets) {
+            // TODO do this for all targets
+            switch(type) {
+              case 'http-get':
+              this.fetchHttpGet(target, dataSource, dataSourceKey, targetIdFn);
               break;
-            case 'esri':
-              this.fetchEsri(geocodeObj, dataSource, dataSourceKey);
+              case 'esri':
+              // TODO add targets id fn
+              this.fetchEsri(target, dataSource, dataSourceKey);
               break;
-            case 'esri-nearby':
-              this.fetchEsriNearby(geocodeObj, dataSource, dataSourceKey);
+              case 'esri-nearby':
+              // TODO add targets id fn
+              this.fetchEsriNearby(target, dataSource, dataSourceKey);
               break;
-            default:
+              default:
               break;
+            }
           }
         }
       },
-
       assignFeatureIds(features, dataSourceKey) {
         const featuresWithIds = [];
 
@@ -741,9 +770,8 @@
 
         return featuresWithIds;
       },
-
-      didFetchData(key, status, data) {
-        // console.log('did fetch data:', key);
+      didFetchData(key, status, data, targetId) {
+        // console.log('DID FETCH DATA:', key);
 
         const dataOrNull = status === 'error' ? null : data;
         let stateData = dataOrNull;
@@ -753,21 +781,31 @@
           stateData = this.assignFeatureIds(stateData, key);
         }
 
+        // does this data source have targets?
+        // const targets = this.$config.dataSources[key].targets;
+
         // put data in state
-        this.$store.commit('setSourceData', {
+        const setSourceDataOpts = {
           key,
           data: stateData,
-        });
-
-        // update status
-        this.$store.commit('setSourceStatus', {
+        };
+        const setSourceStatusOpts = {
           key,
-          status,
-        });
+          status
+        };
+        if (targetId) {
+          const keyWithId = `${key}-${targetId}`
+          setSourceDataOpts.key = keyWithId;
+          setSourceStatusOpts.key = keyWithId;
+        }
 
+        // commit
+        this.$store.commit('setSourceData', setSourceDataOpts);
+        this.$store.commit('setSourceStatus', setSourceStatusOpts);
+
+        // try fetching more data
         this.fetchData();
       },
-
       evaluateParams(feature, dataSource) {
         const params = {};
         const paramEntries = Object.entries(dataSource.options.params);
@@ -787,8 +825,7 @@
 
         return params;
       },
-
-      fetchHttpGet(feature, dataSource, dataSourceKey) {
+      fetchHttpGet(feature, dataSource, dataSourceKey, targetIdFn) {
         const params = this.evaluateParams(feature, dataSource);
         const url = dataSource.url;
         const options = dataSource.options;
@@ -800,7 +837,8 @@
           if (successFn) {
             data = successFn(data);
           }
-          this.didFetchData(dataSourceKey, 'success', data);
+          const targetId = targetIdFn(feature);
+          this.didFetchData(dataSourceKey, 'success', data, targetId);
         }, response => {
           console.log('fetch json error', response);
           this.didFetchData(dataSourceKey, 'error');

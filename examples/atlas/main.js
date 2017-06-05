@@ -53,7 +53,7 @@ function cleanDorAttribute(attr) {
 }
 
 // TODO put this in base config transforms
-function concatDorAddress(parcel) {
+function concatDorAddress(parcel, includeUnit = true) {
   const STREET_FIELDS = ['STDIR', 'STNAM', 'STDES', 'STDESSUF'];
   const props = parcel.properties;
 
@@ -66,8 +66,8 @@ function concatDorAddress(parcel) {
   address = address + (addressSuffix || '');
 
   // handle unit
-  var unit = cleanDorAttribute(props.UNIT);
-  unit && (unit = '# ' + unit);
+  let unit = cleanDorAttribute(props.UNIT);
+  if (unit) unit += '# ' + unit;
 
   // clean up attributes
   let comps = STREET_FIELDS.map(streetField => props[streetField]);
@@ -84,7 +84,7 @@ function concatDorAddress(parcel) {
   comps = [address].concat(comps);
 
   // add unit to end
-  comps = comps.concat([unit]);
+  if (includeUnit) comps = comps.concat([unit]);
 
   // remove nulls and concat
   address = comps.filter(Boolean).join(' ');
@@ -99,7 +99,7 @@ Mapboard.default({
   rootStyle: {
     height: '600px'
   },
-  baseConfig: '//gist.githubusercontent.com/rbrtmrtn/09b4f35396f97499c3097e2fecaed8e7/raw/d36124d006bed52124ead05535bb92d4c562fd00/config.js',
+  baseConfig: '//raw.githubusercontent.com/rbrtmrtn/mapboard-base-config/179900962d748aa36f94048f48fb1c3c3dd5a6d1/config.js',
   dataSources: {
     // nearby: {
     //   type: 'http-get',
@@ -171,39 +171,57 @@ Mapboard.default({
     //     }
     //   }
     // },
-    // dorDocuments: {
-    //   type: 'http-get',
-    //   deps: ['dorParcels'],
-    //   targets(state) {
-    //     return state.dorParcels;
-    //   },
-    //   url: '//ase.phila.gov/arcgis/rest/services/RTT/MapServer/0/query',
-    //   options: {
-    //     params: {
-    //       where(feature, state) {
-    //         const parcel = state.dorParcels[0];
-    //         const parcelAddress = concatDorAddress(parcel);
-    //         let where = `ADDRESS = '${parcelAddress}'`;
-    //
-    //         // check for unit num
-    //         const unitNum = feature.properties.unit_num;
-    //
-    //         if (unitNum) {
-    //           where += ` AND CONDO_UNIT = '${unitNum}'`;
-    //         }
-    //
-    //         return where;
-    //       },
-    //       outFields: '*',
-    //       f: 'json'
-    //     },
-    //     success(data) {
-    //       // arcgis server doesn't set application-type headers, so parse json
-    //       // return JSON.parse(data);
-    //       return data;
-    //     }
-    //   },
-    // },
+    dorDocuments: {
+      type: 'http-get',
+      deps: ['dorParcels'],
+      children: {
+        get(state) {
+          return state.dorParcels;
+        },
+        getChildId(child) {
+          console.log('get id of target', target);
+          return child.properties.OBJECTID;
+        },
+      },
+      url: '//ase.phila.gov/arcgis/rest/services/RTT/MapServer/0/query',
+      options: {
+        params: {
+          where(feature, state) {
+            // METHOD 1: via address
+            // const parcel = state.dorParcels[0];
+            const parcelBaseAddress = concatDorAddress(feature);
+
+            // REVIEW if the parcel has no address, we don't want to query
+            // WHERE ADDRESS = 'null' (doesn't make sense), so use this for now
+            if (!parcelBaseAddress || parcelBaseAddress === 'null') return '1 = 0';
+
+            let where = `ADDRESS = '${parcelBaseAddress}'`;
+
+            // check for unit num
+            const unitNum = cleanDorAttribute(feature.properties.UNIT);
+
+            if (unitNum) {
+              where += ` AND CONDO_UNIT = '${unitNum}'`;
+            }
+
+            // METHOD 2: via parcel id - the layer doesn't have mapreg yet, though
+            // const mapreg = feature.properties.MAPREG;
+            // const where = `MAPREG = '${mapreg}'`;
+
+            // console.log('dor docs where', where);
+            return where;
+          },
+          outFields: '*',
+          f: 'json'
+        },
+        success(data) {
+          console.log('did get dor docs', data);
+          // arcgis server doesn't set application-type headers, so parse json
+          // return JSON.parse(data);
+          return data;
+        }
+      },
+    },
     '311': {
       type: 'esri-nearby',
       url: 'http://192.168.103.143:6080/arcgis/rest/services/GSG/GIS311_365DAYS/MapServer/0',
@@ -331,6 +349,7 @@ Mapboard.default({
                 label: 'Sale Date',
                 value(state) {
                   const data = state.sources.opa.data;
+
                   return data.sale_date;
                 },
                 transforms: [
