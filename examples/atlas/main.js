@@ -660,11 +660,7 @@ Mapboard.default({
             ]
           },
           slots: {
-            title(state) {
-              const data = state.sources['311'].data;
-              const count = data.length;
-              return `Nearby Service Requests (${count})`;
-            },
+            title: 'Nearby Service Requests',
             items(state) {
               const data = state.sources['311'].data
               const rows = data.map(row => {

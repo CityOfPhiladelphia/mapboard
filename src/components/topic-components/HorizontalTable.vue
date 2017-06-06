@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h4 v-if="slots.title">{{ evaluateSlot(slots.title) }}</h4>
+    <h4 v-if="slots.title">
+      {{ evaluateSlot(slots.title) }} {{ count }}
+    </h4>
     <table>
       <thead>
         <tr>
@@ -38,6 +40,10 @@
       hasOverlay() {
         return !!this.options.overlay;
       },
+      count() {
+        const items = this.evaluateSlot(this.slots.items) || [];
+        const length = items.length;
+        return `(${length})`;
       }
     },
     methods: {
