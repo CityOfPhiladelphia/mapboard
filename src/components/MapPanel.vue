@@ -831,12 +831,13 @@
           }
         }
       },
-      assignFeatureIds(features, dataSourceKey) {
+      assignFeatureIds(features, dataSourceKey, topicId) {
         const featuresWithIds = [];
 
         // REVIEW this was not working with Array.map for some reason
         for (let i = 0; i < features.length; i++) {
-          const id = `feat-${dataSourceKey}-${i}`;
+          const suffix = (topicId ? topicId + '-' : '') + i;
+          const id = `feat-${dataSourceKey}-${suffix}`;
           const feature = features[i];
           feature._featureId = id;
           featuresWithIds.push(feature);
@@ -852,7 +853,7 @@
 
         // if this is an array, assign feature ids
         if (Array.isArray(stateData)) {
-          stateData = this.assignFeatureIds(stateData, key);
+          stateData = this.assignFeatureIds(stateData, key, targetId);
         }
 
         // does this data source have targets?
