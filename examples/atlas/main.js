@@ -618,6 +618,9 @@ Mapboard.default({
         {
           type: 'horizontal-table',
           options: {
+            // TODO this isn't used yet, but should be for highlighting rows/
+            // map features.
+            overlay: '311',
             fields: [
               {
                 label: 'Date',

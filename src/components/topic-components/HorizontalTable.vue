@@ -15,6 +15,7 @@
                               :item="item"
                               :fields="fields"
                               :key="item._featureId"
+                              :hasOverlay="hasOverlay"
         />
       </tbody>
     </table>
@@ -33,6 +34,10 @@
     computed: {
       fields() {
         return this.options.fields;
+      },
+      hasOverlay() {
+        return !!this.options.overlay;
+      },
       }
     },
     methods: {
