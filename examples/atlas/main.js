@@ -99,7 +99,8 @@ Mapboard.default({
   rootStyle: {
     height: '600px'
   },
-  baseConfig: '//raw.githubusercontent.com/rbrtmrtn/mapboard-base-config/179900962d748aa36f94048f48fb1c3c3dd5a6d1/config.js',
+  // baseConfig: '//raw.githubusercontent.com/rbrtmrtn/mapboard-base-config/179900962d748aa36f94048f48fb1c3c3dd5a6d1/config.js',
+  baseConfig: '//rawgit.com/rbrtmrtn/mapboard-base-config/179900962d748aa36f94048f48fb1c3c3dd5a6d1/config.js',
   dataSources: {
     // nearby: {
     //   type: 'http-get',
@@ -174,13 +175,12 @@ Mapboard.default({
     dorDocuments: {
       type: 'http-get',
       deps: ['dorParcels'],
-      children: {
+      targets: {
         get(state) {
           return state.dorParcels;
         },
-        getChildId(child) {
-          console.log('get id of target', target);
-          return child.properties.OBJECTID;
+        getTargetId(target) {
+          return target.properties.OBJECTID;
         },
       },
       url: '//ase.phila.gov/arcgis/rest/services/RTT/MapServer/0/query',
@@ -209,16 +209,14 @@ Mapboard.default({
             // const where = `MAPREG = '${mapreg}'`;
 
             // console.log('dor docs where', where);
+
             return where;
           },
           outFields: '*',
           f: 'json'
         },
         success(data) {
-          console.log('did get dor docs', data);
-          // arcgis server doesn't set application-type headers, so parse json
-          // return JSON.parse(data);
-          return data;
+          return data.features;
         }
       },
     },

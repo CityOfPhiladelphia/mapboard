@@ -632,6 +632,9 @@
           this.getPwdParcelById(pwdParcelId);
         }
 
+        // clear out address-specific state
+        this.resetData();
+
         // fetch data from ready sources
         this.fetchData();
 
@@ -642,45 +645,81 @@
         const [x, y] = feature.geometry.coordinates;
         map.setView([y, x]);
       },
-      statePathsExist(paths = [], suffix) {
+      // this should be called after a successful geocode to reset the data
+      // source data in state
+      resetData() {
+        const dataSources = this.$config.dataSources || {};
+
+        for (let dataSourceKey of Object.keys(dataSources)) {
+          const dataSource = dataSources[dataSourceKey];
+          const targetsDef = dataSource.targets;
+
+          // null out existing data in state
+          if (targetsDef) {
+            this.$store.commit('clearSourceTargets', {
+              key: dataSourceKey
+            });
+          } else {
+            this.$store.commit('setSourceData', {
+              key: dataSourceKey,
+              data: null
+            })
+            this.$store.commit('setSourceStatus', {
+              key: dataSourceKey,
+              status: null
+            })
+          }
+        }
+      },
+      checkDataSourcesFetched(paths = []) {
         const state = this.$store.state;
 
         return paths.every(path => {
           // deps can be deep keys, e.g. `dor.parcels`. split on periods to get
           // a sequence of keys.
           const pathKeys = path.split('.');
+
+          // TODO/TEMP restructure state so parcels and geocode live in
+          // state.sources? the following targets the dorDocuments data source.
+          const isDataSource = !(pathKeys.length === 1 && pathKeys[0] === 'dorParcels');
+          const parentObj = isDataSource ? state.sources : state;
+
           // traverse state to get the parent of the data object we need to
           // check.
           let stateObj = pathKeys.reduce((acc, pathKey) => {
             return acc[pathKey];
-          }, state);
+          }, parentObj);
 
-          if (suffix) {
-            stateObj = stateObj[suffix];
+          if (isDataSource) {
+            return stateObj.status === 'success';
+          } else {
+            return !!stateObj;
           }
-
-          return !!stateObj;
         });
       },
-      dataSourceIsReady(key, options) {
+      checkDataSourceReady(key, options, targetId) {
+        // console.log(`check data source ready: ${key} ${targetId || ''}`);
+
         const deps = options.deps;
-        // TODO restructure store so we don't need this logic
-        let depsMet;
-        if (key === 'dorDocuments') {
-          depsMet = this.statePathsExist(deps);
-        } else {
-          depsMet = this.statePathsExist(deps, 'data');
-        }
+        const depsMet = this.checkDataSourcesFetched(deps);
+        let isReady = false;
+
+        // if data deps have been met
         if (depsMet) {
-          // check if it's already resolved
-          if (this.$store.state.sources[key].status) {
-            return true;
+          // get the target obj
+          let targetObj = this.$store.state.sources[key];
+          if (targetId) {
+            targetObj = targetObj.targets[targetId];
           }
+
+          // if the target obj has a status of null, this data source is ready.
+          isReady = !targetObj.status;
         }
-        return false;
+
+        return isReady;
       },
       fetchData() {
-        // console.log('FETCH DATA');
+        // console.log('\nFETCH DATA');
         // console.log('-----------');
 
         const geocodeObj = this.$store.state.geocode.data;
@@ -698,9 +737,9 @@
         for (let [dataSourceKey, dataSource] of Object.entries(dataSources)) {
           const state = this.$store.state;
           const type = dataSource.type;
-          const targetsDef = dataSource.children;
+          const targetsDef = dataSource.targets;
 
-          // console.log('fetch data for:', dataSourceKey)
+          // console.log('key:', dataSourceKey)
 
           // if the data sources specifies a features getter, use that to source
           // features for evaluating params/forming requests. otherwise,
@@ -711,12 +750,34 @@
 
           if (targetsDef) {
             targetsFn = targetsDef.get;
-            targetIdFn = targetsDef.getChildId;
+            targetIdFn = targetsDef.getTargetId;
 
             if (typeof targetsFn !== 'function') {
               throw new Error(`Invalid targets getter for data source '${dataSourceKey}'`);
             }
             targets = targetsFn(state);
+
+            // check if target objs exist in state.
+            const targetIds = targets.map(targetIdFn);
+            const stateTargets = state.sources[dataSourceKey].targets;
+            const stateTargetIds = Object.keys(stateTargets);
+            // the inclusion check wasn't working because ids were strings in
+            // one set and ints in another, so do this.
+            const stateTargetIdsStr = stateTargetIds.map(String);
+            const shouldCreateTargets = !targetIds.every(targetId => {
+              const targetIdStr = String(targetId);
+              return stateTargetIdsStr.includes(targetIdStr);
+            });
+
+            // if not, create them.
+            if (shouldCreateTargets) {
+              // console.log('should create targets', targetIds, stateTargetIds);
+              this.$store.commit('createEmptySourceTargets', {
+                key: dataSourceKey,
+                targetIds
+              });
+            }
+
             if (!Array.isArray(targets)) {
               throw new Error('Data source targets getter should return an array');
             }
@@ -724,35 +785,48 @@
             targets = [geocodeObj];
           }
 
-          // TODO null out existing data in state
-
-          // check if it's ready
-          const isReady = this.dataSourceIsReady(dataSourceKey, dataSource);
-          if (!isReady) {
-            continue;
-          }
-
-          this.$store.commit('setSourceStatus', {
-            key: dataSourceKey,
-            status: 'waiting'
-          });
-
           for (let target of targets) {
+            // get id of target
+            let targetId;
+            if (targetIdFn) {
+              targetId = targetIdFn(target);
+            }
+
+            // targetId && console.log('target:', targetId);
+
+            // check if it's ready
+            const isReady = this.checkDataSourceReady(dataSourceKey, dataSource, targetId);
+            if (!isReady) {
+              // console.log('not ready');
+              continue;
+            }
+
+            // update status to `waiting`
+            const setSourceStatusOpts = {
+              key: dataSourceKey,
+              status: 'waiting'
+            };
+            if (targetId) {
+              setSourceStatusOpts.targetId = targetId;
+            }
+            this.$store.commit('setSourceStatus', setSourceStatusOpts);
+
             // TODO do this for all targets
             switch(type) {
               case 'http-get':
-              this.fetchHttpGet(target, dataSource, dataSourceKey, targetIdFn);
-              break;
+                // console.log('http-get', targetIdFn);
+                this.fetchHttpGet(target, dataSource, dataSourceKey, targetIdFn);
+                break;
               case 'esri':
-              // TODO add targets id fn
-              this.fetchEsri(target, dataSource, dataSourceKey);
-              break;
+                // TODO add targets id fn
+                this.fetchEsri(target, dataSource, dataSourceKey);
+                break;
               case 'esri-nearby':
-              // TODO add targets id fn
-              this.fetchEsriNearby(target, dataSource, dataSourceKey);
-              break;
+                // TODO add targets id fn
+                this.fetchEsriNearby(target, dataSource, dataSourceKey);
+                break;
               default:
-              break;
+                break;
             }
           }
         }
@@ -771,7 +845,7 @@
         return featuresWithIds;
       },
       didFetchData(key, status, data, targetId) {
-        // console.log('DID FETCH DATA:', key);
+        // console.log('DID FETCH DATA:', key, targetId || '', data);
 
         const dataOrNull = status === 'error' ? null : data;
         let stateData = dataOrNull;
@@ -794,9 +868,8 @@
           status
         };
         if (targetId) {
-          const keyWithId = `${key}-${targetId}`
-          setSourceDataOpts.key = keyWithId;
-          setSourceStatusOpts.key = keyWithId;
+          setSourceDataOpts.targetId = targetId;
+          setSourceStatusOpts.targetId = targetId;
         }
 
         // commit
@@ -837,14 +910,18 @@
           if (successFn) {
             data = successFn(data);
           }
-          const targetId = targetIdFn(feature);
+          // console.log('about to call targetidfn', targetIdFn);
+          let targetId;
+          if (targetIdFn) {
+            targetId = targetIdFn(feature);
+          }
+          // const targetId = targetIdFn(feature);
           this.didFetchData(dataSourceKey, 'success', data, targetId);
         }, response => {
           console.log('fetch json error', response);
           this.didFetchData(dataSourceKey, 'error');
         });
-      }, // end of fetchJson
-
+      },
       fetchEsriSpatialQuery(dataSourceKey, url, relationship, targetGeom) {
         // console.log('fetch esri spatial query');
 
@@ -858,7 +935,6 @@
           this.didFetchData(dataSourceKey, status, data);
         });
       },
-
       fetchEsri(feature, dataSource, dataSourceKey) {
         const options = dataSource.options;
         const url = dataSource.url;
@@ -867,7 +943,6 @@
 
         this.fetchEsriSpatialQuery(dataSourceKey, url, relationship, geom);
       },
-
       fetchEsriNearby(feature, dataSource, dataSourceKey) {
         // console.log('fetch esri nearby', feature);
 

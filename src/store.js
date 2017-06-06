@@ -14,7 +14,7 @@ function createStore(config) {
     // if the source has targets, just set it to be an empty object
     if (config.dataSources[key].targets) {
       val = {
-        children: {}
+        targets: {}
       };
     } else {
       val = {
@@ -24,7 +24,7 @@ function createStore(config) {
        data: null
      };
     }
-    
+
     o[key] = val;
 
     return o;
@@ -73,24 +73,6 @@ function createStore(config) {
     lastSearchMethod: null
   };
 
-  // this is used by data source setters to get the object they should affect in
-  // state
-  function getOrCreateTargetObj(state, key, targetId) {
-    const sourceObj = state.sources[key];
-    let targetObj = sourceObj;
-    const keyWithId = `${key}-${targetId}`;
-    if (targetId) {
-      if (!Object.keys(state.sources).includes(keyWithId)) {
-        state.sources[keyWithId] = {
-          status: null,
-          data: null
-        };
-      }
-      targetObj = state.sources[keyWithId]
-    }
-    return targetObj;
-  }
-
   // TODO standardize how payloads are passed around/handled
   return new Vuex.Store({
     state: initialState,
@@ -105,12 +87,12 @@ function createStore(config) {
 
         // if a target id was passed in, set the status for that target
         const targetId = payload.targetId;
-        const targetObj = getOrCreateTargetObj(state, key, targetId);
 
-        // if this is a related query (aka has targets), set the source status to be
-        // the lowest common denominator of all target statuses.
-
-        targetObj.status = status;
+        if (targetId) {
+          state.sources[key].targets[targetId].status = status;
+        } else {
+          state.sources[key].status = status;
+        }
       },
       setSourceData(state, payload) {
         const key = payload.key;
@@ -118,9 +100,27 @@ function createStore(config) {
 
         // if a target id was passed in, set the data object for that target
         const targetId = payload.targetId;
-        const targetObj = getOrCreateTargetObj(state, key, targetId);
 
-        targetObj.data = data;
+        if (targetId) {
+          state.sources[key].targets[targetId].data = data;
+        } else {
+          state.sources[key].data = data;
+        }
+      },
+      // this sets empty targets for a data source
+      createEmptySourceTargets(state, payload) {
+        const {key, targetIds} = payload;
+        state.sources[key].targets = targetIds.reduce((acc, targetId) => {
+          acc[targetId] = {
+            status: null,
+            data: null
+          };
+          return acc;
+        }, {});
+      },
+      clearSourceTargets(state, payload) {
+        const key = payload.key;
+        state.sources[key].targets = {};
       },
       setMap(state, payload) {
         state.map.map = payload.map;
