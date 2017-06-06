@@ -377,6 +377,7 @@ Mapboard.default({
       key: 'deeds',
       icon: 'book',
       label: 'Deeds',
+      // TODO uncommenting this causes the no-content view to show up.
       // dataSources: ['dorDocuments'],
       components: [
         {
@@ -507,7 +508,54 @@ Mapboard.default({
                     },
                   ]
                 }  // end slots
-              }  // end vertical table
+              },  // end vertical table
+              {
+                type: 'horizontal-table',
+                options: {
+                  fields: [
+                    {
+                      label: 'ID',
+                      value(state, item) {
+                        return item.attributes.R_NUM;
+                      },
+                    },
+                    {
+                      label: 'Date',
+                      value(state, item) {
+                        return item.attributes.RECORDING_DATE;
+                      },
+                      transforms: [
+                        'date'
+                      ]
+                    },
+                    {
+                      label: 'Type',
+                      value(state, item) {
+                        return item.attributes.DOC_TYPE;
+                      },
+                    },
+                    {
+                      label: 'Grantor',
+                      value(state, item) {
+                        return item.attributes.GRANTOR;
+                      },
+                    },
+                    {
+                      label: 'Grantee',
+                      value(state, item) {
+                        return item.attributes.GRANTEE;
+                      },
+                    },
+                  ], // end fields
+                },
+                slots: {
+                  title: 'Documents',
+                  items(state, item) {
+                    const id = item.properties.OBJECTID;
+                    return state.sources.dorDocuments.targets[id].data;
+                  },
+                } // end slots
+              } // end docs table
             ] // end parcel tab content comps
           }, // end parcel tab options
           slots: {
@@ -519,9 +567,11 @@ Mapboard.default({
           }
         } // end dor parcel tab group comp
       ], // end deeds comps
-      basemap: 'pwd',
+      basemap: 'dor',
+      // identifyFeature: 'dor-parcel',
       identifyFeature: 'address-marker',
       // we might not need this anymore, now that we have identifyFeature
+      // parcels: 'dor'
       parcels: 'pwd'
     },
     {
