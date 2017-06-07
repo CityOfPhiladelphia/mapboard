@@ -10,12 +10,23 @@ function createStore(config) {
   // create initial state for sources. data key => {}
   const sourceKeys = Object.keys(config.dataSources || {});
   const sources = sourceKeys.reduce((o, key) => {
-    o[key] = {
-      // we have to define these here, because vue can't observe properties that
-      // are added later.
-      status: null,
-      data: null
-    };
+    let val;
+    // if the source has targets, just set it to be an empty object
+    if (config.dataSources[key].targets) {
+      val = {
+        targets: {}
+      };
+    } else {
+      val = {
+       // we have to define these here, because vue can't observe properties that
+       // are added later.
+       status: null,
+       data: null
+     };
+    }
+
+    o[key] = val;
+
     return o;
   }, {});
 
@@ -73,12 +84,43 @@ function createStore(config) {
       setSourceStatus(state, payload) {
         const key = payload.key;
         const status = payload.status;
-        state.sources[key].status = status;
+
+        // if a target id was passed in, set the status for that target
+        const targetId = payload.targetId;
+
+        if (targetId) {
+          state.sources[key].targets[targetId].status = status;
+        } else {
+          state.sources[key].status = status;
+        }
       },
       setSourceData(state, payload) {
         const key = payload.key;
         const data = payload.data;
-        state.sources[key].data = data;
+
+        // if a target id was passed in, set the data object for that target
+        const targetId = payload.targetId;
+
+        if (targetId) {
+          state.sources[key].targets[targetId].data = data;
+        } else {
+          state.sources[key].data = data;
+        }
+      },
+      // this sets empty targets for a data source
+      createEmptySourceTargets(state, payload) {
+        const {key, targetIds} = payload;
+        state.sources[key].targets = targetIds.reduce((acc, targetId) => {
+          acc[targetId] = {
+            status: null,
+            data: null
+          };
+          return acc;
+        }, {});
+      },
+      clearSourceTargets(state, payload) {
+        const key = payload.key;
+        state.sources[key].targets = {};
       },
       setMap(state, payload) {
         state.map.map = payload.map;

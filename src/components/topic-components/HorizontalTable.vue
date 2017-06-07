@@ -1,6 +1,9 @@
 <template>
   <div>
-    <h4 v-if="slots.title">{{ evaluateSlot(slots.title) }}</h4>
+    <h4 v-if="slots.title">
+      {{ evaluateSlot(slots.title) }} {{ count }}
+    </h4>
+    
     <table role="grid" class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">
       <thead>
         <tr>
@@ -15,6 +18,7 @@
                               :item="item"
                               :fields="fields"
                               :key="item._featureId"
+                              :hasOverlay="hasOverlay"
         />
       </tbody>
     </table>
@@ -33,6 +37,14 @@
     computed: {
       fields() {
         return this.options.fields;
+      },
+      hasOverlay() {
+        return !!this.options.overlay;
+      },
+      count() {
+        const items = this.evaluateSlot(this.slots.items) || [];
+        const length = items.length;
+        return `(${length})`;
       }
     },
     methods: {
