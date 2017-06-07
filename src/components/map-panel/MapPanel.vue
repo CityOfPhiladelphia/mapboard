@@ -177,28 +177,28 @@
 
 <script>
   // mixins
-  import dataMixin from './map-panel/data-mixin';
-  import markersMixin from './map-panel/markers-mixin';
-  import geocodeMixin from './map-panel/geocode-mixin';
-  import cyclomediaMixin from './cyclomedia/map-panel-mixin';
-  import pictometryMixin from './pictometry/map-panel-mixin';
+  import dataMixin from './data-mixin';
+  import markersMixin from './markers-mixin';
+  import geocodeMixin from './geocode-mixin';
+  import cyclomediaMixin from '../../cyclomedia/map-panel-mixin';
+  import pictometryMixin from '../../pictometry/map-panel-mixin';
 
   // vue doesn't like it when you import this as Map (reserved-ish word)
-  import Map_ from '../leaflet/Map';
-  import Control from '../leaflet/Control';
-  import EsriTiledMapLayer from '../esri-leaflet/TiledMapLayer';
-  import EsriDynamicMapLayer from '../esri-leaflet/DynamicMapLayer';
-  import Geojson from '../leaflet/Geojson';
-  import CircleMarker from '../leaflet/CircleMarker';
-  import VectorMarker from './VectorMarker';
-  import PngMarker from './PngMarker';
-  import SvgMarker from './SvgMarker';
-  import BasemapControl from './BasemapControl';
-  import HistoricmapControl from './HistoricmapControl';
-  import CyclomediaButton from '../cyclomedia/Button';
-  import PictometryButton from '../pictometry/Button';
-  import CyclomediaRecordingCircle from '../cyclomedia/RecordingCircle';
-  import CyclomediaRecordingsClient from '../cyclomedia/recordings-client';
+  import Map_ from '../../leaflet/Map';
+  import Control from '../../leaflet/Control';
+  import EsriTiledMapLayer from '../../esri-leaflet/TiledMapLayer';
+  import EsriDynamicMapLayer from '../../esri-leaflet/DynamicMapLayer';
+  import Geojson from '../../leaflet/Geojson';
+  import CircleMarker from '../../leaflet/CircleMarker';
+  import VectorMarker from '../VectorMarker';
+  import PngMarker from '../PngMarker';
+  import SvgMarker from '../SvgMarker';
+  import BasemapControl from '../BasemapControl';
+  import HistoricmapControl from '../HistoricmapControl';
+  import CyclomediaButton from '../../cyclomedia/Button';
+  import PictometryButton from '../../pictometry/Button';
+  import CyclomediaRecordingCircle from '../../cyclomedia/RecordingCircle';
+  import CyclomediaRecordingsClient from '../../cyclomedia/recordings-client';
 
   export default {
     mixins: [

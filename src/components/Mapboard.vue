@@ -22,7 +22,7 @@
 
 <script>
   import TopicPanel from './TopicPanel';
-  import MapPanel from './MapPanel';
+  import MapPanel from './map-panel/MapPanel';
   import CyclomediaWidget from '../cyclomedia/Widget';
   import PictometryWidget from '../pictometry/Widget';
 
