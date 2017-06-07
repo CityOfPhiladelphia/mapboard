@@ -1,14 +1,15 @@
 <template>
-  <div class="large-12 columns mb-panel mb-panel-map">
+  <div id="map-container" class="large-12 columns mb-panel mb-panel-map">
     <map_ :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }"
-          :center="this.$config.map.center"
-          :zoom="this.$config.map.zoom"
+          :center="this.$store.state.map.center"
+          :zoom="this.$store.state.map.zoom"
           @l-click="handleMapClick"
           @l-moveend="handleMapMove"
           zoom-control-position="bottomright"
           :min-zoom="this.$config.map.minZoom"
           :max-zoom="this.$config.map.maxZoom"
     >
+    <!-- :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }" -->
       <!-- loading mask -->
       <div v-show="isGeocoding" class="mb-map-loading-mask">
         <div class="mb-map-loading-mask-inner">
@@ -288,6 +289,16 @@
       cyclomediaRecordings() {
         return this.$store.state.cyclomedia.recordings;
       },
+      pictometryActive() {
+        return this.$store.state.pictometry.active;
+      },
+      picOrCycloActive() {
+        if (this.cyclomediaActive || this.pictometryActive) {
+          return true;
+        } else {
+          return false;
+        }
+      },
       // returns map markers as simple object with a geometry property, key,
       // and optional properties for symbology
       markers() {
@@ -431,6 +442,14 @@
         4326
       );
     },
+    watch: {
+      picOrCycloActive(value) {
+        this.$nextTick(() => {
+          console.log('picOrCycloActive changed to', value);
+          this.$store.state.map.map.invalidateSize();
+        })
+      }
+    },
     methods: {
       handleMapClick(e) {
         // console.log('handle map click');
@@ -459,6 +478,11 @@
         viewer.openByCoordinate([latlng.lng, latlng.lat]);
       },
       handleMapMove(e) {
+        // update state
+        const center = this.$store.state.map.map.getCenter();
+        this.$store.commit('setMapCenter', center);
+        const zoom = this.$store.state.map.map.getZoom();
+        this.$store.commit('setMapZoom', zoom);
         this.updateCyclomediaRecordings();
       },
       updateCyclomediaRecordings() {

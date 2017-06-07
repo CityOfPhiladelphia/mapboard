@@ -1,9 +1,11 @@
 <template>
-  <div class="large-16 columns mb-panel"
-       id="cyclo-container"
-       v-once
-       style="height: 50%;"
+  <div id="cyclo-container"
+       :class="this.cycloContainerClass"
   >
+  <!-- v-once -->
+    <div id="inCycloDiv">
+      <i class="fa fa-external-link fa popout-icon"></i>
+    </div>
     <div id="cycloviewer" ref="cycloviewer" class="panoramaViewerWindow" />
   </div>
 </template>
@@ -11,6 +13,16 @@
 <script>
   export default {
     computed: {
+      pictometryActive() {
+        return this.$store.state.pictometry.active
+      },
+      cycloContainerClass() {
+        if (this.pictometryActive) {
+          return 'large-16 columns mb-panel'
+        } else {
+          return 'large-24 columns mb-panel'
+        }
+      },
       locForCyclo() {
         console.log('computed')
         const lastSearchMethod = this.$store.state.lastSearchMethod;
@@ -72,7 +84,10 @@
       );
     },
     updated() {
-      console.log('widget.vue updated is firing');
+      // console.log('cyclomedia widget.vue updated is firing');
+      // TODO find a better way to get the image to update and not be stretched
+      const viewer = this.$store.state.cyclomedia.viewer;
+      viewer.rotateRight(0.0000001);
     },
     methods: {
       setNewLocation(coords) {
@@ -88,6 +103,25 @@
 
 #cyclo-container {
   padding: 0px;
+  height: 50%;
+}
+
+#inCycloDiv {
+  background-color: white;
+  border: 0px solid;
+  width: 30px;
+  height: 30px;
+  /*display:none;*/
+  cursor:pointer;
+  z-index: 10;
+  position:relative;
+  float: right;
+}
+
+.popout-icon {
+  margin-top: 8.5px;
+  font-size: 15px;
+  margin-left: 8.5px;
 }
 
 .panoramaViewerWindow {
