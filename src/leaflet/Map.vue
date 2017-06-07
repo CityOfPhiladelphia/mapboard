@@ -5,8 +5,9 @@
     <!-- container for vue elements wrapping leaflet elements. these aren't
          actually rendered, they just allow us to make the map reactive.
     -->
-    <div>
-      <slot />
+      <div>
+        <slot />
+      </div>
     </div>
   </div>
 </template>

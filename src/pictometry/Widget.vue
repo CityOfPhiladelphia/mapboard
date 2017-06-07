@@ -39,16 +39,20 @@
       center() {
         // return this.$store.state.geocode.data.geometry.coordinates;
         return this.$store.state.map.center;
+      },
+      pictZoom() {
+        return this.$store.state.map.zoom + 2;
       }
     },
     watch: {
       center(nextCenter) {
-        // console.log(nextCenter);
+        console.log(nextCenter);
         this.$ipa.setLocation({
           y: nextCenter.lat,
-          x: nextCenter.lng
+          x: nextCenter.lng,
+          zoom: this.pictZoom
         });
-      }
+      },
     },
     methods: {
       init() {
@@ -71,8 +75,10 @@
       },
       ipaReady() {
         this.$ipa.setLocation({
-          y: 39.952388,
-          x: -75.163596,
+          // y: 39.952388,
+          // x: -75.163596,
+          y: this.center.lat,
+          x: this.center.lng,
           zoom: 8
         });
         // if (this.cyclomediaActive == 'true') {
