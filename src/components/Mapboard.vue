@@ -12,7 +12,10 @@
       <pictometry-widget v-if="this.$config.pictometry.enabled"
                          slot="pictWidget"
                          v-show="pictometryActive"
+                         :apiKey="this.$config.pictometry.apiKey"
+                         :secretKey="this.$config.pictometry.secretKey"
       />
+      <!-- :center="this.$store.state.map.map.center" -->
     </map-panel>
   </div>
 </template>

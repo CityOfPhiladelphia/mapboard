@@ -28,6 +28,7 @@ function createStore(config) {
     },
     // the leaflet map object
     map: {
+      center: config.map.center,
       map: null,
       bounds: null,
       basemap: defaultTopic.basemap,
@@ -85,6 +86,9 @@ function createStore(config) {
       },
       setMapBounds(state, payload) {
         state.map.bounds = payload.bounds
+      },
+      setMapCenter(state, payload) {
+        state.map.center = payload;
       },
       setDorParcels(state, payload) {
         state.dorParcels = payload;

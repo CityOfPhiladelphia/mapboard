@@ -305,10 +305,10 @@ Mapboard.default({
     },
   },
   cyclomedia: {
-    enabled: false
+    enabled: true
   },
   pictometry: {
-    enabled: false
+    enabled: true
   },
   // reusable transforms for topic data. see `topics` section for usage.
   transforms: {
@@ -767,8 +767,6 @@ Mapboard.default({
       icon: 'phone',
       label: '311',
       dataSources: ['311'],
-      components: [
-      ],
       basemap: 'pwd',
       identifyFeature: 'address-marker',
       overlays: ['311'],

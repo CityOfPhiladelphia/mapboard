@@ -1,7 +1,7 @@
 <template>
   <div class="large-12 columns mb-panel mb-panel-map">
     <map_ :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }"
-          :center="this.$config.map.center"
+          :center="this.$store.state.map.center"
           :zoom="this.$config.map.zoom"
           @l-click="handleMapClick"
           @l-moveend="handleMapMove"
@@ -458,6 +458,9 @@
         viewer.openByCoordinate([latlng.lng, latlng.lat]);
       },
       handleMapMove(e) {
+        // update state
+        const center = this.$store.state.map.map.getCenter();
+        this.$store.commit('setMapCenter', center);
         this.updateCyclomediaRecordings();
       },
       updateCyclomediaRecordings() {
