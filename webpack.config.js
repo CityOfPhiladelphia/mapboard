@@ -48,10 +48,8 @@ module.exports = {
   devServer: {
     historyApiFallback: true,
     noInfo: true,
-    host: '10.8.101.67',
-    port: '8080'
-    // host: process.env.WEBPACK_DEV_HOST,
-    // port: process.env.WEBPACK_DEV_PORT
+    host: process.env.WEBPACK_DEV_HOST,
+    port: process.env.WEBPACK_DEV_PORT
   },
   performance: {
     hints: false
