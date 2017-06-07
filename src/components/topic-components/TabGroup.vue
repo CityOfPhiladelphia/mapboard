@@ -91,6 +91,5 @@
 <style scoped>
   .tabs-panel {
     padding: 20px;
-
   }
 </style>
