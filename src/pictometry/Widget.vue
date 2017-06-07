@@ -46,7 +46,6 @@
     },
     watch: {
       center(nextCenter) {
-        console.log(nextCenter);
         this.$ipa.setLocation({
           y: nextCenter.lat,
           x: nextCenter.lng,

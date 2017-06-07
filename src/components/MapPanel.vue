@@ -445,7 +445,6 @@
     watch: {
       picOrCycloActive(value) {
         this.$nextTick(() => {
-          console.log('picOrCycloActive changed to', value);
           this.$store.state.map.map.invalidateSize();
         })
       }

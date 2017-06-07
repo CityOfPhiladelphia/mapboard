@@ -24,24 +24,18 @@
         }
       },
       locForCyclo() {
-        console.log('computed')
-        const lastSearchMethod = this.$store.state.lastSearchMethod;
+        console.log('computing locForCyclo');
         const geocodeData = this.$store.state.geocode.data;
         const map = this.$store.state.map.map;
-        let center;
-        let sendLoc;
-        if (lastSearchMethod === 'geocode') {
-          sendLoc = geocodeData.geometry.coordinates;
+        if (geocodeData) {
+          return geocodeData.geometry.coordinates;
         }
-        else if (!geocodeData) {
-          center = map.getCenter();
-          sendLoc = [center.lng, center.lat];
-        } else {
-          sendLoc = geocodeData.geometry.coordinates;
-        }
-        console.log(sendLoc);
-        //this.setNewLocation(sendLoc);
-        return sendLoc
+      }
+    },
+    watch: {
+      locForCyclo(coords){
+        console.log(coords);
+        this.setNewLocation(coords);
       }
     },
     mounted() {
@@ -84,7 +78,6 @@
       );
     },
     updated() {
-      // console.log('cyclomedia widget.vue updated is firing');
       // TODO find a better way to get the image to update and not be stretched
       const viewer = this.$store.state.cyclomedia.viewer;
       viewer.rotateRight(0.0000001);
