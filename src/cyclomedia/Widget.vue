@@ -24,7 +24,7 @@
         }
       },
       locForCyclo() {
-        console.log('computing locForCyclo');
+        // console.log('computing locForCyclo');
         const geocodeData = this.$store.state.geocode.data;
         const map = this.$store.state.map.map;
         if (geocodeData) {
@@ -34,7 +34,7 @@
     },
     watch: {
       locForCyclo(coords){
-        console.log(coords);
+        // console.log(coords);
         this.setNewLocation(coords);
       }
     },
