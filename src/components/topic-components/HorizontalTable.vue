@@ -3,7 +3,7 @@
     <h4 v-if="slots.title">
       {{ evaluateSlot(slots.title) }} {{ count }}
     </h4>
-    
+
     <table role="grid" class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">
       <thead>
         <tr>
@@ -14,7 +14,7 @@
         <!-- <tr v-for="item in evaluateSlot(slots.items)"
             :class="{ active: item._featureId === activeFeature }"
         > -->
-        <horizontal-table-row v-for="item in evaluateSlot(slots.items)"
+        <horizontal-table-row v-for="item in itemsSorted"
                               :item="item"
                               :fields="fields"
                               :key="item._featureId"
@@ -41,10 +41,54 @@
       hasOverlay() {
         return !!this.options.overlay;
       },
+      items() {
+        const itemsSlot = this.slots.items;
+        return this.evaluateSlot(itemsSlot) || [];
+      },
       count() {
-        const items = this.evaluateSlot(this.slots.items) || [];
-        const length = items.length;
+        const length = this.items.length;
         return `(${length})`;
+      },
+      itemsSorted() {
+        const items = this.items;
+        const sortOpts = this.options.sort;
+
+        // if there's no no sort config, just return the items.
+        if (!sortOpts) {
+          return items;
+        }
+
+        const getValueFn = sortOpts.getValue;
+        const order = sortOpts.order;
+
+        // get sort fn or use this basic one
+        function defaultSortFn(a, b) {
+          const valA = getValueFn(a);
+          const valB = getValueFn(b);
+          let result;
+
+          if (valA < valB) {
+            result = -1;
+          } else if (valB < valA) {
+            result = 1;
+          } else {
+            result = 0;
+          }
+
+          // reverse if the target order is desc
+          if (order === 'desc') {
+            result = result * -1;
+          } else if (order !== 'asc') {
+            throw `Unknown sort order: ${order}`;
+          }
+
+          // console.log('compare', valA, 'to', valB, ', result:', result);
+
+          return result;
+        }
+        const sortFn = sortOpts.compare || defaultSortFn;
+
+        return items.sort(sortFn);
       }
     },
     methods: {

@@ -601,6 +601,14 @@ Mapboard.default({
                       },
                     },
                   ], // end fields
+                  sort: {
+                    // this should return the val to sort on
+                    getValue(item) {
+                      return item.attributes.RECORDING_DATE;
+                    },
+                    // asc or desc
+                    order: 'desc'
+                  }
                 },
                 slots: {
                   title: 'Documents',
