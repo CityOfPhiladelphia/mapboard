@@ -224,6 +224,17 @@
       CyclomediaButton,
       CyclomediaRecordingCircle
     },
+    mounted() {
+      // route once on load
+      this.$_router.handleHashChange();
+
+      this.geocodeInput;
+    },
+    watch: {
+      geocodeInput(input) {
+        console.log('geocode input changed =>', input);
+      }
+    },
     computed: {
       activeBasemap() {
         return this.$store.state.map.basemap;
@@ -264,17 +275,21 @@
       identifyFeature() {
         return (this.activeTopicConfig || {}).identifyFeature;
       },
+      activeTopic() {
+        return this.$store.state.activeTopic;
+      },
       activeTopicConfig() {
-        const key = this.$store.state.activeTopic;
+        const key = this.activeTopic;
+        let config;
 
         // if no active topic, return null
-        if (!key) {
-          return null;
+        if (key) {
+          config = this.$config.topics.filter((topic) => {
+            return topic.key === key;
+          })[0];
         }
 
-        return this.$config.topics.filter((topic) => {
-          return topic.key === key;
-        })[0];
+        return config || {};
       },
       activeParcelLayer() {
         return this.activeTopicConfig.parcels;
@@ -286,10 +301,14 @@
         return this.$store.state.pwdParcel;
       },
       geocodeResult() {
-        return this.$store.state.geocode.data;
+        return this.$store.state.geocode.data || {};
       },
       geocodeGeom() {
-        return (this.geocodeResult || {}).geometry;;
+        return this.geocodeResult.geometry;
+      },
+      geocodeInput() {
+        console.log('computing geocode input');
+        return this.$store.state.geocode.input;
       },
       streetAddress() {
         return this.geocodeResult.properties.street_address;
@@ -359,7 +378,14 @@
         this.$store.commit('setPwdParcel', null);
         this.$store.commit('setDorParcels', []);
 
-        this.geocode(input);
+        // OLD METHOD: call geocode directly
+        // this.geocode(input);
+
+        // NEW METHOD: update url
+        // this.$_router.route(input);
+        const activeTopic = this.$store.state.activeTopic;
+        const nextHash = `/${input}/${activeTopic}`;
+        window.location.hash = nextHash;
       }
     }, // end of methods
   }; //end of export

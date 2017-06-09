@@ -46,6 +46,7 @@ module.exports = {
     'jQuery': '$'
   },
   devServer: {
+    clientLogLevel: 'none',
     historyApiFallback: true,
     noInfo: true,
     host: process.env.WEBPACK_DEV_HOST,

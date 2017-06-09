@@ -4,6 +4,7 @@ import configMixin from './util/config-mixin';
 import eventBusMixin from './util/event-bus-mixin';
 import Mapboard from './components/Mapboard';
 import mergeDeep from './util/merge-deep';
+import routerMixin from './router';
 
 export default (clientConfig) => {
   const baseConfigUrl = clientConfig.baseConfig;
@@ -29,10 +30,15 @@ export default (clientConfig) => {
       // create store
       const store = createStore(config);
 
+      // create router
+      const routerOpts = Object.assign({}, config.router);
+      routerOpts.store = store;
+      Vue.use(routerMixin, routerOpts);
+
       // mount main vue
       const vm = new Vue({
         el: config.el || '#mapboard',
-        render: (h) => h(Mapboard),
+        render: h => h(Mapboard),
         store
       });
 

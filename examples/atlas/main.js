@@ -96,6 +96,11 @@ function concatDorAddress(parcel, includeUnit = true) {
 accounting.settings.currency.precision = 0;
 
 Mapboard.default({
+  // DEV
+  // defaultAddress: '1234 MARKET ST',
+  router: {
+    enabled: true
+  },
   rootStyle: {
     height: '600px'
   },
@@ -321,10 +326,10 @@ Mapboard.default({
     },
   },
   cyclomedia: {
-    enabled: true
+    enabled: false
   },
   pictometry: {
-    enabled: true
+    enabled: false
   },
   // reusable transforms for topic data. see `topics` section for usage.
   transforms: {

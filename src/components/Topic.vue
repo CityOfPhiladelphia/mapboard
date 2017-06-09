@@ -2,7 +2,7 @@
   <div>
     <a href="#"
        class="topic-header"
-       @click="setActiveTopic"
+       @click="handleTopicHeaderClick"
        v-if="shouldShowHeader"
     >
       <span v-show="status === 'waiting'" class="loading">
@@ -122,7 +122,7 @@
       },
 
       // TODO use mapMuptations for less boilerplate
-      setActiveTopic() {
+      handleTopicHeaderClick() {
         const topic = this.$props.topicKey;
         let nextTopic;
         if (topic === this.$store.state.activeTopic) {
@@ -130,7 +130,7 @@
         } else {
           nextTopic = topic;
         }
-        this.$store.commit('setActiveTopic', { topic: nextTopic });
+        this.$store.commit('setActiveTopic', nextTopic);
 
         // handle basemap
         const prevBasemap = this.$store.state.map.basemap;
