@@ -676,11 +676,7 @@ Mapboard.default({
             ],
           },
           slots: {
-            title(state) {
-              const data = state.sources['zoningOverlay'].data;
-              const count = data.length;
-              return `Overlays (${count})`;
-            },
+            title: 'Overlays',
             items(state) {
               const data = state.sources['zoningOverlay'].data
               const rows = data.map(row => {
@@ -729,11 +725,7 @@ Mapboard.default({
             ],
           },
           slots: {
-            title(state) {
-              const data = state.sources['zoningAppeals'].data;
-              const count = data.length;
-              return `Appeals (${count})`;
-            },
+            title : 'Appeals',
             items(state) {
               const data = state.sources['zoningAppeals'].data
               const rows = data.map(row => {
@@ -787,11 +779,7 @@ Mapboard.default({
             ],
           },
           slots: {
-            title(state) {
-              const data = state.sources['zoningDocs'].data;
-              const count = data.length;
-              return `Documents (${count})`;
-            },
+            title: 'Documents',
             items(state) {
               const data = state.sources['zoningDocs'].data
               const rows = data.map(row => {
