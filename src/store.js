@@ -69,7 +69,10 @@ function createStore(config) {
     },
     // we need this to know whether or not to force an update on the first show
     pictometry: {
-      active: false
+      ipa: null,
+      active: false,
+      shapeIds: [],
+      cameraIds: [],
     },
     activeFeature: null,
     lastSearchMethod: null
@@ -180,7 +183,16 @@ function createStore(config) {
       },
       setLastSearchMethod(state, payload) {
         state.lastSearchMethod = payload;
-      }
+      },
+      setPictometryIpa(state, payload) {
+        state.pictometry.ipa = payload;
+      },
+      setPictometryShapeIds(state, payload) {
+        state.pictometry.shapeIds = payload;
+      },
+      setPictometryCameraIds(state, payload) {
+        state.pictometry.cameraIds = payload;
+      },
     }
   });
 }

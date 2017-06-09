@@ -14,7 +14,16 @@
                          v-show="pictometryActive"
                          :apiKey="this.$config.pictometry.apiKey"
                          :secretKey="this.$config.pictometry.secretKey"
-      />
+      >
+        <layer v-if="this.pictometryActive"
+        />
+        <camera v-if="this.cyclomediaActive && this.pictometryActive"
+                :orientation="this.$store.state.cyclomedia.viewer.props.orientation.xyz"
+        />
+        <view-cone v-if="this.cyclomediaActive && this.pictometryActive"
+                   :orientation="this.$store.state.cyclomedia.viewer.props.orientation"
+        />
+      </pictometry-widget>
       <!-- :center="this.$store.state.map.map.center" -->
     </map-panel>
   </div>
@@ -25,6 +34,9 @@
   import MapPanel from './map-panel/MapPanel';
   import CyclomediaWidget from '../cyclomedia/Widget';
   import PictometryWidget from '../pictometry/Widget';
+  import Layer from '../pictometry/Layer';
+  import ViewCone from '../pictometry/ViewCone';
+  import Camera from '../pictometry/Camera';
 
   export default {
     components: {
@@ -32,6 +44,9 @@
       MapPanel,
       CyclomediaWidget,
       PictometryWidget,
+      Layer,
+      ViewCone,
+      Camera
     },
     computed: {
       cyclomediaActive() {
