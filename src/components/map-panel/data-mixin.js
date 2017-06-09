@@ -169,8 +169,10 @@ export default {
           // TODO do this for all targets
           switch(type) {
             case 'http-get':
-              // console.log('http-get', targetIdFn);
               this.fetchHttpGet(target, dataSource, dataSourceKey, targetIdFn);
+              break;
+            case 'carto':
+              this.fetchCarto(target, dataSource, dataSourceKey, targetIdFn);
               break;
             case 'esri':
               // TODO add targets id fn
@@ -263,6 +265,18 @@ export default {
       }
 
       return params;
+    },
+    fetchCarto(feature, dataSource, dataSourceKey, targetIdFn) {
+      const options = dataSource.options;
+      const successFn = options.success;
+
+      // if no success callback is passed in, default to unpacking carto rows
+      if (!successFn) {
+        options.success = data => data.rows;
+      }
+
+      // proxy to fetchHttpGet
+      this.fetchHttpGet(feature, dataSource, dataSourceKey, targetIdFn);
     },
     fetchHttpGet(feature, dataSource, dataSourceKey, targetIdFn) {
       const params = this.evaluateParams(feature, dataSource);

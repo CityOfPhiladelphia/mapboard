@@ -172,26 +172,20 @@ Mapboard.default({
     //   }
     // },
     zoningAppeals: {
-      type: 'http-get',
+      type: 'carto',
       url: 'https://phl.carto.com/api/v2/sql',
       options: {
         params: {
           q: feature => "select * from li_appeals where address = '" + feature.properties.street_address + "'"// + "' or addrkey = " + feature.properties.li_address_key,
-        },
-        success(data) {
-          return data;
         }
       }
     },
     zoningDocs: {
-      type: 'http-get',
+      type: 'carto',
       url: 'https://phl.carto.com/api/v2/sql',
       options: {
         params: {
           q: feature => "select * from zoning_documents_20170420 where address_std = '" + feature.properties.street_address + "' or addrkey = " + feature.properties.li_address_key,
-        },
-        success(data) {
-          return data;
         }
       }
     },
@@ -727,13 +721,12 @@ Mapboard.default({
           slots: {
             title : 'Appeals',
             items(state) {
-              const data = state.sources['zoningAppeals'].data
+              const data = state.sources['zoningAppeals'].data;
               const rows = data.map(row => {
                 const itemRow = Object.assign({}, row);
                 //itemRow.DISTANCE = 'TODO';
                 return itemRow;
               });
-              // console.log('rows', rows);
               return rows;
             },
           },
