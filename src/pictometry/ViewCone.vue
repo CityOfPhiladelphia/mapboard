@@ -19,7 +19,7 @@
     },
     watch: {
       orientation(nextOrientation) {
-        console.log('viewcone: orientation changed');
+        // console.log('viewcone: orientation changed');
         this.ipa.removeShapes(this.$store.state.pictometry.shapeIds);
         this.getViewConeLatLon(nextOrientation);
       }

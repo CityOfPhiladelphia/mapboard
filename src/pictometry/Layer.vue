@@ -25,7 +25,7 @@
     },
     methods: {
       didActivateTopic(topic) {
-        console.log('didActivateTopic is firing with topic: ', topic);
+        // console.log('didActivateTopic is firing with topic: ', topic);
         switch (topic) {
           case 'deeds':
             // turn on DOR Parcels

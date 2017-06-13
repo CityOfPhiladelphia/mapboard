@@ -72,7 +72,7 @@ function createStore(config) {
       ipa: null,
       active: false,
       shapeIds: [],
-      cameraIds: [],
+      pngMarkerIds: [],
     },
     activeFeature: null,
     lastSearchMethod: null
