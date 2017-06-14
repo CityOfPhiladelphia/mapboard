@@ -9,6 +9,23 @@
     computed: {
       ipa() {
         return this.$store.state.pictometry.ipa;
+      },
+      zoom() {
+        return this.$store.state.pictometry.zoom;
+      },
+      radius() {
+        const zoomMap = {
+          '17': 75,
+          '18': 50,
+          '19': 25,
+          '20': 15,
+          '21': 10,
+          '22': 10,
+          '23': 10,
+          '24': 10
+        }
+        return zoomMap[this.zoom]
+        // return zoomMap[this.$store.state.map.zoom]
       }
     },
     mounted() {
@@ -18,6 +35,16 @@
       this.ipa.removeShapes(this.$store.state.pictometry.shapeIds);
     },
     watch: {
+      radius(nextRadius) {
+        // this.ipa.getMetaData(function(e) {
+        //   console.log(e);
+        // });
+        // this.ipa.getZoomRange(function(e) {
+        //   console.log(e);
+        // })
+        // console.log('radius:', nextRadius);
+        this.getViewConeLatLon(this.orientation);
+      },
       orientation(nextOrientation) {
         // console.log('viewcone: orientation changed');
         this.ipa.removeShapes(this.$store.state.pictometry.shapeIds);
@@ -26,12 +53,14 @@
     },
     methods: {
       getViewConeLatLon(nextOrientation) {
+        // console.log('getViewConeLatLon is running');
         const camLat = parseFloat(nextOrientation.xyz[1]);
         const camLon = parseFloat(nextOrientation.xyz[0]);
         // Earth's radius
         const ER=6378137;
         // viewcone radius, for scaling its size
-        const camR = 10;
+        // const camR = 10;
+        const camR = this.radius;
         // Angle1 - camera angle off of N, Angle2 - fov angle
         const Angle1 = parseFloat(nextOrientation.yaw) * 180/Math.PI;
         const Angle2 = parseFloat(nextOrientation.hFov) * 180/Math.PI;

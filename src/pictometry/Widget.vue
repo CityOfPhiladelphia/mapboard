@@ -2,11 +2,18 @@
   <div id="pict-container"
        :class="this.pictContainerClass"
   >
+    <div id="in-pict-div"
+      @click="this.popoutClicked"
+      >
+      <i class="fa fa-external-link fa popout-icon"></i>
+    </div>
+    <!-- <div id="iframe-div"> -->
     <iframe
       id="pictometry-ipa"
       src="#"
       ref="pictometryIpa"
     />
+    <!-- </div> -->
     <div>
       <slot />
     </div>
@@ -44,8 +51,16 @@
         // return this.$store.state.geocode.data.geometry.coordinates;
         return this.$store.state.map.center;
       },
-      pictZoom() {
-        return this.$store.state.map.zoom + 2;
+      zoomSentToPict() {
+        // const mapZoom = this.$store.state.map.zoom;
+        // let zoom;
+        // if (this.cyclomediaActive) {
+        //   zoom = mapZoom
+        // } else {
+        //   zoom = mapZoom + 1;
+        // }
+        // return zoom;
+        return this.$store.state.map.zoom;
       },
     },
     watch: {
@@ -53,11 +68,79 @@
         this.$ipa.setLocation({
           y: nextCenter.lat,
           x: nextCenter.lng,
-          zoom: this.pictZoom
+          zoom: this.zoomSentToPict
         });
       },
+      zoomSentToPict(nextZoom) {
+        console.log('watch zoomSentToPict', nextZoom);
+        this.$ipa.setLocation({
+          y: this.center.lat,
+          x: this.center.lng,
+          zoom: nextZoom
+        });
+      },
+      cyclomediaActive(nextStatus) {
+        if (nextStatus === true) {
+          console.log('pict: cyclo on');
+          this.$ipa.showDashboard({
+            zoom: false,
+            imageFilter: false,
+            layers: false,
+            nextPrevious: false,
+            tools: false,
+            annotations: false,
+            rotation: false,
+            clearMeasurements: false,
+            exportPdf: false,
+            dualPane: false,
+            imageDate: false,
+            panTool: false,
+            exportImage: false,
+            areaTool: false,
+            distanceTool: false,
+            heightTool: false,
+            locationTool: false,
+            elevationTool: false,
+            bearingTool: false,
+            slopeTool: false,
+            xyzTool: false,
+            identifyPoint: false,
+            identifyBox: false
+          });
+        } else {
+          console.log('pict: cyclo off');
+          this.$ipa.showDashboard({
+            zoom: true,
+            imageFilter: true,
+            layers: true,
+            nextPrevious: true,
+            tools: true,
+            annotations: true,
+            rotation: true,
+            clearMeasurements: true,
+            exportPdf: true,
+            dualPane: true,
+            imageDate: true,
+            panTool: true,
+            exportImage: true,
+            areaTool: true,
+            distanceTool: true,
+            heightTool: true,
+            locationTool: true,
+            elevationTool: true,
+            bearingTool: true,
+            slopeTool: true,
+            xyzTool: true,
+            identifyPoint: true,
+            identifyBox: true
+          });
+        }
+      }
     },
     methods: {
+      popoutClicked() {
+        console.log('popout clicked');
+      },
       init() {
         // construct signed url
         const d = new Date();
@@ -81,8 +164,15 @@
         this.$ipa.setLocation({
           y: this.center.lat,
           x: this.center.lng,
-          zoom: this.pictZoom
+          zoom: this.zoomSentToPict
         });
+
+        const self = this;
+
+        this.$ipa.addListener('onendzoom', function(zoom) {
+          console.log('widget: ipa detected zoom change to', zoom);
+          self.$store.commit('setPictometryZoom', zoom.level);
+        })
       },
     }, // end of methods
 
@@ -180,18 +270,42 @@
 
 
 <style scoped>
+
+
 header.site-header > .row:last-of-type {
   background: #2176d2;
+}
+
+#in-pict-div {
+  /*float: right;*/
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  /*z-index: 2000000;*/
+  background-color: white;
+  border: 0px solid;
+  width: 30px;
+  height: 30px;
+  /*display:none;*/
+  cursor:pointer;
+  /*position: relative;
+  top: 0px;
+  right: 0px;*/
 }
 
 #pict-container {
   padding: 0px;
   height: 50%;
+  position: relative;
 }
+
+/*#iframe-div {
+}*/
 
 #pictometry-ipa {
   height: 100%;
   width: 100%;
+  border: 0px;
 }
 
 #search-container {

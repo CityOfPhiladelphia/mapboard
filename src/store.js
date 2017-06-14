@@ -73,6 +73,7 @@ function createStore(config) {
       active: false,
       shapeIds: [],
       pngMarkerIds: [],
+      zoom: null,
     },
     activeFeature: null,
     lastSearchMethod: null
@@ -190,9 +191,12 @@ function createStore(config) {
       setPictometryShapeIds(state, payload) {
         state.pictometry.shapeIds = payload;
       },
-      setPictometryCameraIds(state, payload) {
-        state.pictometry.cameraIds = payload;
+      setPictometryPngMarkerIds(state, payload) {
+        state.pictometry.pngMarkerIds = payload;
       },
+      setPictometryZoom(state, payload) {
+        state.pictometry.zoom = payload;
+      }
     }
   });
 }

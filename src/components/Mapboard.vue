@@ -15,7 +15,7 @@
                          :apiKey="this.$config.pictometry.apiKey"
                          :secretKey="this.$config.pictometry.secretKey"
       >
-        <png-marker v-if="this.pictometryActive && this.geocodeData"
+        <png-marker v-if="this.pictometryShowAddressMarker"
                 :latlng="[this.geocodeData.geometry.coordinates[1], this.geocodeData.geometry.coordinates[0]]"
                 :icon="'markers.png'"
                 :height="60"
@@ -69,8 +69,25 @@
       pictometryActive() {
         return this.$store.state.pictometry.active
       },
+      pictometryZoom() {
+        return this.$store.state.pictometry.zoom
+      },
+      pictometryShowAddressMarker() {
+        if (!this.pictometryActive || !this.geocodeData) {
+          return false;
+        } else if (this.pictometryZoom < 20 && this.cyclomediaActive) {
+          return false;
+        } else {
+          return true;
+        }
+      },
       geocodeData() {
         return this.$store.state.geocode.data
+      }
+    },
+    watch: {
+      pictometryShowAddressMarker(nextValue) {
+        console.log('watch pictometryShowAddressMarker', nextValue);
       }
     }
   };
