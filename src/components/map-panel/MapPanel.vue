@@ -41,7 +41,16 @@
                          :key="key"
                          :url="dynamicLayer.url"
                          :attribution="dynamicLayer.attribution"
+                         :opacity="dynamicLayer.opacity"
       />
+
+      <!-- <opacity-slider v-for="(dynamicLayer, key) in this.$config.map.dynamicMapLayers"
+                      v-if="activeDynamicMaps.includes(key)"
+                      :key="key"
+                      :url="dynamicLayer.url"
+                      :opacity="dynamicLayer.opacity"
+      /> -->
+      <!-- :layer="this.$config.map." -->
 
 
 
@@ -190,6 +199,7 @@
   import EsriDynamicMapLayer from '../../esri-leaflet/DynamicMapLayer';
   import Geojson from '../../leaflet/Geojson';
   import CircleMarker from '../../leaflet/CircleMarker';
+  import OpacitySlider from '../../leaflet/OpacitySlider';
   import VectorMarker from '../VectorMarker';
   import PngMarker from '../PngMarker';
   import SvgMarker from '../SvgMarker';
@@ -215,6 +225,7 @@
       EsriDynamicMapLayer,
       Geojson,
       CircleMarker,
+      OpacitySlider,
       VectorMarker,
       PngMarker,
       SvgMarker,

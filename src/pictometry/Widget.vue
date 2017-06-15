@@ -72,7 +72,7 @@
         });
       },
       zoomSentToPict(nextZoom) {
-        console.log('watch zoomSentToPict', nextZoom);
+        // console.log('watch zoomSentToPict', nextZoom);
         this.$ipa.setLocation({
           y: this.center.lat,
           x: this.center.lng,
@@ -81,7 +81,7 @@
       },
       cyclomediaActive(nextStatus) {
         if (nextStatus === true) {
-          console.log('pict: cyclo on');
+          // console.log('pict: cyclo on');
           this.$ipa.showDashboard({
             zoom: false,
             imageFilter: false,
@@ -108,7 +108,7 @@
             identifyBox: false
           });
         } else {
-          console.log('pict: cyclo off');
+          // console.log('pict: cyclo off');
           this.$ipa.showDashboard({
             zoom: true,
             imageFilter: true,
@@ -139,7 +139,7 @@
     },
     methods: {
       popoutClicked() {
-        console.log('popout clicked');
+        // console.log('popout clicked');
       },
       init() {
         // construct signed url
@@ -170,7 +170,7 @@
         const self = this;
 
         this.$ipa.addListener('onendzoom', function(zoom) {
-          console.log('widget: ipa detected zoom change to', zoom);
+          // console.log('widget: ipa detected zoom change to', zoom);
           self.$store.commit('setPictometryZoom', zoom.level);
         })
       },

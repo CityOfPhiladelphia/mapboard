@@ -1,16 +1,26 @@
+<template>
+  <opacity-slider :layer="this.$leafletElement"
+                  :position="'topleft'"
+  />
+</template>
 <script>
   import L from 'leaflet';
+  import OpacitySlider from '../leaflet/OpacitySlider';
   // TODO look into a cleaner way of importing from esri-leaflet
   const EsriDynamicMapLayer = L.esri.dynamicMapLayer;
 
   export default {
+    components: {
+      OpacitySlider
+    },
     props: [
       'url',
       'minZoom',
       'maxZoom',
       'zIndex',
+      'opacity'
     ],
-    mounted() {
+    created() {
       const leafletElement = this.$leafletElement = this.createLeafletElement();
       const map = this.$store.state.map.map;
       // REVIEW kind of hacky/not reactive?
@@ -23,8 +33,11 @@
     },
     // we don't actually render anything, but need to define either a template
     // or a render function
-    render(h) {
-      return;
+    // render(h) {
+    //   return;
+    // },
+    computed: {
+
     },
     methods: {
       createLeafletElement() {
