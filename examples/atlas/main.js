@@ -159,18 +159,18 @@ Mapboard.default({
     //     return data;
     //   }
     // },
-    // stormwater: {
-    //   type: 'http-get',
-    //   url: 'https://api.phila.gov/stormwater',
-    //   options: {
-    //     params: {
-    //       search: feature => feature.properties.street_address
-    //     },
-    //     success(data) {
-    //       return data[0];
-    //     }
-    //   }
-    // },
+    stormwater: {
+      type: 'http-get',
+      url: 'https://api.phila.gov/stormwater',
+      options: {
+        params: {
+          search: feature => feature.properties.street_address
+        },
+        success(data) {
+          return data[0];
+        }
+      }
+    },
     zoningAppeals: {
       type: 'carto',
       url: 'https://phl.carto.com/api/v2/sql',
@@ -791,6 +791,123 @@ Mapboard.default({
       ],
       identifyFeature: 'dor-parcel',
       parcels: 'dor'
+    },
+
+    {
+      key: 'water',
+      icon: 'tint',
+      label: 'Water',
+      dataSources: ['stormwater'],
+      basemap: 'pwd',
+      dynamicMapLayers: [
+        'stormwater'
+      ],
+      identifyFeature: 'pwd-parcel',
+      parcels: 'pwd',
+      components: [
+        {
+          type: 'vertical-table',
+          slots: {
+            title: 'Parcel',
+            fields: [
+              {
+                label: 'Parcel ID',
+                value(state) {
+                  // return state.geocode.data.properties.pwd_parcel_id;
+                  return state.sources.stormwater.data.Parcel.ParcelID;
+                }
+              },
+              {
+                label: 'Address',
+                value(state) {
+                  return state.sources.stormwater.data.Parcel.Address;
+                }
+              },
+              {
+                label: 'Building Type',
+                value(state) {
+                  return state.sources.stormwater.data.Parcel.BldgType;
+                }
+              },
+              {
+                label: 'Gross Area',
+                value(state) {
+                  return state.sources.stormwater.data.Parcel.GrossArea + ' sq ft';
+                }
+              },
+              {
+                label: 'Impervious Area',
+                value(state) {
+                  return state.sources.stormwater.data.Parcel.ImpervArea + ' sq ft';
+                }
+              },
+              {
+                label: 'CAP Eligible',
+                value(state) {
+                  return state.sources.stormwater.data.Parcel.CAPEligible;
+                }
+              },
+            ]
+          },
+        },
+        {
+          type: 'horizontal-table',
+          options: {
+            // TODO this isn't used yet, but should be for highlighting rows/
+            // map features.
+            // overlay: '311',
+            fields: [
+              {
+                label: 'Account #',
+                value(state, item) {
+                  return item.AccountNumber;
+                }
+              },
+              {
+                label: 'Customer',
+                value(state, item) {
+                  return item.CustomerName;
+                }
+              },
+              {
+                label: 'Status',
+                value(state, item) {
+                  return item.AcctStatus;
+                }
+              },
+              {
+                label: 'Service Type',
+                value(state, item) {
+                  return item.ServiceTypeLabel;
+                }
+              },
+              {
+                label: 'Size',
+                value(state, item) {
+                  return item.MeterSize;
+                }
+              },
+              {
+                label: 'Stormwater',
+                value(state, item) {
+                  return item.StormwaterStatus;
+                }
+              }
+            ]
+          },
+          slots: {
+            title: 'Accounts',
+            items(state) {
+              const data = state.sources['stormwater'].data
+              const rows = data.Accounts.map(row => {
+                const itemRow = Object.assign({}, row);
+                return itemRow;
+              });
+              return rows;
+            }
+          }
+        }
+      ]
     },
     {
       key: '311',
