@@ -1,7 +1,7 @@
 <template>
   <!-- REVIEW this uses patterns -->
   <div class="mb-badge panel center">
-    <div class="mb-badge-header">
+    <div class="mb-badge-header" :style="style">
       <h4 class="alternate">{{ evaluateSlot(slots.title) }}</h4>
     </div>
     <div class="mb-badge-body">
@@ -15,6 +15,18 @@
   import TopicComponent from './TopicComponent';
 
   export default {
+    computed: {
+      style() {
+        const titleBackgroundValOrFn = this.options.titleBackground;
+        let titleBackground;
+        if (typeof titleBackgroundValOrFn === 'function') {
+          titleBackground = titleBackgroundValOrFn(this.$store.state);
+        } else {
+          titleBackground = titleBackgroundValOrFn;
+        }
+        return { background: titleBackground };
+      }
+    },
     mixins: [TopicComponent]
   };
 </script>
@@ -41,7 +53,7 @@
 
   .mb-badge-header {
     /*REVIEW*/
-    background: #58c04d;
+    /*background: #58c04d;*/
     color: #eee;
     /*margin: 0;*/
     text-align: center;

@@ -1,33 +1,33 @@
 const GATEKEEPER_KEY = '35ae5b7bf8f0ff2613134935ce6b4c1e';
 
 const ZONING_CODE_MAP = {
-  'RSD1': 'Residential Single Family Detached-1',
-  'RSD2': 'Residential Single Family Detached-2',
-  'RSD3': 'Residential Single Family Detached-3',
-  'RSA1': 'Residential Single Family Attached-1',
-  'RSA2': 'Residential Single Family Attached-2',
-  'RSA3': 'Residential Single Family Attached-3',
-  'RSA4': 'Residential Single Family Attached-4',
-  'RSA5': 'Residential Single Family Attached-5',
-  'RTA1': 'Residential Two-Family Attached-1',
-  'RM1': 'Residential Multi-Family-1',
-  'RM2': 'Residential Multi-Family-2',
-  'RM3': 'Residential Multi-Family-3',
-  'RM4': 'Residential Multi-Family-4',
-  'RMX1': 'Residential Mixed-Use-1',
-  'RMX2': 'Residential Mixed-Use-2',
-  'RMX3': 'Residential (Center City) Mixed-Use-3',
-  'CA1': 'Auto-Oriented Commercial-1',
-  'CA2': 'Auto-Oriented Commercial-2',
-  'CMX1': 'Neighborhood Commercial Mixed-Use-1',
-  'CMX2': 'Neighborhood Commercial Mixed-Use-2',
-  'CMX2.5': 'Neighborhood Commercial Mixed-Use-2.5',
-  'CMX3': 'Community Commercial Mixed-Use',
-  'CMX4': 'Center City Commercial Mixed-Use',
-  'CMX5': 'Center City Core Commercial Mixed-Use',
-  'I1': 'Light Industrial',
-  'I2': 'Medium Industrial',
-  'I3': 'Heavy Industrial',
+  'RSD-1': 'Residential Single Family Detached-1',
+  'RSD-2': 'Residential Single Family Detached-2',
+  'RSD-3': 'Residential Single Family Detached-3',
+  'RSA-1': 'Residential Single Family Attached-1',
+  'RSA-2': 'Residential Single Family Attached-2',
+  'RSA-3': 'Residential Single Family Attached-3',
+  'RSA-4': 'Residential Single Family Attached-4',
+  'RSA-5': 'Residential Single Family Attached-5',
+  'RTA-1': 'Residential Two-Family Attached-1',
+  'RM-1': 'Residential Multi-Family-1',
+  'RM-2': 'Residential Multi-Family-2',
+  'RM-3': 'Residential Multi-Family-3',
+  'RM-4': 'Residential Multi-Family-4',
+  'RMX-1': 'Residential Mixed-Use-1',
+  'RMX-2': 'Residential Mixed-Use-2',
+  'RMX-3': 'Residential (Center City) Mixed-Use-3',
+  'CA-1': 'Auto-Oriented Commercial-1',
+  'CA-2': 'Auto-Oriented Commercial-2',
+  'CMX-1': 'Neighborhood Commercial Mixed-Use-1',
+  'CMX-2': 'Neighborhood Commercial Mixed-Use-2',
+  'CMX-2.5': 'Neighborhood Commercial Mixed-Use-2.5',
+  'CMX-3': 'Community Commercial Mixed-Use',
+  'CMX-4': 'Center City Commercial Mixed-Use',
+  'CMX-5': 'Center City Core Commercial Mixed-Use',
+  'I-1': 'Light Industrial',
+  'I-2': 'Medium Industrial',
+  'I-3': 'Heavy Industrial',
   'IP': 'Port Industrial',
   'ICMX': 'Industrial Commercial Mixed-Use',
   'IRMX': 'Industrial Residential Mixed-Use',
@@ -90,6 +90,18 @@ function concatDorAddress(parcel, includeUnit = true) {
   address = comps.filter(Boolean).join(' ');
 
   return address;
+}
+
+function getVacancyText(state) {
+  const land = state.sources.vacantLand.data
+  const building = state.sources.vacantBuilding.data
+  if (land.length === 0 && building.length === 0) {
+    return 'Not Likely Vacant'
+  } else if (land.length > 0) {
+    return 'Likely Vacant Land'
+  } else if (building.length > 0) {
+    return 'Likely Vacant Building'
+  }
 }
 
 // configure accounting.js
@@ -201,16 +213,6 @@ Mapboard.default({
         return data;
       }
     },
-    zoningOverlay: {
-      type: 'esri',
-      url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/1/',
-      options: {
-        relationship: 'contains',
-      },
-      success(data) {
-        return data;
-      }
-    },
     dorDocuments: {
       type: 'http-get',
       targets: {
@@ -267,27 +269,33 @@ Mapboard.default({
         units: 'feet',
       },
     },
-    // vacantLand: {
-    //   type: 'esri',
-    //   url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Land/FeatureServer/0',
-    //   options: {
-    //     relationship: 'contains',
-    //     // params: {
-    //     //   query: feature => L.esri.query({url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Land/FeatureServer/0'}).contains(feature)
-    //     // },
-    //   },
-    //   success(data) {
-    //     return data;
-    //   }
-    // },
-    // vacantBuilding: {
-    //   type: 'esri',
-    //   params: {
-    //     query: feature => L.esri.query({url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Bldg/FeatureServer/0'}).contains(feature)
-    //   },
-    //   success(data) {
-    //     return data;
-    zoningOverlays: {
+    vacantLand: {
+      type: 'esri',
+      url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Land/FeatureServer/0',
+      options: {
+        relationship: 'contains',
+      },
+      // params: {
+      //   query: feature => L.esri.query({url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Land/FeatureServer/0'}).contains(feature)
+      // },
+      success(data) {
+        return data;
+      }
+    },
+    vacantBuilding: {
+      type: 'esri',
+      url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Bldg/FeatureServer/0',
+      options: {
+        relationship: 'contains',
+      },
+      // params: {
+      //   query: feature => L.esri.query({url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Bldg/FeatureServer/0'}).contains(feature)
+      // },
+      success(data) {
+        return data;
+      }
+    },
+    zoningOverlay: {
       type: 'esri',
       url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/1/',
       options: {
@@ -297,6 +305,16 @@ Mapboard.default({
         return data;
       }
     },
+    // zoningOverlays: {
+    //   type: 'esri',
+    //   url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/1/',
+    //   options: {
+    //     relationship: 'contains',
+    //   },
+    //   success(data) {
+    //     return data;
+    //   }
+    // },
   },
   overlays: {
     '311': {
@@ -635,11 +653,14 @@ Mapboard.default({
       icon: 'building-o',
       label: 'Zoning',
       dataSources: [
-        'zoningOverlays'
+        'zoningOverlay'
       ],
       components: [
         {
           type: 'badge',
+          options: {
+            titleBackground: '#58c04d'
+          },
           slots: {
             title: 'Base District',
             value(state) {
@@ -793,7 +814,6 @@ Mapboard.default({
       identifyFeature: 'dor-parcel',
       parcels: 'dor'
     },
-
     {
       key: 'water',
       icon: 'tint',
@@ -908,6 +928,59 @@ Mapboard.default({
             }
           }
         }
+      ]
+    },
+    {
+      key: 'vacancy',
+      icon: 'map-marker',
+      label: 'Vacancy',
+      dataSources: ['vacantLand', 'vacantBuilding'],
+      basemap: 'pwd',
+      featureLayers: [
+        'vacantLand',
+        'vacantBuilding'
+      ],
+      identifyFeature: 'address-marker',
+      // overlays: ['311'],
+      parcels: 'pwd',
+      // TODO implement this
+      // computed: {
+      //   label(state) {
+      //     const land = state.sources.vacantLand.data
+      //     const building = state.sources.vacantBuilding.data
+      //     if (land.length === 0 && building.length === 0) {
+      //       return 'Not Likely Vacant';
+      //     } else if (land.length > 0) {
+      //       return 'Likely Vacant Land';
+      //     } else if (building.length > 0) {
+      //       return 'Likely Vacant Building';
+      //     }
+      //   }
+      // },
+      components: [
+        {
+          type: 'badge',
+          options: {
+            titleBackground(state) {
+              const text = getVacancyText(state);
+              if (text.includes('Land')) {
+                return 'orange';
+              } else if (text.includes('Building')) {
+                return 'purple';
+              }
+            }
+          },
+          slots: {
+            title: 'Vacancy',
+            value(state) {
+              return getVacancyText(state);
+            },
+            // description(state) {
+            //   const code = state.geocode.data.properties.zoning;
+            //   return ZONING_CODE_MAP[code];
+            // },
+          }
+        },
       ]
     },
     {

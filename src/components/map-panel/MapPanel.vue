@@ -44,14 +44,16 @@
                          :opacity="dynamicLayer.opacity"
       />
 
-      <!-- <opacity-slider v-for="(dynamicLayer, key) in this.$config.map.dynamicMapLayers"
-                      v-if="activeDynamicMaps.includes(key)"
-                      :key="key"
-                      :url="dynamicLayer.url"
-                      :opacity="dynamicLayer.opacity"
-      /> -->
-      <!-- :layer="this.$config.map." -->
-
+      <esri-feature-layer v-for="(featureLayer, key) in this.$config.map.featureLayers"
+                          v-if="shouldShowFeatureLayer(key, featureLayer.minZoom)"
+                          :key="key"
+                          :layerName="key"
+                          :url="featureLayer.url"
+                          :color="featureLayer.color"
+                          :fillColor="featureLayer.color"
+                          :fillOpacity="featureLayer.fillOpacity"
+                          :weight="featureLayer.weight"
+      />
 
 
       <!-- address marker -->
@@ -197,6 +199,7 @@
   import Control from '../../leaflet/Control';
   import EsriTiledMapLayer from '../../esri-leaflet/TiledMapLayer';
   import EsriDynamicMapLayer from '../../esri-leaflet/DynamicMapLayer';
+  import EsriFeatureLayer from '../../esri-leaflet/FeatureLayer';
   import Geojson from '../../leaflet/Geojson';
   import CircleMarker from '../../leaflet/CircleMarker';
   import OpacitySlider from '../../leaflet/OpacitySlider';
@@ -223,6 +226,7 @@
       Control,
       EsriTiledMapLayer,
       EsriDynamicMapLayer,
+      EsriFeatureLayer,
       Geojson,
       CircleMarker,
       OpacitySlider,
@@ -247,6 +251,13 @@
           return [];
         } else {
           return this.activeTopicConfig.dynamicMapLayers;
+        }
+      },
+      activeFeatureLayers() {
+        if (!this.activeTopicConfig || !this.activeTopicConfig.featureLayers) {
+          return [];
+        } else {
+          return this.activeTopicConfig.featureLayers;
         }
       },
       basemaps() {
@@ -339,6 +350,13 @@
       }
     },
     methods: {
+      shouldShowFeatureLayer(key, minZoom) {
+        if (this.activeFeatureLayers.includes(key) && this.$store.state.map.zoom >= minZoom) {
+          return true;
+        } else {
+          return false;
+        }
+      },
       handleMapClick(e) {
         // console.log('handle map click');
 
