@@ -360,6 +360,9 @@
         this.$store.commit('setLastSearchMethod', 'reverseGeocode')
 
         // METHOD 1: intersect map click latlng with parcel layers
+        const latLng = e.latlng;
+        this.$dataManager.getDorParcelsByLatLng(latLng);
+        this.$dataManager.getPwdParcelByLatLng(latLng);
 
         // METHOD 2: reverse geocode via AIS
         // this.getReverseGeocode(e.latlng);
