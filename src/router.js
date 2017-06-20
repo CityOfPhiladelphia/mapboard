@@ -1,9 +1,11 @@
 import { parse as parseUrl } from 'url';
+import DataManager from './data/data-manager';
 
 class Router {
   constructor(opts) {
     this.store = opts.store;
     const enabled = this.enabled = opts.enabled;
+    this.dataManager = opts.dataManager;
     this.history = window.history;
 
     // only listen for route changes if routing is enabled
