@@ -45,9 +45,7 @@ export default (clientConfig) => {
       }, dataManager);
 
       // create router
-      const routerOpts = Object.assign({}, config.router);
-      routerOpts.store = store;
-      Vue.use(routerMixin, routerOpts);
+      Vue.use(routerMixin, { config, store, eventBus, dataManager });
 
       // mount main vue
       const vm = new Vue({
