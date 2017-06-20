@@ -322,6 +322,9 @@
       mapBounds() {
         // TODO calculate map bounds based on leaflet markers above
       },
+      isGeocoding() {
+        return this.$store.state.geocode.status === 'waiting';
+      }
     },
     created() {
       // if there's a default address, navigate to it
