@@ -231,9 +231,12 @@
       this.geocodeInput;
     },
     watch: {
-      geocodeInput(input) {
-        console.log('geocode input changed =>', input);
-      }
+      // geocodeInput(input) {
+      //   console.log('geocode input changed =>', input);
+      // }
+      // geocodeResult() {
+      //   console.log('geocode result changed')
+      // }
     },
     computed: {
       activeBasemap() {
@@ -305,10 +308,6 @@
       },
       geocodeGeom() {
         return this.geocodeResult.geometry;
-      },
-      geocodeInput() {
-        console.log('computing geocode input');
-        return this.$store.state.geocode.input;
       },
       streetAddress() {
         return this.geocodeResult.properties.street_address;

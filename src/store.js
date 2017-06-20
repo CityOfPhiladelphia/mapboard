@@ -142,10 +142,6 @@ function createStore(config) {
       setPwdParcel(state, payload) {
         state.pwdParcel = payload;
       },
-      setGeocodeInput(state, payload) {
-        // REVIEW should this clear out the entire geocode object?
-        state.geocode.input = payload;
-      },
       setGeocodeStatus(state, payload) {
         state.geocode.status = payload;
       },
