@@ -3,8 +3,10 @@ import DataManager from './data/data-manager';
 
 class Router {
   constructor(opts) {
-    this.store = opts.store;
-    const enabled = this.enabled = opts.enabled;
+    const store = this.store = opts.store;
+    const config = this.config = opts.config;
+    const enabled = this.enabled = config.router.enabled;
+    const eventBus = this.eventBus = opts.eventBus;
     this.dataManager = opts.dataManager;
     this.history = window.history;
 
