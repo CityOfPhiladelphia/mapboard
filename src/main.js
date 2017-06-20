@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import createStore from './store';
 import configMixin from './util/config-mixin';
-import eventBusMixin from './util/event-bus-mixin';
 import Mapboard from './components/Mapboard';
 import mergeDeep from './util/merge-deep';
 import routerMixin from './router';
@@ -10,7 +9,8 @@ export default (clientConfig) => {
   const baseConfigUrl = clientConfig.baseConfig;
 
   // create a global event bus used to proxy events to the mapboard host
-  Vue.use(eventBusMixin);
+  const eventBus = new Vue();
+  Vue.prototype.$eventBus = eventBus;
 
   // get base config
   return $.ajax({
