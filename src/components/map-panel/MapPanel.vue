@@ -177,9 +177,9 @@
 
 <script>
   // mixins
-  import dataMixin from './data-mixin';
+  // import dataMixin from './data-mixin';
   import markersMixin from './markers-mixin';
-  import geocodeMixin from './geocode-mixin';
+  // import geocodeMixin from './geocode-mixin';
   import cyclomediaMixin from '../../cyclomedia/map-panel-mixin';
   import pictometryMixin from '../../pictometry/map-panel-mixin';
 
@@ -202,9 +202,9 @@
 
   export default {
     mixins: [
-      dataMixin,
+      // dataMixin,
       markersMixin,
-      geocodeMixin,
+      // geocodeMixin,
       cyclomediaMixin,
       pictometryMixin,
     ],
@@ -358,8 +358,6 @@
         this.$store.commit('setLastSearchMethod', 'reverseGeocode')
 
         // METHOD 1: intersect map click latlng with parcel layers
-        this.getDorParcelsByLatLng(e.latlng);
-        this.getPwdParcelByLatLng(e.latlng);
 
         // METHOD 2: reverse geocode via AIS
         // this.getReverseGeocode(e.latlng);
