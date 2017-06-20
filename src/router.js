@@ -10,14 +10,15 @@ class Router {
 
     // only listen for route changes if routing is enabled
     if (enabled) {
-      window.onhashchange = this.handleHashChange.bind(this);
+      window.onhashchange = this.hashChanged.bind(this);
     }
   }
-  handleHashChange() {
+
+  hashChanged() {
     const location = window.location;
     const hash = location.hash;
 
-    console.log('hash change =>', hash);
+    console.log('hash changed =>', hash);
 
     // parse url
     const comps = parseUrl(location.href);

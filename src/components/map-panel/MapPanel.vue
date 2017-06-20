@@ -226,7 +226,7 @@
     },
     mounted() {
       // route once on load
-      this.$_router.handleHashChange();
+      this.$_router.hashChanged();
 
       this.geocodeInput;
     },
