@@ -104,7 +104,7 @@ Mapboard.default({
   rootStyle: {
     height: '600px'
   },
-  baseConfig: '//rawgit.com/rbrtmrtn/mapboard-base-config/9605e5dca32277b1b877e8965d2156631b0b7443/config.js',
+  baseConfig: '//rawgit.com/rbrtmrtn/mapboard-base-config/2fbe59eb4bc61b782c5e3723e764945f7fffed85/config.js',
   dataSources: {
     // nearby: {
     //   type: 'http-get',
