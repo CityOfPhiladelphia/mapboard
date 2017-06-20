@@ -33,7 +33,15 @@ class Router {
 
     // parse path
     const pathComps = hash.split('/').splice(1);
-    const address = decodeURIComponent(pathComps[0]);
+    const addressComp = pathComps[0];
+
+    // if there's no address, don't do anything
+    if (!addressComp) {
+      console.log('no address, returning');
+      return;
+    }
+
+    const address = decodeURIComponent(addressComp);
     let topic;
 
     if (pathComps.length > 1) {
@@ -48,10 +56,11 @@ class Router {
     // }
 
     // METHOD 2: geocode directly
-    // trying this since watching a computed for geocodeInput doesn't seem to be
-    // working.
-
+    if (address) {
+      this.dataManager.geocode(address);
+    }
   }
+
   // route(address) {
   //   const nextHash = `/${address}/${topic}`;
   //
