@@ -42,6 +42,7 @@ module.exports = {
   },
   externals: {
     'vue': 'Vue',
+    'axios': 'axios',
     'leaflet': 'L',
     'jQuery': '$'
   },
