@@ -1,4 +1,10 @@
 export default {
+  watch: {
+    activeFeature(nextActiveFeature) {
+      //console.log('watch', nextActiveFeature);
+      //console.log(this.circleMarkers);
+    }
+  },
   computed: {
     // returns map markers as simple object with a geometry property, key,
     // and optional properties for symbology
@@ -44,6 +50,7 @@ export default {
         const activeFeature = this.$store.state.activeFeature;
 
         for (let row of data) {
+
           const [x, y] = row.geometry.coordinates;
           const latlng = [y, x];
 
@@ -52,6 +59,8 @@ export default {
           const props = Object.assign({}, style);
           if (row._featureId === activeFeature) {
             props.fillColor = 'yellow';
+            //console.log('inside circleOverlay', circleOverlay);
+            //this.bringCircleMarkerToFront(this);
             //props.zIndexOffset = 100;
           }
           props.latlng = latlng;
@@ -131,6 +140,7 @@ export default {
       this.$store.commit('setActiveFeature', featureId);
     },
     bringCircleMarkerToFront(circleMarker) {
+      //console.log('bringCircleMarkerToFront', circleMarker);
       // put marker on top
       const el = circleMarker._path;
 
@@ -142,6 +152,7 @@ export default {
       group.appendChild(el);
     },
     handleCircleMarkerMouseover(e) {
+      //console.log('handleCircleMarkerMouseover', e);
       const target = e.target;
       const featureId = target.options.data.featureId;
       this.$store.commit('setActiveFeature', featureId);

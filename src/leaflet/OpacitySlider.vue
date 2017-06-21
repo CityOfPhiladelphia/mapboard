@@ -1,5 +1,4 @@
 <script>
-  console.log('running OpacitySlider.vue');
   import L from 'leaflet';
 
   // TODO look into a cleaner way of importing from esri-leaflet

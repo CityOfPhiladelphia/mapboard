@@ -44,6 +44,7 @@ function createStore(config) {
       map: null,
       bounds: null,
       basemap: defaultTopic.basemap,
+      circleMarkers: [],
       // features: {
       //   markers: [
       //     // {
@@ -196,7 +197,10 @@ function createStore(config) {
       },
       setPictometryZoom(state, payload) {
         state.pictometry.zoom = payload;
-      }
+      },
+      // setCircleMarkers(state, payload) {
+      //   state.map.circleMarkers.push(payload);
+      // }
     }
   });
 }

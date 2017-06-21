@@ -260,6 +260,9 @@
           return this.activeTopicConfig.featureLayers;
         }
       },
+      activeFeature() {
+        return this.$store.state.activeFeature;
+      },
       basemaps() {
         return Object.values(this.$config.map.basemaps);
       },

@@ -444,7 +444,7 @@ Mapboard.default({
       icon: 'book',
       label: 'Deeds',
       // TODO uncommenting this causes the no-content view to show up.
-      // dataSources: ['dorDocuments'],
+      dataSources: ['dorDocuments'],
       components: [
         {
           type: 'collection-summary',
@@ -626,7 +626,11 @@ Mapboard.default({
                   title: 'Documents',
                   items(state, item) {
                     const id = item.properties.OBJECTID;
-                    return state.sources.dorDocuments.targets[id].data;
+                    if (state.sources.dorDocuments.targets[id]) {
+                      return state.sources.dorDocuments.targets[id].data;
+                    } else {
+                      return [];
+                    }
                   },
                 } // end slots
               } // end docs table
@@ -642,11 +646,11 @@ Mapboard.default({
         } // end dor parcel tab group comp
       ], // end deeds comps
       basemap: 'dor',
-      // identifyFeature: 'dor-parcel',
-      identifyFeature: 'address-marker',
+      identifyFeature: 'dor-parcel',
+      // identifyFeature: 'address-marker',
       // we might not need this anymore, now that we have identifyFeature
-      // parcels: 'dor'
-      parcels: 'pwd'
+      parcels: 'dor'
+      // parcels: 'pwd'
     },
     {
       key: 'zoning',
@@ -967,6 +971,8 @@ Mapboard.default({
                 return 'orange';
               } else if (text.includes('Building')) {
                 return 'purple';
+              } else {
+                return '#58c04d';
               }
             }
           },
