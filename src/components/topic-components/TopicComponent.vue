@@ -1,8 +1,13 @@
 <script>
     export default {
-    props: ['slots'],
+    props: ['slots', 'options', 'item'],
     methods: {
-      evaluateSlot(valOrGetter) {
+      evaluateSlot(valOrGetter, transforms = []) {
+        // check for null val/getter
+        if (!valOrGetter) {
+          return valOrGetter;
+        }
+
         const valOrGetterType = typeof valOrGetter;
         let val;
 
@@ -16,18 +21,35 @@
           // const depsText = getterText.match(depsRe);
           // const deps = depsText.map(eval);
 
-          val = getter(state);
-        // string
-        } else if (valOrGetterType === 'string' || valOrGetter instanceof String) {
-          val = valOrGetter;
-        // array
-        } else if (Array.isArray(valOrGetter)) {
-          // REVIEW vertical table seems to be working without this since each
-          // field slot gets evaluated individually in a for-loop
-          throw 'Not yet implemented';
-        // unhandled
+          const item = this.item;
+
+          // if this comp is associated with an "item" (generally some object
+          // from a list of things, e.g. dor parcels), pass the item itself
+          // as well when evaluating
+          if (item) {
+            val = getter(state, item);
+          } else {
+            val = getter(state);
+          }
         } else {
-          throw `Unhandled slot value type: ${valOrGetterType}`;
+          val = valOrGetter;
+        }
+
+        // apply transforms
+        for (let transformKey of transforms) {
+          // get transform definition from config by name
+          const transform = this.$config.transforms[transformKey];
+          // make object of (relevant) globals by filtering window object
+          const globalKeys = transform.globals;
+          const globals = Object.keys(window)
+                            .filter(key => globalKeys.includes(key))
+                            .reduce((obj, key) => {
+                                obj[key] = window[key];
+                                return obj;
+                            }, {});
+          // run transform
+          const fn = transform.transform;
+          val = fn(val, globals);
         }
 
         return val;

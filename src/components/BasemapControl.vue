@@ -14,7 +14,7 @@
     </div>
     <div class="leaflet-bar easy-button-container leaflet-control">
       <button class="easy-button-button leaflet-bar-part leaflet-interactive unnamed-state-active"
-              @click="handleToggleButtonClick"
+              @click="handleImageryToggleButtonClick"
       >
         <span class="button-state state-unnamed-state unnamed-state-active">
           <img class="button-image" :src="toggleButtonImgSrc">
@@ -40,7 +40,7 @@
     ],
     computed: {
       activeBasemap() {
-        const basemap = this.$store.state.basemap;
+        const basemap = this.$store.state.map.basemap;
         return basemap;
       },
       toggleButtonImgSrc() {
@@ -52,7 +52,8 @@
         if (basemapType === 'imagery') {
           src = "../../src/assets/basemap_small.png"
         }
-        else if (basemapType === 'featuremap') {
+        //else if (basemapType === 'featuremap') {
+        else {
           src = "../../src/assets/imagery_small.png"
         }
 
@@ -64,20 +65,22 @@
         return this.$config.map.basemaps[key];
       },
       // return a list of imagery basemap years in descending order
-      handleToggleButtonClick(e) {
+      handleImageryToggleButtonClick(e) {
+        // console.log('handleImageryToggleButtonClick from BasemapControl fired')
         const prevBasemap = this.activeBasemap;
         const prevBasemapConfig = this.configForBasemap(prevBasemap);
         const prevBasemapType = prevBasemapConfig.type;
         let nextBasemap;
 
         // feature map => imagery
-        if (prevBasemapType === 'featuremap') {
+        // if (prevBasemapType === 'featuremap') {
+        if (prevBasemapType !== 'imagery') {
           const years = this.imageryYears;
           nextBasemap = 'imagery' + years[0];
         }
         // imagery => feature map
         else {
-          const activeTopic = this.$store.state.topic;
+          const activeTopic = this.$store.state.activeTopic;
           const activeTopicConfig = this.$config.topics.filter(topic => topic.key === activeTopic)[0];
           nextBasemap = activeTopicConfig.basemap;
         }

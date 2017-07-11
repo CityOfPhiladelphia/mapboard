@@ -1,11 +1,11 @@
 <template>
   <div>
-    <h4>{{ evaluateSlot(slots.title) }}</h4>
+    <h4 v-if="slots.title">{{ evaluateSlot(slots.title) }}</h4>
     <table>
       <tbody>
         <tr v-for="field in slots.fields">
           <th>{{ evaluateSlot(field.label) }}</th>
-          <td>{{ evaluateSlot(field.value) }}</td>
+          <td>{{ evaluateSlot(field.value, field.transforms) }}</td>
         </tr>
       </tbody>
     </table>

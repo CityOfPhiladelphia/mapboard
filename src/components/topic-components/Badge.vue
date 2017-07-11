@@ -1,46 +1,59 @@
 <template>
   <!-- REVIEW this uses patterns -->
   <div class="mb-badge panel center">
-    <div class="mb-badge-header">
-      <h4 class="alternate">{{ this.title }}</h4>
+    <div class="mb-badge-header" :style="style">
+      <h4 class="alternate">{{ evaluateSlot(slots.title) }}</h4>
     </div>
     <div class="mb-badge-body">
-      <h1>{{ this.value }}</h1>
-      <strong>{{ this.description }}</strong>
+      <h1>{{ evaluateSlot(slots.value) }}</h1>
+      <strong>{{ evaluateSlot(slots.description) }}</strong>
     </div>
   </div>
 </template>
 
 <script>
+  import TopicComponent from './TopicComponent';
+
   export default {
-    props: ['slots'],
     computed: {
-      // TODO make abstract base class or mixin for Topic Comps that
-      // handles/evaluates slots and sets these programmatically
-      title() {
-        return this.$props.slots.title;
-      },
-      value() {
-        return this.$props.slots.value;
-      },
-      description() {
-        return this.$props.slots.description;
-      },
-    }
+      style() {
+        const titleBackgroundValOrFn = this.options.titleBackground;
+        let titleBackground;
+        if (typeof titleBackgroundValOrFn === 'function') {
+          titleBackground = titleBackgroundValOrFn(this.$store.state);
+        } else {
+          titleBackground = titleBackgroundValOrFn;
+        }
+        return { background: titleBackground };
+      }
+    },
+    mixins: [TopicComponent]
   };
 </script>
 
 <style scoped>
   .mb-badge {
-    width: 300px;
+    /*width: 300px;*/
     padding: 0;
     margin: 0 auto;
     margin-bottom: inherit;
   }
 
+  @media (max-width: 640px) {
+    .mb-badge {
+      width: 100%;
+    }
+  }
+
+  @media (min-width: 640px) {
+    .mb-badge {
+      width: 300px;
+    }
+  }
+
   .mb-badge-header {
     /*REVIEW*/
-    background: #58c04d;
+    /*background: #58c04d;*/
     color: #eee;
     /*margin: 0;*/
     text-align: center;

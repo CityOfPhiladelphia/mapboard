@@ -2,21 +2,26 @@
   <div>
     <a href="#"
        class="topic-header"
-       @click="setTopic"
+       @click="setActiveTopic"
        v-if="shouldShowHeader"
     >
+      <span v-show="status === 'waiting'" class="loading">
+        <i class="fa fa-spinner fa-lg spin"></i>
+      </span>
       <i :class="['fa', 'fa-' + icon, 'topic-header-icon']"
          aria-hidden="true"
       />
       {{ topic.label }}
     </a>
-    <div class="topic-body" v-show="this.$store.state.topic === topicKey">
-      <component v-for="(topicComp, topicCompIndex) in topic.components"
-                 :is="topicComp.type"
-                 class="topic-comp"
-                 :slots="topicComp.slots"
-                 :key="`topic-comp-${topic.key}-${topicCompIndex}`"
-      />
+
+    <!-- success -->
+    <div class="topic-body" v-if="shouldShowBody">
+      <topic-component-group :topic-components="topic.components" />
+    </div>
+
+    <!-- error -->
+    <div class="topic-body" v-show="shouldShowError">
+      Could not locate records for that address.
     </div>
   </div>
 </template>
@@ -24,20 +29,12 @@
 <script>
   // import { mapMutations } from 'vuex';
 
-  import Badge from './topic-components/Badge';
-  import HorizontalTable from './topic-components/HorizontalTable';
-  import VerticalTable from './topic-components/VerticalTable';
-  import Callout from './topic-components/Callout';
-  import Image_ from './topic-components/Image';
+  import TopicComponentGroup from './TopicComponentGroup';
 
   export default {
     props: ['topicKey'],
     components: {
-      Badge,
-      HorizontalTable,
-      VerticalTable,
-      Callout,
-      Image_
+      TopicComponentGroup
     },
     computed: {
       // returns the full config object for the topic
@@ -55,16 +52,109 @@
       icon() {
         return this.topic.icon;
       },
+      isActive() {
+        const key = this.topic.key;
+        const activeTopic = this.$store.state.activeTopic;
+        // console.log('is active?', key === activeTopic);
+        return activeTopic === key;
+      },
       shouldShowHeader() {
         return this.$config.topics.length > 1;
-      }
+      },
+      dataSources() {
+        return this.topic.dataSources || [];
+      },
+      hasData() {
+        return this.dataSources.every(dataSource => {
+          const targetsFn = this.$config.dataSources[dataSource].targets
+          if (targetsFn) {
+            const targetsMap = this.$store.state.sources[dataSource].targets;
+            const targets = Object.values(targetsMap);
+            return targets.every(target => target.status !== 'waiting');
+          } else {
+            return this.$store.state.sources[dataSource].data;
+          }
+        });
+      },
+      shouldShowBody() {
+        const succeeded = this.status === 'success';
+        const hasData = this.hasData;
+        const should = succeeded && hasData && this.isActive;
+        return should;
+      },
+      shouldShowError() {
+        // console.log('shouldShowError', this.topic.label, this);
+        return this.status === 'error' || (this.status !== 'waiting' && !this.hasData);
+      },
+      // REVIEW this is getting cached and not updating when the deps update
+      status: {
+        cache: false,
+        get() {
+          // get the status of each source
+          const dataSources = this.topic.dataSources || [];
+
+          // if no sources, return success
+          if (dataSources.length === 0) {
+            return 'success';
+          }
+
+          let topicStatus;
+
+          const sourceStatuses = dataSources.map(dataSource => {
+            // this is what should be observed. when it changes,
+            // it's not causing this to re-evaluate.
+            return this.$store.state.sources[dataSource].status;
+          });
+
+          // if any sources are still waiting, return waiting
+          if (sourceStatuses.some(x => x === 'waiting')) {
+            topicStatus = 'waiting';
+          }
+
+          // if any sources have errors, return error
+          else if (sourceStatuses.some(x => x === 'error')) {
+            topicStatus = 'error';
+          }
+
+          else {
+            topicStatus = 'success';
+          }
+
+          return topicStatus;
+        }
+      },
     },
     methods: {
+      configForBasemap(key) {
+        return this.$config.map.basemaps[key];
+      },
+
       // TODO use mapMuptations for less boilerplate
-      setTopic() {
+      setActiveTopic() {
         const topic = this.$props.topicKey;
-        this.$store.commit('setTopic', { topic });
-      }
+        let nextTopic;
+        if (topic === this.$store.state.activeTopic) {
+          nextTopic = null;
+        } else {
+          nextTopic = topic;
+        }
+        this.$store.commit('setActiveTopic', { topic: nextTopic });
+
+        // handle basemap
+        const prevBasemap = this.$store.state.map.basemap;
+        const prevBasemapConfig = this.configForBasemap(prevBasemap);
+        const prevBasemapType = prevBasemapConfig.type;
+        let nextBasemap;
+
+        // if featuremap - maybe change
+        if (prevBasemapType === 'featuremap') {
+          const nextTopicConfig = this.$config.topics.filter(top => top.key === nextTopic)[0];
+          nextBasemap = nextTopicConfig.basemap;
+          if (prevBasemap != nextBasemap) {
+            this.$store.commit('setBasemap', nextBasemap);
+          }
+        }
+      },
     }
   };
 </script>
@@ -100,7 +190,7 @@
     margin-bottom: 20px;
   }
 
-  .topic-comp {
-    margin-bottom: 10px;
+  .loading {
+    float: right;
   }
 </style>

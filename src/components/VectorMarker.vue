@@ -12,12 +12,28 @@
       'markerColor',
       'icon'
     ],
+    data: function() {
+      return {
+        thelatlng: this.$props.latlng
+      }
+    },
     render(h) {
+      const a = this.$props.latlng;
       return;
     },
     mounted() {
+      // console.log('vectorMarker mounted fired, latlng is', this.latlng);
       const leafletElement = this.$leafletElement = this.createLeafletElement();
-      const map = this.$store.state.map;
+      const map = this.$store.state.map.map;
+      // REVIEW kind of hacky/not reactive?
+      if (map) {
+        leafletElement.addTo(map);
+      }
+    },
+    updated() {
+      this.$leafletElement._map.removeLayer(this.$leafletElement);
+      const leafletElement = this.$leafletElement = this.createLeafletElement();
+      const map = this.$store.state.map.map;
       // REVIEW kind of hacky/not reactive?
       if (map) {
         leafletElement.addTo(map);
@@ -32,7 +48,7 @@
           icon:  this.$props.icon || 'circle',
           markerColor: this.$props.markerColor || '#2176d2'
         });
-        return L.marker(this.$props.latlng, { icon });
+        return L.marker(this.latlng, { icon });
       },
       parentMounted(parent) {
         const map = parent.$leafletElement;

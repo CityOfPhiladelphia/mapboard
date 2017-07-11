@@ -1,16 +1,16 @@
 const GATEKEEPER_KEY = '35ae5b7bf8f0ff2613134935ce6b4c1e';
 
+// TODO get user-entered address from url(?)
+const searchInput = '1300 market street';
+
 Mapboard.default({
-  rootStyle: {
-    height: '600px'
-  },
   cyclomedia: {
     enabled: false
   },
   pictometry: {
     enabled: false
   },
-  baseConfig: '//gist.githubusercontent.com/rbrtmrtn/09b4f35396f97499c3097e2fecaed8e7/raw/ef0ee0b5c5c96350a6cbd50f5e4dd2519e62e177/config.js',
+  baseConfig: '//gist.githubusercontent.com/rbrtmrtn/09b4f35396f97499c3097e2fecaed8e7/raw/3c068090d544f3b6e0e31a37acea652a30621c7e/config.js',
   // dataSources: {},
   greeting: {
     components: [
@@ -22,6 +22,7 @@ Mapboard.default({
       }
     ]
   },
+  defaultAddress: searchInput,
   topics: [
     {
       key: 'litter',
@@ -37,20 +38,36 @@ Mapboard.default({
           }
         },
         {
-          type: 'horizontal-table',
+          type: 'vertical-table',
           slots: {
             fields: [
               {
                 label: 'Trash & Recycling Day',
-                value: 'Wednesday'
+                value(state) {
+                  const day = state.geocode.data.properties.rubbish_recycle_day;
+                  const DAYS_FORMATTED = {
+                    'MON': 'Monday',
+                    'TUE': 'Tuesday',
+                    'WED': 'Wednesday',
+                    'THU': 'Thursday',
+                    'FRI': 'Friday'
+                  };
+                  return DAYS_FORMATTED[day];
+                }
               },
               {
                 label: 'Recycling Diversion Rate',
-                value: '10%'
+                value(state) {
+                  const rate = state.geocode.data.properties.recycling_diversion_rate;
+                  return `${parseInt(rate * 100)}%`;;
+                },
               },
               {
                 label: 'Sanitation District',
-                value: '1A'
+                value(state) {
+                  const district = state.geocode.data.properties.sanitation_district;
+                  return district;
+                }
               },
               {
                 label: 'Sanitation Convenience Center',
@@ -69,6 +86,7 @@ Mapboard.default({
         },
       ],
       basemap: 'pwd',
+      identifyFeature: 'address-marker',
       dynamicMapLayers: [
       ],
       parcels: 'pwd'
@@ -179,13 +197,17 @@ Mapboard.default({
   geocoder: {
     methods: {
       search: {
-        url: (input) => `//api.phila.gov/ais/v1/search/${input}`,
+        url: function (input) {
+          return '//api.phila.gov/ais/v1/search/' + input;
+        },
         params: {
           gatekeeperKey: GATEKEEPER_KEY
         }
       },
       reverseGeocode: {
-        url: (input) => `//api.phila.gov/ais/v1/reverse_geocode/${input}`,
+        url: function (input) {
+          return '//api.phila.gov/ais/v1/reverse_geocode/' + input;
+        },
         params: {
           gatekeeperKey: GATEKEEPER_KEY
         }

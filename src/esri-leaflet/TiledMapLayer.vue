@@ -7,14 +7,18 @@
     props: [
       'url',
       'minZoom',
-      'maxZoom'
+      'maxZoom',
+      'zIndex',
+      'attribution'
     ],
     mounted() {
       const leafletElement = this.$leafletElement = this.createLeafletElement();
-      const map = this.$store.state.map;
+      const map = this.$store.state.map.map;
+
       // REVIEW kind of hacky/not reactive?
       if (map) {
         leafletElement.addTo(map);
+        map.attributionControl.removeAttribution('overwrite');
       }
     },
     destroyed() {
@@ -28,7 +32,9 @@
     methods: {
       createLeafletElement() {
         const props = Object.assign({}, this.$props);
-        return new EsriTiledMapLayer(props);
+        const mapLayer = new EsriTiledMapLayer(props);
+        return mapLayer;
+
       },
       parentMounted(parent) {
         const map = parent.$leafletElement;

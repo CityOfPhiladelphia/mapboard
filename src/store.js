@@ -7,33 +7,80 @@ import Vuex from 'vuex';
 function createStore(config) {
   const defaultTopic = config.topics[0];
 
+  // create initial state for sources. data key => {}
+  const sourceKeys = Object.keys(config.dataSources || {});
+  const sources = sourceKeys.reduce((o, key) => {
+    let val;
+    // if the source has targets, just set it to be an empty object
+    if (config.dataSources[key].targets) {
+      val = {
+        targets: {}
+      };
+    } else {
+      val = {
+       // we have to define these here, because vue can't observe properties that
+       // are added later.
+       status: null,
+       data: null
+     };
+    }
+
+    o[key] = val;
+
+    return o;
+  }, {});
+
   const initialState = {
-    topic: defaultTopic.key,
+    activeTopic: defaultTopic.key,
     // the ais feature
-    ais: null,
+    geocode: {
+      status: null,
+      data: null
+    },
     // the leaflet map object
-    map: null,
+    map: {
+      center: config.map.center,
+      zoom: config.map.zoom,
+      map: null,
+      bounds: null,
+      basemap: defaultTopic.basemap,
+      circleMarkers: [],
+      // this is the key for the active overlay image (eg regmap)
+      imageOverlay: null,
+      imageOverlayOpacity: null,
+      // features: {
+      //   markers: [
+      //     // {
+      //     //   geometry: '',
+      //     //   // optional - mainly for symbology
+      //     //   options: {}
+      //     // }
+      //   ],
+      //   polygons: [
+      //
+      //   ]
+      // }
+    },
     dorParcels: [],
     pwdParcel: null,
-    topicData: {
+    sources,
+    cyclomedia: {
+      active: false,
+      viewer: null,
+      recordings: [],
+      locFromApp: null,
+      locFromViewer: null,
     },
-    basemap: defaultTopic.basemap,
-    cyclomediaActive: false,
-    cyclomediaViewer: null,
     // we need this to know whether or not to force an update on the first show
-    pictometryActive: false
-    // mapFeatures: {
-    //   markers: [
-    //     {
-    //       geometry: '',
-    //       // optional - mainly for symbology
-    //       options: {}
-    //     }
-    //   ],
-    //   polygons: [
-    //
-    //   ]
-    // },
+    pictometry: {
+      ipa: null,
+      active: false,
+      shapeIds: [],
+      pngMarkerIds: [],
+      zoom: null,
+    },
+    activeFeature: null,
+    lastSearchMethod: null
   };
 
   // TODO standardize how payloads are passed around/handled
@@ -41,11 +88,61 @@ function createStore(config) {
     state: initialState,
     getters: {},
     mutations: {
-      setTopic(state, payload) {
-        state.topic = payload.topic;
+      setActiveTopic(state, payload) {
+        state.activeTopic = payload.topic;
+      },
+      setSourceStatus(state, payload) {
+        const key = payload.key;
+        const status = payload.status;
+
+        // if a target id was passed in, set the status for that target
+        const targetId = payload.targetId;
+
+        if (targetId) {
+          state.sources[key].targets[targetId].status = status;
+        } else {
+          state.sources[key].status = status;
+        }
+      },
+      setSourceData(state, payload) {
+        const key = payload.key;
+        const data = payload.data;
+
+        // if a target id was passed in, set the data object for that target
+        const targetId = payload.targetId;
+
+        if (targetId) {
+          state.sources[key].targets[targetId].data = data;
+        } else {
+          state.sources[key].data = data;
+        }
+      },
+      // this sets empty targets for a data source
+      createEmptySourceTargets(state, payload) {
+        const {key, targetIds} = payload;
+        state.sources[key].targets = targetIds.reduce((acc, targetId) => {
+          acc[targetId] = {
+            status: null,
+            data: null
+          };
+          return acc;
+        }, {});
+      },
+      clearSourceTargets(state, payload) {
+        const key = payload.key;
+        state.sources[key].targets = {};
       },
       setMap(state, payload) {
-        state.map = payload.map;
+        state.map.map = payload.map;
+      },
+      setMapBounds(state, payload) {
+        state.map.bounds = payload.bounds
+      },
+      setMapCenter(state, payload) {
+        state.map.center = payload;
+      },
+      setMapZoom(state, payload) {
+        state.map.zoom = payload
       },
       setDorParcels(state, payload) {
         state.dorParcels = payload;
@@ -53,26 +150,66 @@ function createStore(config) {
       setPwdParcel(state, payload) {
         state.pwdParcel = payload;
       },
-      setAis(state, payload) {
-        state.ais = payload;
+      setGeocodeStatus(state, payload) {
+        state.geocode.status = payload;
+      },
+      setGeocodeData(state, payload) {
+        state.geocode.data = payload;
       },
       setBasemap(state, payload) {
-        state.basemap = payload;
-      },
-      setCyclomediaActive(state, payload) {
-        state.cyclomediaActive = payload;
-      },
-      setCyclomediaViewer(state, payload) {
-        state.cyclomediaViewer = payload;
+        state.map.basemap = payload;
       },
       setPictometryActive(state, payload) {
-        state.pictometryActive = payload;
+        if (!config.pictometry.enabled) {
+          return;
+        }
+        state.pictometry.active = payload;
       },
-      setTopicData(state, payload) {
-        const key = payload.key;
-        const data = payload.data;
-        state.topicData[key] = data;
+      setCyclomediaActive(state, payload) {
+        if (!config.cyclomedia.enabled) {
+          return;
+        }
+        state.cyclomedia.active = payload;
       },
+      setCyclomediaViewer(state, payload) {
+        state.cyclomedia.viewer = payload;
+      },
+      setCyclomediaRecordings(state, payload) {
+        state.cyclomedia.recordings = payload;
+      },
+      setCyclomediaLocFromApp(state, payload) {
+        state.cyclomedia.locFromApp = payload;
+      },
+      setCyclomediaLocFromViewer(state, payload) {
+        state.cyclomedia.locFromViewer = payload;
+      },
+      setActiveFeature(state, payload) {
+        state.activeFeature = payload;
+      },
+      setLastSearchMethod(state, payload) {
+        state.lastSearchMethod = payload;
+      },
+      setPictometryIpa(state, payload) {
+        state.pictometry.ipa = payload;
+      },
+      setPictometryShapeIds(state, payload) {
+        state.pictometry.shapeIds = payload;
+      },
+      setPictometryPngMarkerIds(state, payload) {
+        state.pictometry.pngMarkerIds = payload;
+      },
+      setPictometryZoom(state, payload) {
+        state.pictometry.zoom = payload;
+      },
+      setImageOverlay(state, payload) {
+        state.map.imageOverlay = payload;
+      },
+      setImageOverlayOpacity(state, payload) {
+        state.map.imageOverlayOpacity = payload;
+      },
+      // setCircleMarkers(state, payload) {
+      //   state.map.circleMarkers.push(payload);
+      // }
     }
   });
 }
