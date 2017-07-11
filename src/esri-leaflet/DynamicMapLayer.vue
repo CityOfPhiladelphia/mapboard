@@ -1,6 +1,7 @@
 <template>
   <opacity-slider :layer="this.$leafletElement"
                   :position="'topleft'"
+                  :initialOpacity="opacity"
   />
 </template>
 <script>
@@ -18,7 +19,10 @@
       'minZoom',
       'maxZoom',
       'zIndex',
-      'opacity'
+      'opacity',
+      'layers',
+      'layerDefs',
+      'transparent',
     ],
     created() {
       const leafletElement = this.$leafletElement = this.createLeafletElement();
@@ -42,6 +46,7 @@
     methods: {
       createLeafletElement() {
         const props = Object.assign({}, this.$props);
+        console.log('dynamic map', props);
         return new EsriDynamicMapLayer(props);
       },
       parentMounted(parent) {

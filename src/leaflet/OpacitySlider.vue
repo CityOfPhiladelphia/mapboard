@@ -9,14 +9,25 @@
 
   let opacity_layer;
 
-  L.Control.opacitySlider = L.Control.extend({
-      options: {
+  export default {
+    props: [
+      'layer',
+      'position',
+      'initialOpacity'
+    ],
+    created() {
+      let opacityValue = this.$props.initialOpacity * 100
+      console.log("opacityValue", opacityValue);
+
+      L.Control.opacitySlider = L.Control.extend({
+        options: {
           position: 'topright'
-      },
-      setOpacityLayer: function (layer) {
-              opacity_layer = layer;
-      },
-      onAdd: function (map) {
+        },
+        setOpacityLayer: function (layer) {
+          opacity_layer = layer;
+        },
+        onAdd: function (map) {
+          console.log('on add', this, this.$props);
           var opacity_slider_div = L.DomUtil.create('div', 'opacity_slider_control');
 
           $(opacity_slider_div).slider({
@@ -24,7 +35,7 @@
             range: "min",
             min: 0,
             max: 100,
-            value: 100,
+            value: opacityValue,
             step: 10,
             start: function ( event, ui) {
               //When moving the slider, disable panning.
@@ -40,15 +51,9 @@
           });
 
           return opacity_slider_div;
-      }
-  });
-
-
-  export default {
-    props: [
-      'layer',
-      'position'
-    ],
+        }
+      });
+    },
     mounted() {
       const leafletElement = this.$leafletElement = this.createLeafletElement();
       const map = this.$store.state.map;
@@ -71,8 +76,6 @@
         OpacitySlider.setPosition(this.$props.position);
         OpacitySlider.setOpacityLayer(this.$props.layer);
         return OpacitySlider;
-
-
       },
       parentMounted(parent) {
         const map = parent.$leafletElement;

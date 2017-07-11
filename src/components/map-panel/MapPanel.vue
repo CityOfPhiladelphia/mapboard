@@ -55,6 +55,16 @@
                           :weight="featureLayer.weight"
       />
 
+      <!-- regmaps -->
+      <esri-dynamic-map-layer v-for="(item, key) in this.imageOverlayItems"
+                              v-if="shouldShowImageOverlay(item.properties.RECMAP)"
+                              :key="key"
+                              :url="'http://gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/'"
+                              :layers="[29]"
+                              :layerDefs="'29:NAME=\'g' + item.properties.RECMAP.toLowerCase() + '.tif\''"
+                              :opacity="0.5"
+                              :transparent="true"
+      />
 
       <!-- address marker -->
       <!-- REVIEW why does this need a key? it's not a list... -->
@@ -240,6 +250,21 @@
       CyclomediaRecordingCircle
     },
     computed: {
+      imageOverlay() {
+        return this.$store.state.map.imageOverlay;
+      },
+      imageOverlayItems() {
+        // console.log('calculating imageOverlayItem');
+        if (this.activeTopicConfig.imageOverlayGroup) {
+          const overlayGroup = this.activeTopicConfig.imageOverlayGroup
+          const state = this.$store.state;
+          const overlay = this.$config.imageOverlayGroups[overlayGroup].items(state);
+          // console.log('returning imageOverlayItem', overlay);
+          return overlay;
+        } else {
+          return [];
+        }
+      },
       activeBasemap() {
         return this.$store.state.map.basemap;
       },
@@ -353,6 +378,9 @@
       }
     },
     methods: {
+      shouldShowImageOverlay(key) {
+        return key === this.imageOverlay;
+      },
       shouldShowFeatureLayer(key, minZoom) {
         if (this.activeFeatureLayers.includes(key) && this.$store.state.map.zoom >= minZoom) {
           return true;

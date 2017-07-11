@@ -305,6 +305,16 @@ Mapboard.default({
         return data;
       }
     },
+    regmaps: {
+      type: 'esri',
+      url: '//gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/0',
+      options: {
+        relationship: 'intersects',
+      },
+      success(data) {
+        return data;
+      }
+    },
     // zoningOverlays: {
     //   type: 'esri',
     //   url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/1/',
@@ -315,6 +325,14 @@ Mapboard.default({
     //     return data;
     //   }
     // },
+  },
+  imageOverlayGroups: {
+    regmaps: {
+      items(state) {
+        // console.log('main.js imageOverlayGroups', state)
+        return state.sources.regmaps.data;
+      }
+    }
   },
   overlays: {
     '311': {
@@ -633,7 +651,7 @@ Mapboard.default({
                     }
                   },
                 } // end slots
-              } // end docs table
+              }, // end docs table
             ] // end parcel tab content comps
           }, // end parcel tab options
           slots: {
@@ -643,14 +661,28 @@ Mapboard.default({
               return state.dorParcels;
             }
           }
-        } // end dor parcel tab group comp
+        }, // end dor parcel tab group comp
+        {
+          type: 'overlay-toggle-group',
+          options: {
+            getKey(item) {
+              return item.properties.RECMAP;
+            },
+          },
+          slots: {
+            items(state) {
+              return state.sources.regmaps.data;
+            }
+          }
+        }
       ], // end deeds comps
       basemap: 'dor',
       identifyFeature: 'dor-parcel',
       // identifyFeature: 'address-marker',
       // we might not need this anymore, now that we have identifyFeature
-      parcels: 'dor'
+      parcels: 'dor',
       // parcels: 'pwd'
+      imageOverlayGroup: 'regmaps',
     },
     {
       key: 'zoning',

@@ -45,6 +45,9 @@ function createStore(config) {
       bounds: null,
       basemap: defaultTopic.basemap,
       circleMarkers: [],
+      // this is the key for the active overlay image (eg regmap)
+      imageOverlay: null,
+      imageOverlayOpacity: null,
       // features: {
       //   markers: [
       //     // {
@@ -197,6 +200,12 @@ function createStore(config) {
       },
       setPictometryZoom(state, payload) {
         state.pictometry.zoom = payload;
+      },
+      setImageOverlay(state, payload) {
+        state.map.imageOverlay = payload;
+      },
+      setImageOverlayOpacity(state, payload) {
+        state.map.imageOverlayOpacity = payload;
       },
       // setCircleMarkers(state, payload) {
       //   state.map.circleMarkers.push(payload);
