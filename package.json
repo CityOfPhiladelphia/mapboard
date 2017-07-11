@@ -1,5 +1,5 @@
 {
-  "name": "mapboard",
+  "name": "@cityofphiladelphia/mapboard",
   "description": "A Vue.js component for data-rich web mapping",
   "version": "0.0.7",
   "author": "City of Philadelphia <maps@phila.gov>",
@@ -26,5 +26,8 @@
     "vue-template-compiler": "^2.3.3",
     "webpack": "^2.2.0",
     "webpack-dev-server": "^2.2.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
