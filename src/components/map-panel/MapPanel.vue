@@ -59,10 +59,10 @@
       <esri-dynamic-map-layer v-for="(item, key) in this.imageOverlayItems"
                               v-if="shouldShowImageOverlay(item.properties.RECMAP)"
                               :key="key"
-                              :url="'http://gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/'"
+                              :url="this.$config.map.dynamicMapLayers.regmaps.url"
                               :layers="[29]"
                               :layerDefs="'29:NAME=\'g' + item.properties.RECMAP.toLowerCase() + '.tif\''"
-                              :opacity="0.5"
+                              :opacity="this.$config.map.dynamicMapLayers.regmaps.opacity"
                               :transparent="true"
       />
 
