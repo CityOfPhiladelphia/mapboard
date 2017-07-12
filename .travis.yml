@@ -13,8 +13,9 @@ deploy:
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     bucket: $S3_BUCKET
     skip_cleanup: true
-    on:
-      all_branches: true
+    branches:
+      except:
+        - master
       # TODO add a condition to make sure the bucket exists using `aws s3 ls`
   - provider: npm
     email: "maps@phila.gov"

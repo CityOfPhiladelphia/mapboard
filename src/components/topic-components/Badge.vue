@@ -17,13 +17,19 @@
   export default {
     computed: {
       style() {
-        const titleBackgroundValOrFn = this.options.titleBackground;
+        const titleBackgroundValOrFn = (this.options || {}).titleBackground;
         let titleBackground;
-        if (typeof titleBackgroundValOrFn === 'function') {
-          titleBackground = titleBackgroundValOrFn(this.$store.state);
+
+        if (titleBackgroundValOrFn) {
+          if (typeof titleBackgroundValOrFn === 'function') {
+            titleBackground = titleBackgroundValOrFn(this.$store.state);
+          } else {
+            titleBackground = titleBackgroundValOrFn;
+          }
         } else {
-          titleBackground = titleBackgroundValOrFn;
+          titleBackground = '#58c04d';
         }
+
         return { background: titleBackground };
       }
     },
