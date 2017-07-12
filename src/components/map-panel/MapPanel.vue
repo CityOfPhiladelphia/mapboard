@@ -59,12 +59,14 @@
       <esri-dynamic-map-layer v-for="(item, key) in this.imageOverlayItems"
                               v-if="shouldShowImageOverlay(item.properties.RECMAP)"
                               :key="key"
-                              :url="this.$config.map.dynamicMapLayers.regmaps.url"
+                              :url="'//gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/'"
                               :layers="[29]"
                               :layerDefs="'29:NAME=\'g' + item.properties.RECMAP.toLowerCase() + '.tif\''"
-                              :opacity="this.$config.map.dynamicMapLayers.regmaps.opacity"
                               :transparent="true"
+                              :opacity="0.5"
       />
+      <!-- :url="this.imageOverlayInfo.url"
+      :opacity="this.imageOverlayInfo.opacity" -->
 
       <!-- address marker -->
       <!-- REVIEW why does this need a key? it's not a list... -->
@@ -264,6 +266,10 @@
         } else {
           return [];
         }
+      },
+      imageOverlayInfo() {
+        console.log('config:', this.$config);
+        return this.$config.map.dynamicMapLayers.regmaps;
       },
       activeBasemap() {
         return this.$store.state.map.basemap;

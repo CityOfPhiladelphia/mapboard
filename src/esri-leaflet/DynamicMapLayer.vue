@@ -46,7 +46,7 @@
     methods: {
       createLeafletElement() {
         const props = Object.assign({}, this.$props);
-        console.log('dynamic map', props);
+        // console.log('dynamic map', props);
         return new EsriDynamicMapLayer(props);
       },
       parentMounted(parent) {
