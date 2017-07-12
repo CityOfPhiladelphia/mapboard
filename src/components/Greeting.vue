@@ -66,7 +66,7 @@
   };
 </script>
 
-<style scope>
+<style scoped>
   .mb-panel-topics-greeting {
     padding-top: 20px;
   }
