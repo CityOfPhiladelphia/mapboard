@@ -35,7 +35,8 @@ function createStore(config) {
     // the ais feature
     geocode: {
       status: null,
-      data: null
+      data: null,
+      input: null
     },
     // the leaflet map object
     map: {
@@ -155,6 +156,9 @@ function createStore(config) {
       },
       setGeocodeData(state, payload) {
         state.geocode.data = payload;
+      },
+      setGeocodeInput(state, payload) {
+        state.geocode.input = payload;
       },
       setBasemap(state, payload) {
         state.map.basemap = payload;

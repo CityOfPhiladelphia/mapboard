@@ -104,18 +104,20 @@ export default {
       }
     },
     geocode(input) {
-      // console.log('geocode', input);
+      console.log('geocode', input);
 
       const self = this;
       const searchConfig = this.$config.geocoder.methods.search;
       const url = searchConfig.url(input);
       const params = searchConfig.params;
 
-      // set status of geocode
+      // update state
       this.$store.commit('setGeocodeStatus', 'waiting');
+      this.$store.commit('setGeocodeInput', input);
 
       this.$http.get(url, { params }).then(this.didGeocode, response => {
-        console.log('geocode error')
+        console.log('geocode error');
+
         self.$store.commit('setGeocodeData', null);
         self.$store.commit('setGeocodeStatus', 'error');
       });
