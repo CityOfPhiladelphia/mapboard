@@ -174,6 +174,7 @@
                        placeholder="Search the map"
                        :value="this.$config.defaultAddress"
                 />
+                <!-- :style="{ background: !!this.$store.state.error ? '#ffcece' : '#fff'}" -->
                 <button class="mb-search-control-button">
                   <i class="fa fa-search fa-lg"></i>
                 </button>
@@ -421,6 +422,12 @@
       },
       handleSearchFormSubmit(e) {
         const input = e.target[0].value;
+
+        if (input.length === 0) {
+          alert('Please enter a valid search address to search for.');
+          return;
+        }
+
         this.$store.commit('setLastSearchMethod', 'geocode');
         this.$store.commit('setPwdParcel', null);
         this.$store.commit('setDorParcels', []);
