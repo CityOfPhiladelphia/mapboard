@@ -193,6 +193,33 @@ Mapboard.default({
         }
       }
     },
+    liPermits: {
+      type: 'carto',
+      url: 'https://phl.carto.com/api/v2/sql',
+      options: {
+        params: {
+          q: feature => "select * from li_permits where address = '" + feature.properties.street_address + "' or addresskey = '" + feature.properties.li_address_key.toString() + "'",
+        }
+      }
+    },
+    liInspections: {
+      type: 'carto',
+      url: 'https://phl.carto.com/api/v2/sql',
+      options: {
+        params: {
+          q: feature => "select * from li_case_inspections where address = '" + feature.properties.street_address + "' or addresskey = '" + feature.properties.li_address_key.toString() + "'",
+        }
+      }
+    },
+    liViolations: {
+      type: 'carto',
+      url: 'https://phl.carto.com/api/v2/sql',
+      options: {
+        params: {
+          q: feature => "select * from li_violations where address = '" + feature.properties.street_address + "' or addresskey = '" + feature.properties.li_address_key.toString() + "'",
+        }
+      }
+    },
     zoningDocs: {
       type: 'carto',
       url: 'https://phl.carto.com/api/v2/sql',
@@ -683,6 +710,171 @@ Mapboard.default({
       parcels: 'dor',
       // parcels: 'pwd'
       imageOverlayGroup: 'regmaps',
+    },
+    {
+      key: 'permits',
+      icon: 'building-o',
+      label: 'Permits',
+      dataSources: [
+        'liPermits',
+        'liInspections',
+        'liViolations'
+      ],
+      components: [
+        {
+          type: 'horizontal-table',
+          options: {
+            fields: [
+              {
+                label: 'Date',
+                value(state, item){
+                  return item.permitissuedate
+                },
+                transforms: [
+                  'date'
+                ]
+              },
+              {
+                label: 'ID',
+                value(state, item){
+                  return item.permitnumber
+                  // return "<a target='_blank' href='"+item.properties.CODE_SECTION_LINK+"'>"+item.properties.CODE_SECTION+" <i class='fa fa-external-link'></i></a>"
+                }
+              },
+              {
+                label: 'Description',
+                value(state, item){
+                  return item.permitdescription
+                }
+              },
+              {
+                label: 'Status',
+                value(state, item){
+                  return item.status
+                  // return "<a target='_blank' href='"+item.properties.CODE_SECTION_LINK+"'>"+item.properties.CODE_SECTION+" <i class='fa fa-external-link'></i></a>"
+                }
+              },
+            ],
+          },
+          slots: {
+            title: 'Permits',
+            items(state) {
+              const data = state.sources['liPermits'].data
+              const rows = data.map(row => {
+                const itemRow = Object.assign({}, row);
+                //itemRow.DISTANCE = 'TODO';
+                return itemRow;
+              });
+              // console.log('rows', rows);
+              return rows;
+            },
+          },
+        },
+        {
+          type: 'horizontal-table',
+          options: {
+            fields: [
+              {
+                label: 'Date',
+                value(state, item){
+                  return item.permitissuedate
+                },
+                transforms: [
+                  'date'
+                ]
+              },
+              {
+                label: 'ID',
+                value(state, item){
+                  return item.permitnumber
+                  // return "<a target='_blank' href='"+item.properties.CODE_SECTION_LINK+"'>"+item.properties.CODE_SECTION+" <i class='fa fa-external-link'></i></a>"
+                }
+              },
+              {
+                label: 'Description',
+                value(state, item){
+                  return item.permitdescription
+                }
+              },
+              {
+                label: 'Status',
+                value(state, item){
+                  return item.status
+                  // return "<a target='_blank' href='"+item.properties.CODE_SECTION_LINK+"'>"+item.properties.CODE_SECTION+" <i class='fa fa-external-link'></i></a>"
+                }
+              },
+            ],
+          },
+          slots: {
+            title: 'Inspections',
+            items(state) {
+              const data = state.sources['liInspections'].data
+              const rows = data.map(row => {
+                const itemRow = Object.assign({}, row);
+                //itemRow.DISTANCE = 'TODO';
+                return itemRow;
+              });
+              // console.log('rows', rows);
+              return rows;
+            },
+          },
+        },
+        {
+          type: 'horizontal-table',
+          options: {
+            fields: [
+              {
+                label: 'Date',
+                value(state, item){
+                  return item.permitissuedate
+                },
+                transforms: [
+                  'date'
+                ]
+              },
+              {
+                label: 'ID',
+                value(state, item){
+                  return item.permitnumber
+                  // return "<a target='_blank' href='"+item.properties.CODE_SECTION_LINK+"'>"+item.properties.CODE_SECTION+" <i class='fa fa-external-link'></i></a>"
+                }
+              },
+              {
+                label: 'Description',
+                value(state, item){
+                  return item.permitdescription
+                }
+              },
+              {
+                label: 'Status',
+                value(state, item){
+                  return item.status
+                  // return "<a target='_blank' href='"+item.properties.CODE_SECTION_LINK+"'>"+item.properties.CODE_SECTION+" <i class='fa fa-external-link'></i></a>"
+                }
+              },
+            ],
+          },
+          slots: {
+            title: 'Violations',
+            items(state) {
+              const data = state.sources['liViolations'].data
+              const rows = data.map(row => {
+                const itemRow = Object.assign({}, row);
+                //itemRow.DISTANCE = 'TODO';
+                return itemRow;
+              });
+              // console.log('rows', rows);
+              return rows;
+            },
+          },
+        },
+      ],
+      basemap: 'pwd',
+      dynamicMapLayers: [
+        //'zoning'
+      ],
+      identifyFeature: 'address-marker',
+      parcels: 'pwd'
     },
     {
       key: 'zoning',
