@@ -128,7 +128,7 @@
       <!-- CONTROLS: -->
       <!-- basemap control -->
       <div v-once>
-        <basemap-control v-if="hasImageryBasemaps"
+        <basemap-control v-if="shouldShowImageryToggle"
                          v-once
                          :position="'topright'"
                          :imagery-years="imageryYears"
@@ -136,7 +136,7 @@
       </div>
 
       <div v-once>
-        <historicmap-control v-if="hasHistoricBasemaps"
+        <historicmap-control v-if="shouldShowHistoricBasemapToggle"
                          v-once
                          :position="'topright'"
                          :historic-years="historicYears"
@@ -304,6 +304,9 @@
       hasImageryBasemaps() {
         return this.imageryBasemaps.length > 0;
       },
+      shouldShowImageryToggle() {
+        return this.hasImageryBasemaps && this.$config.map.imagery.enabled;
+      },
       imageryYears() {
         // pluck year from basemap objects
         return this.imageryBasemaps.map(x => x.year);
@@ -313,6 +316,10 @@
       },
       hasHistoricBasemaps() {
         return this.historicBasemaps.length > 0;
+      },
+      shouldShowHistoricBasemapToggle() {
+        return this.hasHistoricBasemaps &&
+               this.$config.map.historicBasemaps.enabled;
       },
       historicYears() {
         // pluck year from basemap objects
