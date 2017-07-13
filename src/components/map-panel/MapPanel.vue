@@ -41,6 +41,7 @@
                          :key="key"
                          :url="dynamicLayer.url"
                          :attribution="dynamicLayer.attribution"
+                         :transparent="true"
                          :opacity="dynamicLayer.opacity"
       />
 

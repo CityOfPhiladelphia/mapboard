@@ -40,13 +40,16 @@
           // get transform definition from config by name
           const transform = this.$config.transforms[transformKey];
           // make object of (relevant) globals by filtering window object
+          let globals;
           const globalKeys = transform.globals;
-          const globals = Object.keys(window)
-                            .filter(key => globalKeys.includes(key))
-                            .reduce((obj, key) => {
-                                obj[key] = window[key];
-                                return obj;
-                            }, {});
+          if (globalKeys) {
+            globals = Object.keys(window)
+                          .filter(key => globalKeys.includes(key))
+                          .reduce((obj, key) => {
+                              obj[key] = window[key];
+                              return obj;
+                          }, {});
+          }
           // run transform
           const fn = transform.transform;
           val = fn(val, globals);
