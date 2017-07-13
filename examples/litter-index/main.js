@@ -12,16 +12,6 @@ Mapboard.default({
   },
   baseConfig: '//raw.githubusercontent.com/rbrtmrtn/mapboard-base-config/develop/config.js',
   // dataSources: {},
-  greeting: {
-    components: [
-      {
-        type: 'image_',
-        slots: {
-          source: 'front.png'
-        }
-      }
-    ]
-  },
   defaultAddress: searchInput,
   topics: [
     {
