@@ -1,14 +1,15 @@
 <template>
   <div class="mb-panel-topics-greeting">
     <div class="columns medium-18 medium-centered">
-      <div v-if="!components && !hasError" class="callout">
-        <p>To start your search, type an address into the search box or click anywhere on the map.</p>
+      <div v-if="!components && !hasError">
+        <p class="greeting">To start your search, type an address into the search box or click anywhere on the map.</p>
         <!-- <p v-if="hasError" v-html="message"></p> -->
       </div>
 
-      <div v-if="!components && hasError" class="callout callout-error" v-html="errorMessage">
+      <div v-if="!components && hasError" class="greeting greeting-error" v-html="errorMessage">
 
       </div>
+
       <component v-if="components"
                  v-for="(topicComp, topicCompIndex) in components"
                  :is="topicComp.type"
@@ -25,7 +26,7 @@
   import Badge from './topic-components/Badge';
   import HorizontalTable from './topic-components/HorizontalTable';
   import VerticalTable from './topic-components/VerticalTable';
-  import Callout from './topic-components/Callout';
+  // import Callout from './topic-components/Callout';
   import Image_ from './topic-components/Image';
 
   export default {
@@ -55,12 +56,6 @@
             <li>12th & Market</li>
           </ul>
         `;
-      },
-      calloutClass() {
-        return {
-          'callout': true,
-          'callout-error': this.hasError
-        };
       }
     }
   };
@@ -70,19 +65,13 @@
   .mb-panel-topics-greeting {
     padding-top: 20px;
   }
-  .callout {
+  .greeting {
     font-size: 20px;
-    /*vertical-align: middle;*/
-  }
-  .callout p {
     color: #444;
+    border-left: 5px solid #58c04d;
+    padding: 14px;
   }
-  .callout-error {
+  .greeting-error {
     border-left-color: #ff0000;
-    /*background: #ffc4c4;*/
-  }
-  .callout ul {
-    /*font-size: 20px;*/
-    /*color: #222;*/
   }
 </style>
