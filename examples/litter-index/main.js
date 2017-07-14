@@ -29,6 +29,9 @@ Mapboard.default({
         // },
         {
           type: 'vertical-table',
+          options: {
+            nullValue: 'None'
+          },
           slots: {
             fields: [
               {
@@ -59,17 +62,45 @@ Mapboard.default({
                   return district;
                 }
               },
+              // {
+              //   label: 'PMBC Representative',
+              //   value: 'NOT READY'
+              // },
               {
                 label: 'Sanitation Convenience Center',
-                value: '1615 S 51st St, Philadelphia, PA 19143'
+                value(state) {
+                  return state.geocode.data.properties.sanitation_convenience_center;
+                }
               },
               {
-                label: 'Block Captain',
-                value: 'Jane Doe, 1345 S 52nd St'
+                label: 'Clean Philly Block Captain',
+                value(state) {
+                  return state.geocode.data.properties.clean_philly_block_captain;
+                }
               },
               {
-                label: 'PMBC Representative',
-                value: 'John Smith, 2145 S 53rd St'
+                label: 'PPR Friends Group',
+                value(state) {
+                  return state.geocode.data.properties.ppr_friends;
+                }
+              },
+              {
+                label: 'Watershed Group',
+                value(state) {
+                  return state.geocode.data.properties.major_phila_watershed;
+                }
+              },
+              {
+                label: 'Commercial Corridor Manager',
+                value(state) {
+                  return state.geocode.data.properties.commercial_corridor;
+                }
+              },
+              {
+                label: 'Neighborhood Advisory Committee',
+                value(state) {
+                  return state.geocode.data.properties.neighborhood_advisory_committee;
+                }
               },
             ],
           }
