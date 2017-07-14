@@ -57,6 +57,9 @@
         if (!geocode) return null;
         const zipCode = geocode.properties.zip_code;
         const zip4 = geocode.properties.zip_4;
+        const parts = [zipCode];
+        if (zip4) parts.push(zip4);
+        return parts.join('-');
       }
     }
   };
