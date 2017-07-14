@@ -113,6 +113,14 @@ Mapboard.default({
   },
   baseConfig: '//raw.githubusercontent.com/rbrtmrtn/mapboard-base-config/develop/config.js',
   // baseConfig: '//rawgit.com/rbrtmrtn/mapboard-base-config/9605e5dca32277b1b877e8965d2156631b0b7443/config.js',
+  map: {
+    imagery: {
+      enabled: true
+    },
+    historicBasemaps: {
+      enabled: true
+    },
+  },
   dataSources: {
     // nearby: {
     //   type: 'http-get',
@@ -193,6 +201,33 @@ Mapboard.default({
         }
       }
     },
+    liPermits: {
+      type: 'carto',
+      url: 'https://phl.carto.com/api/v2/sql',
+      options: {
+        params: {
+          q: feature => "select * from li_permits where address = '" + feature.properties.street_address + "' or addresskey = '" + feature.properties.li_address_key.toString() + "'",
+        }
+      }
+    },
+    liInspections: {
+      type: 'carto',
+      url: 'https://phl.carto.com/api/v2/sql',
+      options: {
+        params: {
+          q: feature => "select * from li_case_inspections where address = '" + feature.properties.street_address + "' or addresskey = '" + feature.properties.li_address_key.toString() + "'",
+        }
+      }
+    },
+    liViolations: {
+      type: 'carto',
+      url: 'https://phl.carto.com/api/v2/sql',
+      options: {
+        params: {
+          q: feature => "select * from li_violations where address = '" + feature.properties.street_address + "' or addresskey = '" + feature.properties.li_address_key.toString() + "'",
+        }
+      }
+    },
     zoningDocs: {
       type: 'carto',
       url: 'https://phl.carto.com/api/v2/sql',
@@ -212,6 +247,23 @@ Mapboard.default({
       success(data) {
         return data;
       }
+    },
+    rco: {
+      type: 'esri',
+      url: '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Zoning_RCO/FeatureServer/0',
+      options: {
+        relationship: 'contains',
+      },
+      // success(data) {
+      //   // format phone numbers
+      //   console.log('rco success', data);
+      //
+      //   var s2 = (""+s).replace(/\D/g, '');
+      //   var m = s2.match(/^(\d{3})(\d{3})(\d{4})$/);
+      //   return (!m) ? null : "(" + m[1] + ") " + m[2] + "-" + m[3];
+      //
+      //   return data;
+      // }
     },
     dorDocuments: {
       type: 'http-get',
@@ -377,6 +429,31 @@ Mapboard.default({
         return moment(value).format('YYYY-MM-DD');
       }
     },
+    phoneNumber: {
+      transform(value) {
+        const s2 = (""+value).replace(/\D/g, '');
+        const m = s2.match(/^(\d{3})(\d{3})(\d{4})$/);
+        return (!m) ? null : "(" + m[1] + ") " + m[2] + "-" + m[3];
+      }
+    },
+    rcoPrimaryContact: {
+      transform(value) {
+        const PHONE_NUMBER_PAT = /\(?(\d{3})\)?( |-)?(\d{3})(-| )?(\d{4})/g;
+        const m = PHONE_NUMBER_PAT.exec(value);
+
+        // check for non-match
+        if (!m) {
+          return value;
+        }
+
+        // standardize phone number
+        const std = ['(', m[1], ') ', m[3], '-', m[5]].join('');
+        const orig = m[0]
+        const valueStd = value.replace(orig, std);
+
+        return valueStd;
+      }
+    }
   },
   topics: [
     {
@@ -685,6 +762,171 @@ Mapboard.default({
       imageOverlayGroup: 'regmaps',
     },
     {
+      key: 'permits',
+      icon: 'building-o',
+      label: 'Permits',
+      dataSources: [
+        'liPermits',
+        'liInspections',
+        'liViolations'
+      ],
+      components: [
+        {
+          type: 'horizontal-table',
+          options: {
+            fields: [
+              {
+                label: 'Date',
+                value(state, item){
+                  return item.permitissuedate
+                },
+                transforms: [
+                  'date'
+                ]
+              },
+              {
+                label: 'ID',
+                value(state, item){
+                  return item.permitnumber
+                  // return "<a target='_blank' href='"+item.properties.CODE_SECTION_LINK+"'>"+item.properties.CODE_SECTION+" <i class='fa fa-external-link'></i></a>"
+                }
+              },
+              {
+                label: 'Description',
+                value(state, item){
+                  return item.permitdescription
+                }
+              },
+              {
+                label: 'Status',
+                value(state, item){
+                  return item.status
+                  // return "<a target='_blank' href='"+item.properties.CODE_SECTION_LINK+"'>"+item.properties.CODE_SECTION+" <i class='fa fa-external-link'></i></a>"
+                }
+              },
+            ],
+          },
+          slots: {
+            title: 'Permits',
+            items(state) {
+              const data = state.sources['liPermits'].data
+              const rows = data.map(row => {
+                const itemRow = Object.assign({}, row);
+                //itemRow.DISTANCE = 'TODO';
+                return itemRow;
+              });
+              // console.log('rows', rows);
+              return rows;
+            },
+          },
+        },
+        {
+          type: 'horizontal-table',
+          options: {
+            fields: [
+              {
+                label: 'Date',
+                value(state, item){
+                  return item.permitissuedate
+                },
+                transforms: [
+                  'date'
+                ]
+              },
+              {
+                label: 'ID',
+                value(state, item){
+                  return item.permitnumber
+                  // return "<a target='_blank' href='"+item.properties.CODE_SECTION_LINK+"'>"+item.properties.CODE_SECTION+" <i class='fa fa-external-link'></i></a>"
+                }
+              },
+              {
+                label: 'Description',
+                value(state, item){
+                  return item.permitdescription
+                }
+              },
+              {
+                label: 'Status',
+                value(state, item){
+                  return item.status
+                  // return "<a target='_blank' href='"+item.properties.CODE_SECTION_LINK+"'>"+item.properties.CODE_SECTION+" <i class='fa fa-external-link'></i></a>"
+                }
+              },
+            ],
+          },
+          slots: {
+            title: 'Inspections',
+            items(state) {
+              const data = state.sources['liInspections'].data
+              const rows = data.map(row => {
+                const itemRow = Object.assign({}, row);
+                //itemRow.DISTANCE = 'TODO';
+                return itemRow;
+              });
+              // console.log('rows', rows);
+              return rows;
+            },
+          },
+        },
+        {
+          type: 'horizontal-table',
+          options: {
+            fields: [
+              {
+                label: 'Date',
+                value(state, item){
+                  return item.permitissuedate
+                },
+                transforms: [
+                  'date'
+                ]
+              },
+              {
+                label: 'ID',
+                value(state, item){
+                  return item.permitnumber
+                  // return "<a target='_blank' href='"+item.properties.CODE_SECTION_LINK+"'>"+item.properties.CODE_SECTION+" <i class='fa fa-external-link'></i></a>"
+                }
+              },
+              {
+                label: 'Description',
+                value(state, item){
+                  return item.permitdescription
+                }
+              },
+              {
+                label: 'Status',
+                value(state, item){
+                  return item.status
+                  // return "<a target='_blank' href='"+item.properties.CODE_SECTION_LINK+"'>"+item.properties.CODE_SECTION+" <i class='fa fa-external-link'></i></a>"
+                }
+              },
+            ],
+          },
+          slots: {
+            title: 'Violations',
+            items(state) {
+              const data = state.sources['liViolations'].data
+              const rows = data.map(row => {
+                const itemRow = Object.assign({}, row);
+                //itemRow.DISTANCE = 'TODO';
+                return itemRow;
+              });
+              // console.log('rows', rows);
+              return rows;
+            },
+          },
+        },
+      ],
+      basemap: 'pwd',
+      dynamicMapLayers: [
+        //'zoning'
+      ],
+      identifyFeature: 'address-marker',
+      parcels: 'pwd'
+    },
+    {
       key: 'zoning',
       icon: 'building-o',
       label: 'Zoning',
@@ -779,7 +1021,7 @@ Mapboard.default({
           slots: {
             title : 'Appeals',
             items(state) {
-              const data = state.sources['zoningAppeals'].data;
+              const data = state.sources['zoningAppeals'].data || [];
               const rows = data.map(row => {
                 const itemRow = Object.assign({}, row);
                 //itemRow.DISTANCE = 'TODO';
@@ -833,6 +1075,57 @@ Mapboard.default({
             title: 'Documents',
             items(state) {
               const data = state.sources['zoningDocs'].data
+              const rows = data.map(row => {
+                const itemRow = Object.assign({}, row);
+                //itemRow.DISTANCE = 'TODO';
+                return itemRow;
+              });
+              return rows;
+            },
+          },
+        },
+        {
+          type: 'horizontal-table',
+          options: {
+            fields: [
+              {
+                label: 'RCO',
+                value(state, item){
+                  return '<b>' + item.properties.ORGANIZATION_NAME + '</b><br>'
+                  + item.properties.ORGANIZATION_ADDRESS
+                },
+              },
+              {
+                label: 'Meeting Address',
+                value(state, item){
+                  return item.properties.MEETING_LOCATION_ADDRESS
+                }
+              },
+              {
+                label: 'Primary Contact',
+                value(state, item){
+                  // return item.properties.PRIMARY_PHONE
+                  return item.properties.PRIMARY_NAME + '<br>'
+                  + item.properties.PRIMARY_PHONE + '<br>'
+                  + `<b><a :href="'mailto:' + item.properties.PRIMARY_EMAIL">`
+                  + item.properties.PRIMARY_EMAIL + '</a></b>'
+                },
+                transforms: [
+                  'rcoPrimaryContact'
+                ]
+              },
+              {
+                label: 'Preferred Method',
+                value(state, item){
+                  return item.properties.PREFFERED_CONTACT_METHOD
+                }
+              },
+            ],
+          },
+          slots: {
+            title: 'Registered Community Organizations',
+            items(state) {
+              const data = state.sources['rco'].data
               const rows = data.map(row => {
                 const itemRow = Object.assign({}, row);
                 //itemRow.DISTANCE = 'TODO';

@@ -35,6 +35,9 @@
       HorizontalTableRow
     },
     computed: {
+      // activeFeature() {
+      //   return this.$store.state.activeFeature
+      // },
       fields() {
         return this.options.fields;
       },
@@ -91,12 +94,22 @@
         return items.sort(sortFn);
       }
     },
+    // watch: {
+    //   activeFeature(value) {
+    //     if (value) {
+    //       this.scrollToRow(value);
+    //     }
+    //   }
+    // },
     methods: {
       values(item) {
         const fields = this.options.fields;
         const sourceFields = fields.map(field => field.sourceField);
         return sourceFields.map(sourceField => item[sourceField])
-      }
+      },
+      // scrollToRow(value) {
+      //   console.log('scrollToRow is happening', value);
+      // }
     }
   };
 </script>

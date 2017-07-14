@@ -41,6 +41,7 @@
                          :key="key"
                          :url="dynamicLayer.url"
                          :attribution="dynamicLayer.attribution"
+                         :transparent="true"
                          :opacity="dynamicLayer.opacity"
       />
 
@@ -59,12 +60,14 @@
       <esri-dynamic-map-layer v-for="(item, key) in this.imageOverlayItems"
                               v-if="shouldShowImageOverlay(item.properties.RECMAP)"
                               :key="key"
-                              :url="'http://gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/'"
+                              :url="'//gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/'"
                               :layers="[29]"
                               :layerDefs="'29:NAME=\'g' + item.properties.RECMAP.toLowerCase() + '.tif\''"
-                              :opacity="0.5"
                               :transparent="true"
+                              :opacity="0.5"
       />
+      <!-- :url="this.imageOverlayInfo.url"
+      :opacity="this.imageOverlayInfo.opacity" -->
 
       <!-- address marker -->
       <!-- REVIEW why does this need a key? it's not a list... -->
@@ -126,7 +129,7 @@
       <!-- CONTROLS: -->
       <!-- basemap control -->
       <div v-once>
-        <basemap-control v-if="hasImageryBasemaps"
+        <basemap-control v-if="shouldShowImageryToggle"
                          v-once
                          :position="'topright'"
                          :imagery-years="imageryYears"
@@ -134,7 +137,7 @@
       </div>
 
       <div v-once>
-        <historicmap-control v-if="hasHistoricBasemaps"
+        <historicmap-control v-if="shouldShowHistoricBasemapToggle"
                          v-once
                          :position="'topright'"
                          :historic-years="historicYears"
@@ -172,6 +175,7 @@
                        placeholder="Search the map"
                        :value="this.$config.defaultAddress"
                 />
+                <!-- :style="{ background: !!this.$store.state.error ? '#ffcece' : '#fff'}" -->
                 <button class="mb-search-control-button">
                   <i class="fa fa-search fa-lg"></i>
                 </button>
@@ -265,6 +269,10 @@
           return [];
         }
       },
+      imageOverlayInfo() {
+        console.log('config:', this.$config);
+        return this.$config.map.dynamicMapLayers.regmaps;
+      },
       activeBasemap() {
         return this.$store.state.map.basemap;
       },
@@ -297,6 +305,9 @@
       hasImageryBasemaps() {
         return this.imageryBasemaps.length > 0;
       },
+      shouldShowImageryToggle() {
+        return this.hasImageryBasemaps && this.$config.map.imagery.enabled;
+      },
       imageryYears() {
         // pluck year from basemap objects
         return this.imageryBasemaps.map(x => x.year);
@@ -306,6 +317,10 @@
       },
       hasHistoricBasemaps() {
         return this.historicBasemaps.length > 0;
+      },
+      shouldShowHistoricBasemapToggle() {
+        return this.hasHistoricBasemaps &&
+               this.$config.map.historicBasemaps.enabled;
       },
       historicYears() {
         // pluck year from basemap objects
@@ -415,6 +430,12 @@
       },
       handleSearchFormSubmit(e) {
         const input = e.target[0].value;
+
+        if (input.length === 0) {
+          alert('Please enter a valid search address to search for.');
+          return;
+        }
+
         this.$store.commit('setLastSearchMethod', 'geocode');
         this.$store.commit('setPwdParcel', null);
         this.$store.commit('setDorParcels', []);
