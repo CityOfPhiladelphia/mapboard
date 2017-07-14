@@ -69,7 +69,7 @@ Mapboard.default({
               //   value: 'NOT READY'
               // },
               {
-                label: 'Sanitation Convenience Center',
+                label: 'Nearest Sanitation Convenience Center',
                 value: function(state) {
                   return state.geocode.data.properties.sanitation_convenience_center;
                 }
