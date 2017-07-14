@@ -2,7 +2,7 @@
     export default {
     props: ['slots', 'options', 'item'],
     methods: {
-      evaluateSlot(valOrGetter, transforms = []) {
+      evaluateSlot(valOrGetter, transforms = [], nullValue = '') {
         // check for null val/getter
         if (!valOrGetter) {
           return valOrGetter;
@@ -54,6 +54,9 @@
           const fn = transform.transform;
           val = fn(val, globals);
         }
+
+        // format nulls
+        val = val || nullValue;
 
         return val;
       },
