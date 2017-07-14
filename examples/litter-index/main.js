@@ -10,8 +10,7 @@ Mapboard.default({
   pictometry: {
     enabled: false
   },
-  baseConfig: '//raw.githubusercontent.com/rbrtmrtn/mapboard-base-config/develop/config.js',
-  // dataSources: {},
+  baseConfig: '//s3.amazonaws.com/mapboard-base-config-clean-philly/config.js',
   defaultAddress: searchInput,
   topics: [
     {
