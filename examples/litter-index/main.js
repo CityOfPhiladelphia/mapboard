@@ -36,7 +36,7 @@ Mapboard.default({
             fields: [
               {
                 label: 'Trash & Recycling Day',
-                value: function(state) {
+                value: function (state) {
                   var day = state.geocode.data.properties.rubbish_recycle_day;
                   var DAYS_FORMATTED = {
                     'MON': 'Monday',
@@ -50,7 +50,7 @@ Mapboard.default({
               },
               {
                 label: 'Recycling Diversion Rate',
-                value: function(state) {
+                value: function (state) {
                   var rate = state.geocode.data.properties.recycling_diversion_rate,
                       ratePercent = parseInt(rate * 100);
                       ratePercentStr = ratePercent + '%';
@@ -60,7 +60,7 @@ Mapboard.default({
               },
               {
                 label: 'Sanitation District',
-                value: function(state) {
+                value: function (state) {
                   return state.geocode.data.properties.sanitation_district;
                 }
               },
@@ -69,38 +69,38 @@ Mapboard.default({
               //   value: 'NOT READY'
               // },
               {
-                label: 'Nearest Sanitation Convenience Center',
-                value: function(state) {
+                label: 'Sanitation Convenience Center',
+                value: function (state) {
                   return state.geocode.data.properties.sanitation_convenience_center;
                 }
               },
               {
                 label: 'Clean Philly Block Captain',
-                value: function(state) {
+                value: function (state) {
                   return state.geocode.data.properties.clean_philly_block_captain;
                 }
               },
               {
                 label: 'PPR Friends Group',
-                value: function(state) {
+                value: function (state) {
                   return state.geocode.data.properties.ppr_friends;
                 }
               },
               {
                 label: 'Watershed Group',
-                value: function(state) {
+                value: function (state) {
                   return state.geocode.data.properties.major_phila_watershed;
                 }
               },
               {
-                label: 'Commercial Corridor Manager',
-                value: function(state) {
+                label: 'Commercial Corridor',
+                value: function (state) {
                   return state.geocode.data.properties.commercial_corridor;
                 }
               },
               {
                 label: 'Neighborhood Advisory Committee',
-                value: function(state) {
+                value: function (state) {
                   return state.geocode.data.properties.neighborhood_advisory_committee;
                 }
               },
