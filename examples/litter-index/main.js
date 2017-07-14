@@ -1,7 +1,7 @@
-const GATEKEEPER_KEY = '35ae5b7bf8f0ff2613134935ce6b4c1e';
+var GATEKEEPER_KEY = '35ae5b7bf8f0ff2613134935ce6b4c1e';
 
 // TODO get user-entered address from url(?)
-const searchInput = '1300 market street';
+var searchInput = '1300 market street';
 
 Mapboard.default({
   cyclomedia: {
@@ -36,9 +36,9 @@ Mapboard.default({
             fields: [
               {
                 label: 'Trash & Recycling Day',
-                value(state) {
-                  const day = state.geocode.data.properties.rubbish_recycle_day;
-                  const DAYS_FORMATTED = {
+                value: function(state) {
+                  var day = state.geocode.data.properties.rubbish_recycle_day;
+                  var DAYS_FORMATTED = {
                     'MON': 'Monday',
                     'TUE': 'Tuesday',
                     'WED': 'Wednesday',
@@ -50,16 +50,18 @@ Mapboard.default({
               },
               {
                 label: 'Recycling Diversion Rate',
-                value(state) {
-                  const rate = state.geocode.data.properties.recycling_diversion_rate;
-                  return `${parseInt(rate * 100)}%`;;
+                value: function(state) {
+                  var rate = state.geocode.data.properties.recycling_diversion_rate,
+                      ratePercent = parseInt(rate * 100);
+                      ratePercentStr = ratePercent + '%';
+
+                  return ratePercentStr;
                 },
               },
               {
                 label: 'Sanitation District',
-                value(state) {
-                  const district = state.geocode.data.properties.sanitation_district;
-                  return district;
+                value: function(state) {
+                  return state.geocode.data.properties.sanitation_district;
                 }
               },
               // {
@@ -68,37 +70,37 @@ Mapboard.default({
               // },
               {
                 label: 'Sanitation Convenience Center',
-                value(state) {
+                value: function(state) {
                   return state.geocode.data.properties.sanitation_convenience_center;
                 }
               },
               {
                 label: 'Clean Philly Block Captain',
-                value(state) {
+                value: function(state) {
                   return state.geocode.data.properties.clean_philly_block_captain;
                 }
               },
               {
                 label: 'PPR Friends Group',
-                value(state) {
+                value: function(state) {
                   return state.geocode.data.properties.ppr_friends;
                 }
               },
               {
                 label: 'Watershed Group',
-                value(state) {
+                value: function(state) {
                   return state.geocode.data.properties.major_phila_watershed;
                 }
               },
               {
                 label: 'Commercial Corridor Manager',
-                value(state) {
+                value: function(state) {
                   return state.geocode.data.properties.commercial_corridor;
                 }
               },
               {
                 label: 'Neighborhood Advisory Committee',
-                value(state) {
+                value: function(state) {
                   return state.geocode.data.properties.neighborhood_advisory_committee;
                 }
               },
@@ -108,8 +110,6 @@ Mapboard.default({
       ],
       basemap: 'pwd',
       identifyFeature: 'address-marker',
-      dynamicMapLayers: [
-      ],
       parcels: 'pwd'
     }
   ],
