@@ -5,7 +5,7 @@
       <tbody>
         <tr v-for="field in slots.fields">
           <th>{{ evaluateSlot(field.label) }}</th>
-          <td>{{ evaluateSlot(field.value, field.transforms, options.nullValue) }}</td>
+          <td>{{ evaluateSlot(field.value, field.transforms, this.nullValue) }}</td>
         </tr>
       </tbody>
     </table>

@@ -453,6 +453,11 @@ Mapboard.default({
 
         return valueStd;
       }
+    },
+    booleanToYesNo: {
+      transform(value) {
+        return value ? 'Yes' : 'No';
+      }
     }
   },
   topics: [
@@ -1156,6 +1161,12 @@ Mapboard.default({
       parcels: 'pwd',
       components: [
         {
+          type: 'callout',
+          slots: {
+            text: 'The property boundaries displayed on the map for reference only and may not be used in place of recorded deeds or land surveys. Boundaries are generalized for ease of visualization. Source: Philadelphia Water'
+          }
+        },
+        {
           type: 'vertical-table',
           slots: {
             title: 'Parcel',
@@ -1195,7 +1206,10 @@ Mapboard.default({
                 label: 'CAP Eligible',
                 value(state) {
                   return state.sources.stormwater.data.Parcel.CAPEligible;
-                }
+                },
+                transforms: [
+                  'booleanToYesNo'
+                ]
               },
             ]
           },
@@ -1288,6 +1302,12 @@ Mapboard.default({
       // },
       components: [
         {
+          type: 'callout',
+          slots: {
+            text: 'The location of properties across Philadelphia that are likely to be a vacant lot or vacant building based on an assessment of City of Philadelphia administrative datasets.'
+          }
+        },
+        {
           type: 'badge',
           options: {
             titleBackground(state) {
@@ -1325,17 +1345,52 @@ Mapboard.default({
       parcels: 'pwd',
       components: [
         {
+          type: 'callout',
+          slots: {
+            text: 'The information shown includes records marked private by the public, as well as a "Description" field which can not be shared with the public for any record.'
+          }
+        },
+        {
           type: 'horizontal-table',
           options: {
             // TODO this isn't used yet, but should be for highlighting rows/
             // map features.
+            // filterForm: true,
+            filters: [
+              {
+                type: 'time',
+                getValue(item) {
+                  return item.properties.REQUESTED_DATETIME;
+                },
+                label: 'from the last',
+                values: [
+                  {
+                    label: '30 days',
+                    value: '30',
+                    unit: 'days',
+                    direction: 'subtract',
+                  },
+                  {
+                    label: '90 days',
+                    value: '90',
+                    unit: 'days',
+                    direction: 'subtract',
+                  },
+                  {
+                    label: 'year',
+                    value: '1',
+                    unit: 'years',
+                    direction: 'subtract',
+                  }
+                ]
+              }
+            ],
             overlay: '311',
             fields: [
               {
                 label: 'Date',
                 value(state, item) {
                   return item.properties.REQUESTED_DATETIME;
-
                 },
                 transforms: [
                   'date'
@@ -1378,7 +1433,24 @@ Mapboard.default({
                 return itemRow;
               });
               return rows;
-            }
+            },
+            // filterText() {
+            //   return 'from the last';
+            // },
+            // filterValues: {
+            //   value1: {
+            //     text: '30 days',
+            //     value: '30'
+            //   },
+            //   value2: {
+            //     text: '90 days',
+            //     value: '90'
+            //   },
+            //   value3: {
+            //     text: 'year',
+            //     value: '365'
+            //   }
+            // },
           }
         }
       ]
