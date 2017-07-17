@@ -56,6 +56,37 @@ class DataManager {
     return this.activeTopicConfig().parcels;
   }
 
+  /* ROUTING */
+
+  makeHash(address, topic) {
+    let hash = `/${address}`;
+    if (topic) {
+      hash += `/${topic}`;
+    }
+    return hash;
+  }
+
+  // arguably this would be better off in Router, but that would create a
+  // circular ref router => datamanager => router. trying this for now.
+  routeToAddress(input) {
+    const activeTopic = this.store.state.activeTopic;
+    const nextHash = this.makeHash(input, activeTopic);
+
+    console.log('route to address', nextHash);
+
+    window.location.hash = nextHash;
+  }
+
+  routeToTopic(topic) {
+    // TODO add an address getter fn to config so this isn't ais-specific
+    const address = this.store.state.geocode.data.properties.street_address;
+    const nextHash = this.makeHash(address, topic);
+
+    console.log('route to topic:', topic, `(${nextHash})`);
+
+    window.location.hash = nextHash;
+  }
+
   /* DATA FETCHING METHODS */
 
   fetchData() {

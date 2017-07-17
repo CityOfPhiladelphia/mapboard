@@ -16,6 +16,13 @@ class Router {
     }
   }
 
+  getAddressFromState() {
+    // TODO add an address getter fn to config so this isn't ais-specific
+    const geocodeData = this.store.state.geocode.data || {};
+    const props = geocodeData.properties || {};
+    return props.street_address;
+  }
+
   hashChanged() {
     const location = window.location;
     const hash = location.hash;
@@ -41,11 +48,20 @@ class Router {
       return;
     }
 
-    const address = decodeURIComponent(addressComp);
-    let topic;
+    const nextAddress = decodeURIComponent(addressComp);
+    let nextTopic;
 
     if (pathComps.length > 1) {
-      topic = decodeURIComponent(pathComps[1]);
+      nextTopic = decodeURIComponent(pathComps[1]);
+    }
+
+    if (nextTopic) {
+      // check against active topic
+      const prevTopic = this.store.state.activeTopic;
+
+      if (!prevTopic || prevTopic !== nextTopic) {
+        this.store.commit('setActiveTopic', nextTopic);
+      }
     }
 
     // METHOD 1: update state
@@ -56,18 +72,16 @@ class Router {
     // }
 
     // METHOD 2: geocode directly
-    if (address) {
-      this.dataManager.geocode(address);
+    if (nextAddress) {
+      // check against current address
+      const prevAddress = this.getAddressFromState();
+
+      // if the hash address is different, geocode
+      if (!prevAddress || nextAddress !== prevAddress) {
+        this.dataManager.geocode(nextAddress);
+      }
     }
   }
-
-  // route(address) {
-  //   const nextHash = `/${address}/${topic}`;
-  //
-  //   console.log(`route: ${nextHash}`);
-  //
-  //   window.location.hash = nextHash;
-  // }
 }
 
 function routerMixin(Vue, opts) {

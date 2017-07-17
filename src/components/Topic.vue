@@ -2,7 +2,7 @@
   <div>
     <a href="#"
        class="topic-header"
-       @click="handleTopicHeaderClick"
+       @click.prevent="handleTopicHeaderClick"
        v-if="shouldShowHeader"
     >
       <span v-show="status === 'waiting'" class="loading">
@@ -125,12 +125,14 @@
       handleTopicHeaderClick() {
         const topic = this.$props.topicKey;
         let nextTopic;
+
         if (topic === this.$store.state.activeTopic) {
           nextTopic = null;
         } else {
           nextTopic = topic;
         }
-        this.$store.commit('setActiveTopic', nextTopic);
+
+        this.$dataManager.routeToTopic(nextTopic);
 
         // handle basemap
         const prevBasemap = this.$store.state.map.basemap;
