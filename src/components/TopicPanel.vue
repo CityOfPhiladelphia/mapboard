@@ -3,10 +3,10 @@
     <div class="row">
     <!-- <div class="row" :class="{ 'row-with-widget': this.$store.state.pictometry.active }"> -->
       <!-- before search -->
-      <greeting v-show="!ais" />
+      <greeting v-show="!geocode" />
 
       <!-- after search -->
-      <div v-if="ais">
+      <div v-if="geocode">
         <div class="address-header" v-if="address">
           <h1 class="address-header-line-1">{{ address }}</h1>
           <div class="address-header-line-2 small-text">PHILADELPHIA, PA {{ zipCode }}</div>
@@ -33,7 +33,6 @@
     methods: {
       shouldShowTopic(topic) {
         const requiredSources = topic.dataSources || [];
-        console.log('topicPanel, shouldShowTopic', requiredSources);
 
         // if there aren't any required topics, show it
         if (requiredSources.length === 0) {
@@ -45,20 +44,22 @@
       }
     },
     computed: {
-      ais() {
+      geocode() {
         return this.$store.state.geocode.data;
       },
       address() {
-        const ais = this.ais;
-        if (!ais) return null;
-        return ais.properties.street_address;
+        const geocode = this.geocode;
+        if (!geocode) return null;
+        return geocode.properties.street_address;
       },
       zipCode() {
-        const ais = this.ais;
-        if (!ais) return null;
-        const zipCode = ais.properties.zip_code;
-        const zip4 = ais.properties.zip_4
-        return zipCode + '-' + zip4;
+        const geocode = this.geocode;
+        if (!geocode) return null;
+        const zipCode = geocode.properties.zip_code;
+        const zip4 = geocode.properties.zip_4;
+        const parts = [zipCode];
+        if (zip4) parts.push(zip4);
+        return parts.join('-');
       }
     }
   };
