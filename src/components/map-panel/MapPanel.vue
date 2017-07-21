@@ -225,10 +225,7 @@
       CyclomediaRecordingCircle
     },
     mounted() {
-      // route once on load
-      this.$_router.hashChanged();
-
-      this.geocodeInput;
+      this.$controller.appDidLoad();
     },
     watch: {
       // geocodeInput(input) {
@@ -330,7 +327,7 @@
       // if there's a default address, navigate to it
       const defaultAddress = this.$config.defaultAddress;
       if (defaultAddress) {
-        this.geocode(defaultAddress);
+        this.$dataManager.geocode(defaultAddress);
       }
 
       // create cyclomedia recordings client
@@ -349,46 +346,30 @@
       }
     },
     methods: {
-      handleMapClick(e) {
-        // console.log('handle map click');
-
-        // TODO figure out why form submits via enter key are generating a map
-        // click event and remove this
-        if (e.originalEvent.keyCode === 13) {
-          return;
-        }
-        this.$store.commit('setLastSearchMethod', 'reverseGeocode')
-
-        // METHOD 1: intersect map click latlng with parcel layers
-        const latLng = e.latlng;
-        this.$dataManager.getDorParcelsByLatLng(latLng);
-        this.$dataManager.getPwdParcelByLatLng(latLng);
-
-        // METHOD 2: reverse geocode via AIS
-        // this.getReverseGeocode(e.latlng);
+      configForBasemap(basemap) {
+        return this.$config.map.basemaps[basemap] || {};
       },
+
+      handleMapClick(e) {
+        this.$controller.handleMapClick(e);
+      },
+
       handleMapMove(e) {
+        const map = this.$store.state.map.map;
+
         // update state
-        const center = this.$store.state.map.map.getCenter();
+        const center = map.getCenter();
         this.$store.commit('setMapCenter', center);
-        const zoom = this.$store.state.map.map.getZoom();
+
+        const zoom = map.getZoom();
         this.$store.commit('setMapZoom', zoom);
+
+        // update cyclo recordings
         this.updateCyclomediaRecordings();
       },
+
       handleSearchFormSubmit(e) {
-        const input = e.target[0].value;
-        this.$store.commit('setLastSearchMethod', 'geocode');
-        this.$store.commit('setPwdParcel', null);
-        this.$store.commit('setDorParcels', []);
-
-        // OLD METHOD: call geocode directly
-        // this.geocode(input);
-
-        // NEW METHOD: update url
-        // this.$_router.route(input);
-        const activeTopic = this.$store.state.activeTopic;
-        const nextHash = `/${input}/${activeTopic}`;
-        window.location.hash = nextHash;
+        this.$controller.handleSearchFormSubmit(e);
       }
     }, // end of methods
   }; //end of export
