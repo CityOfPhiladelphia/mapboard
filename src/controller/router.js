@@ -1,19 +1,38 @@
 import { parse as parseUrl } from 'url';
-import DataManager from './data/data-manager';
 
 class Router {
   constructor(opts) {
-    const store = this.store = opts.store;
     const config = this.config = opts.config;
-    const enabled = this.enabled = config.router.enabled;
-    const eventBus = this.eventBus = opts.eventBus;
+    this.store = opts.store;
+    this.controller = opts.controller;
+    this.eventBus = opts.eventBus;
     this.dataManager = opts.dataManager;
     this.history = window.history;
 
+    // check if the router should be silent (i.e. not update the url or listen
+    // for hash changes)
+    const silent = this.silent = !config.router || !config.router.enabled;
+
     // only listen for route changes if routing is enabled
-    if (enabled) {
+    if (!silent) {
       window.onhashchange = this.hashChanged.bind(this);
     }
+  }
+
+  makeHash(address, topic) {
+    console.log('make hash', address, topic);
+
+    // must have an address
+    if (!address || address.length === 0) {
+      return null;
+    }
+
+    let hash = `/${address}`;
+    if (topic) {
+      hash += `/${topic}`;
+    }
+
+    return hash;
   }
 
   getAddressFromState() {
@@ -55,6 +74,12 @@ class Router {
       nextTopic = decodeURIComponent(pathComps[1]);
     }
 
+    this.route(nextAddress, nextTopic);
+  }
+
+  route(nextAddress, nextTopic = '') {
+    console.log('Router.route', nextAddress, nextTopic);
+
     if (nextTopic) {
       // check against active topic
       const prevTopic = this.store.state.activeTopic;
@@ -64,35 +89,42 @@ class Router {
       }
     }
 
-    // METHOD 1: update state
-    // this.store.commit('setGeocodeInput', address);
-    // const activeTopic = this.store.state.activeTopic;
-    // if (topic && topic !== activeTopic) {
-    //   this.store.commit('setActiveTopic', topic);
-    // }
-
-    // METHOD 2: geocode directly
     if (nextAddress) {
       // check against current address
       const prevAddress = this.getAddressFromState();
 
       // if the hash address is different, geocode
       if (!prevAddress || nextAddress !== prevAddress) {
-        this.dataManager.geocode(nextAddress);
+        this.dataManager.geocode(nextAddress)
+                        .then(this.didGeocode.bind(this));
+      }
+    }
+
+    // if not silent, update hash
+    if (!this.silent) {
+      const prevOrNextAddress = nextAddress || this.getAddressFromState();
+
+      const nextHash = this.makeHash(prevOrNextAddress, nextTopic);
+      console.log('nextHash', nextHash);
+
+      if (nextHash) {
+        window.location.hash = nextHash;
+      } else {
+        throw `Could not form hash for: ${prevOrNextAddress}, ${nextTopic}`;
       }
     }
   }
+
+  didGeocode() {
+    console.log('Router.didGeocode');
+
+    // update url
+    // REVIEW this is ais-specific
+    const address = this.store.state.geocode.data.properties.street_address;
+    const topic = this.store.state.activeTopic;
+
+    window.location.hash = this.makeHash(address, topic);
+  }
 }
 
-function routerMixin(Vue, opts) {
-  const router = new Router(opts);
-
-  Vue.mixin({
-    created() {
-      // $router seems to be reserved?
-      this.$_router = router;
-    }
-  });
-};
-
-export default routerMixin;
+export default Router;
