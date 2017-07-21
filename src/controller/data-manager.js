@@ -19,6 +19,7 @@ class DataManager {
     const store = this.store = opts.store;
     const config = this.config = opts.config;
     this.eventBus = opts.eventBus;
+    this.controller = opts.controller;
 
     // create clients
     this.clients = {};
@@ -58,34 +59,34 @@ class DataManager {
 
   /* ROUTING */
 
-  makeHash(address, topic) {
-    let hash = `/${address}`;
-    if (topic) {
-      hash += `/${topic}`;
-    }
-    return hash;
-  }
+  // makeHash(address, topic) {
+  //   let hash = `/${address}`;
+  //   if (topic) {
+  //     hash += `/${topic}`;
+  //   }
+  //   return hash;
+  // }
 
   // arguably this would be better off in Router, but that would create a
   // circular ref router => datamanager => router. trying this for now.
-  routeToAddress(input) {
-    const activeTopic = this.store.state.activeTopic;
-    const nextHash = this.makeHash(input, activeTopic);
-
-    console.log('route to address', nextHash);
-
-    window.location.hash = nextHash;
-  }
-
-  routeToTopic(topic) {
-    // TODO add an address getter fn to config so this isn't ais-specific
-    const address = this.store.state.geocode.data.properties.street_address;
-    const nextHash = this.makeHash(address, topic);
-
-    console.log('route to topic:', topic, `(${nextHash})`);
-
-    window.location.hash = nextHash;
-  }
+  // routeToAddress(input) {
+  //   const activeTopic = this.store.state.activeTopic;
+  //   const nextHash = this.makeHash(input, activeTopic);
+  //
+  //   console.log('route to address', nextHash);
+  //
+  //   window.location.hash = nextHash;
+  // }
+  //
+  // routeToTopic(topic) {
+  //   // TODO add an address getter fn to config so this isn't ais-specific
+  //   const address = this.store.state.geocode.data.properties.street_address;
+  //   const nextHash = this.makeHash(address, topic);
+  //
+  //   console.log('route to topic:', topic, `(${nextHash})`);
+  //
+  //   window.location.hash = nextHash;
+  // }
 
   /* DATA FETCHING METHODS */
 
@@ -364,13 +365,12 @@ class DataManager {
   /* GEOCODING */
   geocode(address) {
     const didGeocode = this.didGeocode.bind(this);
-    this.clients.geocode.fetch(address, didGeocode);
+    // this.clients.geocode.fetch(address, didGeocode);
+    return this.clients.geocode.fetch(address).then(didGeocode);
   }
 
   didGeocode(feature) {
-    console.log('Router.didGeocode:', feature);
-
-    // TODO update url with standardized address
+    console.log('DataManager.didGeocode:', feature);
 
     // emit event to event bus
     this.eventBus.$emit('geocodeResult', feature);
@@ -413,6 +413,10 @@ class DataManager {
         //   this.fetchData();
         // }
       });
+    // if this is the result of a reverse geocode
+    } else {
+      // update url to reflect address
+
     }
 
     // reset data
@@ -420,7 +424,6 @@ class DataManager {
 
     // fetch new data
     this.fetchData();
-
   } // end didGeocode
 
   getPwdParcelByLatLng(latlng) {
@@ -468,9 +471,15 @@ class DataManager {
       feature &&
       this.store.state.lastSearchMethod === 'reverseGeocode'
     );
-    console.log('pwd shouldGeocode', shouldGeocode);
+
     if (shouldGeocode) {
-      this.geocode(feature.properties.PARCELID);
+      const id = feature.properties.PARCELID;
+      // const activeTopic = this.store.state.activeTopic;
+      // const nextHash = `/${id}/${activeTopic}`;
+      // window.location.hash = nextHash;
+
+      // this.geocode(id);
+      this.controller.router.route(id);
     } else {
       this.fetchData();
     }
@@ -517,9 +526,9 @@ class DataManager {
     console.log('dor shouldGeocode', shouldGeocode);
     if (shouldGeocode) {
       // TODO sort by mapreg, status
-      this.geocode(features[0].properties.MAPREG);
+      // this.geocode(features[0].properties.MAPREG);
+      this.controller.router.route(id);
     } else {
-
       this.fetchData();
     }
   }
