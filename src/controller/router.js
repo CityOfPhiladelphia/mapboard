@@ -46,7 +46,7 @@ class Router {
     const location = window.location;
     const hash = location.hash;
 
-    console.log('hash changed =>', hash);
+    // console.log('hash changed =>', hash);
 
     // parse url
     const comps = parseUrl(location.href);
@@ -63,7 +63,7 @@ class Router {
 
     // if there's no address, don't do anything
     if (!addressComp) {
-      console.log('no address, returning');
+      // console.log('no address, returning');
       return;
     }
 
@@ -78,7 +78,7 @@ class Router {
   }
 
   route(nextAddress, nextTopic = '') {
-    console.log('Router.route', nextAddress, nextTopic);
+    // console.log('Router.route', nextAddress, nextTopic);
 
     if (nextTopic) {
       // check against active topic
@@ -103,20 +103,16 @@ class Router {
     // if not silent, update hash
     if (!this.silent) {
       const prevOrNextAddress = nextAddress || this.getAddressFromState();
-
       const nextHash = this.makeHash(prevOrNextAddress, nextTopic);
-      console.log('nextHash', nextHash);
 
       if (nextHash) {
         window.location.hash = nextHash;
-      } else {
-        throw `Could not form hash for: ${prevOrNextAddress}, ${nextTopic}`;
       }
     }
   }
 
   didGeocode() {
-    console.log('Router.didGeocode');
+    // console.log('Router.didGeocode');
 
     // update url
     // REVIEW this is ais-specific
