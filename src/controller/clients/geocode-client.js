@@ -8,7 +8,7 @@ class GeocodeClient extends BaseClient {
   //   this.config = opts.config;
   //   this.store = opts.store;
   // }
-  fetch(input, callback) {
+  fetch(input) {
     const geocodeConfig = this.config.geocoder.forward;
     const url = geocodeConfig.url(input);
     const params = geocodeConfig.params;
@@ -20,9 +20,9 @@ class GeocodeClient extends BaseClient {
     const success = this.success.bind(this);
     const error = this.error.bind(this);
 
-    axios.get(url, { params })
+    // return a promise that can accept further chaining
+    return axios.get(url, { params })
       .then(success)
-      .then(callback)
       .catch(error);
   }
 
