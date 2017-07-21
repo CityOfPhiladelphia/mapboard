@@ -1,43 +1,69 @@
 <template>
   <div>
-    <div v-if="!!this.$props.options.filters" class="center horizontal-table-controls">
-      <!-- TODO the ids for filter spans should incorporate some sort of topic comp
-      to make them globally unique -->
-      <span v-for="(filter, index) in filters"
-            :id="'filter-' + index"
-      >
-        {{ filter.label }}
-        <select @change="handleFilterValueChange">
-          <option v-for="filterValue in filter.values"
-                  :value="slugifyFilterValue(filterValue)">
-                  {{ filterValue.label }}
-          </option>
-        </select>
-      </span>
+    <!-- controls -->
+    <div class="mb-horizontal-table-controls">
+        <div v-if="!!this.$props.options.filters"
+             class="vertically-centered"
+        >
+          <!-- TODO the ids for filter spans should incorporate some sort of topic comp
+          to make them globally unique -->
+          <div v-for="(filter, index) in filters"
+                :id="'filter-' + index"
+          >
+            <div class='vertically-centered mb-select-text'>{{ filter.label }}</div>
+            <select @change="handleFilterValueChange"
+                    class="mb-select"
+            >
+              <option v-for="filterValue in filter.values"
+                      :value="slugifyFilterValue(filterValue)"
+              >
+                {{ filterValue.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <form @submit.prevent="handleFilterFormX"
+              v-if="!!this.$props.options.filterFieldsByText"
+              class="vertically-centered"
+        >
+          <input :class="this.inputClass"
+                 placeholder="Search for text"
+                 id="theInput"
+                 @keyup="handleFilterFormKeyup"
+          />
+          <button v-if="this.filterWords !=''"
+                  class="mb-search-control-button"
+          >
+            <i class="fa fa-times fa-lg"></i>
+          </button>
+        </form>
+    </div> <!-- end of mb-horizontal-table-controls block -->
+
+    <div class="mb-horizontal-table-body">
+      <h4 v-if="slots.title">
+        {{ evaluateSlot(slots.title) }} {{ count }}
+      </h4>
+
+      <table role="grid" class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">
+        <thead>
+          <tr>
+            <th v-for="field in fields">{{ evaluateSlot(field.label) }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- <tr v-for="item in evaluateSlot(slots.items)"
+              :class="{ active: item._featureId === activeFeature }"
+          > -->
+          <horizontal-table-row v-for="item in itemsSorted"
+                                :item="item"
+                                :fields="fields"
+                                :key="item._featureId"
+                                :hasOverlay="hasOverlay"
+          />
+        </tbody>
+      </table>
     </div>
-
-    <h4 v-if="slots.title">
-      {{ evaluateSlot(slots.title) }} {{ count }}
-    </h4>
-
-    <table role="grid" class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">
-      <thead>
-        <tr>
-          <th v-for="field in fields">{{ evaluateSlot(field.label) }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- <tr v-for="item in evaluateSlot(slots.items)"
-            :class="{ active: item._featureId === activeFeature }"
-        > -->
-        <horizontal-table-row v-for="item in itemsSorted"
-                              :item="item"
-                              :fields="fields"
-                              :key="item._featureId"
-                              :hasOverlay="hasOverlay"
-        />
-      </tbody>
-    </table>
   </div>
 </template>
 
@@ -54,8 +80,8 @@
           'filter-0': {},
           'filter-1': {},
           'filter-2': {}
-        }
-          // this.slugifyFilterValue(this.options.filters[0].values[0])
+        },
+        filterWords: '',
       }
     },
     components: {
@@ -72,6 +98,13 @@
       }
     },
     computed: {
+      inputClass() {
+        if (this.filterWords === '') {
+          return 'mb-search-control-input';
+        } else {
+          return 'mb-search-control-input-full';
+        }
+      },
       filters() {
         return this.options.filters;
       },
@@ -147,6 +180,20 @@
             }
           }
         }
+
+        itemsFiltered = itemsFiltered.filter(item => {
+          let string = ''
+          for (let field of this.$props.options.filterFieldsByText) {
+            string += item.properties[field].toLowerCase()
+          }
+          return string.includes(this.filterWords.toLowerCase());
+        })
+        let idsFiltered = []
+        for (let item of itemsFiltered) {
+          idsFiltered.push(item._featureId);
+        }
+        this.$store.commit('setMapFilters', idsFiltered);
+
         // console.log('end of computed itemsFiltered:', itemsFiltered);
         return itemsFiltered;
       },
@@ -202,13 +249,6 @@
         return items.sort(sortFn);
       }
     },
-    // watch: {
-    //   activeFeature(value) {
-    //     if (value) {
-    //       this.scrollToRow(value);
-    //     }
-    //   }
-    // },
     methods: {
       slugifyFilterValue(filterValue) {
         const { direction, value, unit } = filterValue;
@@ -239,9 +279,14 @@
         const sourceFields = fields.map(field => field.sourceField);
         return sourceFields.map(sourceField => item[sourceField])
       },
-      // scrollToRow(value) {
-      //   console.log('scrollToRow is happening', value);
-      // }
+      handleFilterFormKeyup(e) {
+        const input = e.target.value;
+        this.filterWords = input;
+      },
+      handleFilterFormX(e) {
+        e.target[0].value = ''
+        this.filterWords = '';
+      }
     }
   };
 </script>
@@ -252,8 +297,58 @@
     text-align: left;
   }
 
-  .horizontal-table-controls select {
-    margin: 10px;
-    width: 125px;
+  .vertically-centered {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .mb-horizontal-table-controls {
+    text-align: center;
+    vertical-align: middle;
+    margin-bottom: 10px;
+  }
+
+  /* dropdown filters */
+  .mb-select-text {
+    font-size: 16px;
+    padding-right: 5px;
+  }
+
+  .mb-select {
+    width: 100px;
+    height: 40px;
+    vertical-align: middle;
+  }
+
+  /* input filters using text */
+  .mb-search-control-input {
+    border: 1px solid #f2c612;
+    height: 40px !important;
+    line-height: 48px;
+    padding: 8px;
+    font-size: 16px;
+    width: 300px;
+  }
+
+  .mb-search-control-input-full {
+    border: 1px solid #f2c612;
+    height: 40px !important;
+    line-height: 48px;
+    padding: 8px;
+    font-size: 16px;
+    width: 260px;
+  }
+
+  .mb-search-control-button {
+    width: 40px;
+    background: #ccc;
+    line-height: 40px;
+    float: right;
+  }
+
+  .group:after {
+    content: "";
+    display: table;
+    clear: both;
   }
 </style>

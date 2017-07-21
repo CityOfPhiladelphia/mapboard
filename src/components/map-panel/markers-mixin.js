@@ -25,7 +25,7 @@ export default {
     // returns all geojson features to be rendered on the map along with
     // necessary props.
     circleMarkers() {
-      const circleMarkers = [];
+      let circleMarkers = [];
       const overlayKeys = this.activeTopicConfig.overlays || [];
       const circleOverlayKeys = overlayKeys.filter(overlayKey => {
         const overlay = this.$config.overlays[overlayKey];
@@ -68,6 +68,11 @@ export default {
           circleMarkers.push(props);
         }
       }
+
+      circleMarkers = circleMarkers.filter(marker => {
+        const filteredMarkers = this.$store.state.map.filters
+        return filteredMarkers.includes(marker.featureId)
+      })
 
       return circleMarkers;
     },

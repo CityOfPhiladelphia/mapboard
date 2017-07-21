@@ -109,7 +109,7 @@ accounting.settings.currency.precision = 0;
 
 Mapboard.default({
   rootStyle: {
-    height: '600px'
+    height: '50cd0px'
   },
   baseConfig: '//raw.githubusercontent.com/rbrtmrtn/mapboard-base-config/develop/config.js',
   // baseConfig: '//rawgit.com/rbrtmrtn/mapboard-base-config/9605e5dca32277b1b877e8965d2156631b0b7443/config.js',
@@ -1385,6 +1385,11 @@ Mapboard.default({
                 ]
               }
             ],
+            filterFieldsByText: [
+              'DESCRIPTION',
+              'SUBJECT',
+              'ADDRESS'
+            ],
             overlay: '311',
             fields: [
               {
@@ -1405,7 +1410,11 @@ Mapboard.default({
               {
                 label: 'Subject',
                 value(state, item) {
-                  return item.properties.SUBJECT;
+                  if (item.properties.MEDIA_URL) {
+                    return '<a target="_blank" href='+item.properties.MEDIA_URL+'>'+item.properties.SUBJECT+'</a>';
+                  } else {
+                    return item.properties.SUBJECT;
+                  }
                 }
               },
               {
