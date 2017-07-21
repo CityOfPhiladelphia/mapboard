@@ -123,7 +123,9 @@ class Router {
     const address = this.store.state.geocode.data.properties.street_address;
     const topic = this.store.state.activeTopic;
 
-    window.location.hash = this.makeHash(address, topic);
+    if (!this.silent) {
+      window.location.hash = this.makeHash(address, topic);
+    }
   }
 }
 
