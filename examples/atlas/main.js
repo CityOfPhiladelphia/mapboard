@@ -819,7 +819,7 @@ Mapboard.default({
           slots: {
             title: 'Permits',
             items(state) {
-              const data = state.sources['liPermits'].data
+              const data = state.sources['liPermits'].data.rows;
               const rows = data.map(row => {
                 const itemRow = Object.assign({}, row);
                 //itemRow.DISTANCE = 'TODO';
@@ -868,7 +868,7 @@ Mapboard.default({
           slots: {
             title: 'Inspections',
             items(state) {
-              const data = state.sources['liInspections'].data
+              const data = state.sources['liInspections'].data.rows;
               const rows = data.map(row => {
                 const itemRow = Object.assign({}, row);
                 //itemRow.DISTANCE = 'TODO';
@@ -917,7 +917,7 @@ Mapboard.default({
           slots: {
             title: 'Violations',
             items(state) {
-              const data = state.sources['liViolations'].data
+              const data = state.sources['liViolations'].data.rows;
               const rows = data.map(row => {
                 const itemRow = Object.assign({}, row);
                 //itemRow.DISTANCE = 'TODO';
@@ -1031,7 +1031,7 @@ Mapboard.default({
           slots: {
             title : 'Appeals',
             items(state) {
-              const data = state.sources['zoningAppeals'].data || [];
+              const data = state.sources['zoningAppeals'].data.rows;
               const rows = data.map(row => {
                 const itemRow = Object.assign({}, row);
                 //itemRow.DISTANCE = 'TODO';
@@ -1084,7 +1084,7 @@ Mapboard.default({
           slots: {
             title: 'Documents',
             items(state) {
-              const data = state.sources['zoningDocs'].data
+              const data = state.sources['zoningDocs'].data.rows;
               const rows = data.map(row => {
                 const itemRow = Object.assign({}, row);
                 //itemRow.DISTANCE = 'TODO';
@@ -1135,7 +1135,7 @@ Mapboard.default({
           slots: {
             title: 'Registered Community Organizations',
             items(state) {
-              const data = state.sources['rco'].data
+              const data = state.sources['rco'].data;
               const rows = data.map(row => {
                 const itemRow = Object.assign({}, row);
                 //itemRow.DISTANCE = 'TODO';
@@ -1440,7 +1440,7 @@ Mapboard.default({
           slots: {
             title: 'Nearby Service Requests',
             items(state) {
-              const data = state.sources['311'].data
+              const data = state.sources['311'].data;
               const rows = data.map(row => {
                 const itemRow = Object.assign({}, row);
                 itemRow.DISTANCE = 'TODO';
