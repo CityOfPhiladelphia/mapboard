@@ -1,7 +1,7 @@
 <template>
   <div style="display: inline">
     <div class="year-selector-container"
-         v-show="activeBasemap.startsWith('imagery')"
+         v-show="activeBasemap && activeBasemap.startsWith('imagery')"
     >
       <ul>
         <li v-for="imageryYear in imageryYears"
@@ -40,12 +40,11 @@
     ],
     computed: {
       activeBasemap() {
-        const basemap = this.$store.state.map.basemap;
-        return basemap;
+        return this.$store.state.map.basemap;
       },
       toggleButtonImgSrc() {
         const basemap = this.activeBasemap;
-        const basemapConfig = this.configForBasemap(basemap);
+        const basemapConfig = this.configForBasemap(basemap) || {};
         const basemapType = basemapConfig.type;
         let src;
 
@@ -62,11 +61,10 @@
     },
     methods: Object.assign(methods, {
       configForBasemap(key) {
-        return this.$config.map.basemaps[key];
+        return this.$config.map.basemaps[key] || {};
       },
       // return a list of imagery basemap years in descending order
       handleImageryToggleButtonClick(e) {
-        console.log('handleImageryToggleButtonClick from BasemapControl fired')
         const prevBasemap = this.activeBasemap;
         const prevBasemapConfig = this.configForBasemap(prevBasemap);
         const prevBasemapType = prevBasemapConfig.type;
