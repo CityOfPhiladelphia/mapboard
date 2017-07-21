@@ -130,20 +130,15 @@
         return `(${length})`;
       },
       itemsFiltered() {
-        // console.log('computed: itemFiltered, filterData:', this.filterData);
         const items = this.items;
         let itemsFiltered = items.slice();
-        // console.log('test1, itemsFiltered:', itemsFiltered)
+
         if (this.filters) {
           for (let [index, filter] of this.filters.entries()) {
-            // console.log('filter', filter, index);
-
             const key = `filter-${index}`;
             const data = this.filterData[key];
             const {type, getValue} = filter;
-            const {direction, unit, value} = data;
-            // console.log('unit:', unit, 'value:', value);
-
+            const {direction, unit, value} = data
             // TODO put these in separate methods
             switch(type) {
               case 'time':
@@ -161,15 +156,9 @@
                 }
 
                 itemsFiltered = itemsFiltered.filter(item => {
-                  // console.log('item', item);
                   const itemValue = getValue(item);
-                  // console.log('item value', itemValue);
                   const itemMoment = moment(itemValue);
-                  // console.log('comparing', min, itemMoment, max);
                   const isBetween = itemMoment.isBetween(min, max)
-                  // if (isBetween === true) {
-                    // console.log('is between?', isBetween);
-                  // }
                   return isBetween;
                 });
                 break;
@@ -182,16 +171,22 @@
         }
 
         itemsFiltered = itemsFiltered.filter(item => {
-          let string = ''
-          for (let field of this.$props.options.filterFieldsByText) {
-            string += item.properties[field].toLowerCase()
+          let str = '';
+          const filterFields = this.options.filterFieldsByText || [];
+
+          for (let field of filterFields) {
+            str += item.properties[field].toLowerCase();
           }
-          return string.includes(this.filterWords.toLowerCase());
+
+          return str.includes(this.filterWords.toLowerCase());
         })
-        let idsFiltered = []
+
+        let idsFiltered = [];
+
         for (let item of itemsFiltered) {
           idsFiltered.push(item._featureId);
         }
+
         this.$store.commit('setMapFilters', idsFiltered);
 
         // console.log('end of computed itemsFiltered:', itemsFiltered);

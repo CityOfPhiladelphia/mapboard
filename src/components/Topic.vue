@@ -2,7 +2,7 @@
   <div>
     <a href="#"
        class="topic-header"
-       @click="setActiveTopic"
+       @click.prevent="handleTopicHeaderClick"
        v-if="shouldShowHeader"
     >
       <span v-show="status === 'waiting'" class="loading">
@@ -129,28 +129,32 @@
         return this.$config.map.basemaps[key];
       },
 
-      // TODO use mapMuptations for less boilerplate
-      setActiveTopic() {
+      handleTopicHeaderClick(e) {
         const topic = this.$props.topicKey;
+
         let nextTopic;
+
         if (topic === this.$store.state.activeTopic) {
           nextTopic = null;
         } else {
           nextTopic = topic;
         }
-        this.$store.commit('setActiveTopic', { topic: nextTopic });
+
+        // notify controller (which will handle routing)
+        this.$controller.handleTopicHeaderClick(nextTopic);
 
         // handle basemap
         const prevBasemap = this.$store.state.map.basemap;
         const prevBasemapConfig = this.configForBasemap(prevBasemap);
         const prevBasemapType = prevBasemapConfig.type;
-        let nextBasemap;
 
-        // if featuremap - maybe change
         if (prevBasemapType === 'featuremap') {
-          const nextTopicConfig = this.$config.topics.filter(top => top.key === nextTopic)[0];
-          nextBasemap = nextTopicConfig.basemap;
-          if (prevBasemap != nextBasemap) {
+          const nextTopicConfig = this.$config.topics.filter(topic => {
+            return topic.key === nextTopic;
+          })[0] || {};
+          const nextBasemap = nextTopicConfig.basemap;
+
+          if (prevBasemap !== nextBasemap) {
             this.$store.commit('setBasemap', nextBasemap);
           }
         }

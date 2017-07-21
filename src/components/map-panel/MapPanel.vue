@@ -20,29 +20,29 @@
 
       <!-- basemaps -->
       <esri-tiled-map-layer v-for="(basemap, key) in this.$config.map.basemaps"
-                         v-if="activeBasemap === key"
-                         :key="key"
-                         :url="basemap.url"
-                         :max-zoom="basemap.maxZoom"
-                         :attribution="basemap.attribution"
+                            v-if="activeBasemap === key"
+                            :key="key"
+                            :url="basemap.url"
+                            :max-zoom="basemap.maxZoom"
+                            :attribution="basemap.attribution"
       />
 
       <!-- basemap labels and parcels outlines -->
       <esri-tiled-map-layer v-for="(tiledLayer, key) in this.$config.map.tiledLayers"
-                         v-if="activeTiles.includes(key)"
-                         :key="key"
-                         :url="tiledLayer.url"
-                         :zIndex="tiledLayer.zIndex"
-                         :attribution="tiledLayer.attribution"
+                            v-if="tiledLayers.includes(key)"
+                            :key="key"
+                            :url="tiledLayer.url"
+                            :zIndex="tiledLayer.zIndex"
+                            :attribution="tiledLayer.attribution"
       />
 
       <esri-dynamic-map-layer v-for="(dynamicLayer, key) in this.$config.map.dynamicMapLayers"
-                          v-if="activeDynamicMaps.includes(key)"
-                         :key="key"
-                         :url="dynamicLayer.url"
-                         :attribution="dynamicLayer.attribution"
-                         :transparent="true"
-                         :opacity="dynamicLayer.opacity"
+                              v-if="activeDynamicMaps.includes(key)"
+                              :key="key"
+                              :url="dynamicLayer.url"
+                              :attribution="dynamicLayer.attribution"
+                              :transparent="true"
+                              :opacity="dynamicLayer.opacity"
       />
 
       <esri-feature-layer v-for="(featureLayer, key) in this.$config.map.featureLayers"
@@ -79,19 +79,19 @@
       <!-- NEW METHOD: try rendering markers generically based on marker type -->
       <!-- vector markers -->
       <vector-marker v-for="(marker, index) in markers"
-                    :latlng="marker.latlng"
-                    :key="marker.key"
+                     :latlng="marker.latlng"
+                     :key="marker.key"
       />
 
       <!-- marker using a png and ablility to rotate it -->
       <png-marker v-if="this.cyclomediaActive"
-                    :icon="'../../src/assets/camera.png'"
-                    :orientation="this.$store.state.cyclomedia.viewer.props.orientation"
+                  :icon="'../../src/assets/camera.png'"
+                  :orientation="this.$store.state.cyclomedia.viewer.props.orientation"
       />
 
       <!-- marker using custom code extending icons - https://github.com/iatkin/leaflet-svgicon -->
       <svg-marker v-if="this.cyclomediaActive"
-                    :orientation="this.$store.state.cyclomedia.viewer.props.orientation"
+                  :orientation="this.$store.state.cyclomedia.viewer.props.orientation"
       />
 
       <!-- geojson features -->
@@ -202,9 +202,9 @@
 
 <script>
   // mixins
-  import dataMixin from './data-mixin';
+  // import dataMixin from './data-mixin';
   import markersMixin from './markers-mixin';
-  import geocodeMixin from './geocode-mixin';
+  // import geocodeMixin from './geocode-mixin';
   import cyclomediaMixin from '../../cyclomedia/map-panel-mixin';
   import pictometryMixin from '../../pictometry/map-panel-mixin';
 
@@ -229,9 +229,9 @@
 
   export default {
     mixins: [
-      dataMixin,
+      // dataMixin,
       markersMixin,
-      geocodeMixin,
+      // geocodeMixin,
       cyclomediaMixin,
       pictometryMixin,
     ],
@@ -252,6 +252,17 @@
       PictometryButton,
       CyclomediaButton,
       CyclomediaRecordingCircle
+    },
+    mounted() {
+      this.$controller.appDidLoad();
+    },
+    watch: {
+      // geocodeInput(input) {
+      //   console.log('geocode input changed =>', input);
+      // }
+      // geocodeResult() {
+      //   console.log('geocode result changed')
+      // }
     },
     computed: {
       imageOverlay() {
@@ -276,8 +287,11 @@
       activeBasemap() {
         return this.$store.state.map.basemap;
       },
-      activeTiles() {
-        return this.$config.map.basemaps[this.activeBasemap].tiledLayers;
+      tiledLayers() {
+        const activeBasemap = this.activeBasemap;
+        const activeBasemapConfig = this.configForBasemap(activeBasemap)
+
+        return activeBasemapConfig.tiledLayers || [];
       },
       activeDynamicMaps() {
         if (!this.activeTopicConfig || !this.activeTopicConfig.dynamicMapLayers) {
@@ -329,17 +343,21 @@
       identifyFeature() {
         return (this.activeTopicConfig || {}).identifyFeature;
       },
+      activeTopic() {
+        return this.$store.state.activeTopic;
+      },
       activeTopicConfig() {
-        const key = this.$store.state.activeTopic;
+        const key = this.activeTopic;
+        let config;
 
         // if no active topic, return null
-        if (!key) {
-          return null;
+        if (key) {
+          config = this.$config.topics.filter((topic) => {
+            return topic.key === key;
+          })[0];
         }
 
-        return this.$config.topics.filter((topic) => {
-          return topic.key === key;
-        })[0];
+        return config || {};
       },
       activeParcelLayer() {
         return this.activeTopicConfig.parcels;
@@ -351,10 +369,10 @@
         return this.$store.state.pwdParcel;
       },
       geocodeResult() {
-        return this.$store.state.geocode.data;
+        return this.$store.state.geocode.data || {};
       },
       geocodeGeom() {
-        return (this.geocodeResult || {}).geometry;;
+        return this.geocodeResult.geometry;
       },
       streetAddress() {
         return this.geocodeResult.properties.street_address;
@@ -369,12 +387,15 @@
       mapBounds() {
         // TODO calculate map bounds based on leaflet markers above
       },
+      isGeocoding() {
+        return this.$store.state.geocode.status === 'waiting';
+      }
     },
     created() {
       // if there's a default address, navigate to it
       const defaultAddress = this.$config.defaultAddress;
       if (defaultAddress) {
-        this.geocode(defaultAddress);
+        this.$dataManager.geocode(defaultAddress);
       }
 
       // create cyclomedia recordings client
@@ -393,6 +414,9 @@
       }
     },
     methods: {
+      configForBasemap(basemap) {
+        return this.$config.map.basemaps[basemap] || {};
+      },
       shouldShowImageOverlay(key) {
         return key === this.imageOverlay;
       },
@@ -404,43 +428,24 @@
         }
       },
       handleMapClick(e) {
-        // console.log('handle map click');
-
-        // TODO figure out why form submits via enter key are generating a map
-        // click event and remove this
-        if (e.originalEvent.keyCode === 13) {
-          return;
-        }
-        this.$store.commit('setLastSearchMethod', 'reverseGeocode')
-
-        // METHOD 1: intersect map click latlng with parcel layers
-        this.getDorParcelsByLatLng(e.latlng);
-        this.getPwdParcelByLatLng(e.latlng);
-
-        // METHOD 2: reverse geocode via AIS
-        // this.getReverseGeocode(e.latlng);
+        this.$controller.handleMapClick(e);
       },
+
       handleMapMove(e) {
+        const map = this.$store.state.map.map;
+
         // update state
-        const center = this.$store.state.map.map.getCenter();
+        const center = map.getCenter();
         this.$store.commit('setMapCenter', center);
-        const zoom = this.$store.state.map.map.getZoom();
+
+        const zoom = map.getZoom();
         this.$store.commit('setMapZoom', zoom);
+
+        // update cyclo recordings
         this.updateCyclomediaRecordings();
       },
       handleSearchFormSubmit(e) {
-        const input = e.target[0].value;
-
-        if (input.length === 0) {
-          alert('Please enter a valid search address to search for.');
-          return;
-        }
-
-        this.$store.commit('setLastSearchMethod', 'geocode');
-        this.$store.commit('setPwdParcel', null);
-        this.$store.commit('setDorParcels', []);
-
-        this.geocode(input);
+        this.$controller.handleSearchFormSubmit(e);
       }
     }, // end of methods
   }; //end of export

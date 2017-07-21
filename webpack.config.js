@@ -42,11 +42,13 @@ module.exports = {
   },
   externals: {
     'vue': 'Vue',
+    'axios': 'axios',
     'leaflet': 'L',
     'jQuery': '$',
     'moment': 'moment'
   },
   devServer: {
+    clientLogLevel: 'none',
     historyApiFallback: true,
     noInfo: true,
     host: process.env.WEBPACK_DEV_HOST,

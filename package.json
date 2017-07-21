@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "Leaflet.vector-markers": "^0.0.6",
+    "axios": "^0.16.2",
     "leaflet": "^1.0.3",
     "moment": "^2.18.1",
     "vue": "^2.3.3",

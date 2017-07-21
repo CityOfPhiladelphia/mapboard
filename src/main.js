@@ -1,15 +1,16 @@
 import Vue from 'vue';
 import createStore from './store';
 import configMixin from './util/config-mixin';
-import eventBusMixin from './util/event-bus-mixin';
 import Mapboard from './components/Mapboard';
 import mergeDeep from './util/merge-deep';
+import controllerMixin from './controller';
 
 export default (clientConfig) => {
   const baseConfigUrl = clientConfig.baseConfig;
 
   // create a global event bus used to proxy events to the mapboard host
-  Vue.use(eventBusMixin);
+  const eventBus = new Vue();
+  Vue.prototype.$eventBus = eventBus;
 
   // get base config
   return $.ajax({
@@ -29,10 +30,29 @@ export default (clientConfig) => {
       // create store
       const store = createStore(config);
 
+      // create and globally mix in data manager
+      // const dataManager = new DataManager({ store, config, eventBus });
+
+      // REVIEW there might be a cleaner way of doing this:
+      // https://vuejs.org/v2/guide/plugins.html
+      // Vue.use((Vue, dataManager) => {
+      //   Vue.mixin({
+      //     created() {
+      //       this.$dataManager = dataManager;
+      //     }
+      //   });
+      // }, dataManager);
+
+      // create router
+      // Vue.use(routerMixin, { config, store, eventBus, dataManager });
+
+      // mix in controller
+      Vue.use(controllerMixin, { config, store, eventBus });
+
       // mount main vue
       const vm = new Vue({
         el: config.el || '#mapboard',
-        render: (h) => h(Mapboard),
+        render: h => h(Mapboard),
         store
       });
 

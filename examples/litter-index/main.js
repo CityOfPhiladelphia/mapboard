@@ -1,4 +1,5 @@
-var GATEKEEPER_KEY = '77e78967d0a3e768432f74132f784f42';
+var BASE_CONFIG_URL = '//rawgit.com/rbrtmrtn/mapboard-base-config/2fbe59eb4bc61b782c5e3723e764945f7fffed85/config.js',
+    GATEKEEPER_KEY = '77e78967d0a3e768432f74132f784f42';
 
 // TODO get user-entered address
 var searchInput = '1300 market street';
@@ -293,7 +294,18 @@ Mapboard.default({
   pictometry: {
     enabled: false
   },
-  baseConfig: '//s3.amazonaws.com/mapboard-base-config-clean-philly/config.js',
+  baseConfig: BASE_CONFIG_URL,
+  // dataSources: {},
+  greeting: {
+    components: [
+      {
+        type: 'image_',
+        slots: {
+          source: 'front.png'
+        }
+      }
+    ]
+  },
   defaultAddress: searchInput,
   topics: [
     {
@@ -428,6 +440,6 @@ Mapboard.default({
     },
     historicBasemaps: {
       enabled: false
-    },
+    }
   }
 });

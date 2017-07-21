@@ -1,4 +1,5 @@
 const GATEKEEPER_KEY = '35ae5b7bf8f0ff2613134935ce6b4c1e';
+const BASE_CONFIG_URL = '//rawgit.com/rbrtmrtn/mapboard-base-config/2fbe59eb4bc61b782c5e3723e764945f7fffed85/config.js';
 
 const ZONING_CODE_MAP = {
   'RSD-1': 'Residential Single Family Detached-1',
@@ -108,11 +109,14 @@ function getVacancyText(state) {
 accounting.settings.currency.precision = 0;
 
 Mapboard.default({
+  // DEV
+  // defaultAddress: '1234 MARKET ST',
+  router: {
+    enabled: true
+  },
   rootStyle: {
     height: '50cd0px'
   },
-  baseConfig: '//raw.githubusercontent.com/rbrtmrtn/mapboard-base-config/develop/config.js',
-  // baseConfig: '//rawgit.com/rbrtmrtn/mapboard-base-config/9605e5dca32277b1b877e8965d2156631b0b7443/config.js',
   map: {
     imagery: {
       enabled: true
@@ -121,6 +125,7 @@ Mapboard.default({
       enabled: true
     },
   },
+  baseConfig: BASE_CONFIG_URL,
   dataSources: {
     // nearby: {
     //   type: 'http-get',
@@ -193,7 +198,7 @@ Mapboard.default({
       }
     },
     zoningAppeals: {
-      type: 'carto',
+      type: 'http-get',
       url: 'https://phl.carto.com/api/v2/sql',
       options: {
         params: {
@@ -202,7 +207,7 @@ Mapboard.default({
       }
     },
     liPermits: {
-      type: 'carto',
+      type: 'http-get',
       url: 'https://phl.carto.com/api/v2/sql',
       options: {
         params: {
@@ -211,7 +216,7 @@ Mapboard.default({
       }
     },
     liInspections: {
-      type: 'carto',
+      type: 'http-get',
       url: 'https://phl.carto.com/api/v2/sql',
       options: {
         params: {
@@ -220,7 +225,7 @@ Mapboard.default({
       }
     },
     liViolations: {
-      type: 'carto',
+      type: 'http-get',
       url: 'https://phl.carto.com/api/v2/sql',
       options: {
         params: {
@@ -229,7 +234,7 @@ Mapboard.default({
       }
     },
     zoningDocs: {
-      type: 'carto',
+      type: 'http-get',
       url: 'https://phl.carto.com/api/v2/sql',
       options: {
         params: {
@@ -814,7 +819,7 @@ Mapboard.default({
           slots: {
             title: 'Permits',
             items(state) {
-              const data = state.sources['liPermits'].data
+              const data = state.sources['liPermits'].data.rows;
               const rows = data.map(row => {
                 const itemRow = Object.assign({}, row);
                 //itemRow.DISTANCE = 'TODO';
@@ -863,7 +868,7 @@ Mapboard.default({
           slots: {
             title: 'Inspections',
             items(state) {
-              const data = state.sources['liInspections'].data
+              const data = state.sources['liInspections'].data.rows;
               const rows = data.map(row => {
                 const itemRow = Object.assign({}, row);
                 //itemRow.DISTANCE = 'TODO';
@@ -912,7 +917,7 @@ Mapboard.default({
           slots: {
             title: 'Violations',
             items(state) {
-              const data = state.sources['liViolations'].data
+              const data = state.sources['liViolations'].data.rows;
               const rows = data.map(row => {
                 const itemRow = Object.assign({}, row);
                 //itemRow.DISTANCE = 'TODO';
@@ -1026,7 +1031,7 @@ Mapboard.default({
           slots: {
             title : 'Appeals',
             items(state) {
-              const data = state.sources['zoningAppeals'].data || [];
+              const data = state.sources['zoningAppeals'].data.rows;
               const rows = data.map(row => {
                 const itemRow = Object.assign({}, row);
                 //itemRow.DISTANCE = 'TODO';
@@ -1079,7 +1084,7 @@ Mapboard.default({
           slots: {
             title: 'Documents',
             items(state) {
-              const data = state.sources['zoningDocs'].data
+              const data = state.sources['zoningDocs'].data.rows;
               const rows = data.map(row => {
                 const itemRow = Object.assign({}, row);
                 //itemRow.DISTANCE = 'TODO';
@@ -1130,7 +1135,7 @@ Mapboard.default({
           slots: {
             title: 'Registered Community Organizations',
             items(state) {
-              const data = state.sources['rco'].data
+              const data = state.sources['rco'].data;
               const rows = data.map(row => {
                 const itemRow = Object.assign({}, row);
                 //itemRow.DISTANCE = 'TODO';
@@ -1435,7 +1440,7 @@ Mapboard.default({
           slots: {
             title: 'Nearby Service Requests',
             items(state) {
-              const data = state.sources['311'].data
+              const data = state.sources['311'].data;
               const rows = data.map(row => {
                 const itemRow = Object.assign({}, row);
                 itemRow.DISTANCE = 'TODO';

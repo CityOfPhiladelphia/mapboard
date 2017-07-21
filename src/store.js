@@ -91,7 +91,7 @@ function createStore(config) {
     getters: {},
     mutations: {
       setActiveTopic(state, payload) {
-        state.activeTopic = payload.topic;
+        state.activeTopic = payload;
       },
       setSourceStatus(state, payload) {
         const key = payload.key;

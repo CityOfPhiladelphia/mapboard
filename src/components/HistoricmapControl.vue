@@ -1,7 +1,7 @@
 <template>
   <div style="display: inline">
     <div class="year-selector-container"
-         v-show="activeBasemap.startsWith('historic')"
+         v-show="activeBasemap && activeBasemap.startsWith('historic')"
     >
       <ul>
         <li v-for="historicYear in historicYears"
@@ -45,7 +45,7 @@
       },
       toggleButtonImgSrc() {
         const basemap = this.activeBasemap;
-        const basemapConfig = this.configForBasemap(basemap);
+        const basemapConfig = this.configForBasemap(basemap) || {};
         const basemapType = basemapConfig.type;
         let src;
 
