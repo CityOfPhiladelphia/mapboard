@@ -20,27 +20,27 @@
 
       <!-- basemaps -->
       <esri-tiled-map-layer v-for="(basemap, key) in this.$config.map.basemaps"
-                         v-if="activeBasemap === key"
-                         :key="key"
-                         :url="basemap.url"
-                         :max-zoom="basemap.maxZoom"
-                         :attribution="basemap.attribution"
+                            v-if="activeBasemap === key"
+                            :key="key"
+                            :url="basemap.url"
+                            :max-zoom="basemap.maxZoom"
+                            :attribution="basemap.attribution"
       />
 
       <!-- basemap labels and parcels outlines -->
       <esri-tiled-map-layer v-for="(tiledLayer, key) in this.$config.map.tiledLayers"
-                         v-if="activeTiles.includes(key)"
-                         :key="key"
-                         :url="tiledLayer.url"
-                         :zIndex="tiledLayer.zIndex"
-                         :attribution="tiledLayer.attribution"
+                            v-if="tiledLayers.includes(key)"
+                            :key="key"
+                            :url="tiledLayer.url"
+                            :zIndex="tiledLayer.zIndex"
+                            :attribution="tiledLayer.attribution"
       />
 
       <esri-dynamic-map-layer v-for="(dynamicLayer, key) in this.$config.map.dynamicMapLayers"
-                          v-if="activeDynamicMaps.includes(key)"
-                         :key="key"
-                         :url="dynamicLayer.url"
-                         :attribution="dynamicLayer.attribution"
+                              v-if="activeDynamicMaps.includes(key)"
+                              :key="key"
+                              :url="dynamicLayer.url"
+                              :attribution="dynamicLayer.attribution"
       />
 
 
@@ -55,19 +55,19 @@
       <!-- NEW METHOD: try rendering markers generically based on marker type -->
       <!-- vector markers -->
       <vector-marker v-for="(marker, index) in markers"
-                    :latlng="marker.latlng"
-                    :key="marker.key"
+                     :latlng="marker.latlng"
+                     :key="marker.key"
       />
 
       <!-- marker using a png and ablility to rotate it -->
       <png-marker v-if="this.cyclomediaActive"
-                    :icon="'../../src/assets/camera.png'"
-                    :orientation="this.$store.state.cyclomedia.viewer.props.orientation"
+                  :icon="'../../src/assets/camera.png'"
+                  :orientation="this.$store.state.cyclomedia.viewer.props.orientation"
       />
 
       <!-- marker using custom code extending icons - https://github.com/iatkin/leaflet-svgicon -->
       <svg-marker v-if="this.cyclomediaActive"
-                    :orientation="this.$store.state.cyclomedia.viewer.props.orientation"
+                  :orientation="this.$store.state.cyclomedia.viewer.props.orientation"
       />
 
       <!-- geojson features -->
