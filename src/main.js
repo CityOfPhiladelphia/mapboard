@@ -3,8 +3,7 @@ import createStore from './store';
 import configMixin from './util/config-mixin';
 import Mapboard from './components/Mapboard';
 import mergeDeep from './util/merge-deep';
-import routerMixin from './router';
-import DataManager from './data/data-manager';
+import controllerMixin from './controller';
 
 export default (clientConfig) => {
   const baseConfigUrl = clientConfig.baseConfig;
@@ -32,20 +31,23 @@ export default (clientConfig) => {
       const store = createStore(config);
 
       // create and globally mix in data manager
-      const dataManager = new DataManager({ store, config, eventBus });
+      // const dataManager = new DataManager({ store, config, eventBus });
 
       // REVIEW there might be a cleaner way of doing this:
       // https://vuejs.org/v2/guide/plugins.html
-      Vue.use((Vue, dataManager) => {
-        Vue.mixin({
-          created() {
-            this.$dataManager = dataManager;
-          }
-        });
-      }, dataManager);
+      // Vue.use((Vue, dataManager) => {
+      //   Vue.mixin({
+      //     created() {
+      //       this.$dataManager = dataManager;
+      //     }
+      //   });
+      // }, dataManager);
 
       // create router
-      Vue.use(routerMixin, { config, store, eventBus, dataManager });
+      // Vue.use(routerMixin, { config, store, eventBus, dataManager });
+
+      // mix in controller
+      Vue.use(controllerMixin, { config, store, eventBus });
 
       // mount main vue
       const vm = new Vue({
