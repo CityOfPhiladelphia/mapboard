@@ -1,4 +1,5 @@
 const GATEKEEPER_KEY = '35ae5b7bf8f0ff2613134935ce6b4c1e';
+const BASE_CONFIG_URL = '//rawgit.com/rbrtmrtn/mapboard-base-config/2fbe59eb4bc61b782c5e3723e764945f7fffed85/config.js';
 
 // TODO get user-entered address from url(?)
 const searchInput = '1300 market street';
@@ -10,7 +11,7 @@ Mapboard.default({
   pictometry: {
     enabled: false
   },
-  baseConfig: '//gist.githubusercontent.com/rbrtmrtn/09b4f35396f97499c3097e2fecaed8e7/raw/3c068090d544f3b6e0e31a37acea652a30621c7e/config.js',
+  baseConfig: BASE_CONFIG_URL,
   // dataSources: {},
   greeting: {
     components: [
