@@ -239,8 +239,11 @@
       activeBasemap() {
         return this.$store.state.map.basemap;
       },
-      activeTiles() {
-        return this.$config.map.basemaps[this.activeBasemap].tiledLayers;
+      tiledLayers() {
+        const activeBasemap = this.activeBasemap;
+        const activeBasemapConfig = this.configForBasemap(activeBasemap)
+
+        return activeBasemapConfig.tiledLayers || [];
       },
       activeDynamicMaps() {
         if (!this.activeTopicConfig || !this.activeTopicConfig.dynamicMapLayers) {
