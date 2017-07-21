@@ -194,25 +194,5 @@ Mapboard.default({
         url: '//gis.phila.gov/arcgis/rest/services/Water/pv_data/MapServer/0',
       }
     }
-  },
-  geocoder: {
-    methods: {
-      search: {
-        url: function (input) {
-          return '//api.phila.gov/ais/v1/search/' + input;
-        },
-        params: {
-          gatekeeperKey: GATEKEEPER_KEY
-        }
-      },
-      reverseGeocode: {
-        url: function (input) {
-          return '//api.phila.gov/ais/v1/reverse_geocode/' + input;
-        },
-        params: {
-          gatekeeperKey: GATEKEEPER_KEY
-        }
-      }
-    }
-  },
+  }
 });
