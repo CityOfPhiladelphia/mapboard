@@ -1,4 +1,4 @@
-var GATEKEEPER_KEY = '35ae5b7bf8f0ff2613134935ce6b4c1e';
+var GATEKEEPER_KEY = '77e78967d0a3e768432f74132f784f42';
 
 // TODO get user-entered address
 var searchInput = '1300 market street';

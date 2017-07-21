@@ -1,6 +1,12 @@
 <script>
     export default {
     props: ['slots', 'options', 'item'],
+    computed: {
+      nullValue() {
+        const options = this.options || {};
+        return options.nullValue;
+      },
+    },
     methods: {
       evaluateSlot(valOrGetter, transforms = [], nullValue = '') {
         // check for null val/getter

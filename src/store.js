@@ -45,10 +45,11 @@ function createStore(config) {
       map: null,
       bounds: null,
       basemap: defaultTopic.basemap,
-      circleMarkers: [],
+      // circleMarkers: [],
       // this is the key for the active overlay image (eg regmap)
       imageOverlay: null,
       imageOverlayOpacity: null,
+      filters: [],
       // features: {
       //   markers: [
       //     // {
@@ -117,6 +118,9 @@ function createStore(config) {
         } else {
           state.sources[key].data = data;
         }
+      },
+      setMapFilters(state, payload) {
+        state.map.filters = payload;
       },
       // this sets empty targets for a data source
       createEmptySourceTargets(state, payload) {
