@@ -41,9 +41,33 @@
                               :key="key"
                               :url="dynamicLayer.url"
                               :attribution="dynamicLayer.attribution"
+                              :transparent="true"
+                              :opacity="dynamicLayer.opacity"
       />
 
+      <esri-feature-layer v-for="(featureLayer, key) in this.$config.map.featureLayers"
+                          v-if="shouldShowFeatureLayer(key, featureLayer.minZoom)"
+                          :key="key"
+                          :layerName="key"
+                          :url="featureLayer.url"
+                          :color="featureLayer.color"
+                          :fillColor="featureLayer.color"
+                          :fillOpacity="featureLayer.fillOpacity"
+                          :weight="featureLayer.weight"
+      />
 
+      <!-- regmaps -->
+      <esri-dynamic-map-layer v-for="(item, key) in this.imageOverlayItems"
+                              v-if="shouldShowImageOverlay(item.properties.RECMAP)"
+                              :key="key"
+                              :url="'//gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/'"
+                              :layers="[29]"
+                              :layerDefs="'29:NAME=\'g' + item.properties.RECMAP.toLowerCase() + '.tif\''"
+                              :transparent="true"
+                              :opacity="0.5"
+      />
+      <!-- :url="this.imageOverlayInfo.url"
+      :opacity="this.imageOverlayInfo.opacity" -->
 
       <!-- address marker -->
       <!-- REVIEW why does this need a key? it's not a list... -->
@@ -105,7 +129,7 @@
       <!-- CONTROLS: -->
       <!-- basemap control -->
       <div v-once>
-        <basemap-control v-if="hasImageryBasemaps"
+        <basemap-control v-if="shouldShowImageryToggle"
                          v-once
                          :position="'topright'"
                          :imagery-years="imageryYears"
@@ -113,7 +137,7 @@
       </div>
 
       <div v-once>
-        <historicmap-control v-if="hasHistoricBasemaps"
+        <historicmap-control v-if="shouldShowHistoricBasemapToggle"
                          v-once
                          :position="'topright'"
                          :historic-years="historicYears"
@@ -151,6 +175,7 @@
                        placeholder="Search the map"
                        :value="this.$config.defaultAddress"
                 />
+                <!-- :style="{ background: !!this.$store.state.error ? '#ffcece' : '#fff'}" -->
                 <button class="mb-search-control-button">
                   <i class="fa fa-search fa-lg"></i>
                 </button>
@@ -188,8 +213,10 @@
   import Control from '../../leaflet/Control';
   import EsriTiledMapLayer from '../../esri-leaflet/TiledMapLayer';
   import EsriDynamicMapLayer from '../../esri-leaflet/DynamicMapLayer';
+  import EsriFeatureLayer from '../../esri-leaflet/FeatureLayer';
   import Geojson from '../../leaflet/Geojson';
   import CircleMarker from '../../leaflet/CircleMarker';
+  import OpacitySlider from '../../leaflet/OpacitySlider';
   import VectorMarker from '../VectorMarker';
   import PngMarker from '../PngMarker';
   import SvgMarker from '../SvgMarker';
@@ -213,8 +240,10 @@
       Control,
       EsriTiledMapLayer,
       EsriDynamicMapLayer,
+      EsriFeatureLayer,
       Geojson,
       CircleMarker,
+      OpacitySlider,
       VectorMarker,
       PngMarker,
       SvgMarker,
@@ -236,6 +265,25 @@
       // }
     },
     computed: {
+      imageOverlay() {
+        return this.$store.state.map.imageOverlay;
+      },
+      imageOverlayItems() {
+        // console.log('calculating imageOverlayItem');
+        if (this.activeTopicConfig.imageOverlayGroup) {
+          const overlayGroup = this.activeTopicConfig.imageOverlayGroup
+          const state = this.$store.state;
+          const overlay = this.$config.imageOverlayGroups[overlayGroup].items(state);
+          // console.log('returning imageOverlayItem', overlay);
+          return overlay;
+        } else {
+          return [];
+        }
+      },
+      imageOverlayInfo() {
+        console.log('config:', this.$config);
+        return this.$config.map.dynamicMapLayers.regmaps;
+      },
       activeBasemap() {
         return this.$store.state.map.basemap;
       },
@@ -252,6 +300,16 @@
           return this.activeTopicConfig.dynamicMapLayers;
         }
       },
+      activeFeatureLayers() {
+        if (!this.activeTopicConfig || !this.activeTopicConfig.featureLayers) {
+          return [];
+        } else {
+          return this.activeTopicConfig.featureLayers;
+        }
+      },
+      activeFeature() {
+        return this.$store.state.activeFeature;
+      },
       basemaps() {
         return Object.values(this.$config.map.basemaps);
       },
@@ -260,6 +318,9 @@
       },
       hasImageryBasemaps() {
         return this.imageryBasemaps.length > 0;
+      },
+      shouldShowImageryToggle() {
+        return this.hasImageryBasemaps && this.$config.map.imagery.enabled;
       },
       imageryYears() {
         // pluck year from basemap objects
@@ -270,6 +331,10 @@
       },
       hasHistoricBasemaps() {
         return this.historicBasemaps.length > 0;
+      },
+      shouldShowHistoricBasemapToggle() {
+        return this.hasHistoricBasemaps &&
+               this.$config.map.historicBasemaps.enabled;
       },
       historicYears() {
         // pluck year from basemap objects
@@ -352,7 +417,16 @@
       configForBasemap(basemap) {
         return this.$config.map.basemaps[basemap] || {};
       },
-
+      shouldShowImageOverlay(key) {
+        return key === this.imageOverlay;
+      },
+      shouldShowFeatureLayer(key, minZoom) {
+        if (this.activeFeatureLayers.includes(key) && this.$store.state.map.zoom >= minZoom) {
+          return true;
+        } else {
+          return false;
+        }
+      },
       handleMapClick(e) {
         this.$controller.handleMapClick(e);
       },
@@ -370,7 +444,6 @@
         // update cyclo recordings
         this.updateCyclomediaRecordings();
       },
-
       handleSearchFormSubmit(e) {
         this.$controller.handleSearchFormSubmit(e);
       }

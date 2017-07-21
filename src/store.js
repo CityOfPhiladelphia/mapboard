@@ -35,7 +35,8 @@ function createStore(config) {
     // the ais feature
     geocode: {
       status: null,
-      data: null
+      data: null,
+      input: null
     },
     // the leaflet map object
     map: {
@@ -44,6 +45,11 @@ function createStore(config) {
       map: null,
       bounds: null,
       basemap: defaultTopic.basemap,
+      // circleMarkers: [],
+      // this is the key for the active overlay image (eg regmap)
+      imageOverlay: null,
+      imageOverlayOpacity: null,
+      filters: [],
       // features: {
       //   markers: [
       //     // {
@@ -69,7 +75,11 @@ function createStore(config) {
     },
     // we need this to know whether or not to force an update on the first show
     pictometry: {
-      active: false
+      ipa: null,
+      active: false,
+      shapeIds: [],
+      pngMarkerIds: [],
+      zoom: null,
     },
     activeFeature: null,
     lastSearchMethod: null
@@ -108,6 +118,9 @@ function createStore(config) {
         } else {
           state.sources[key].data = data;
         }
+      },
+      setMapFilters(state, payload) {
+        state.map.filters = payload;
       },
       // this sets empty targets for a data source
       createEmptySourceTargets(state, payload) {
@@ -148,6 +161,9 @@ function createStore(config) {
       setGeocodeData(state, payload) {
         state.geocode.data = payload;
       },
+      setGeocodeInput(state, payload) {
+        state.geocode.input = payload;
+      },
       setBasemap(state, payload) {
         state.map.basemap = payload;
       },
@@ -180,7 +196,28 @@ function createStore(config) {
       },
       setLastSearchMethod(state, payload) {
         state.lastSearchMethod = payload;
-      }
+      },
+      setPictometryIpa(state, payload) {
+        state.pictometry.ipa = payload;
+      },
+      setPictometryShapeIds(state, payload) {
+        state.pictometry.shapeIds = payload;
+      },
+      setPictometryPngMarkerIds(state, payload) {
+        state.pictometry.pngMarkerIds = payload;
+      },
+      setPictometryZoom(state, payload) {
+        state.pictometry.zoom = payload;
+      },
+      setImageOverlay(state, payload) {
+        state.map.imageOverlay = payload;
+      },
+      setImageOverlayOpacity(state, payload) {
+        state.map.imageOverlayOpacity = payload;
+      },
+      // setCircleMarkers(state, payload) {
+      //   state.map.circleMarkers.push(payload);
+      // }
     }
   });
 }

@@ -3,9 +3,11 @@
        :class="this.cycloContainerClass"
   >
   <!-- v-once -->
-    <div id="inCycloDiv">
+    <a id="inCycloDiv"
+         @click="this.popoutClicked"
+    >
       <i class="fa fa-external-link fa popout-icon"></i>
-    </div>
+    </a>
     <div id="cycloviewer" ref="cycloviewer" class="panoramaViewerWindow" />
   </div>
 </template>
@@ -88,6 +90,10 @@
         const viewer = this.$store.state.cyclomedia.viewer;
         viewer.openByCoordinate(coords);
       },
+      popoutClicked() {
+        // console.log('popoutClicked');
+        window.open('http://localhost:8082/examples/cyclomedia/', '_blank');
+      }
     }
   };
 </script>

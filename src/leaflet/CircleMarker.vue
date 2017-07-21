@@ -13,6 +13,18 @@
       'fillOpacity',
       'data'
     ],
+    // computed: {
+    //   activeFeature() {
+    //     return this.$store.state.activeFeature;
+    //   }
+    // },
+    // watch: {
+    //   activeFeature(nextActiveFeature) {
+    //     console.log('watch', nextActiveFeature);
+    //     this.bringCircleMarkerToFront();
+    //     //console.log(this.circleMarkers);
+    //   }
+    // },
     mounted() {
       const leafletElement = this.$leafletElement = this.createLeafletElement();
       const map = this.$store.state.map.map;
@@ -40,12 +52,27 @@
           ...options
         } = props;
         //console.log(new CircleMarker(latlng, options));
-        return new CircleMarker(latlng, options);
+        const newCircleMarker = new CircleMarker(latlng, options);
+        //this.$store.commit('setCircleMarkers', newCircleMarker);
+        return newCircleMarker;
       },
       parentMounted(parent) {
         const map = parent.$leafletElement;
         this.$leafletElement.addTo(map);
-      }
+      },
+      // bringCircleMarkerToFront() {
+      // // bringCircleMarkerToFront(circleMarker) {
+      //   console.log('bringCircleMarkerToFront');
+      //   // put marker on top
+      //   // const el = circleMarker._path;
+      //   //
+      //   // // remove from parent
+      //   // const group = circleMarker._renderer._rootGroup;
+      //   // group.removeChild(el);
+      //   //
+      //   // // append to end (which brings it to the front)
+      //   // group.appendChild(el);
+      // },
     }
   };
 </script>

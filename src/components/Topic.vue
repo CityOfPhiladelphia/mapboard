@@ -66,7 +66,14 @@
       },
       hasData() {
         return this.dataSources.every(dataSource => {
-          return this.$store.state.sources[dataSource].data;
+          const targetsFn = this.$config.dataSources[dataSource].targets
+          if (targetsFn) {
+            const targetsMap = this.$store.state.sources[dataSource].targets;
+            const targets = Object.values(targetsMap);
+            return targets.every(target => target.status !== 'waiting');
+          } else {
+            return this.$store.state.sources[dataSource].data;
+          }
         });
       },
       shouldShowBody() {
@@ -76,6 +83,7 @@
         return should;
       },
       shouldShowError() {
+        // console.log('shouldShowError', this.topic.label, this);
         return this.status === 'error' || (this.status !== 'waiting' && !this.hasData);
       },
       // REVIEW this is getting cached and not updating when the deps update

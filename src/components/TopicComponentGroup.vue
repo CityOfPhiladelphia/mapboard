@@ -18,6 +18,7 @@
   import HorizontalTable from './topic-components/HorizontalTable';
   import Image_ from './topic-components/Image';
   import VerticalTable from './topic-components/VerticalTable';
+  import OverlayToggleGroup from './topic-components/OverlayToggleGroup';
 
   export default {
     props: ['topicComponents', 'item'],
@@ -28,6 +29,7 @@
       HorizontalTable,
       Image_,
       VerticalTable,
+      OverlayToggleGroup,
     },
     beforeCreate() {
       // TabGroup imports TopicComponentGroup, which causes a circular
@@ -52,6 +54,6 @@
 
 <style scoped>
   .topic-component {
-    margin-bottom: 10px;
+    margin-bottom: 20px !important;
   }
 </style>

@@ -14,7 +14,30 @@
                          v-show="pictometryActive"
                          :apiKey="this.$config.pictometry.apiKey"
                          :secretKey="this.$config.pictometry.secretKey"
-      />
+      >
+        <png-marker v-if="this.pictometryShowAddressMarker"
+                :latlng="[this.geocodeData.geometry.coordinates[1], this.geocodeData.geometry.coordinates[0]]"
+                :icon="'markers.png'"
+                :height="60"
+                :width="40"
+                :offsetX="0"
+                :offsetY="0"
+        />
+        <layer v-if="this.pictometryActive"
+        />
+        <png-marker v-if="this.cyclomediaActive && this.pictometryActive"
+                :latlng="[this.$store.state.cyclomedia.viewer.props.orientation.xyz[1], this.$store.state.cyclomedia.viewer.props.orientation.xyz[0]]"
+                :icon="'camera2.png'"
+                :height="20"
+                :width="30"
+                :offsetX="-2"
+                :offsetY="-2"
+        />
+        <!-- :icon="'../assets/camera.png'" -->
+        <view-cone v-if="this.cyclomediaActive && this.pictometryActive"
+                   :orientation="this.$store.state.cyclomedia.viewer.props.orientation"
+        />
+      </pictometry-widget>
       <!-- :center="this.$store.state.map.map.center" -->
     </map-panel>
   </div>
@@ -25,6 +48,9 @@
   import MapPanel from './map-panel/MapPanel';
   import CyclomediaWidget from '../cyclomedia/Widget';
   import PictometryWidget from '../pictometry/Widget';
+  import Layer from '../pictometry/Layer';
+  import ViewCone from '../pictometry/ViewCone';
+  import PngMarker from '../pictometry/PngMarker';
 
   export default {
     components: {
@@ -32,6 +58,9 @@
       MapPanel,
       CyclomediaWidget,
       PictometryWidget,
+      Layer,
+      ViewCone,
+      PngMarker
     },
     computed: {
       cyclomediaActive() {
@@ -39,6 +68,26 @@
       },
       pictometryActive() {
         return this.$store.state.pictometry.active
+      },
+      pictometryZoom() {
+        return this.$store.state.pictometry.zoom
+      },
+      pictometryShowAddressMarker() {
+        if (!this.pictometryActive || !this.geocodeData) {
+          return false;
+        } else if (this.pictometryZoom < 20 && this.cyclomediaActive) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      geocodeData() {
+        return this.$store.state.geocode.data
+      }
+    },
+    watch: {
+      pictometryShowAddressMarker(nextValue) {
+        console.log('watch pictometryShowAddressMarker', nextValue);
       }
     }
   };

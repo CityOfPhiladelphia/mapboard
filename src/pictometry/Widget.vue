@@ -2,11 +2,21 @@
   <div id="pict-container"
        :class="this.pictContainerClass"
   >
+    <div id="in-pict-div"
+      @click="this.popoutClicked"
+      >
+      <i class="fa fa-external-link fa popout-icon"></i>
+    </div>
+    <!-- <div id="iframe-div"> -->
     <iframe
       id="pictometry-ipa"
       src="#"
       ref="pictometryIpa"
     />
+    <!-- </div> -->
+    <div>
+      <slot />
+    </div>
   </div>
 </template>
 
@@ -15,6 +25,7 @@
     props: [
       'apiKey',
       'secretKey',
+      'orientation',
     ],
     created() {
       this.$IFRAME_ID = 'pictometry-ipa';
@@ -40,20 +51,96 @@
         // return this.$store.state.geocode.data.geometry.coordinates;
         return this.$store.state.map.center;
       },
-      pictZoom() {
-        return this.$store.state.map.zoom + 2;
-      }
+      zoomSentToPict() {
+        // const mapZoom = this.$store.state.map.zoom;
+        // let zoom;
+        // if (this.cyclomediaActive) {
+        //   zoom = mapZoom
+        // } else {
+        //   zoom = mapZoom + 1;
+        // }
+        // return zoom;
+        return this.$store.state.map.zoom;
+      },
     },
     watch: {
       center(nextCenter) {
         this.$ipa.setLocation({
           y: nextCenter.lat,
           x: nextCenter.lng,
-          zoom: this.pictZoom
+          zoom: this.zoomSentToPict
         });
       },
+      zoomSentToPict(nextZoom) {
+        // console.log('watch zoomSentToPict', nextZoom);
+        this.$ipa.setLocation({
+          y: this.center.lat,
+          x: this.center.lng,
+          zoom: nextZoom
+        });
+      },
+      cyclomediaActive(nextStatus) {
+        if (nextStatus === true) {
+          // console.log('pict: cyclo on');
+          this.$ipa.showDashboard({
+            zoom: false,
+            imageFilter: false,
+            layers: false,
+            nextPrevious: false,
+            tools: false,
+            annotations: false,
+            rotation: false,
+            clearMeasurements: false,
+            exportPdf: false,
+            dualPane: false,
+            imageDate: false,
+            panTool: false,
+            exportImage: false,
+            areaTool: false,
+            distanceTool: false,
+            heightTool: false,
+            locationTool: false,
+            elevationTool: false,
+            bearingTool: false,
+            slopeTool: false,
+            xyzTool: false,
+            identifyPoint: false,
+            identifyBox: false
+          });
+        } else {
+          // console.log('pict: cyclo off');
+          this.$ipa.showDashboard({
+            zoom: true,
+            imageFilter: true,
+            layers: true,
+            nextPrevious: true,
+            tools: true,
+            annotations: true,
+            rotation: true,
+            clearMeasurements: true,
+            exportPdf: true,
+            dualPane: true,
+            imageDate: true,
+            panTool: true,
+            exportImage: true,
+            areaTool: true,
+            distanceTool: true,
+            heightTool: true,
+            locationTool: true,
+            elevationTool: true,
+            bearingTool: true,
+            slopeTool: true,
+            xyzTool: true,
+            identifyPoint: true,
+            identifyBox: true
+          });
+        }
+      }
     },
     methods: {
+      popoutClicked() {
+        // console.log('popout clicked');
+      },
       init() {
         // construct signed url
         const d = new Date();
@@ -70,84 +157,26 @@
 
         // create pictometry host
         const ipa = this.$ipa = new PictometryHost(iframeId, 'http://pol.pictometry.com/ipa/v1/load.php');
+        this.$store.commit('setPictometryIpa', ipa);
         ipa.ready = this.ipaReady;
       },
       ipaReady() {
         this.$ipa.setLocation({
-          // y: 39.952388,
-          // x: -75.163596,
           y: this.center.lat,
           x: this.center.lng,
-          zoom: 8
+          zoom: this.zoomSentToPict
         });
-        // if (this.cyclomediaActive == 'true') {
-          // app.map.placeCamera();
-          // app.map.placeViewCone();
-        // };
+
+        const self = this;
+
+        this.$ipa.addListener('onendzoom', function(zoom) {
+          // console.log('widget: ipa detected zoom change to', zoom);
+          self.$store.commit('setPictometryZoom', zoom.level);
+        })
       },
-      // setInitLocation() {
-      //   console.log('pictometry widget: setInitLocation is running')
-      //   if (coords) {
-      //     coords[1];
-      //   } else {
-      //     app.state.leafletCenterX = app.default.leafletCenterX;
-      //   }
-      //   if (localStorage.getItem('leafletCenterY')) {
-      //     app.state.leafletCenterY = localStorage.getItem('leafletCenterY');
-      //   } else {
-      //     app.state.leafletCenterY = app.default.leafletCenterY;
-      //   }
-      //   if (localStorage.getItem('theZoom')) {
-      //     app.state.theZoom = parseInt(localStorage.theZoom) + 1
-      //     //app.state.theZoom = localStorage.getItem('theZoom');
-      //   } else {
-      //     app.state.theZoom = app.default.theZoom;
-      //   }
-      //   if (localStorage.getItem('stViewX')) {
-      //     app.state.stViewX = localStorage.getItem('stViewX');
-      //   }
-      //   if (localStorage.getItem('stViewY')) {
-      //     app.state.stViewY = localStorage.getItem('stViewY');
-      //   }
-      //   if (localStorage.getItem('stViewYaw')) {
-      //     app.state.stViewYaw = localStorage.getItem('stViewYaw');
-      //   }
-      //   if (localStorage.getItem('stViewHfov')) {
-      //     app.state.stViewHfov = localStorage.getItem('stViewHfov');
-      //   }
-
-        // let default = {
-        //   leafletCenterY: 39.952388,
-        //   leafletCenterX: -75.163596,
-        //   theZoom: 8,
-        // }
-        // this.$ipa.setLocation({
-        //   y: 39.952388,
-        //   x: -75.163596,
-        //   zoom: 8
-        // });
-      //
-      //   var activeTopic = localStorage.getItem('activeTopic');
-      //   if (activeTopic) {
-      //     console.log('activeTopic: ', activeTopic);
-      //     this.didActivateTopic(activeTopic);
-      //   }
-      // },
-
     }, // end of methods
 
 
-      // },
-      // });
-
-      // app.init();
-
-      // app.map = (function ()
-      // {
-      //   return {
-      //     // function setInitLocation - set initial state location from localStorage or default
-      //
-      //
       //     didActivateTopic: function (topic) {
       //       console.log('didActivateTopic is firing with topic: ', topic);
       //       switch (topic) {
@@ -230,152 +259,9 @@
       //     circleIds : [],
       //     cameraIds : [],
       //
-      //     getViewConeLatLon: function(){
-      //       //Position, decimal degrees
-      //       var camLat = parseFloat(app.state.stViewY),
-      //         camLon = parseFloat(app.state.stViewX),
-      //         // Earth's radius
-      //         ER=6378137,
-      //         // viewcone radius, for scaling its size
-      //         camR = 10,
-      //         // Angle1 - camera angle off of N, Angle2 - fov angle
-      //         Angle1 = parseFloat(app.state.stViewYaw),
-      //         Angle2 = parseFloat(app.state.stViewHfov),
-      //         //
-      //         dnLP = Math.cos((Angle1+Angle2/2) * Math.PI/180)*camR,
-      //         deLP = Math.sin((Angle1+Angle2/2) * Math.PI/180)*camR,
-      //         dnRP = Math.cos((Angle1-Angle2/2) * Math.PI/180)*camR,
-      //         deRP = Math.sin((Angle1-Angle2/2) * Math.PI/180)*camR,
-      //         //Coordinate offsets in radians
-      //         dLatLP = dnLP/ER,
-      //         dLonLP = deLP/(ER*Math.cos(Math.PI*camLat/180)),
-      //         dLatRP = dnRP/ER,
-      //         dLonRP = deRP/(ER*Math.cos(Math.PI*camLat/180));
-      //         //OffsetPosition
-      //         app.state.viewCone.camRightLat = camLat + dLatLP * 180/Math.PI;
-      //         app.state.viewCone.camRightLon = camLon + dLonLP * 180/Math.PI;
-      //         app.state.viewCone.camLeftLat = camLat + dLatRP * 180/Math.PI;
-      //         app.state.viewCone.camLeftLon = camLon + dLonRP * 180/Math.PI;
-      //         /*app.state.dn = Math.cos(app.state.Angle1 * Math.PI/180)*app.state.camR;
-      //         app.state.de = Math.sin(app.state.Angle1 * Math.PI/180)*app.state.camR;
-      //         app.state.dLat = app.state.dn/app.state.ER;
-      //         app.state.dLon = app.state.de/(app.state.ER*Math.cos(Math.PI*app.state.camLat/180));
-      //         app.state.camStraightLat = parseFloat(app.state.camLat) + parseFloat(app.state.dLat) * 180/Math.PI;
-      //         app.state.camStraightLon = parseFloat(app.state.camLon) + parseFloat(app.state.dLon) * 180/Math.PI;*/
-      //      },
       //
-      //      placeCamera: function(){
-      //        //app.map.getViewConeLatLon();
-      //        app.state.stViewMarker = {
-      //           type : ipa.SHAPE_TYPE.MARKER,
-      //           center: { y: app.state.stViewY, x: app.state.stViewX},
-      //           markerImageHeight: 20,
-      //           markerImageWidth: 30,
-      //           markerOffsetX: -2,
-      //           markerOffsetY: -2,
-      //           markerImage: app.util.constructLocalUrl(window.location.hostname, '/pictometry/images/camera.png'),
-      //           onShapeClick: 'true'
-      //        };
-      //        console.log('trying to add stViewMarker (camera)')
-      //        ipa.addShapes([app.state.stViewMarker], function(result) {
-      //          for ( var i = 0; i < result.length; i++) {
-      //            if ( result[i].success === 'false' ) {
-      //                alert(result[i].error);
-      //            } else {
-      //                app.map.cameraIds.push(result[i].shapeId);
-      //            }
-      //          }
-      //        });
-      //      },
-      //
-      //      placeViewCone: function(){
-      //        app.map.getViewConeLatLon();
-      //        app.state.viewTriangle = {
-      //            type : ipa.SHAPE_TYPE.POLYGON,
-      //            coordinates : [ {y : app.state.stViewY, x : app.state.stViewX, z: 0.0}, {y : app.state.viewCone.camRightLat, x : app.state.viewCone.camRightLon, z: 0.0}, {y : app.state.viewCone.camLeftLat, x : app.state.viewCone.camLeftLon, z: 0.0} ],
-      //            strokeColor: "#00a0ee",
-      //            strokeOpacity: 0.75,
-      //            strokeWeight: 2,
-      //            fillColor: "#00a0ee",
-      //            fillOpacity: 0.25,
-      //            altitudeMode: ipa.ALTITUDE_MODE.RELATIVE_TO_GROUND
-      //        };
-      //        ipa.addShapes([app.state.viewTriangle], function(result) {
-      //          for ( var i = 0; i < result.length; i++) {
-      //            if ( result[i].success === 'false' ) {
-      //                alert(result[i].error);
-      //            } else {
-      //                app.map.shapeIds.push(result[i].shapeId);
-      //                ipa.removeShapes(app.map.shapeIds.slice(0, -1));
-      //            }
-      //          }
-      //        });
-      //      },
       //    }//end of return
       // })();
-
-
-      // // watch localStorage
-      // // fire only when changes to x, y, zoom
-      // $(window).bind('storage', function (e) {
-      //   if (e.originalEvent.key == 'pictCoordsZoom') {
-      //     //console.log(e.originalEvent.key, e.originalEvent.newValue);
-      //     app.state.leafletCenterX = localStorage.leafletCenterX
-      //     app.state.leafletCenterY = localStorage.leafletCenterY
-      //     app.state.theZoom = parseInt(localStorage.theZoom) + 1
-      //     ipa.setLocation({
-      //        y: app.state.leafletCenterY,
-      //        x: app.state.leafletCenterX,
-      //        zoom: app.state.theZoom
-      //     });
-      //   };
-      //   if (e.originalEvent.key == 'stViewCoords') {
-      //     console.log('stViewCoords changed');
-      //     ipa.removeShapes(app.map.cameraIds);
-      //     ipa.removeShapes(app.map.shapeIds);
-      //     app.state.stViewX = localStorage.stViewX;
-      //     app.state.stViewY = localStorage.stViewY;
-      //     app.map.placeCamera();
-      //     app.map.placeViewCone();
-      //   };
-      //   if (e.originalEvent.key == 'stViewYaw') {
-      //     console.log('stViewYaw changed');
-      //     //ipa.removeAllShapes();
-      //     //ipa.removeShapes(app.map.shapeIds.slice(0, -1));
-      //     app.state.stViewYaw = localStorage.stViewYaw;
-      //     app.map.placeViewCone();
-      //   };
-      //   if (e.originalEvent.key == 'stViewHfov') {
-      //     console.log('stViewHfov changed');
-      //     //ipa.removeAllShapes();
-      //     //ipa.removeShapes(app.map.shapeIds.slice(0, -1));
-      //     app.state.stViewHfov = localStorage.stViewHfov;
-      //     app.map.placeViewCone();
-      //   };
-      //   if (e.originalEvent.key == 'activeTopic') {
-      //     var activeTopic = localStorage.getItem('activeTopic');
-      //     app.map.didActivateTopic(activeTopic);
-      //   };
-      //   if (e.originalEvent.key == 'previousTopic') {
-      //     var previousTopic = localStorage.getItem('previousTopic');
-      //     app.map.didDeactivateTopic(previousTopic);
-      //   };
-      //   if (e.originalEvent.key == 'stViewOpen') {
-      //     console.log('stViewOpen changed');
-      //     console.log(e.originalEvent.newValue);
-      //     if (e.originalEvent.newValue == 'true') {
-      //       app.map.placeCamera();
-      //       app.map.placeViewCone();
-      //     }
-      //     if (e.originalEvent.newValue == 'false') {
-      //       console.log('stViewOpen is false');
-      //       ipa.removeAllShapes();
-      //     };
-      //   };
-      // });
-
-    //}
-
 
 
   }; // end of export
@@ -384,18 +270,42 @@
 
 
 <style scoped>
+
+
 header.site-header > .row:last-of-type {
   background: #2176d2;
+}
+
+#in-pict-div {
+  /*float: right;*/
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  /*z-index: 2000000;*/
+  background-color: white;
+  border: 0px solid;
+  width: 30px;
+  height: 30px;
+  /*display:none;*/
+  cursor:pointer;
+  /*position: relative;
+  top: 0px;
+  right: 0px;*/
 }
 
 #pict-container {
   padding: 0px;
   height: 50%;
+  position: relative;
 }
+
+/*#iframe-div {
+}*/
 
 #pictometry-ipa {
   height: 100%;
   width: 100%;
+  border: 0px;
 }
 
 #search-container {

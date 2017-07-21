@@ -1,28 +1,26 @@
-<template>
+<!-- <template>
   <opacity-slider :layer="this.$leafletElement"
                   :position="'topleft'"
-                  :initialOpacity="opacity"
   />
-</template>
+</template> -->
 <script>
   import L from 'leaflet';
-  import OpacitySlider from '../leaflet/OpacitySlider';
+  // import OpacitySlider from '../leaflet/OpacitySlider';
   // TODO look into a cleaner way of importing from esri-leaflet
-  const EsriDynamicMapLayer = L.esri.dynamicMapLayer;
+  const EsriFeatureLayer = L.esri.featureLayer;
 
+  // min and max zooms are not handled by esri leaflet, but are handled by vue
   export default {
-    components: {
-      OpacitySlider
-    },
     props: [
       'url',
       'minZoom',
       'maxZoom',
       'zIndex',
-      'opacity',
-      'layers',
-      'layerDefs',
-      'transparent',
+      'layerName',
+      'color',
+      'fillColor',
+      'fillOpacity',
+      'weight'
     ],
     created() {
       const leafletElement = this.$leafletElement = this.createLeafletElement();
@@ -37,17 +35,13 @@
     },
     // we don't actually render anything, but need to define either a template
     // or a render function
-    // render(h) {
-    //   return;
-    // },
-    computed: {
-
+    render(h) {
+      return;
     },
     methods: {
       createLeafletElement() {
         const props = Object.assign({}, this.$props);
-        // console.log('dynamic map', props);
-        return new EsriDynamicMapLayer(props);
+        return new EsriFeatureLayer(props);
       },
       parentMounted(parent) {
         const map = parent.$leafletElement;
@@ -56,3 +50,8 @@
     }
   };
 </script>
+
+<style>
+
+
+</style>

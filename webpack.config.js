@@ -44,7 +44,8 @@ module.exports = {
     'vue': 'Vue',
     'axios': 'axios',
     'leaflet': 'L',
-    'jQuery': '$'
+    'jQuery': '$',
+    'moment': 'moment'
   },
   devServer: {
     clientLogLevel: 'none',
