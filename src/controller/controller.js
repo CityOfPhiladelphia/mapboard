@@ -71,6 +71,10 @@ class Controller {
 
     this.router.route(null, topic);
   }
+
+  goToDefaultAddress(address) {
+    this.router.route(address);
+  }
 }
 
 export default Controller;
