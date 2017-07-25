@@ -837,7 +837,7 @@ Mapboard.default({
               {
                 label: 'Date',
                 value(state, item){
-                  return item.permitissuedate
+                  return item.inspectioncompleted
                 },
                 transforms: [
                   'date'
@@ -846,20 +846,20 @@ Mapboard.default({
               {
                 label: 'ID',
                 value(state, item){
-                  return item.permitnumber
+                  return item.casenumber
                   // return "<a target='_blank' href='"+item.properties.CODE_SECTION_LINK+"'>"+item.properties.CODE_SECTION+" <i class='fa fa-external-link'></i></a>"
                 }
               },
               {
                 label: 'Description',
                 value(state, item){
-                  return item.permitdescription
+                  return item.inspectiondescription
                 }
               },
               {
                 label: 'Status',
                 value(state, item){
-                  return item.status
+                  return item.inspectionstatus
                   // return "<a target='_blank' href='"+item.properties.CODE_SECTION_LINK+"'>"+item.properties.CODE_SECTION+" <i class='fa fa-external-link'></i></a>"
                 }
               },
@@ -886,7 +886,7 @@ Mapboard.default({
               {
                 label: 'Date',
                 value(state, item){
-                  return item.permitissuedate
+                  return item.caseaddeddate
                 },
                 transforms: [
                   'date'
@@ -895,14 +895,14 @@ Mapboard.default({
               {
                 label: 'ID',
                 value(state, item){
-                  return item.permitnumber
+                  return item.casenumber
                   // return "<a target='_blank' href='"+item.properties.CODE_SECTION_LINK+"'>"+item.properties.CODE_SECTION+" <i class='fa fa-external-link'></i></a>"
                 }
               },
               {
                 label: 'Description',
                 value(state, item){
-                  return item.permitdescription
+                  return item.violationdescription
                 }
               },
               {
