@@ -377,46 +377,15 @@ class DataManager {
 
     // if this is the result of a search from the search box, get parcels
     const lastSearchMethod = this.store.state.lastSearchMethod;
+
     if (lastSearchMethod === 'geocode') {
       /* DOR PARCELS */
       const dorParcelId = feature.properties.dor_parcel_id;
-      this.clients.dorParcel.fetchById(dorParcelId, () => {
-        // this belongs in map panel did get parcel callback
-        // const shouldGeocode = (
-        //   this.activeParcelLayer === 'dor' &&
-        //   //features.length < 1 &&
-        //   // features.length < 1 &&
-        //   this.store.state.lastSearchMethod === 'reverseGeocode'
-        // );
-        // // console.log('dor shouldGeocode', shouldGeocode);
-        // if (shouldGeocode) {
-        //   // TODO sort by mapreg, status
-        //   this.geocode(features[0].properties.MAPREG);
-        // } else {
-        //   this.fetchData();
-        // }
-      });
+      this.clients.dorParcel.fetchById(dorParcelId);
 
       /* PWD PARCELS */
       const pwdParcelId = feature.properties.pwd_parcel_id;
-      this.clients.pwdParcel.fetchById(pwdParcelId, () => {
-        // this belongs in map panel did get parcel callback
-        // const shouldGeocode = (
-        //   this.activeParcelLayer === 'pwd' &&
-        //   feature &&
-        //   this.store.state.lastSearchMethod === 'reverseGeocode'
-        // );
-        // // console.log('pwd shouldGeocode', shouldGeocode);
-        // if (shouldGeocode) {
-        //   this.geocode(feature.properties.PARCELID);
-        // } else {
-        //   this.fetchData();
-        // }
-      });
-    // if this is the result of a reverse geocode
-    } else {
-      // update url to reflect address
-
+      this.clients.pwdParcel.fetchById(pwdParcelId);
     }
 
     // reset data
