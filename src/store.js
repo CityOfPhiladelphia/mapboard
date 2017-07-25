@@ -80,6 +80,14 @@ function createStore(config) {
       shapeIds: [],
       pngMarkerIds: [],
       zoom: null,
+      // this is the state of the main leaflet map. when these values change
+      // the pictometry widget should react. the reason these are duplicated
+      // here is to avoid an infinite loop in the Map component when the
+      // viewport changes.
+      map: {
+        center: [],
+        zoom: null
+      }
     },
     activeFeature: null,
     lastSearchMethod: null
@@ -143,6 +151,7 @@ function createStore(config) {
       setMapBounds(state, payload) {
         state.map.bounds = payload.bounds
       },
+      // this is the map center as an xy coordinate array (not latlng)
       setMapCenter(state, payload) {
         state.map.center = payload;
       },
@@ -205,6 +214,13 @@ function createStore(config) {
       },
       setPictometryPngMarkerIds(state, payload) {
         state.pictometry.pngMarkerIds = payload;
+      },
+      // this is the leaflet map center updated when the map is moved
+      setPictometryMapCenter(state, payload) {
+        state.pictometry.map.center = payload;
+      },
+      setPictometryMapZoom(state, payload) {
+        state.pictometry.map.zoom = payload;
       },
       setPictometryZoom(state, payload) {
         state.pictometry.zoom = payload;
