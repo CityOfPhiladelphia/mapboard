@@ -434,12 +434,14 @@
       handleMapMove(e) {
         const map = this.$store.state.map.map;
 
-        // update state
+        // update state for pictometry
         const center = map.getCenter();
-        this.$store.commit('setMapCenter', center);
+        const { lat, lng } = center;
+        const coords = [lng, lat];
+        this.$store.commit('setPictometryMapCenter', coords);
 
         const zoom = map.getZoom();
-        this.$store.commit('setMapZoom', zoom);
+        this.$store.commit('setPictometryMapZoom', zoom);
 
         // update cyclo recordings
         this.updateCyclomediaRecordings();
