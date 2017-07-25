@@ -296,16 +296,6 @@ Mapboard.default({
   },
   baseConfig: BASE_CONFIG_URL,
   // dataSources: {},
-  greeting: {
-    components: [
-      {
-        type: 'image_',
-        slots: {
-          source: 'front.png'
-        }
-      }
-    ]
-  },
   defaultAddress: searchInput,
   topics: [
     {

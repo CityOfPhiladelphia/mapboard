@@ -253,6 +253,21 @@
       CyclomediaButton,
       CyclomediaRecordingCircle
     },
+    created() {
+      // if there's a default address, navigate to it
+      const defaultAddress = this.$config.defaultAddress;
+      if (defaultAddress) {
+        this.$controller.goToDefaultAddress(defaultAddress);
+      }
+
+      // create cyclomedia recordings client
+      this.$cyclomediaRecordingsClient = new CyclomediaRecordingsClient(
+        this.$config.cyclomedia.recordingsUrl,
+        this.$config.cyclomedia.username,
+        this.$config.cyclomedia.password,
+        4326
+      );
+    },
     mounted() {
       this.$controller.appDidLoad();
     },
@@ -390,21 +405,6 @@
       isGeocoding() {
         return this.$store.state.geocode.status === 'waiting';
       }
-    },
-    created() {
-      // if there's a default address, navigate to it
-      const defaultAddress = this.$config.defaultAddress;
-      if (defaultAddress) {
-        this.$dataManager.geocode(defaultAddress);
-      }
-
-      // create cyclomedia recordings client
-      this.$cyclomediaRecordingsClient = new CyclomediaRecordingsClient(
-        this.$config.cyclomedia.recordingsUrl,
-        this.$config.cyclomedia.username,
-        this.$config.cyclomedia.password,
-        4326
-      );
     },
     watch: {
       picOrCycloActive(value) {
