@@ -386,6 +386,12 @@ class DataManager {
       /* PWD PARCELS */
       const pwdParcelId = feature.properties.pwd_parcel_id;
       this.clients.pwdParcel.fetchById(pwdParcelId);
+
+      // pan and zoom map
+      const coords = feature.geometry.coordinates;
+      console.log('about to set map coords', coords);
+      this.store.commit('setMapCenter', coords);
+      this.store.commit('setMapZoom', 18);
     }
 
     // reset data

@@ -47,11 +47,11 @@
           return 'large-24 columns mb-panel';
         }
       },
-      center() {
+      mapCenter() {
         // return this.$store.state.geocode.data.geometry.coordinates;
-        return this.$store.state.map.center;
+        return this.$store.state.pictometry.map.center;
       },
-      zoomSentToPict() {
+      mapZoom() {
         // const mapZoom = this.$store.state.map.zoom;
         // let zoom;
         // if (this.cyclomediaActive) {
@@ -60,22 +60,20 @@
         //   zoom = mapZoom + 1;
         // }
         // return zoom;
-        return this.$store.state.map.zoom;
+        return this.$store.state.pictometry.map.zoom;
       },
     },
     watch: {
-      center(nextCenter) {
-        this.$ipa.setLocation({
-          y: nextCenter.lat,
-          x: nextCenter.lng,
-          zoom: this.zoomSentToPict
-        });
+      mapCenter(nextCenter) {
+        const [x, y] = nextCenter;
+        const zoom = this.mapZoom;
+        this.$ipa.setLocation({ x, y, zoom });
       },
-      zoomSentToPict(nextZoom) {
+      mapZoom(nextZoom) {
         // console.log('watch zoomSentToPict', nextZoom);
         this.$ipa.setLocation({
-          y: this.center.lat,
-          x: this.center.lng,
+          y: this.mapCenter.lat,
+          x: this.mapCenter.lng,
           zoom: nextZoom
         });
       },
@@ -162,9 +160,9 @@
       },
       ipaReady() {
         this.$ipa.setLocation({
-          y: this.center.lat,
-          x: this.center.lng,
-          zoom: this.zoomSentToPict
+          y: this.mapCenter.lat,
+          x: this.mapCenter.lng,
+          zoom: this.mapZoom
         });
 
         const self = this;
