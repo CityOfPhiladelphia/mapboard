@@ -85,8 +85,8 @@ function createStore(config) {
       // here is to avoid an infinite loop in the Map component when the
       // viewport changes.
       map: {
-        center: [],
-        zoom: null
+        center: config.map.center,
+        zoom: config.map.zoom
       }
     },
     activeFeature: null,
