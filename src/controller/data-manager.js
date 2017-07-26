@@ -502,7 +502,10 @@ class DataManager {
     if (shouldGeocode) {
       // TODO sort by mapreg, status
       // this.geocode(features[0].properties.MAPREG);
-      this.controller.router.route(id);
+      const feature = features.length > 0 ? features[0] : {};
+      const props = feature.properties || {};
+      const id = props.MAPREG;
+      if (id) this.controller.router.route(id);
     } else {
       this.fetchData();
     }
