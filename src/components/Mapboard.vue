@@ -104,13 +104,11 @@
 
   @media (min-width: 1024px) {
     .mb-root {
-      height: 600px;
     }
   }
 
   @media (min-width: 1024px) {
     .mb-root {
-      height: 600px;
     }
   }
 
