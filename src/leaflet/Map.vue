@@ -44,7 +44,9 @@
         const [ lng, lat ] = nextCenter;
         const latLng = new LatLng(lat, lng);
 
-        this.$leafletElement.panTo(latLng);
+        // we used "setView" here because when you refreshed the app with an address in the url,
+        // "panTo" was getting stepped on by "setZoom" and it was not happening
+        this.$leafletElement.setView(latLng, this.zoom);
       },
       zoom(nextZoom) {
         if (!nextZoom) return;
@@ -130,7 +132,6 @@
     // },
     methods: {
       createLeafletElement() {
-        console.log('creating map');
         const { zoomControlPosition, ...options } = this.$props;
         return new Map(this.$refs.map, options);
       },
