@@ -130,6 +130,7 @@
     // },
     methods: {
       createLeafletElement() {
+        console.log('creating map');
         const { zoomControlPosition, ...options } = this.$props;
         return new Map(this.$refs.map, options);
       },
