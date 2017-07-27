@@ -2,7 +2,7 @@ var BASE_CONFIG_URL = '//rawgit.com/rbrtmrtn/mapboard-base-config/2fbe59eb4bc61b
     GATEKEEPER_KEY = '77e78967d0a3e768432f74132f784f42';
 
 // TODO get user-entered address
-var searchInput = '1300 market street';
+// var searchInput = '1300 market street';
 
 // mapping of rco polygon object ids to names
 var RCO_NAMES = {
@@ -296,12 +296,12 @@ Mapboard.default({
   },
   baseConfig: BASE_CONFIG_URL,
   // dataSources: {},
-  defaultAddress: searchInput,
+  // defaultAddress: searchInput,
   topics: [
     {
       key: 'litter',
       label: 'Litter',
-      icon: 'fa-trash-o',
+      // icon: 'fa-trash-o',
       components: [
         // this is not ready for the first release of the litter index site
         // {
