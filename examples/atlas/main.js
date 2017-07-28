@@ -1128,20 +1128,20 @@ Mapboard.default({
             fields: [
               {
                 label: 'RCO',
-                value(state, item){
+                value(state, item) {
                   return '<b>' + item.properties.ORGANIZATION_NAME + '</b><br>'
                   + item.properties.ORGANIZATION_ADDRESS
                 },
               },
               {
                 label: 'Meeting Address',
-                value(state, item){
+                value(state, item) {
                   return item.properties.MEETING_LOCATION_ADDRESS
                 }
               },
               {
                 label: 'Primary Contact',
-                value(state, item){
+                value(state, item) {
                   // return item.properties.PRIMARY_PHONE
                   return item.properties.PRIMARY_NAME + '<br>'
                   + item.properties.PRIMARY_PHONE + '<br>'
