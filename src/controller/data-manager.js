@@ -192,6 +192,12 @@ class DataManager {
                                     dataSourceKey,
                                     targetIdFn);
             break;
+          case 'http-get-nearby':
+            this.clients.http.fetchNearby(target,
+                                    dataSource,
+                                    dataSourceKey,
+                                    targetIdFn);
+            break;
           case 'esri':
             // TODO add targets id fn
             this.clients.esri.fetch(target, dataSource, dataSourceKey);

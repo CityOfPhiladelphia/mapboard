@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="shouldShowTable ? slots.data === shouldShowTable: true">
     <!-- controls -->
     <div class="mb-horizontal-table-controls">
         <div v-if="!!this.$props.options.filters"
@@ -9,16 +9,20 @@
           to make them globally unique -->
           <div v-for="(filter, index) in filters"
                 :id="'filter-' + index"
+                class="inline-block"
           >
             <div class='vertically-centered mb-select-text'>{{ filter.label }}</div>
             <select @change="handleFilterValueChange"
                     class="mb-select"
             >
-              <option v-for="filterValue in filter.values"
-                      :value="slugifyFilterValue(filterValue)"
-              >
-                {{ filterValue.label }}
-              </option>
+              <optgroup>
+                <option v-for="filterValue in filter.values"
+                        :value="slugifyFilterValue(filterValue)"
+                        class="mb-select-option"
+                >
+                  {{ filterValue.label }}
+                </option>
+              </optgroup>
             </select>
           </div>
         </div>
@@ -98,6 +102,14 @@
       }
     },
     computed: {
+      shouldShowTable() {
+        if (this.$props.item) {
+          const filterValue = this.$props.item//['filter-0'].value;
+          return filterValue;
+        } else {
+          return undefined;
+        }
+      },
       inputClass() {
         if (this.filterWords === '') {
           return 'mb-search-control-input';
@@ -141,6 +153,13 @@
             const {direction, unit, value} = data
             // TODO put these in separate methods
             switch(type) {
+              case 'data':
+                // itemsFiltered = itemsFiltered.filter(item => {
+                //   const itemValue = getValue(item);
+                //   console.log('horiz table itemValue:', itemValue);
+                //   return itemValue;
+                // });
+                break;
               case 'time':
                 let min, max;
 
@@ -175,7 +194,11 @@
           const filterFields = this.options.filterFieldsByText || [];
 
           for (let field of filterFields) {
-            str += item.properties[field].toLowerCase();
+            if (item.properties) {
+              str += item.properties[field].toLowerCase();
+            } else {
+              str += item[field].toLowerCase();
+            }
           }
 
           return str.includes(this.filterWords.toLowerCase());
@@ -292,6 +315,10 @@
     text-align: left;
   }
 
+  .inline-block {
+    display: inline-block;
+  }
+
   .vertically-centered {
     display: inline-block;
     vertical-align: middle;
@@ -307,12 +334,20 @@
   .mb-select-text {
     font-size: 16px;
     padding-right: 5px;
+    padding-left: 5px;
   }
 
   .mb-select {
-    width: 100px;
+    width: auto;
     height: 40px;
     vertical-align: middle;
+    /*padding-right: 20px;*/
+  }
+
+  .mb-select-option {
+    display: inline-block;
+    padding-right: 100px;
+    margin-right: 100px;
   }
 
   /* input filters using text */

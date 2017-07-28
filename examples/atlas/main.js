@@ -330,6 +330,15 @@ Mapboard.default({
         units: 'feet',
       },
     },
+    crimeIncidents: {
+      type: 'http-get-nearby',
+      url: 'https://phl.carto.com/api/v2/sql',
+      options: {
+        params: {
+          q: feature => "select * from incidents_part1_part2"// where dc_key = '201501056051'"//the_geom.STDistance(" + ")"// + feature.properties.street_address + "'"// + "' or addrkey = " + feature.properties.li_address_key,
+        }
+      }
+    },
     vacantLand: {
       type: 'esri',
       url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Land/FeatureServer/0',
@@ -405,6 +414,21 @@ Mapboard.default({
           radius: 6,
           fillColor: '#ff3f3f',
         	color: '#ff0000',
+        	weight: 1,
+        	opacity: 1,
+        	fillOpacity: 1.0
+        },
+      },
+    },
+    'crimeIncidents': {
+      type: 'point',
+      dataSource: 'crimeIncidents',
+      options: {
+        marker: 'circle',
+        style: {
+          radius: 6,
+          fillColor: '#477bd2',
+        	color: '#477bd2',
         	weight: 1,
         	opacity: 1,
         	fillOpacity: 1.0
@@ -1286,14 +1310,14 @@ Mapboard.default({
       key: 'vacancy',
       icon: 'map-marker',
       label: 'Vacancy',
-      dataSources: ['vacantLand', 'vacantBuilding'],
+      dataSources: ['vacantLand', 'vacantBuilding', '311', 'crimeIncidents'],
       basemap: 'pwd',
       featureLayers: [
         'vacantLand',
         'vacantBuilding'
       ],
       identifyFeature: 'address-marker',
-      // overlays: ['311'],
+      overlays: ['311', 'crimeIncidents'],
       parcels: 'pwd',
       // TODO implement this
       // computed: {
@@ -1341,6 +1365,228 @@ Mapboard.default({
             // },
           }
         },
+        {
+          type: 'table-group',
+          options: {
+            // getKey(item) {
+            //   return item.properties.OBJECTID;
+            // },
+            // getTitle(item) {
+            //   return item.properties.MAPREG;
+            // },
+            filters: [
+              {
+                type: 'data',
+                getValue(item) {
+                  return item;
+                },
+                label: 'What nearby activity would you like to see?',
+                values: [
+                  {
+                    label: '311 Requests',
+                    value: '311',
+                  },
+                  {
+                    label: 'Crime Incidents',
+                    value: 'crime',
+                  },
+                  {
+                    label: 'Zoning Appeals',
+                    value: 'zoningAppeals',
+                  }
+                ]
+              },
+            ],
+            // components for the content pane. this essentially a topic body.
+            components: [
+              {
+                type: 'horizontal-table',
+                options: {
+                  // TODO this isn't used yet, but should be for highlighting rows/
+                  // map features.
+                  // filterForm: true,
+                  filters: [
+                    {
+                      type: 'time',
+                      getValue(item) {
+                        return item.properties.REQUESTED_DATETIME;
+                      },
+                      label: 'from the last',
+                      values: [
+                        {
+                          label: '30 days',
+                          value: '30',
+                          unit: 'days',
+                          direction: 'subtract',
+                        },
+                        {
+                          label: '90 days',
+                          value: '90',
+                          unit: 'days',
+                          direction: 'subtract',
+                        },
+                        {
+                          label: 'year',
+                          value: '1',
+                          unit: 'years',
+                          direction: 'subtract',
+                        }
+                      ]
+                    }
+                  ],
+                  filterFieldsByText: [
+                    'DESCRIPTION',
+                    'SUBJECT',
+                    'ADDRESS'
+                  ],
+                  fields: [
+                    {
+                      label: 'Date',
+                      value(state, item) {
+                        return item.properties.REQUESTED_DATETIME;
+                      },
+                      transforms: [
+                        'date'
+                      ]
+                    },
+                    {
+                      label: 'Address',
+                      value(state, item) {
+                        return item.properties.ADDRESS;
+                      }
+                    },
+                    {
+                      label: 'Subject',
+                      value(state, item) {
+                        if (item.properties.MEDIA_URL) {
+                          return '<a target="_blank" href='+item.properties.MEDIA_URL+'>'+item.properties.SUBJECT+'</a>';
+                        } else {
+                          return item.properties.SUBJECT;
+                        }
+                      }
+                    },
+                    {
+                      label: 'Description',
+                      value(state, item) {
+                        return item.properties.DESCRIPTION;
+                      }
+                    },
+                    {
+                      label: 'Distance',
+                      value(state, item) {
+                        // return item.properties.DISTANCE;
+                        return 'TODO';
+                      }
+                    }
+                  ]
+                },
+                slots: {
+                  title: 'Nearby Service Requests',
+                  data: '311',
+                  items(state) {
+                    const data = state.sources['311'].data;
+                    const rows = data.map(row => {
+                      const itemRow = Object.assign({}, row);
+                      itemRow.DISTANCE = 'TODO';
+                      return itemRow;
+                    });
+                    return rows;
+                  },
+                }
+              },
+              {
+                type: 'horizontal-table',
+                options: {
+                  // TODO this isn't used yet, but should be for highlighting rows/
+                  // map features.
+                  // filterForm: true,
+                  filters: [
+                    {
+                      type: 'time',
+                      getValue(item) {
+                        return item.dispatch_date;
+                      },
+                      label: 'from the last',
+                      values: [
+                        {
+                          label: '30 days',
+                          value: '30',
+                          unit: 'days',
+                          direction: 'subtract',
+                        },
+                        {
+                          label: '90 days',
+                          value: '90',
+                          unit: 'days',
+                          direction: 'subtract',
+                        },
+                        {
+                          label: 'year',
+                          value: '1',
+                          unit: 'years',
+                          direction: 'subtract',
+                        }
+                      ]
+                    }
+                  ],
+                  filterFieldsByText: [
+                    'text_general_code',
+                  ],
+                  fields: [
+                    {
+                      label: 'Date',
+                      value(state, item) {
+                        return item.dispatch_date;
+                      },
+                      transforms: [
+                        'date'
+                      ]
+                    },
+                    {
+                      label: 'Location',
+                      value(state, item) {
+                        return item.location_block;
+                      }
+                    },
+                    {
+                      label: 'Description',
+                      value(state, item) {
+                        return item.text_general_code;
+                      }
+                    },
+                    {
+                      label: 'Distance',
+                      value(state, item) {
+                        // return item.properties.DISTANCE;
+                        return 'TODO';
+                      }
+                    }
+                  ]
+                },
+                slots: {
+                  title: 'Crime Incidents',
+                  data: 'crime',
+                  items(state) {
+                    const data = state.sources['crimeIncidents'].data || [];
+                    const rows = data.map(row => {
+                      const itemRow = Object.assign({}, row);
+                      itemRow.DISTANCE = 'TODO';
+                      return itemRow;
+                    });
+                    return rows;
+                  },
+                } // end of slots
+              }, // end of horizontal-table
+            ], // end comps
+          }, // end options
+          slots: {
+            // REVIEW should this go in options? maybe not, since it should be
+            // reactive.
+            items(state) {
+              return state.pwdParcel;
+            }
+          },
+        }
       ]
     },
     {
