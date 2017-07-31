@@ -79,12 +79,15 @@
   export default {
     mixins: [TopicComponent],
     data() {
+      const filters = this.filters || [];
+      const defaultFilterSelections = Object.keys(filters).reduce((acc, i) =>
+                                      {
+                                        const key = `filter-${i}`;
+                                        acc[key] = {};
+                                      }, {});
+
       return {
-        filterData: {
-          'filter-0': {},
-          'filter-1': {},
-          'filter-2': {}
-        },
+        filterSelections: defaultFilterSelections,
         filterWords: '',
       }
     },
