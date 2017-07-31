@@ -73,6 +73,7 @@
 
 <script>
   import moment from 'moment';
+  import generateUniqueId from '../../util/uniqueId';
   import TopicComponent from './TopicComponent';
   import HorizontalTableRow from './HorizontalTableRow';
 
@@ -95,6 +96,10 @@
       HorizontalTableRow
     },
     created() {
+      // give table a unique-ish id for storing their data in state (map needs
+      // access to filtered rows)
+      this._tableId = generateUniqueId();
+
       if (this.filters) {
         for (let [index, filter] of this.filters.entries()) {
           const key = `filter-${index}`;
