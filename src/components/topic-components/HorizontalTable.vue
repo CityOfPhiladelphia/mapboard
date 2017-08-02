@@ -59,7 +59,8 @@
           <!-- <tr v-for="item in evaluateSlot(slots.items)"
               :class="{ active: item._featureId === activeFeature }"
           > -->
-          <horizontal-table-row v-for="item in itemsSorted"
+          <!-- <horizontal-table-row v-for="item in itemsSorted" -->
+          <horizontal-table-row v-for="item in itemsFiltered"
                                 :item="item"
                                 :fields="fields"
                                 :key="item._featureId"
@@ -88,6 +89,7 @@
                                       }, {});
 
       return {
+        initiallyFilteredTable: [],
         filterSelections: defaultFilterSelections,
         filterWords: '',
       }
@@ -98,16 +100,54 @@
     created() {
       // give table a unique-ish id for storing their data in state (map needs
       // access to filtered rows)
-      this._tableId = generateUniqueId();
+      // this._tableId = generateUniqueId();
 
       if (this.filters) {
         for (let [index, filter] of this.filters.entries()) {
           const key = `filter-${index}`;
           // console.log(filter);
           const defaultValue = filter.values[0] || {};
-          this.filterData[key] = defaultValue;
+          this.filterSelections[key] = defaultValue;
         }
       }
+    },
+    mounted() {
+      const items = this.items;
+      let itemsFiltered;
+      if (this.$props.slots.data === this.shouldShowTable) {
+        itemsFiltered = this.filterItems(items,
+                                               this.filters,
+                                               this.filterSelections);
+      } else {
+        itemsFiltered = []
+      }
+      console.log('HORIZTABLE MOUNTED', this.options.topicKey, this.options.id, 'length:', itemsFiltered.length);
+      // update the local state
+      this.initiallyFilteredTable = itemsFiltered;
+    },
+    watch: {
+      shouldShowTable(nextTable) {
+        console.log('WATCH SHOULDSHOWTABLE FIRED', nextTable, this.$props.slots.data);
+        const items = this.items;
+        let itemsFiltered;
+        if (this.$props.slots.data === nextTable) {
+          itemsFiltered = this.filterItems(items,
+                                                 this.filters,
+                                                 this.filterSelections);
+        } else {
+          itemsFiltered = []
+        }
+        // update the local state
+        this.initiallyFilteredTable = itemsFiltered;
+      },
+      filterWords() {
+        console.log('WATCH FILTERWORDS FIRED');
+        this.filterByWords();
+      },
+      initiallyFilteredTable() {
+        console.log('WATCH INITIALLYFILTEREDTABLE FIRED');
+        this.filterByWords();
+      },
     },
     computed: {
       shouldShowTable() {
@@ -132,14 +172,11 @@
         //TODO make this work with not-always-on filters
         return this.filters;
       },
-      // activeFeature() {
-      //   return this.$store.state.activeFeature
-      // },
       fields() {
         return this.options.fields;
       },
       hasOverlay() {
-        return !!this.options.overlay;
+        return !!this.options.mapOverlay;
       },
       items() {
         const itemsSlot = this.slots.items;
@@ -150,18 +187,80 @@
         return `(${length})`;
       },
       itemsFiltered() {
+        console.log('HORIZTABLE COMPUTED: ITEMSFILTERED IS RECALCULATING')
+        const unfiltTables = this.$store.state.tables;
+        const tables = unfiltTables.filter(comp => {
+          const key = comp.key;
+          const id = comp.id;
+          // console.log('key', key, this.$store.state.activeTopic, 'id', id, this.$props.options.id);
+          return (
+            id === this.$props.options.id &&
+            key === this.$store.state.activeTopic
+          )
+        });
+        // console.log('tables:', tables);
+        let itemsFiltered = tables[0].data;
+        return itemsFiltered;
+      }
+    },
+    methods: {
+      slugifyFilterValue(filterValue) {
+        const { direction, value, unit } = filterValue;
+        return [direction, value, unit].join('-');
+      },
+      deslugifyFilterValue(slug) {
+        const parts = slug.split('-');
+        const [direction, value, unit] = parts;
+        return {value, unit, direction};
+      },
+      handleFilterValueChange(e) {
+        console.log('handle filter value change', e);
+
+        const target = e.target;
+        const slug = target.value;
+
+        // deslugify filter value
+        const valueObj = this.deslugifyFilterValue(slug);
+
+        const parent = target.parentElement;
+        const parentId = parent.id;
+
+        this.filterSelections[parentId] = valueObj;
+
         const items = this.items;
+        let itemsFiltered = this.filterItems(items,
+                                               this.filters,
+                                               this.filterSelections);
+        // update the local state
+        this.initiallyFilteredTable = itemsFiltered;
+      },
+      values(item) {
+        const fields = this.options.fields;
+        const sourceFields = fields.map(field => field.sourceField);
+        return sourceFields.map(sourceField => item[sourceField])
+      },
+      handleFilterFormKeyup(e) {
+        const input = e.target.value;
+        this.filterWords = input;
+      },
+      handleFilterFormX(e) {
+        e.target[0].value = ''
+        this.filterWords = '';
+      },
+      filterItems(items, filters, filterSelections) {
+        console.log('HORIZONTALTABLE FILTERITEMS IS RUNNING, starting with', items.length, 'items');//, filters, filterSelections);
         let itemsFiltered = items.slice();
 
-        if (this.filters) {
-          for (let [index, filter] of this.filters.entries()) {
+        if (filters) {
+          for (let [index, filter] of filters.entries()) {
             const key = `filter-${index}`;
-            const data = this.filterData[key];
+            const data = filterSelections[key];
             const {type, getValue} = filter;
             const {direction, unit, value} = data
             // TODO put these in separate methods
             switch(type) {
               case 'data':
+                // console.log('DATA FILTER');
                 // itemsFiltered = itemsFiltered.filter(item => {
                 //   const itemValue = getValue(item);
                 //   console.log('horiz table itemValue:', itemValue);
@@ -169,6 +268,7 @@
                 // });
                 break;
               case 'time':
+                // console.log('TIME FILTER');
                 let min, max;
 
                 if (direction === 'subtract') {
@@ -188,6 +288,7 @@
                   const isBetween = itemMoment.isBetween(min, max)
                   return isBetween;
                 });
+                // console.log('ITEMS FILTERED BY TIME FILTER', itemsFiltered);
                 break;
 
               default:
@@ -196,8 +297,13 @@
             }
           }
         }
-
-        itemsFiltered = itemsFiltered.filter(item => {
+        return itemsFiltered;
+      },
+      filterByWords() {
+        console.log('HORIZONTALTABLE FILTERBYWORDS IS RUNNING');
+        const items = this.initiallyFilteredTable;
+        let itemsFiltered;
+        itemsFiltered = items.filter(item => {
           let str = '';
           const filterFields = this.options.filterFieldsByText || [];
 
@@ -211,19 +317,19 @@
 
           return str.includes(this.filterWords.toLowerCase());
         })
-
-        let idsFiltered = [];
-
-        for (let item of itemsFiltered) {
-          idsFiltered.push(item._featureId);
-        }
-
-        this.$store.commit('setMapFilters', idsFiltered);
-
-        // console.log('end of computed itemsFiltered:', itemsFiltered);
-        return itemsFiltered;
+        // update global state
+        this.updateFilteredDataToState(itemsFiltered);
       },
-      itemsSorted() {
+
+      updateFilteredDataToState(itemsFiltered) {
+        this.$store.commit('setTableFilteredData', {
+          topicKey: this.options.topicKey,
+          id: this.options.id,
+          data: itemsFiltered
+        });
+      },
+
+      sortItems(items, sortOpts) {
         // console.log('computed: itemsSorted');
         // TODO finish this
         // if (Object.keys(this.filterData).length) {
@@ -234,8 +340,8 @@
         //   return this.items;
         // }
 
-        const items = this.itemsFiltered;
-        const sortOpts = this.options.sort;
+        // const items = this.itemsFiltered;
+        // const sortOpts = this.options.sort;
 
         // if there's no no sort config, just return the items.
         if (!sortOpts) {
@@ -246,72 +352,33 @@
         const order = sortOpts.order;
 
         // get sort fn or use this basic one
-        function defaultSortFn(a, b) {
-          const valA = getValueFn(a);
-          const valB = getValueFn(b);
-          let result;
-
-          if (valA < valB) {
-            result = -1;
-          } else if (valB < valA) {
-            result = 1;
-          } else {
-            result = 0;
-          }
-
-          // reverse if the target order is desc
-          if (order === 'desc') {
-            result = result * -1;
-          } else if (order !== 'asc') {
-            throw `Unknown sort order: ${order}`;
-          }
-
-          // console.log('compare', valA, 'to', valB, ', result:', result);
-
-          return result;
-        }
-        const sortFn = sortOpts.compare || defaultSortFn;
+        const sortFn = sortOpts.compare || this.defaultSortFn;
 
         return items.sort(sortFn);
-      }
-    },
-    methods: {
-      slugifyFilterValue(filterValue) {
-        const { direction, value, unit } = filterValue;
-        return [direction, value, unit].join('-');
       },
-      deslugifyFilterValue(slug) {
-        const parts = slug.split('-');
-        const [direction, value, unit] = parts;
-        return {value, unit, direction};
-      },
-      handleFilterValueChange(e) {
-        // console.log('handle filter value change', e);
+      defaultSortFn(a, b) {
+        const valA = getValueFn(a);
+        const valB = getValueFn(b);
+        let result;
 
-        const target = e.target;
-        const slug = target.value;
+        if (valA < valB) {
+          result = -1;
+        } else if (valB < valA) {
+          result = 1;
+        } else {
+          result = 0;
+        }
 
-        // deslugify filter value
-        const valueObj = this.deslugifyFilterValue(slug);
-        // console.log('value obj', valueObj);
+        // reverse if the target order is desc
+        if (order === 'desc') {
+          result = result * -1;
+        } else if (order !== 'asc') {
+          throw `Unknown sort order: ${order}`;
+        }
 
-        const parent = target.parentElement;
-        const parentId = parent.id;
+        // console.log('compare', valA, 'to', valB, ', result:', result);
 
-        this.filterData[parentId] = valueObj;
-      },
-      values(item) {
-        const fields = this.options.fields;
-        const sourceFields = fields.map(field => field.sourceField);
-        return sourceFields.map(sourceField => item[sourceField])
-      },
-      handleFilterFormKeyup(e) {
-        const input = e.target.value;
-        this.filterWords = input;
-      },
-      handleFilterFormX(e) {
-        e.target[0].value = ''
-        this.filterWords = '';
+        return result;
       }
     }
   };

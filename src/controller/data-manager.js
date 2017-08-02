@@ -91,8 +91,8 @@ class DataManager {
   /* DATA FETCHING METHODS */
 
   fetchData() {
-    console.log('\nFETCH DATA');
-    console.log('-----------');
+    // console.log('\nFETCH DATA');
+    // console.log('-----------');
 
     const geocodeObj = this.store.state.geocode.data;
 
@@ -215,7 +215,7 @@ class DataManager {
   }
 
   didFetchData(key, status, data, targetId) {
-    console.log('DID FETCH DATA:', key, targetId || '', data);
+    // console.log('DID FETCH DATA:', key, targetId || '', data);
 
     const dataOrNull = status === 'error' ? null : data;
     let stateData = dataOrNull;

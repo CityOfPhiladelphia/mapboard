@@ -30,6 +30,39 @@ function createStore(config) {
     return o;
   }, {});
 
+  console.log('STORE.JS CREATESTORE IS RUNNING', config);
+  let tables = [];
+  for (let topic of config.topics) {
+    for (let component of topic.components) {
+      if (component.type === 'horizontal-table') {
+        // console.log('topic:', topic.label, component);
+        // console.log('topic:', topic.label, component.type, component.slots.title);
+        const tableName = topic.key + '_' + component.options.id;
+        tables.push({
+          data: [],
+          key: topic.key,
+          id: component.options.id,
+          mapOverlay: component.options.mapOverlay
+        });
+      }
+      else if (component.type === 'tab-group' || component.type === 'table-group') {
+        for (let innerComponent of component.options.components) {
+          if (innerComponent.type === 'horizontal-table') {
+            // console.log('topic:', topic.label, innerComponent);
+            // console.log('topic:', topic.label, component.type, innerComponent.type, innerComponent.slots.title);
+            const tableName = topic.key + '_' + innerComponent.options.id;
+            tables.push({
+              data: [],
+              key: topic.key,
+              id: innerComponent.options.id,
+              mapOverlay: innerComponent.options.mapOverlay
+            });
+          }
+        }
+      }
+    }
+  }
+
   const initialState = {
     activeTopic: defaultTopic.key,
     // the ais feature
@@ -38,6 +71,7 @@ function createStore(config) {
       data: null,
       input: null
     },
+    lastSearchMethod: null,
     // the leaflet map object
     map: {
       center: config.map.center,
@@ -89,15 +123,40 @@ function createStore(config) {
         zoom: config.map.zoom
       }
     },
+    tables,
+    // tables: {
+    //   // table id => filtered rows
+    //   filteredData: {}
+    // },
+    // TODO put this in tables
     activeFeature: null,
-    lastSearchMethod: null
   };
 
   // TODO standardize how payloads are passed around/handled
   return new Vuex.Store({
     state: initialState,
-    getters: {},
+    // getters: {
+    //   topicTables: (state, getters) => (activeTopicKey) => {
+    //     console.log(state.tables);
+    //     return state.tables.filter(table => table.key === activeTopicKey);
+    //   }
+    // },
     mutations: {
+      setTables(state, payload) {
+        state.tables = payload;
+      },
+      setTableFilteredData(state, payload) {
+        const { topicKey, id, data } = payload;
+        // console.log('SETTABLEFILTEREDDATA', topicKey, id, data);
+        const table = state.tables.filter(table => {
+          return (
+            table.key === topicKey &&
+            table.id === id
+          )
+        })
+        // console.log('TABLE', table);
+        table[0].data = data;
+      },
       setActiveTopic(state, payload) {
         state.activeTopic = payload;
       },

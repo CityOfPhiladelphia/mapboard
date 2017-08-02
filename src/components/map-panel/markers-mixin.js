@@ -25,62 +25,60 @@ export default {
     // returns all geojson features to be rendered on the map along with
     // necessary props.
     circleMarkers() {
-      let circleMarkers = [];
-      const overlayKeys = this.activeTopicConfig.overlays || [];
-      const circleOverlayKeys = overlayKeys.filter(overlayKey => {
-        const overlay = this.$config.overlays[overlayKey];
-        const options = overlay.options;
-        return options && options.marker === 'circle';
+      // filter the array of tables in the state by the activeTopic
+      const activeTopicConfig = this.activeTopicConfig;
+      const activeTopicKey = activeTopicConfig.key
+      const unfiltTables = this.$store.state.tables;
+      const tables = unfiltTables.filter(comp => {
+        const key = comp.key
+        const mapOverlay = comp.mapOverlay
+        return (
+          key === activeTopicKey &&
+          mapOverlay &&
+          mapOverlay.marker === 'circle'
+        )
       });
 
-      // if active topic has no circle overlays, return
-      if (circleOverlayKeys.length === 0) {
-        return circleMarkers;
-      }
+      let circleMarkers = [];
+      for(let table of tables) {
+        const itemsFiltered = table;
+        if (itemsFiltered.data.length < 1) {
+          // console.log('length is < 1');
+          // return circleMarkers;
+        } else {
+          console.log('CIRCLEMARKERS RECOMPUTED LENGTH IS', itemsFiltered.data.length);
+          // go through rows
+          for (let row of itemsFiltered.data) {
+            let latlng;
+            if (row.geometry) {
+              const [x, y] = row.geometry.coordinates;
+              latlng = [y, x];
+            } else {
+              latlng = [row.point_y, row.point_x];
+            }
 
-      const sources = this.$store.state.sources;
-
-      // loop over circle overlays
-      for (let circleOverlayKey of circleOverlayKeys) {
-        const circleOverlay = this.$config.overlays[circleOverlayKey];
-        const dataSource = circleOverlay.dataSource
-        const options = circleOverlay.options;
-        const data = sources[dataSource].data;
-
-        const activeFeature = this.$store.state.activeFeature;
-        if (data === null) {
-          return;
-        }
-        for (let row of data) {
-
-          let latlng;
-          if (row.geometry) {
-            const [x, y] = row.geometry.coordinates;
-            latlng = [y, x];
-          } else {
-            latlng = [row.point_y, row.point_x];
+            // check for active feature TODO - bind style props to state
+            const style = itemsFiltered.mapOverlay.style;
+            const hoverStyle = itemsFiltered.mapOverlay.hoverStyle;
+            const activeFeature = this.$store.state.activeFeature;
+            let props = Object.assign({}, style);
+            if (row._featureId === activeFeature) {
+              props = Object.assign({}, hoverStyle);
+              // props.fillColor = 'yellow';
+              //console.log('inside circleOverlay', circleOverlay);
+              //this.bringCircleMarkerToFront(this);
+              //props.zIndexOffset = 100;
+            }
+            props.latlng = latlng;
+            props.featureId = row._featureId;
+            circleMarkers.push(props);
           }
-
-          // check for active feature TODO - bind style props to state
-          const style = options.style;
-          const props = Object.assign({}, style);
-          if (row._featureId === activeFeature) {
-            props.fillColor = 'yellow';
-            //console.log('inside circleOverlay', circleOverlay);
-            //this.bringCircleMarkerToFront(this);
-            //props.zIndexOffset = 100;
-          }
-          props.latlng = latlng;
-          props.featureId = row._featureId;
-          circleMarkers.push(props);
         }
       }
-
-      circleMarkers = circleMarkers.filter(marker => {
-        const filteredMarkers = this.$store.state.map.filters
-        return filteredMarkers.includes(marker.featureId)
-      })
-
+      // circleMarkers = circleMarkers.filter(marker => {
+      //   const filteredMarkers = this.$store.state.map.filters
+      //   return filteredMarkers.includes(marker.featureId)
+      // });
       return circleMarkers;
     },
     geojsonFeatures() {
@@ -152,7 +150,7 @@ export default {
       this.$store.commit('setActiveFeature', featureId);
     },
     bringCircleMarkerToFront(circleMarker) {
-      //console.log('bringCircleMarkerToFront', circleMarker);
+      console.log('bringCircleMarkerToFront', circleMarker);
       // put marker on top
       const el = circleMarker._path;
 

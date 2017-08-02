@@ -711,6 +711,8 @@ Mapboard.default({
               {
                 type: 'horizontal-table',
                 options: {
+                  topicKey: 'deeds',
+                  id: 'dorDocuments',
                   fields: [
                     {
                       label: 'ID',
@@ -812,6 +814,8 @@ Mapboard.default({
         {
           type: 'horizontal-table',
           options: {
+            topicKey: 'permits',
+            id: 'liPermits',
             fields: [
               {
                 label: 'Date',
@@ -861,6 +865,8 @@ Mapboard.default({
         {
           type: 'horizontal-table',
           options: {
+            topicKey: 'permits',
+            id: 'liInspections',
             fields: [
               {
                 label: 'Date',
@@ -910,6 +916,8 @@ Mapboard.default({
         {
           type: 'horizontal-table',
           options: {
+            topicKey: 'permits',
+            id: 'liViolations',
             fields: [
               {
                 label: 'Date',
@@ -991,6 +999,8 @@ Mapboard.default({
         {
           type: 'horizontal-table',
           options: {
+            topicKey: 'zoning',
+            id: 'zoningOverlay',
             fields: [
               {
                 label: 'Name',
@@ -1024,6 +1034,8 @@ Mapboard.default({
         {
           type: 'horizontal-table',
           options: {
+            topicKey: 'zoning',
+            id: 'zoningAppeals',
             fields: [
               {
                 label: 'Date',
@@ -1072,6 +1084,8 @@ Mapboard.default({
         {
           type: 'horizontal-table',
           options: {
+            topicKey: 'zoning',
+            id: 'zoningDocs',
             fields: [
               {
                 label: 'Date',
@@ -1125,6 +1139,8 @@ Mapboard.default({
         {
           type: 'horizontal-table',
           options: {
+            topicKey: 'zoning',
+            id: 'rco',
             fields: [
               {
                 label: 'RCO',
@@ -1250,6 +1266,8 @@ Mapboard.default({
         {
           type: 'horizontal-table',
           options: {
+            topicKey: 'water',
+            id: 'stormwater',
             // TODO this isn't used yet, but should be for highlighting rows/
             // map features.
             // overlay: '311',
@@ -1388,7 +1406,7 @@ Mapboard.default({
                   },
                   {
                     label: 'Crime Incidents',
-                    value: 'crime',
+                    value: 'crimeIncidents',
                   },
                   {
                     label: 'Zoning Appeals',
@@ -1402,6 +1420,8 @@ Mapboard.default({
               {
                 type: 'horizontal-table',
                 options: {
+                  topicKey: 'vacancy',
+                  id: '311',
                   // TODO this isn't used yet, but should be for highlighting rows/
                   // map features.
                   // filterForm: true,
@@ -1439,6 +1459,25 @@ Mapboard.default({
                     'SUBJECT',
                     'ADDRESS'
                   ],
+                  mapOverlay: {
+                    marker: 'circle',
+                    style: {
+                      radius: 6,
+                      fillColor: '#ff3f3f',
+                    	color: '#ff0000',
+                    	weight: 1,
+                    	opacity: 1,
+                    	fillOpacity: 1.0
+                    },
+                    hoverStyle: {
+                      radius: 6,
+                      fillColor: 'yellow',
+                    	color: '#ff0000',
+                    	weight: 1,
+                    	opacity: 1,
+                    	fillOpacity: 1.0
+                    }
+                  },
                   fields: [
                     {
                       label: 'Date',
@@ -1497,6 +1536,8 @@ Mapboard.default({
               {
                 type: 'horizontal-table',
                 options: {
+                  topicKey: 'vacancy',
+                  id: 'crimeIncidents',
                   // TODO this isn't used yet, but should be for highlighting rows/
                   // map features.
                   // filterForm: true,
@@ -1532,6 +1573,25 @@ Mapboard.default({
                   filterFieldsByText: [
                     'text_general_code',
                   ],
+                  mapOverlay: {
+                    marker: 'circle',
+                    style: {
+                      radius: 6,
+                      fillColor: '#6674df',
+                    	color: '#6674df',
+                    	weight: 1,
+                    	opacity: 1,
+                    	fillOpacity: 1.0
+                    },
+                    hoverStyle: {
+                      radius: 6,
+                      fillColor: 'yellow',
+                    	color: '#6674df',
+                    	weight: 1,
+                    	opacity: 1,
+                    	fillOpacity: 1.0
+                    }
+                  },
                   fields: [
                     {
                       label: 'Date',
@@ -1565,7 +1625,7 @@ Mapboard.default({
                 },
                 slots: {
                   title: 'Crime Incidents',
-                  data: 'crime',
+                  data: 'crimeIncidents',
                   items(state) {
                     const data = state.sources['crimeIncidents'].data || [];
                     const rows = data.map(row => {
@@ -1596,7 +1656,7 @@ Mapboard.default({
       dataSources: ['311'],
       basemap: 'pwd',
       identifyFeature: 'address-marker',
-      overlays: ['311'],
+      // overlays: ['311'],
       parcels: 'pwd',
       components: [
         {
@@ -1608,9 +1668,8 @@ Mapboard.default({
         {
           type: 'horizontal-table',
           options: {
-            // TODO this isn't used yet, but should be for highlighting rows/
-            // map features.
-            // filterForm: true,
+            topicKey: '311',
+            id: '311',
             filters: [
               {
                 type: 'time',
@@ -1645,7 +1704,25 @@ Mapboard.default({
               'SUBJECT',
               'ADDRESS'
             ],
-            overlay: '311',
+            mapOverlay: {
+              marker: 'circle',
+              style: {
+                radius: 6,
+                fillColor: '#ff3f3f',
+              	color: '#ff0000',
+              	weight: 1,
+              	opacity: 1,
+              	fillOpacity: 1.0
+              },
+              hoverStyle: {
+                radius: 6,
+                fillColor: 'yellow',
+              	color: '#ff0000',
+              	weight: 1,
+              	opacity: 1,
+              	fillOpacity: 1.0
+              }
+            },
             fields: [
               {
                 label: 'Date',

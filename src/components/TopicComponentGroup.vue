@@ -49,7 +49,7 @@
     },
     methods: {
       getCompKey(compGroupKey, compIndex) {
-        return `topic-comp-${compGroupKey}-${compIndex}`;;
+        return `topic-comp-${compGroupKey}-${compIndex}`;
       }
     }
   };
