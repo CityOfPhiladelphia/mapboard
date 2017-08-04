@@ -320,7 +320,7 @@ Mapboard.default({
           slots: {
             fields: [
               {
-                label: '<a href="//philadelphiastreets.com/sanitation/residential/collection-schedules/">Trash & Recycling Day</a>',
+                label: '<a class="external" target="_blank" href="//philadelphiastreets.com/sanitation/residential/collection-schedules/">Trash & Recycling Day</a>',
                 value: function (state) {
                   var day = state.geocode.data.properties.rubbish_recycle_day;
                   var DAYS_FORMATTED = {
@@ -334,7 +334,7 @@ Mapboard.default({
                 }
               },
               {
-                label: '<a href="//philadelphiastreets.com/recycling/home-base-residential/">Recycling Diversion Rate</a>',
+                label: '<a class="external" target="_blank" href="//philadelphiastreets.com/recycling/home-base-residential/">Recycling Diversion Rate</a>',
                 value: function (state) {
                   var rate = state.geocode.data.properties.recycling_diversion_rate,
                       ratePercent = parseInt(rate * 100);
@@ -344,7 +344,7 @@ Mapboard.default({
                 },
               },
               {
-                label: '<a href="//opendataphilly.org/dataset/sanitation-districts">Sanitation District</a>',
+                label: '<a class="external" target="_blank" href="//opendataphilly.org/dataset/sanitation-districts">Sanitation District</a>',
                 value: function (state) {
                   return state.geocode.data.properties.sanitation_district;
                 }
@@ -354,37 +354,37 @@ Mapboard.default({
               //   value: 'NOT READY'
               // },
               {
-                label: '<a href="//philadelphiastreets.com/sanitation/residential/sanitation-convenience-centers/">Sanitation Convenience Center</a>',
+                label: '<a class="external" target="_blank" href="//philadelphiastreets.com/sanitation/residential/sanitation-convenience-centers/">Sanitation Convenience Center</a>',
                 value: function (state) {
                   return state.geocode.data.properties.sanitation_convenience_center;
                 }
               },
               {
-                label: '<a href="//philadelphiastreets.com/pmbc/">PMBC Block Captain</a>',
+                label: '<a class="external" target="_blank" href="//philadelphiastreets.com/pmbc/">PMBC Block Captain</a>',
                 value: function (state) {
                   return state.geocode.data.properties.clean_philly_block_captain;
                 }
               },
               {
-                label: '<a href="//phila.gov/ParksandRecreation/getinvolved/friendsgroups/Pages/default.aspx">PPR Friends Group</a>',
+                label: '<a class="external" target="_blank" href="//phila.gov/ParksandRecreation/getinvolved/friendsgroups/Pages/default.aspx">PPR Friends Group</a>',
                 value: function (state) {
                   return state.geocode.data.properties.ppr_friends;
                 }
               },
               {
-                label: '<a href="//phillywatersheds.org/what_were_doing/community_partnerships">Watershed Group</a>',
+                label: '<a class="external" target="_blank" href="//phillywatersheds.org/what_were_doing/community_partnerships">Watershed Group</a>',
                 value: function (state) {
                   return state.geocode.data.properties.major_phila_watershed;
                 }
               },
               {
-                label: '<a href="//phila.gov/commerce/neighborhoods/Pages/RevitalizingCorridors.aspx">Commercial Corridor Cleaning Program</a>',
+                label: '<a class="external" target="_blank" href="//phila.gov/commerce/neighborhoods/Pages/RevitalizingCorridors.aspx">Commercial Corridor Cleaning Program</a>',
                 value: function (state) {
                   return state.geocode.data.properties.commercial_corridor;
                 }
               },
               {
-                label: '<a href="//phila.gov/dhcd/neighborhood-resources/neighborhood-advisory-committees/">Neighborhood Advisory Committee</a>',
+                label: '<a class="external" target="_blank" href="//phila.gov/dhcd/neighborhood-resources/neighborhood-advisory-committees/">Neighborhood Advisory Committee</a>',
                 value: function (state) {
                   return state.geocode.data.properties.neighborhood_advisory_committee;
                 }
