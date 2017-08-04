@@ -48,11 +48,18 @@ export default {
         const data = sources[dataSource].data;
 
         const activeFeature = this.$store.state.activeFeature;
-
+        if (data === null) {
+          return;
+        }
         for (let row of data) {
 
-          const [x, y] = row.geometry.coordinates;
-          const latlng = [y, x];
+          let latlng;
+          if (row.geometry) {
+            const [x, y] = row.geometry.coordinates;
+            latlng = [y, x];
+          } else {
+            latlng = [row.point_y, row.point_x];
+          }
 
           // check for active feature TODO - bind style props to state
           const style = options.style;

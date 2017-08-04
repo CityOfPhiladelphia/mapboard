@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- :compFilterData="filterData" -->
     <component v-for="(comp, compIndex) in topicComponents"
                :is="comp.type"
                class="topic-component"
@@ -21,7 +22,7 @@
   import OverlayToggleGroup from './topic-components/OverlayToggleGroup';
 
   export default {
-    props: ['topicComponents', 'item'],
+    props: ['topicComponents', 'item', 'filterData'],
     components: {
       Badge,
       Callout,
@@ -35,6 +36,7 @@
       // TabGroup imports TopicComponentGroup, which causes a circular
       // reference issue in webpack. so register the component here.
       this.$options.components.TabGroup = require('./topic-components/TabGroup.vue');
+      this.$options.components.TableGroup = require('./topic-components/TableGroup.vue');
     },
     data() {
       return {
