@@ -27,7 +27,7 @@ class Router {
       return null;
     }
 
-    let hash = `/${address}`;
+    let hash = `#/${address}`;
     if (topic) {
       hash += `/${topic}`;
     }
@@ -77,17 +77,8 @@ class Router {
     this.route(nextAddress, nextTopic);
   }
 
-  route(nextAddress, nextTopic = '') {
-    // console.log('Router.route', nextAddress, nextTopic);
-
-    if (nextTopic) {
-      // check against active topic
-      const prevTopic = this.store.state.activeTopic;
-
-      if (!prevTopic || prevTopic !== nextTopic) {
-        this.store.commit('setActiveTopic', nextTopic);
-      }
-    }
+  routeToAddress(nextAddress) {
+    // console.log('Router.routeToAddress', nextAddress);
 
     if (nextAddress) {
       // check against current address
@@ -100,27 +91,60 @@ class Router {
       }
     }
 
-    // if not silent, update hash
-    if (!this.silent) {
-      const prevOrNextAddress = nextAddress || this.getAddressFromState();
-      const nextHash = this.makeHash(prevOrNextAddress, nextTopic);
+    // the following code doesn't seem to be needed anymore. it's probably
+    // happening in didGeocode.
+    // if not silent, update hash. this is needed for updating the hash after
+    // topic clicks.
+    // if (!this.silent) {
+    //   const prevOrNextAddress = nextAddress || this.getAddressFromState();
+    //   const nextHash = this.makeHash(prevOrNextAddress, nextTopic);
+    //
+    //   if (nextHash) {
+    //     // TODO replace state
+    //     const prevState = this.history.state;
+    //     // this.history.replaceState(prevState, null, nextHash);
+    //
+    //     // window.location.hash = nextHash;
+    //   }
+    // }
+  }
 
-      if (nextHash) {
-        window.location.hash = nextHash;
-      }
+  // this gets called when you click a topic header.
+  routeToTopic(nextTopic) {
+    // check against active topic
+    const prevTopic = this.store.state.activeTopic;
+
+    if (!prevTopic || prevTopic !== nextTopic) {
+      this.store.commit('setActiveTopic', nextTopic);
+    }
+
+    if (!this.silent) {
+      const address = this.getAddressFromState();
+      const nextHash = this.makeHash(address, nextTopic);
+      const lastHistoryState = this.history.state;
+      this.history.replaceState(lastHistoryState, null, nextHash);
     }
   }
 
   didGeocode() {
-    // console.log('Router.didGeocode');
+    console.log('Router.didGeocode');
 
     // update url
     // REVIEW this is ais-specific
-    const address = this.store.state.geocode.data.properties.street_address;
+    const geocodeData = this.store.state.geocode.data;
+    const address = geocodeData.properties.street_address;
     const topic = this.store.state.activeTopic;
 
+    // REVIEW this is only pushing state when routing is turned on. but maybe we
+    // want this to happen all the time, right?
     if (!this.silent) {
-      window.location.hash = this.makeHash(address, topic);
+      // push state
+      const nextHistoryState = {
+        geocode: geocodeData
+      };
+      const nextHash = this.makeHash(address, topic);
+
+      this.history.pushState(nextHistoryState, null, nextHash);
     }
   }
 }

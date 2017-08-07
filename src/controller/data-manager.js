@@ -503,7 +503,7 @@ class DataManager {
       // features.length < 1 &&
       this.store.state.lastSearchMethod === 'reverseGeocode'
     );
-    console.log('dor shouldGeocode', shouldGeocode);
+
     if (shouldGeocode) {
       // TODO sort by mapreg, status
       // this.geocode(features[0].properties.MAPREG);

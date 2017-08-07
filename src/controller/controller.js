@@ -40,13 +40,14 @@ class Controller {
 
     const input = e.target[0].value;
 
-    // clear out state
     this.store.commit('setLastSearchMethod', 'geocode');
+
+    // clear out state
     this.store.commit('setPwdParcel', null);
     this.store.commit('setDorParcels', []);
 
     // tell router
-    this.router.route(input);
+    this.router.routeToAddress(input);
   }
 
   handleMapClick(e) {
@@ -67,13 +68,13 @@ class Controller {
   }
 
   handleTopicHeaderClick(topic) {
-    console.log('Controller.handleTopicHeaderClick', topic);
+    // console.log('Controller.handleTopicHeaderClick', topic);
 
-    this.router.route(null, topic);
+    this.router.routeToTopic(topic);
   }
 
   goToDefaultAddress(address) {
-    this.router.route(address);
+    this.router.routeToAddress(address);
   }
 }
 
