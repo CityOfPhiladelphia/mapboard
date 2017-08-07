@@ -91,8 +91,8 @@ class DataManager {
   /* DATA FETCHING METHODS */
 
   fetchData() {
-    console.log('\nFETCH DATA');
-    console.log('-----------');
+    // console.log('\nFETCH DATA');
+    // console.log('-----------');
 
     const geocodeObj = this.store.state.geocode.data;
 
@@ -215,7 +215,7 @@ class DataManager {
   }
 
   didFetchData(key, status, data, targetId) {
-    console.log('DID FETCH DATA:', key, targetId || '', data);
+    // console.log('DID FETCH DATA:', key, targetId || '', data);
 
     const dataOrNull = status === 'error' ? null : data;
     let stateData = dataOrNull;
@@ -395,7 +395,6 @@ class DataManager {
 
       // pan and zoom map
       const coords = feature.geometry.coordinates;
-      console.log('about to set map coords', coords);
       this.store.commit('setMapCenter', coords);
       this.store.commit('setMapZoom', 18);
     }
