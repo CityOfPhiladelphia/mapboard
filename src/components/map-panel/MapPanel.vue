@@ -115,7 +115,10 @@
                    	 :opacity="circleMarker.opacity"
                    	 :fillOpacity="circleMarker.fillOpacity"
                      :key="Math.random()"
-                     :data="{featureId: circleMarker.featureId}"
+                     :data="{
+                       featureId: circleMarker.featureId,
+                       tableId: circleMarker.tableId
+                     }"
       />
 
        <!-- <vector-marker v-for="marker in threeOneOneMarkers"
