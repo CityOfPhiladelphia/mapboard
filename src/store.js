@@ -80,39 +80,6 @@ function createStore(config) {
     return o;
   }, {});
 
-  console.log('STORE.JS CREATESTORE IS RUNNING', config);
-  let tables = [];
-  for (let topic of config.topics) {
-    for (let component of topic.components) {
-      if (component.type === 'horizontal-table') {
-        // console.log('topic:', topic.label, component);
-        // console.log('topic:', topic.label, component.type, component.slots.title);
-        const tableName = topic.key + '_' + component.options.id;
-        tables.push({
-          data: [],
-          key: topic.key,
-          id: component.options.id,
-          mapOverlay: component.options.mapOverlay
-        });
-      }
-      else if (component.type === 'tab-group' || component.type === 'table-group') {
-        for (let innerComponent of component.options.components) {
-          if (innerComponent.type === 'horizontal-table') {
-            // console.log('topic:', topic.label, innerComponent);
-            // console.log('topic:', topic.label, component.type, innerComponent.type, innerComponent.slots.title);
-            const tableName = topic.key + '_' + innerComponent.options.id;
-            tables.push({
-              data: [],
-              key: topic.key,
-              id: innerComponent.options.id,
-              mapOverlay: innerComponent.options.mapOverlay
-            });
-          }
-        }
-      }
-    }
-  }
-
   const initialState = {
     activeTopic: defaultTopic.key,
     // the ais feature
