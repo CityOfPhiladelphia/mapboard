@@ -73,8 +73,6 @@
 </template>
 
 <script>
-  import moment from 'moment';
-  import generateUniqueId from '../../util/uniqueId';
   import TopicComponent from './TopicComponent';
   import HorizontalTableRow from './HorizontalTableRow';
 
