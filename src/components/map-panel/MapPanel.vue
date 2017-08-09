@@ -428,17 +428,25 @@
       handleMapMove(e) {
         const map = this.$store.state.map.map;
 
-        // update state for pictometry
-        const center = map.getCenter();
-        const { lat, lng } = center;
-        const coords = [lng, lat];
-        this.$store.commit('setPictometryMapCenter', coords);
+        const pictometryConfig = this.$config.pictometry || {};
 
-        const zoom = map.getZoom();
-        this.$store.commit('setPictometryMapZoom', zoom);
+        if (pictometryConfig.enabled) {
+          // update state for pictometry
+          const center = map.getCenter();
+          const { lat, lng } = center;
+          const coords = [lng, lat];
+          this.$store.commit('setPictometryMapCenter', coords);
 
-        // update cyclo recordings
-        this.updateCyclomediaRecordings();
+          const zoom = map.getZoom();
+          this.$store.commit('setPictometryMapZoom', zoom);
+        }
+
+        const cyclomediaConfig = this.$config.cyclomedia || {};
+
+        if (cyclomediaConfig.enabled) {
+          // update cyclo recordings
+          this.updateCyclomediaRecordings();
+        }
       },
       handleSearchFormSubmit(e) {
         this.$controller.handleSearchFormSubmit(e);
