@@ -450,7 +450,23 @@
       },
       handleSearchFormSubmit(e) {
         this.$controller.handleSearchFormSubmit(e);
-      }
+      },
+      fillColorForCircleMarker(markerId, tableId) {
+        // get map overlay style and hover style for table
+        const tableConfig = this.getConfigForTable(tableId);
+        const mapOverlay = tableConfig.options.mapOverlay;
+        const { style, hoverStyle } = mapOverlay;
+
+        // compare id to active feature id
+        const activeFeature = this.activeFeature;
+        const useHoverStyle = (
+          markerId === activeFeature.featureId &&
+          tableId === activeFeature.tableId
+        );
+        const curStyle = useHoverStyle ? hoverStyle : style;
+
+        return curStyle.fillColor;
+      },
     }, // end of methods
   }; //end of export
 </script>
