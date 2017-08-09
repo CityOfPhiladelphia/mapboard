@@ -4,6 +4,56 @@ import Vuex from 'vuex';
 // when you load vuex from a script tag this seems to happen automatically
 // Vue.use(Vuex);
 
+// this grabs horizontal table ids from an array of topic components,
+// recursively
+function getTableIdsFromComps(comps = []) {
+  // const topics = config.topics;
+
+  let tableIds = [];
+
+  for (let comp of comps) {
+    const options = comp.options || {};
+    const innerComps = options.components;
+
+    // if this is a "group" component, recurse
+    if (innerComps) {
+      const innerTableIds = getTableIdsFromComps(innerComps);
+      tableIds = tableIds.concat(innerTableIds);
+      continue;
+    }
+
+    // skip comps that aren't horizontal tables
+    if (comp.type !== 'horizontal-table') {
+      continue;
+    }
+
+    const tableId = comp._id;
+
+    tableIds.push(tableId);
+  }
+
+  return tableIds;
+}
+
+// this makes the empty filtered data object given a list of topics.
+function createFilteredData(config) {
+  const topics = config.topics;
+  let tableIds = [];
+
+  for (let topic of topics) {
+    const comps = topic.components;
+    const compTableIds = getTableIdsFromComps(comps);
+    tableIds = tableIds.concat(compTableIds);
+  }
+
+  const filteredData = tableIds.reduce((acc, tableId) => {
+    acc[tableId] = [];
+    return acc;
+  }, {});
+
+  return filteredData;
+}
+
 function createStore(config) {
   const defaultTopic = config.topics[0];
 
@@ -130,6 +180,10 @@ function createStore(config) {
     // },
     // TODO put this in tables
     activeFeature: null,
+    tables: {
+      // table id => filtered rows
+      filteredData: createFilteredData(config),
+    },
   };
 
   // TODO standardize how payloads are passed around/handled
@@ -146,16 +200,12 @@ function createStore(config) {
         state.tables = payload;
       },
       setTableFilteredData(state, payload) {
-        const { topicKey, id, data } = payload;
-        // console.log('SETTABLEFILTEREDDATA', topicKey, id, data);
-        const table = state.tables.filter(table => {
-          return (
-            table.key === topicKey &&
-            table.id === id
-          )
-        })
-        // console.log('TABLE', table);
-        table[0].data = data;
+        const { tableId, data } = payload;
+
+        // check for not-null table id
+        if (!tableId) return;
+
+        state.tables.filteredData[tableId] = data;
       },
       setActiveTopic(state, payload) {
         state.activeTopic = payload;
