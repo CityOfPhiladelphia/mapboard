@@ -51,7 +51,6 @@
           latlng,
           ...options
         } = props;
-        //console.log(new CircleMarker(latlng, options));
         const newCircleMarker = new CircleMarker(latlng, options);
         //this.$store.commit('setCircleMarkers', newCircleMarker);
         return newCircleMarker;
