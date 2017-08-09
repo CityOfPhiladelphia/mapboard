@@ -273,14 +273,6 @@
     mounted() {
       this.$controller.appDidLoad();
     },
-    watch: {
-      // geocodeInput(input) {
-      //   console.log('geocode input changed =>', input);
-      // }
-      // geocodeResult() {
-      //   console.log('geocode result changed')
-      // }
-    },
     computed: {
       imageOverlay() {
         return this.$store.state.map.imageOverlay;
