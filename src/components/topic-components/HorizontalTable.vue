@@ -96,14 +96,9 @@
       HorizontalTableRow
     },
     created() {
-      // give table a unique-ish id for storing their data in state (map needs
-      // access to filtered rows)
-      // this._tableId = generateUniqueId();
-
       if (this.filters) {
         for (let [index, filter] of this.filters.entries()) {
           const key = `filter-${index}`;
-          // console.log(filter);
           const defaultValue = filter.values[0] || {};
           this.filterSelections[key] = defaultValue;
         }
@@ -212,7 +207,7 @@
         return {value, unit, direction};
       },
       handleFilterValueChange(e) {
-        console.log('handle filter value change', e);
+        // console.log('handle filter value change', e);
 
         const target = e.target;
         const slug = target.value;
@@ -254,7 +249,8 @@
             const key = `filter-${index}`;
             const data = filterSelections[key];
             const {type, getValue} = filter;
-            const {direction, unit, value} = data
+            const {direction, unit, value} = data;
+
             // TODO put these in separate methods
             switch(type) {
               case 'data':
