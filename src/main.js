@@ -4,6 +4,32 @@ import configMixin from './util/config-mixin';
 import Mapboard from './components/Mapboard';
 import mergeDeep from './util/merge-deep';
 import controllerMixin from './controller';
+import generateUniqueId from './util/uniqueId';
+
+// helper function to auto-assign ids to horizontal tables
+function assignTableIds(comps) {
+  for (let comp of comps) {
+    const options = comp.options || {};
+    const innerComps = options.components;
+
+    // if this is a "group" component, recurse
+    if (innerComps) {
+      assignTableIds(innerComps);
+      return;
+    }
+
+    // skip comps that aren't horizontal tables
+    if (comp.type !== 'horizontal-table') {
+      continue;
+    }
+
+     const id = generateUniqueId();
+     comp._id = id;
+     // the id also needs to get passed to the horizontal table component, so
+     // use the options object.
+     comp.options.tableId = id;
+  }
+}
 
 export default (clientConfig) => {
   const baseConfigUrl = clientConfig.baseConfig;
@@ -23,6 +49,11 @@ export default (clientConfig) => {
       // deep merge base config and client config
       //const config = mergeDeep(clientConfig, baseConfig);
       const config = mergeDeep(baseConfig, clientConfig);
+
+      // assign table ids
+      for (let topic of config.topics) {
+        assignTableIds(topic.components);
+      }
 
       // make config accessible from each component via this.$config
       Vue.use(configMixin, config);
