@@ -105,7 +105,6 @@
 
        <!-- TODO give these a real key -->
       <circle-marker v-for="circleMarker in circleMarkers"
-                     @l-click="handleCircleMarkerClick"
                      @l-mouseover="handleCircleMarkerMouseover"
                      @l-mouseout="handleCircleMarkerMouseout"
                      :latlng="circleMarker.latlng"

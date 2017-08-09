@@ -145,9 +145,6 @@ export default {
     },
   },
   methods: {
-    handleCircleMarkerClick(e) {
-      const featureId = e.target.options.data.featureId;
-      this.$store.commit('setActiveFeature', featureId);
     },
     bringCircleMarkerToFront(circleMarker) {
       console.log('bringCircleMarkerToFront', circleMarker);
