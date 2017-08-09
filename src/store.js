@@ -173,17 +173,14 @@ function createStore(config) {
         zoom: config.map.zoom
       }
     },
-    tables,
-    // tables: {
-    //   // table id => filtered rows
-    //   filteredData: {}
-    // },
-    // TODO put this in tables
-    activeFeature: null,
     tables: {
       // table id => filtered rows
       filteredData: createFilteredData(config),
     },
+    activeFeature: {
+      featureId: null,
+      tableId: null
+    }
   };
 
   // TODO standardize how payloads are passed around/handled
@@ -310,7 +307,9 @@ function createStore(config) {
         state.cyclomedia.locFromViewer = payload;
       },
       setActiveFeature(state, payload) {
-        state.activeFeature = payload;
+        const { featureId, tableId } = payload || {};
+        const nextActiveFeature = { featureId, tableId };
+        state.activeFeature = nextActiveFeature;
       },
       setLastSearchMethod(state, payload) {
         state.lastSearchMethod = payload;
