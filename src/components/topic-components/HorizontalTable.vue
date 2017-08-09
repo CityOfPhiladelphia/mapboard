@@ -36,7 +36,7 @@
                  id="theInput"
                  @keyup="handleFilterFormKeyup"
           />
-          <button v-if="this.filterWords !=''"
+          <button v-if="this.searchText !=''"
                   class="mb-search-control-button"
           >
             <i class="fa fa-times fa-lg"></i>
@@ -60,11 +60,12 @@
               :class="{ active: item._featureId === activeFeature }"
           > -->
           <!-- <horizontal-table-row v-for="item in itemsSorted" -->
-          <horizontal-table-row v-for="item in itemsFiltered"
+          <horizontal-table-row v-for="item in itemsAfterFilters"
                                 :item="item"
                                 :fields="fields"
                                 :key="item._featureId"
                                 :hasOverlay="hasOverlay"
+                                :tableId="options.tableId"
           />
         </tbody>
       </table>
@@ -79,18 +80,20 @@
   export default {
     mixins: [TopicComponent],
     data() {
-      const filters = this.filters || [];
+      const filters = this.$props.options.filters || [];
       const defaultFilterSelections = Object.keys(filters).reduce((acc, i) =>
                                       {
                                         const key = `filter-${i}`;
                                         acc[key] = {};
+                                        return acc;
                                       }, {});
 
-      return {
-        initiallyFilteredTable: [],
+      const initialData = {
         filterSelections: defaultFilterSelections,
-        filterWords: '',
-      }
+        searchText: ''
+      };
+
+      return initialData;
     },
     components: {
       HorizontalTableRow
@@ -103,56 +106,34 @@
           this.filterSelections[key] = defaultValue;
         }
       }
-    },
-    mounted() {
-      const items = this.items;
-      let itemsFiltered;
-      if (this.$props.slots.data === this.shouldShowTable) {
-        itemsFiltered = this.filterItems(items,
-                                               this.filters,
-                                               this.filterSelections);
-      } else {
-        itemsFiltered = []
-      }
-      console.log('HORIZTABLE MOUNTED', this.options.topicKey, this.options.id, 'length:', itemsFiltered.length);
-      // update the local state
-      this.initiallyFilteredTable = itemsFiltered;
+
+      // put row data in state once on load
+      const data = this.itemsAfterSearch;
+      const tableId = this.options.tableId;
+
+      this.$store.commit('setTableFilteredData', {
+        tableId,
+        data
+      });
     },
     watch: {
-      shouldShowTable(nextTable) {
-        console.log('WATCH SHOULDSHOWTABLE FIRED', nextTable, this.$props.slots.data);
-        const items = this.items;
-        let itemsFiltered;
-        if (this.$props.slots.data === nextTable) {
-          itemsFiltered = this.filterItems(items,
-                                                 this.filters,
-                                                 this.filterSelections);
-        } else {
-          itemsFiltered = []
-        }
-        // update the local state
-        this.initiallyFilteredTable = itemsFiltered;
-      },
-      filterWords() {
-        console.log('WATCH FILTERWORDS FIRED');
-        this.filterByWords();
-      },
-      initiallyFilteredTable() {
-        console.log('WATCH INITIALLYFILTEREDTABLE FIRED');
-        this.filterByWords();
-      },
+      itemsAfterFilters(nextItems) {
+        // console.log('WATCH items after filters', nextItems);
+
+        this.updateTableFilteredData();
+      }
     },
     computed: {
       shouldShowTable() {
-        if (this.$props.item) {
-          const filterValue = this.$props.item//['filter-0'].value;
+        if (this.item) {
+          const filterValue = this.$props.item;
           return filterValue;
         } else {
           return undefined;
         }
       },
       inputClass() {
-        if (this.filterWords === '') {
+        if (this.searchText === '') {
           return 'mb-search-control-input';
         } else {
           return 'mb-search-control-input-full';
@@ -175,25 +156,45 @@
         const itemsSlot = this.slots.items;
         return this.evaluateSlot(itemsSlot) || [];
       },
-      count() {
-        const length = this.itemsFiltered.length;
-        return `(${length})`;
+      itemsAfterSearch() {
+        const searchText = this.searchText;
+        const searchTextLower = searchText.toLowerCase();
+
+        // get full set of items
+        const items = this.items;
+
+        // get items that contain the search text in one of their filter fields
+        const matchingItems = items.filter(item => {
+          const filterFields = this.options.filterFieldsByText || [];
+          const searchVals = filterFields.map(filterField => {
+            const props = item.properties;
+            const searchVal = props ? props[filterField] : item[filterField];
+            return searchVal.toLowerCase();
+          });
+
+          for (let searchVal of searchVals) {
+            if (searchVal.includes(searchTextLower)) {
+              return true;
+            } else {
+              return false;
+            }
+          }
+        })
+
+        return matchingItems;
       },
-      itemsFiltered() {
-        console.log('HORIZTABLE COMPUTED: ITEMSFILTERED IS RECALCULATING')
-        const unfiltTables = this.$store.state.tables;
-        const tables = unfiltTables.filter(comp => {
-          const key = comp.key;
-          const id = comp.id;
-          // console.log('key', key, this.$store.state.activeTopic, 'id', id, this.$props.options.id);
-          return (
-            id === this.$props.options.id &&
-            key === this.$store.state.activeTopic
-          )
-        });
-        // console.log('tables:', tables);
-        let itemsFiltered = tables[0].data;
-        return itemsFiltered;
+      // this takes itemsAfterSearch and applies selected filters
+      itemsAfterFilters() {
+        const itemsAfterSearch = this.itemsAfterSearch;
+        const items = this.filterItems(itemsAfterSearch,
+                                       this.filters,
+                                       this.filterSelections);
+
+        return items;
+      },
+      count() {
+        const length = this.itemsAfterFilters.length;
+        return `(${length})`;
       }
     },
     methods: {
@@ -218,14 +219,11 @@
         const parent = target.parentElement;
         const parentId = parent.id;
 
-        this.filterSelections[parentId] = valueObj;
-
-        const items = this.items;
-        let itemsFiltered = this.filterItems(items,
-                                               this.filters,
-                                               this.filterSelections);
-        // update the local state
-        this.initiallyFilteredTable = itemsFiltered;
+        // patch and replace filter selections
+        const prevFilterSelections = this.filterSelections;
+        const nextFilterSelections = Object.assign({}, prevFilterSelections);
+        nextFilterSelections[parentId] = valueObj;
+        this.filterSelections = nextFilterSelections;
       },
       values(item) {
         const fields = this.options.fields;
@@ -234,14 +232,13 @@
       },
       handleFilterFormKeyup(e) {
         const input = e.target.value;
-        this.filterWords = input;
+        this.searchText = input;
       },
       handleFilterFormX(e) {
         e.target[0].value = ''
-        this.filterWords = '';
+        this.searchText = '';
       },
       filterItems(items, filters, filterSelections) {
-        console.log('HORIZONTALTABLE FILTERITEMS IS RUNNING, starting with', items.length, 'items');//, filters, filterSelections);
         let itemsFiltered = items.slice();
 
         if (filters) {
@@ -292,35 +289,6 @@
           }
         }
         return itemsFiltered;
-      },
-      filterByWords() {
-        console.log('HORIZONTALTABLE FILTERBYWORDS IS RUNNING');
-        const items = this.initiallyFilteredTable;
-        let itemsFiltered;
-        itemsFiltered = items.filter(item => {
-          let str = '';
-          const filterFields = this.options.filterFieldsByText || [];
-
-          for (let field of filterFields) {
-            if (item.properties) {
-              str += item.properties[field].toLowerCase();
-            } else {
-              str += item[field].toLowerCase();
-            }
-          }
-
-          return str.includes(this.filterWords.toLowerCase());
-        })
-        // update global state
-        this.updateFilteredDataToState(itemsFiltered);
-      },
-
-      updateFilteredDataToState(itemsFiltered) {
-        this.$store.commit('setTableFilteredData', {
-          topicKey: this.options.topicKey,
-          id: this.options.id,
-          data: itemsFiltered
-        });
       },
 
       sortItems(items, sortOpts) {
@@ -373,6 +341,19 @@
         // console.log('compare', valA, 'to', valB, ', result:', result);
 
         return result;
+      },
+      // this updates the global state that stores filtered table rows
+      updateTableFilteredData() {
+        // console.log('update table filtered data');
+
+        // get table id
+        const { tableId } = this.options;
+
+        // update global state
+        this.$store.commit('setTableFilteredData', {
+          tableId,
+          data: this.itemsAfterFilters
+        });
       }
     }
   };
