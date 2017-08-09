@@ -16,7 +16,7 @@
 
   export default {
     mixins: [TopicComponent],
-    props: ['fields', 'hasOverlay'],
+    props: ['fields', 'hasOverlay', 'tableId'],
     computed: {
       activeFeature() {
         return this.$store.state.activeFeature
