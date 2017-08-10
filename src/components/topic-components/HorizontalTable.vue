@@ -163,10 +163,15 @@
         // get full set of items
         const items = this.items;
 
+        // if text search is not enabled, return all items
+        const searchFields = this.options.filterFieldsByText || [];
+        if (searchFields.length === 0) {
+          return items;
+        }
+
         // get items that contain the search text in one of their filter fields
         const matchingItems = items.filter(item => {
-          const filterFields = this.options.filterFieldsByText || [];
-          const searchVals = filterFields.map(filterField => {
+          const searchVals = searchFields.map(filterField => {
             const props = item.properties;
             const searchVal = props ? props[filterField] : item[filterField];
             return searchVal.toLowerCase();
