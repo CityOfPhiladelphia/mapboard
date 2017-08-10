@@ -459,7 +459,7 @@ class DataManager {
       // window.location.hash = nextHash;
 
       // this.geocode(id);
-      this.controller.router.route(id);
+      this.controller.router.routeToAddress(id);
     } else {
       this.fetchData();
     }
