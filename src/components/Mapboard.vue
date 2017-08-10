@@ -62,6 +62,29 @@
       ViewCone,
       PngMarker
     },
+    // created() {
+    //   console.log('MAPBOARD.VUE CREATED', this.$config);
+    //   let tables = {};
+    //   for (let topic of this.$config.topics) {
+    //     for (let component of topic.components) {
+    //       if (component.type === 'horizontal-table') {
+    //         // console.log('topic:', topic.label, component.type, component.slots.title);
+    //         const tableName = topic.key + '_' + component.options.id
+    //         tables[tableName] = null
+    //       }
+    //       else if (component.type === 'tab-group' || component.type === 'table-group') {
+    //         for (let innerComponent of component.options.components) {
+    //           if (innerComponent.type === 'horizontal-table') {
+    //             // console.log('topic:', topic.label, component.type, innerComponent.type, innerComponent.slots.title);
+    //             const tableName = topic.key + '_' + innerComponent.options.id
+    //             tables[tableName] = null
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    //   this.$store.commit('setTables', tables);
+    // },
     computed: {
       cyclomediaActive() {
         return this.$store.state.cyclomedia.active

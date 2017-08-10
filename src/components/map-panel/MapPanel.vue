@@ -105,7 +105,6 @@
 
        <!-- TODO give these a real key -->
       <circle-marker v-for="circleMarker in circleMarkers"
-                     @l-click="handleCircleMarkerClick"
                      @l-mouseover="handleCircleMarkerMouseover"
                      @l-mouseout="handleCircleMarkerMouseout"
                      :latlng="circleMarker.latlng"
@@ -116,7 +115,10 @@
                    	 :opacity="circleMarker.opacity"
                    	 :fillOpacity="circleMarker.fillOpacity"
                      :key="Math.random()"
-                     :data="{featureId: circleMarker.featureId}"
+                     :data="{
+                       featureId: circleMarker.featureId,
+                       tableId: circleMarker.tableId
+                     }"
       />
 
        <!-- <vector-marker v-for="marker in threeOneOneMarkers"
@@ -270,14 +272,6 @@
     },
     mounted() {
       this.$controller.appDidLoad();
-    },
-    watch: {
-      // geocodeInput(input) {
-      //   console.log('geocode input changed =>', input);
-      // }
-      // geocodeResult() {
-      //   console.log('geocode result changed')
-      // }
     },
     computed: {
       imageOverlay() {
@@ -434,21 +428,45 @@
       handleMapMove(e) {
         const map = this.$store.state.map.map;
 
-        // update state for pictometry
-        const center = map.getCenter();
-        const { lat, lng } = center;
-        const coords = [lng, lat];
-        this.$store.commit('setPictometryMapCenter', coords);
+        const pictometryConfig = this.$config.pictometry || {};
 
-        const zoom = map.getZoom();
-        this.$store.commit('setPictometryMapZoom', zoom);
+        if (pictometryConfig.enabled) {
+          // update state for pictometry
+          const center = map.getCenter();
+          const { lat, lng } = center;
+          const coords = [lng, lat];
+          this.$store.commit('setPictometryMapCenter', coords);
 
-        // update cyclo recordings
-        this.updateCyclomediaRecordings();
+          const zoom = map.getZoom();
+          this.$store.commit('setPictometryMapZoom', zoom);
+        }
+
+        const cyclomediaConfig = this.$config.cyclomedia || {};
+
+        if (cyclomediaConfig.enabled) {
+          // update cyclo recordings
+          this.updateCyclomediaRecordings();
+        }
       },
       handleSearchFormSubmit(e) {
         this.$controller.handleSearchFormSubmit(e);
-      }
+      },
+      fillColorForCircleMarker(markerId, tableId) {
+        // get map overlay style and hover style for table
+        const tableConfig = this.getConfigForTable(tableId);
+        const mapOverlay = tableConfig.options.mapOverlay;
+        const { style, hoverStyle } = mapOverlay;
+
+        // compare id to active feature id
+        const activeFeature = this.activeFeature;
+        const useHoverStyle = (
+          markerId === activeFeature.featureId &&
+          tableId === activeFeature.tableId
+        );
+        const curStyle = useHoverStyle ? hoverStyle : style;
+
+        return curStyle.fillColor;
+      },
     }, // end of methods
   }; //end of export
 </script>

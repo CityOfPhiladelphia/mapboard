@@ -51,8 +51,10 @@ module.exports = {
     clientLogLevel: 'none',
     historyApiFallback: true,
     noInfo: true,
-    host: process.env.WEBPACK_DEV_HOST,
-    port: process.env.WEBPACK_DEV_PORT
+    host: '127.0.0.1',
+    port: 8080
+    // host: process.env.WEBPACK_DEV_HOST,
+    // port: process.env.WEBPACK_DEV_PORT
   },
   performance: {
     hints: false

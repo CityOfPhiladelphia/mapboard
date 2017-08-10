@@ -1,5 +1,7 @@
 <template>
-  <tr :class="{ active: item._featureId === activeFeature }"
+  <tr :class="{ active: item._featureId === activeFeature.featureId &&
+                        tableId === activeFeature.tableId
+             }"
       @mouseover="handleRowMouseover"
       @mouseout="handleRowMouseout"
   >
@@ -14,7 +16,7 @@
 
   export default {
     mixins: [TopicComponent],
-    props: ['fields', 'hasOverlay'],
+    props: ['fields', 'hasOverlay', 'tableId'],
     computed: {
       activeFeature() {
         return this.$store.state.activeFeature
@@ -39,7 +41,8 @@
         if (!this.hasOverlay) return;
 
         const featureId = this.item._featureId;
-        this.$store.commit('setActiveFeature', featureId);
+        const tableId = this.tableId;
+        this.$store.commit('setActiveFeature', { featureId, tableId });
       },
       handleRowMouseout(e) {
         if (!this.hasOverlay) return;
@@ -59,6 +62,9 @@
         //     elRect.bottom <= parRect.bottom &&
         //     elRect.right <= parRect.right
         // );
+      },
+      featuresMatch(a, b) {
+        return a.featureId === b.featureId && a.tableId === b.tableId;
       }
     }
   };

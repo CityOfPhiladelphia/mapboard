@@ -1,5 +1,5 @@
 <script>
-    export default {
+  export default {
     props: ['slots', 'options', 'item'],
     computed: {
       nullValue() {

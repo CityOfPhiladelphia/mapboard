@@ -4,6 +4,56 @@ import Vuex from 'vuex';
 // when you load vuex from a script tag this seems to happen automatically
 // Vue.use(Vuex);
 
+// this grabs horizontal table ids from an array of topic components,
+// recursively
+function getTableIdsFromComps(comps = []) {
+  // const topics = config.topics;
+
+  let tableIds = [];
+
+  for (let comp of comps) {
+    const options = comp.options || {};
+    const innerComps = options.components;
+
+    // if this is a "group" component, recurse
+    if (innerComps) {
+      const innerTableIds = getTableIdsFromComps(innerComps);
+      tableIds = tableIds.concat(innerTableIds);
+      continue;
+    }
+
+    // skip comps that aren't horizontal tables
+    if (comp.type !== 'horizontal-table') {
+      continue;
+    }
+
+    const tableId = comp._id;
+
+    tableIds.push(tableId);
+  }
+
+  return tableIds;
+}
+
+// this makes the empty filtered data object given a list of topics.
+function createFilteredData(config) {
+  const topics = config.topics;
+  let tableIds = [];
+
+  for (let topic of topics) {
+    const comps = topic.components;
+    const compTableIds = getTableIdsFromComps(comps);
+    tableIds = tableIds.concat(compTableIds);
+  }
+
+  const filteredData = tableIds.reduce((acc, tableId) => {
+    acc[tableId] = [];
+    return acc;
+  }, {});
+
+  return filteredData;
+}
+
 function createStore(config) {
   const defaultTopic = config.topics[0];
 
@@ -38,6 +88,7 @@ function createStore(config) {
       data: null,
       input: null
     },
+    lastSearchMethod: null,
     // the leaflet map object
     map: {
       center: config.map.center,
@@ -89,15 +140,37 @@ function createStore(config) {
         zoom: config.map.zoom
       }
     },
-    activeFeature: null,
-    lastSearchMethod: null
+    tables: {
+      // table id => filtered rows
+      filteredData: createFilteredData(config),
+    },
+    activeFeature: {
+      featureId: null,
+      tableId: null
+    }
   };
 
   // TODO standardize how payloads are passed around/handled
   return new Vuex.Store({
     state: initialState,
-    getters: {},
+    // getters: {
+    //   topicTables: (state, getters) => (activeTopicKey) => {
+    //     console.log(state.tables);
+    //     return state.tables.filter(table => table.key === activeTopicKey);
+    //   }
+    // },
     mutations: {
+      setTables(state, payload) {
+        state.tables = payload;
+      },
+      setTableFilteredData(state, payload) {
+        const { tableId, data } = payload;
+
+        // check for not-null table id
+        if (!tableId) return;
+
+        state.tables.filteredData[tableId] = data;
+      },
       setActiveTopic(state, payload) {
         state.activeTopic = payload;
       },
@@ -201,7 +274,9 @@ function createStore(config) {
         state.cyclomedia.locFromViewer = payload;
       },
       setActiveFeature(state, payload) {
-        state.activeFeature = payload;
+        const { featureId, tableId } = payload || {};
+        const nextActiveFeature = { featureId, tableId };
+        state.activeFeature = nextActiveFeature;
       },
       setLastSearchMethod(state, payload) {
         state.lastSearchMethod = payload;

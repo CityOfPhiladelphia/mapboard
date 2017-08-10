@@ -13,6 +13,7 @@
 </template>
 
 <script>
+  import generateUniqueId from '../util/uniqueId';
   import Badge from './topic-components/Badge';
   import Callout from './topic-components/Callout';
   import CollectionSummary from './topic-components/CollectionSummary';
@@ -43,12 +44,12 @@
         // generate a (basically) unique id for the group. the go-to npm packages
         // for uuid generation aren't available as umd builds on unpkg and
         // therefore won't work with the examples. this is good enough :)
-        key: Math.random().toString(36).substring(7)
+        key: generateUniqueId()
       };
     },
     methods: {
       getCompKey(compGroupKey, compIndex) {
-        return `topic-comp-${compGroupKey}-${compIndex}`;;
+        return `topic-comp-${compGroupKey}-${compIndex}`;
       }
     }
   };

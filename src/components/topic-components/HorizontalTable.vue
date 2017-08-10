@@ -36,7 +36,7 @@
                  id="theInput"
                  @keyup="handleFilterFormKeyup"
           />
-          <button v-if="this.filterWords !=''"
+          <button v-if="this.searchText !=''"
                   class="mb-search-control-button"
           >
             <i class="fa fa-times fa-lg"></i>
@@ -59,11 +59,13 @@
           <!-- <tr v-for="item in evaluateSlot(slots.items)"
               :class="{ active: item._featureId === activeFeature }"
           > -->
-          <horizontal-table-row v-for="item in itemsSorted"
+          <!-- <horizontal-table-row v-for="item in itemsSorted" -->
+          <horizontal-table-row v-for="item in itemsAfterFilters"
                                 :item="item"
                                 :fields="fields"
                                 :key="item._featureId"
                                 :hasOverlay="hasOverlay"
+                                :tableId="options.tableId"
           />
         </tbody>
       </table>
@@ -72,21 +74,26 @@
 </template>
 
 <script>
-  import moment from 'moment';
   import TopicComponent from './TopicComponent';
   import HorizontalTableRow from './HorizontalTableRow';
 
   export default {
     mixins: [TopicComponent],
     data() {
-      return {
-        filterData: {
-          'filter-0': {},
-          'filter-1': {},
-          'filter-2': {}
-        },
-        filterWords: '',
-      }
+      const filters = this.$props.options.filters || [];
+      const defaultFilterSelections = Object.keys(filters).reduce((acc, i) =>
+                                      {
+                                        const key = `filter-${i}`;
+                                        acc[key] = {};
+                                        return acc;
+                                      }, {});
+
+      const initialData = {
+        filterSelections: defaultFilterSelections,
+        searchText: ''
+      };
+
+      return initialData;
     },
     components: {
       HorizontalTableRow
@@ -95,23 +102,38 @@
       if (this.filters) {
         for (let [index, filter] of this.filters.entries()) {
           const key = `filter-${index}`;
-          // console.log(filter);
           const defaultValue = filter.values[0] || {};
-          this.filterData[key] = defaultValue;
+          this.filterSelections[key] = defaultValue;
         }
+      }
+
+      // put row data in state once on load
+      const data = this.itemsAfterSearch;
+      const tableId = this.options.tableId;
+
+      this.$store.commit('setTableFilteredData', {
+        tableId,
+        data
+      });
+    },
+    watch: {
+      itemsAfterFilters(nextItems) {
+        // console.log('WATCH items after filters', nextItems);
+
+        this.updateTableFilteredData();
       }
     },
     computed: {
       shouldShowTable() {
-        if (this.$props.item) {
-          const filterValue = this.$props.item//['filter-0'].value;
+        if (this.item) {
+          const filterValue = this.$props.item;
           return filterValue;
         } else {
           return undefined;
         }
       },
       inputClass() {
-        if (this.filterWords === '') {
+        if (this.searchText === '') {
           return 'mb-search-control-input';
         } else {
           return 'mb-search-control-input-full';
@@ -124,147 +146,55 @@
         //TODO make this work with not-always-on filters
         return this.filters;
       },
-      // activeFeature() {
-      //   return this.$store.state.activeFeature
-      // },
       fields() {
         return this.options.fields;
       },
       hasOverlay() {
-        return !!this.options.overlay;
+        return !!this.options.mapOverlay;
       },
       items() {
         const itemsSlot = this.slots.items;
         return this.evaluateSlot(itemsSlot) || [];
       },
-      count() {
-        const length = this.itemsFiltered.length;
-        return `(${length})`;
-      },
-      itemsFiltered() {
+      itemsAfterSearch() {
+        const searchText = this.searchText;
+        const searchTextLower = searchText.toLowerCase();
+
+        // get full set of items
         const items = this.items;
-        let itemsFiltered = items.slice();
 
-        if (this.filters) {
-          for (let [index, filter] of this.filters.entries()) {
-            const key = `filter-${index}`;
-            const data = this.filterData[key];
-            const {type, getValue} = filter;
-            const {direction, unit, value} = data
-            // TODO put these in separate methods
-            switch(type) {
-              case 'data':
-                // itemsFiltered = itemsFiltered.filter(item => {
-                //   const itemValue = getValue(item);
-                //   console.log('horiz table itemValue:', itemValue);
-                //   return itemValue;
-                // });
-                break;
-              case 'time':
-                let min, max;
-
-                if (direction === 'subtract') {
-                  max = moment();
-                  min = moment().subtract(value, unit);
-                  // console.log('max:', max, 'min', min);
-                } else if (direction === 'add') {
-                  min = moment();
-                  max = min.add(value, unit);
-                } else {
-                  throw `Invalid time direction: ${direction}`;
-                }
-
-                itemsFiltered = itemsFiltered.filter(item => {
-                  const itemValue = getValue(item);
-                  const itemMoment = moment(itemValue);
-                  const isBetween = itemMoment.isBetween(min, max)
-                  return isBetween;
-                });
-                break;
-
-              default:
-                throw `Unhandled filter type: ${type}`;
-                break;
-            }
-          }
-        }
-
-        itemsFiltered = itemsFiltered.filter(item => {
-          let str = '';
+        // get items that contain the search text in one of their filter fields
+        const matchingItems = items.filter(item => {
           const filterFields = this.options.filterFieldsByText || [];
+          const searchVals = filterFields.map(filterField => {
+            const props = item.properties;
+            const searchVal = props ? props[filterField] : item[filterField];
+            return searchVal.toLowerCase();
+          });
 
-          for (let field of filterFields) {
-            if (item.properties) {
-              str += item.properties[field].toLowerCase();
+          for (let searchVal of searchVals) {
+            if (searchVal.includes(searchTextLower)) {
+              return true;
             } else {
-              str += item[field].toLowerCase();
+              return false;
             }
           }
-
-          return str.includes(this.filterWords.toLowerCase());
         })
 
-        let idsFiltered = [];
-
-        for (let item of itemsFiltered) {
-          idsFiltered.push(item._featureId);
-        }
-
-        this.$store.commit('setMapFilters', idsFiltered);
-
-        // console.log('end of computed itemsFiltered:', itemsFiltered);
-        return itemsFiltered;
+        return matchingItems;
       },
-      itemsSorted() {
-        // console.log('computed: itemsSorted');
-        // TODO finish this
-        // if (Object.keys(this.filterData).length) {
-        //   console.log('there is filterData', this.filterData);
-        //   return this.itemsFiltered;
-        // } else {
-        //   console.log('there is no filterData');
-        //   return this.items;
-        // }
+      // this takes itemsAfterSearch and applies selected filters
+      itemsAfterFilters() {
+        const itemsAfterSearch = this.itemsAfterSearch;
+        const items = this.filterItems(itemsAfterSearch,
+                                       this.filters,
+                                       this.filterSelections);
 
-        const items = this.itemsFiltered;
-        const sortOpts = this.options.sort;
-
-        // if there's no no sort config, just return the items.
-        if (!sortOpts) {
-          return items;
-        }
-
-        const getValueFn = sortOpts.getValue;
-        const order = sortOpts.order;
-
-        // get sort fn or use this basic one
-        function defaultSortFn(a, b) {
-          const valA = getValueFn(a);
-          const valB = getValueFn(b);
-          let result;
-
-          if (valA < valB) {
-            result = -1;
-          } else if (valB < valA) {
-            result = 1;
-          } else {
-            result = 0;
-          }
-
-          // reverse if the target order is desc
-          if (order === 'desc') {
-            result = result * -1;
-          } else if (order !== 'asc') {
-            throw `Unknown sort order: ${order}`;
-          }
-
-          // console.log('compare', valA, 'to', valB, ', result:', result);
-
-          return result;
-        }
-        const sortFn = sortOpts.compare || defaultSortFn;
-
-        return items.sort(sortFn);
+        return items;
+      },
+      count() {
+        const length = this.itemsAfterFilters.length;
+        return `(${length})`;
       }
     },
     methods: {
@@ -285,12 +215,15 @@
 
         // deslugify filter value
         const valueObj = this.deslugifyFilterValue(slug);
-        // console.log('value obj', valueObj);
 
         const parent = target.parentElement;
         const parentId = parent.id;
 
-        this.filterData[parentId] = valueObj;
+        // patch and replace filter selections
+        const prevFilterSelections = this.filterSelections;
+        const nextFilterSelections = Object.assign({}, prevFilterSelections);
+        nextFilterSelections[parentId] = valueObj;
+        this.filterSelections = nextFilterSelections;
       },
       values(item) {
         const fields = this.options.fields;
@@ -299,11 +232,128 @@
       },
       handleFilterFormKeyup(e) {
         const input = e.target.value;
-        this.filterWords = input;
+        this.searchText = input;
       },
       handleFilterFormX(e) {
         e.target[0].value = ''
-        this.filterWords = '';
+        this.searchText = '';
+      },
+      filterItems(items, filters, filterSelections) {
+        let itemsFiltered = items.slice();
+
+        if (filters) {
+          for (let [index, filter] of filters.entries()) {
+            const key = `filter-${index}`;
+            const data = filterSelections[key];
+            const {type, getValue} = filter;
+            const {direction, unit, value} = data;
+
+            // TODO put these in separate methods
+            switch(type) {
+              case 'data':
+                // console.log('DATA FILTER');
+                // itemsFiltered = itemsFiltered.filter(item => {
+                //   const itemValue = getValue(item);
+                //   console.log('horiz table itemValue:', itemValue);
+                //   return itemValue;
+                // });
+                break;
+              case 'time':
+                // console.log('TIME FILTER');
+                let min, max;
+
+                if (direction === 'subtract') {
+                  max = moment();
+                  min = moment().subtract(value, unit);
+                  // console.log('max:', max, 'min', min);
+                } else if (direction === 'add') {
+                  min = moment();
+                  max = min.add(value, unit);
+                } else {
+                  throw `Invalid time direction: ${direction}`;
+                }
+
+                itemsFiltered = itemsFiltered.filter(item => {
+                  const itemValue = getValue(item);
+                  const itemMoment = moment(itemValue);
+                  const isBetween = itemMoment.isBetween(min, max)
+                  return isBetween;
+                });
+                // console.log('ITEMS FILTERED BY TIME FILTER', itemsFiltered);
+                break;
+
+              default:
+                throw `Unhandled filter type: ${type}`;
+                break;
+            }
+          }
+        }
+        return itemsFiltered;
+      },
+
+      sortItems(items, sortOpts) {
+        // console.log('computed: itemsSorted');
+        // TODO finish this
+        // if (Object.keys(this.filterData).length) {
+        //   console.log('there is filterData', this.filterData);
+        //   return this.itemsFiltered;
+        // } else {
+        //   console.log('there is no filterData');
+        //   return this.items;
+        // }
+
+        // const items = this.itemsFiltered;
+        // const sortOpts = this.options.sort;
+
+        // if there's no no sort config, just return the items.
+        if (!sortOpts) {
+          return items;
+        }
+
+        const getValueFn = sortOpts.getValue;
+        const order = sortOpts.order;
+
+        // get sort fn or use this basic one
+        const sortFn = sortOpts.compare || this.defaultSortFn;
+
+        return items.sort(sortFn);
+      },
+      defaultSortFn(a, b) {
+        const valA = getValueFn(a);
+        const valB = getValueFn(b);
+        let result;
+
+        if (valA < valB) {
+          result = -1;
+        } else if (valB < valA) {
+          result = 1;
+        } else {
+          result = 0;
+        }
+
+        // reverse if the target order is desc
+        if (order === 'desc') {
+          result = result * -1;
+        } else if (order !== 'asc') {
+          throw `Unknown sort order: ${order}`;
+        }
+
+        // console.log('compare', valA, 'to', valB, ', result:', result);
+
+        return result;
+      },
+      // this updates the global state that stores filtered table rows
+      updateTableFilteredData() {
+        // console.log('update table filtered data');
+
+        // get table id
+        const { tableId } = this.options;
+
+        // update global state
+        this.$store.commit('setTableFilteredData', {
+          tableId,
+          data: this.itemsAfterFilters
+        });
       }
     }
   };
