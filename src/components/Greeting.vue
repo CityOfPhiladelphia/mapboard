@@ -45,7 +45,8 @@
         const input = this.$store.state.geocode.input;
         return `
           <p>
-            We couldn't find <strong>${input || 'that address'}</strong>.
+            We couldn't find
+            ${input ? '<strong>' + input + '</strong>' : 'that address'}.
             Are you sure everything was spelled correctly?
           </p>
           <p>
