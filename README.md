@@ -6,7 +6,7 @@ Mapboard provides a pluggable Vue.js component for data-rich mapping application
 
 ![Atlas](http://i.imgur.com/GcZpsgX.png)
 
-## Deployment
+## Publishing
 
 To push a new version of Mapboard:
 
