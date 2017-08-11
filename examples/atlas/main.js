@@ -847,6 +847,17 @@ Mapboard.default({
                 }
               },
             ],
+            externalLink: {
+              action(count) {
+                return `See ${count} more`;
+              },
+              name: 'L&I Property History',
+              href(state) {
+                const address = state.geocode.data.properties.street_address;
+                const addressEncoded = encodeURIComponent(address);
+                return `//li.phila.gov/#summary?address=${addressEncoded}`;
+              }
+            }
           },
           slots: {
             title: 'Permits',
@@ -898,6 +909,17 @@ Mapboard.default({
                 }
               },
             ],
+            externalLink: {
+              action(count) {
+                return `See ${count} more`;
+              },
+              name: 'L&I Property History',
+              href(state) {
+                const address = state.geocode.data.properties.street_address;
+                const addressEncoded = encodeURIComponent(address);
+                return `//li.phila.gov/#summary?address=${addressEncoded}`;
+              }
+            }
           },
           slots: {
             title: 'Inspections',
@@ -949,6 +971,17 @@ Mapboard.default({
                 }
               },
             ],
+            externalLink: {
+              action(count) {
+                return `See ${count} more`;
+              },
+              name: 'L&I Property History',
+              href(state) {
+                const address = state.geocode.data.properties.street_address;
+                const addressEncoded = encodeURIComponent(address);
+                return `//li.phila.gov/#summary?address=${addressEncoded}`;
+              }
+            }
           },
           slots: {
             title: 'Violations',
