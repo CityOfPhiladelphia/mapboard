@@ -8,7 +8,7 @@ Mapboard provides a pluggable Vue.js component for data-rich mapping application
 
 ## Publishing
 
-To push a new version of Mapboard:
+To publish a new version of Mapboard to NPM:
 
 1. Commit your changes to `master`.
 2. Bump the NPM version with `npm version major|minor|patch`.
