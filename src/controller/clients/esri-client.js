@@ -12,14 +12,14 @@ class EsriClient extends BaseClient {
   }
 
   fetchSpatialQuery(dataSourceKey, url, relationship, targetGeom) {
-    // console.log('fetch esri spatial query');
+    // console.log('fetch esri spatial query', dataSourceKey, url, relationship, targetGeom);
 
     const query = L.esri.query({ url })[relationship](targetGeom);
 
     query.run((error, featureCollection, response) => {
       // console.log('did get esri spatial query', response, error);
 
-      const data = featureCollection.features;
+      const data = (featureCollection || {}).features;
       const status = error ? 'error' : 'success';
       this.dataManager.didFetchData(dataSourceKey, status, data);
     });
