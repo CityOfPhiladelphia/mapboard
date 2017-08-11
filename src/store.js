@@ -159,6 +159,18 @@ function createStore(config) {
     //     return state.tables.filter(table => table.key === activeTopicKey);
     //   }
     // },
+    getters: {
+      visibleTableIds(state) {
+        // get active topic
+        const activeTopic = state.activeTopic;
+
+        // get horizontal table ids for that topic
+        const activeTopicConfig = (config.topics.filter(topic => topic.key === activeTopic) || [])[0];
+        const comps = activeTopicConfig.components;
+
+        return getTableIdsFromComps(comps);
+      }
+    },
     mutations: {
       setTables(state, payload) {
         state.tables = payload;

@@ -57,22 +57,27 @@ export default {
       return markers;
     },
     circleMarkers() {
-      // const overlayTables = this.overlayTables || [];
+      const filteredData = this.$store.state.tables.filteredData;
       let circleMarkers = [];
 
-      // for (let overlayTable of overlayTables) {
-      const filteredData = this.$store.state.tables.filteredData;
-      const tableIds = Object.keys(filteredData);
+      // get visible tables based on active topic
+      const tableIds = this.$store.getters.visibleTableIds;
 
       for (let tableId of tableIds) {
-        const overlayTable = this.getConfigForTable(tableId) || {};
+        const tableConfig = this.getConfigForTable(tableId) || {};
+        const mapOverlay = (tableConfig.options || {}).mapOverlay;
+
+        if (!mapOverlay) {
+          continue;
+        }
+
         const items = filteredData[tableId];
 
         if (items.length < 1) {
           continue;
         }
 
-        const style = ((overlayTable.options || {}).mapOverlay || {}).style;
+        const style = mapOverlay.style;
 
         // go through rows
         for (let item of items) {
@@ -187,7 +192,6 @@ export default {
       }
     },
     bringCircleMarkerToFront(circleMarker) {
-      console.log('bringCircleMarkerToFront', circleMarker);
       // put marker on top
       const el = circleMarker._path;
 
