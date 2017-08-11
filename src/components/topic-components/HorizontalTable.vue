@@ -46,7 +46,7 @@
 
     <div class="mb-horizontal-table-body">
       <h4 v-if="slots.title">
-        {{ evaluateSlot(slots.title) }} {{ count }}
+        {{ evaluateSlot(slots.title) }} {{ countText }}
       </h4>
 
       <table role="grid" class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">
@@ -56,11 +56,7 @@
           </tr>
         </thead>
         <tbody>
-          <!-- <tr v-for="item in evaluateSlot(slots.items)"
-              :class="{ active: item._featureId === activeFeature }"
-          > -->
-          <!-- <horizontal-table-row v-for="item in itemsSorted" -->
-          <horizontal-table-row v-for="item in itemsAfterFilters"
+          <horizontal-table-row v-for="item in itemsLimited"
                                 :item="item"
                                 :fields="fields"
                                 :key="item._featureId"
@@ -69,6 +65,15 @@
           />
         </tbody>
       </table>
+
+      <!-- external link (aka "see more")-->
+      <a v-if="options.externalLink && shouldShowExternalLink"
+         :href="externalLinkHref"
+         class="external"
+         target="_blank"
+      >
+        {{ externalLinkText }}
+      </a>
     </div>
   </div>
 </template>
@@ -131,6 +136,10 @@
         } else {
           return undefined;
         }
+      },
+      limit() {
+        // try to get from config. if it's not there, set a reasonable default.
+        return this.options.limit || 5;
       },
       inputClass() {
         if (this.searchText === '') {
@@ -197,10 +206,37 @@
 
         return items;
       },
+      // this takes filtered items and applies the max number of rows
+      itemsLimited() {
+        return this.itemsAfterFilters.slice(0, this.limit);
+      },
       count() {
-        const length = this.itemsAfterFilters.length;
-        return `(${length})`;
-      }
+        return this.itemsAfterFilters.length;
+      },
+      countText() {
+        return `(${this.count})`;
+      },
+      shouldShowExternalLink() {
+        return this.itemsAfterSearch.length > this.limit;
+      },
+      externalLinkAction() {
+        return this.options.externalLink.action || 'See more';
+      },
+      externalLinkText() {
+        const externalLinkConf = this.options.externalLink;
+        const actionFn = externalLinkConf.action;
+        const actionText = actionFn(this.externalLinkCount);
+        const name = externalLinkConf.name;
+
+        return `${actionText} at ${name}`;
+      },
+      externalLinkHref() {
+        return this.evaluateSlot(this.options.externalLink.href);
+      },
+      // the number of items that aren't being shown (e.g. See 54 more...)
+      externalLinkCount() {
+        return this.count - this.limit;
+      },
     },
     methods: {
       slugifyFilterValue(filterValue) {
@@ -295,7 +331,6 @@
         }
         return itemsFiltered;
       },
-
       sortItems(items, sortOpts) {
         // console.log('computed: itemsSorted');
         // TODO finish this
