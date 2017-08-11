@@ -74,7 +74,8 @@ class Router {
       nextTopic = decodeURIComponent(pathComps[1]);
     }
 
-    this.route(nextAddress, nextTopic);
+    this.routeToAddress(nextAddress);
+    this.routeToTopic(nextTopic);
   }
 
   routeToAddress(nextAddress) {
