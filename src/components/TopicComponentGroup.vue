@@ -57,6 +57,6 @@
 
 <style scoped>
   .topic-component {
-    margin-bottom: 20px !important;
+    margin-bottom: 10px !important;
   }
 </style>
