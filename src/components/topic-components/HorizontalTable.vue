@@ -218,7 +218,11 @@
         return `(${this.count})`;
       },
       shouldShowExternalLink() {
-        return this.itemsAfterSearch.length > this.limit;
+        if (this.options.externalLink.forceShow) {
+          return this.options.externalLink.forceShow;
+        } else {
+          return this.itemsAfterSearch.length > this.limit;
+        }
       },
       externalLinkAction() {
         return this.options.externalLink.action || 'See more';
@@ -229,7 +233,8 @@
         const actionText = actionFn(this.externalLinkCount);
         const name = externalLinkConf.name;
 
-        return `${actionText} at ${name}`;
+        return `${actionText}`;
+        // return `${actionText} at ${name}`;
       },
       externalLinkHref() {
         return this.evaluateSlot(this.options.externalLink.href);
