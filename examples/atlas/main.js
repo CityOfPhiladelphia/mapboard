@@ -517,7 +517,7 @@ Mapboard.default({
         {
           type: 'vertical-table',
           slots: {
-            title: 'Account',
+            // title: 'Account',
             fields: [
               {
                 label: 'OPA Account #',
@@ -570,7 +570,20 @@ Mapboard.default({
                   'currency'
                 ]
               },
-            ]
+            ],
+          },
+          options: {
+            externalLink: {
+              action(count) {
+                return `See more at Property Search`;
+              },
+              name: 'Property Search',
+              href(state) {
+                const id = state.geocode.data.properties.opa_account_num;
+                // const addressEncoded = encodeURIComponent(address);
+                return `//property.phila.gov/?p=${id}`;
+              }
+            }
           }
         }
       ],
@@ -1348,7 +1361,18 @@ Mapboard.default({
                   return item.StormwaterStatus;
                 }
               }
-            ]
+            ],
+            externalLink: {
+              forceShow: true,
+              action(count) {
+                return `See more at Stormwater Billing`;
+              },
+              name: 'Stormwater Billing',
+              href(state) {
+                const id = state.sources.stormwater.data.Parcel.ParcelID;
+                return `//www.phila.gov/water/swmap/Parcel.aspx?parcel_id=${id}`;
+              }
+            }
           },
           slots: {
             title: 'Accounts',

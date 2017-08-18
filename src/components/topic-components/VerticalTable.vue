@@ -9,6 +9,13 @@
         </tr>
       </tbody>
     </table>
+    <a v-if="options && options.externalLink"
+       :href="externalLinkHref"
+       class="external"
+       target="_blank"
+    >
+      {{ externalLinkText }}
+    </a>
   </div>
 </template>
 
@@ -16,7 +23,23 @@
   import TopicComponent from './TopicComponent';
 
   export default {
-    mixins: [TopicComponent]
+    mixins: [TopicComponent],
+    computed: {
+      externalLinkAction() {
+        return this.options.externalLink.action || 'See more';
+      },
+      externalLinkText() {
+        const externalLinkConf = this.options.externalLink;
+        const actionFn = externalLinkConf.action;
+        const actionText = actionFn(this.externalLinkCount);
+        const name = externalLinkConf.name;
+
+        return `${actionText} at ${name}`;
+      },
+      externalLinkHref() {
+        return this.evaluateSlot(this.options.externalLink.href);
+      },
+    }
   };
 </script>
 
