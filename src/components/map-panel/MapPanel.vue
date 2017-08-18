@@ -165,6 +165,29 @@
         />
       </div>
 
+      <div v-once>
+        <measure-control :position="'bottomleft'"
+        />
+      </div>
+
+      <div v-once>
+        <legend-control v-for="legendControl in Object.keys(legendControls)"
+                        :key="legendControl"
+                        :position="'bottomleft'"
+                        :topic="legendControl"
+                        :items="legendControls[legendControl]"
+        />
+      </div>
+
+      <base-tool-tip :position="'bottomalmostleft'"
+      />
+
+      <!-- <scale-control :vSide="'top'"
+                     :hSide="'almostright'"
+      >
+      </scale-control> -->
+
+
       <!-- search control -->
       <!-- custom components seem to have to be wrapped like this to work
            with v-once
@@ -222,12 +245,18 @@
   import VectorMarker from '../VectorMarker';
   import PngMarker from '../PngMarker';
   import SvgMarker from '../SvgMarker';
-  import BasemapControl from '../BasemapControl';
-  import HistoricmapControl from '../HistoricmapControl';
+  import BasemapToggleControl from '../BasemapToggleControl';
+  import BasemapSelectControl from '../BasemapSelectControl';
+  // import HistoricmapControl from '../HistoricmapControl';
   import CyclomediaButton from '../../cyclomedia/Button';
   import PictometryButton from '../../pictometry/Button';
   import CyclomediaRecordingCircle from '../../cyclomedia/RecordingCircle';
   import CyclomediaRecordingsClient from '../../cyclomedia/recordings-client';
+  import MeasureControl from '../../leaflet/MeasureControl';
+  import LegendControl from '../../leaflet/LegendControl';
+  import BaseToolTip from '../../leaflet/BaseToolTip';
+  import ControlCorner from '../../leaflet/ControlCorner.vue';
+  import ScaleControl from '../../leaflet/ScaleControl.vue';
 
   export default {
     mixins: [
@@ -249,11 +278,17 @@
       VectorMarker,
       PngMarker,
       SvgMarker,
-      BasemapControl,
-      HistoricmapControl,
+      BasemapToggleControl,
+      BasemapSelectControl,
+      // HistoricmapControl,
       PictometryButton,
       CyclomediaButton,
-      CyclomediaRecordingCircle
+      CyclomediaRecordingCircle,
+      MeasureControl,
+      LegendControl,
+      BaseToolTip,
+      ControlCorner,
+      ScaleControl
     },
     created() {
       // if there's a default address, navigate to it
