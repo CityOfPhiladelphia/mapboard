@@ -716,13 +716,13 @@ Mapboard.default({
                     {
                       label: 'Perimeter',
                       value(state, item) {
-                        return 'TODO';
+                        return Math.round(item.properties['SHAPE.LEN']) + ' ft';
                       },
                     },
                     {
                       label: 'Area',
                       value(state, item) {
-                        return 'TODO';
+                        return Math.round(item.properties['SHAPE.AREA']) + ' sq ft';
                       },
                     },
                   ]
