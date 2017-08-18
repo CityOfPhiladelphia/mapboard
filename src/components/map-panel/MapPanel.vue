@@ -45,6 +45,7 @@
                               :opacity="dynamicLayer.opacity"
       />
 
+      <!-- dorParcels, pwdParcels, vacantLand, vacantBuilding -->
       <esri-feature-layer v-for="(featureLayer, key) in this.$config.map.featureLayers"
                           v-if="shouldShowFeatureLayer(key, featureLayer.minZoom)"
                           :key="key"
@@ -378,6 +379,14 @@
       },
       shouldShowImageryToggle() {
         return this.hasImageryBasemaps && this.$config.map.imagery.enabled;
+      },
+      shouldShowYears() {
+        return true;
+      },
+      allYears() {
+        const imageryYears = this.imageryBasemaps.map(x => x.year);
+        const historicYears = this.historicBasemaps.map(x => x.year);
+        return [...imageryYears, ...historicYears];
       },
       imageryYears() {
         // pluck year from basemap objects

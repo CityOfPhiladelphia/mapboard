@@ -404,6 +404,13 @@ Mapboard.default({
       }
     }
   },
+  legendControls: {
+    'water':
+      {
+        'Roof': '#FEFF7F',
+        'Other Impervious Surface': '#F2DCFF'
+      }
+  },
   overlays: {
     '311': {
       type: 'point',
