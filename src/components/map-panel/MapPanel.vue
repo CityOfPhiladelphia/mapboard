@@ -319,13 +319,16 @@
       this.$controller.appDidLoad();
     },
     computed: {
+      legendControls() {
+        return this.$config.legendControls;
+      },
       imageOverlay() {
         return this.$store.state.map.imageOverlay;
       },
       imageOverlayItems() {
         // console.log('calculating imageOverlayItem');
         if (this.activeTopicConfig.imageOverlayGroup) {
-          const overlayGroup = this.activeTopicConfig.imageOverlayGroup
+          const overlayGroup = this.activeTopicConfig.imageOverlayGroup;
           const state = this.$store.state;
           const overlay = this.$config.imageOverlayGroups[overlayGroup].items(state);
           // console.log('returning imageOverlayItem', overlay);
