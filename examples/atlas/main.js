@@ -808,9 +808,16 @@ Mapboard.default({
             },
           },
           slots: {
+            title: 'Registry Maps',
             items(state) {
               return state.sources.regmaps.data;
             }
+          }
+        },
+        {
+          type: 'callout',
+          slots: {
+            text: 'The property boundaries displayed on the map are for reference only and may not be used in place of recorded deeds or land surveys. Source: Department of Records.'
           }
         }
       ], // end deeds comps
@@ -850,8 +857,7 @@ Mapboard.default({
               {
                 label: 'ID',
                 value(state, item){
-                  return item.permitnumber
-                  // return "<a target='_blank' href='"+item.properties.CODE_SECTION_LINK+"'>"+item.properties.CODE_SECTION+" <i class='fa fa-external-link'></i></a>"
+                  return "<a target='_blank' href='//li.phila.gov/#details?entity=permits&eid="+item.permitnumber+"'>"+item.permitnumber+" <i class='fa fa-external-link'></i></a>"
                 }
               },
               {
@@ -864,13 +870,12 @@ Mapboard.default({
                 label: 'Status',
                 value(state, item){
                   return item.status
-                  // return "<a target='_blank' href='"+item.properties.CODE_SECTION_LINK+"'>"+item.properties.CODE_SECTION+" <i class='fa fa-external-link'></i></a>"
                 }
               },
             ],
             externalLink: {
               action(count) {
-                return `See ${count} more`;
+                return `See ${count} more at L&I Property History`;
               },
               name: 'L&I Property History',
               href(state) {
@@ -913,7 +918,6 @@ Mapboard.default({
                 label: 'ID',
                 value(state, item){
                   return item.casenumber
-                  // return "<a target='_blank' href='"+item.properties.CODE_SECTION_LINK+"'>"+item.properties.CODE_SECTION+" <i class='fa fa-external-link'></i></a>"
                 }
               },
               {
@@ -926,13 +930,12 @@ Mapboard.default({
                 label: 'Status',
                 value(state, item){
                   return item.inspectionstatus
-                  // return "<a target='_blank' href='"+item.properties.CODE_SECTION_LINK+"'>"+item.properties.CODE_SECTION+" <i class='fa fa-external-link'></i></a>"
                 }
               },
             ],
             externalLink: {
               action(count) {
-                return `See ${count} more`;
+                return `See ${count} more at L&I Property History`;
               },
               name: 'L&I Property History',
               href(state) {
@@ -975,7 +978,6 @@ Mapboard.default({
                 label: 'ID',
                 value(state, item){
                   return item.casenumber
-                  // return "<a target='_blank' href='"+item.properties.CODE_SECTION_LINK+"'>"+item.properties.CODE_SECTION+" <i class='fa fa-external-link'></i></a>"
                 }
               },
               {
@@ -988,13 +990,12 @@ Mapboard.default({
                 label: 'Status',
                 value(state, item){
                   return item.status
-                  // return "<a target='_blank' href='"+item.properties.CODE_SECTION_LINK+"'>"+item.properties.CODE_SECTION+" <i class='fa fa-external-link'></i></a>"
                 }
               },
             ],
             externalLink: {
               action(count) {
-                return `See ${count} more`;
+                return `See ${count} more at L&I Property History`;
               },
               name: 'L&I Property History',
               href(state) {
@@ -1233,6 +1234,18 @@ Mapboard.default({
                 }
               },
             ],
+            externalLink: {
+              forceShow: true,
+              action() {
+                return `See a list of all RCOs in the city [PDF]`;
+              },
+              name: '',
+              href(state) {
+                // const address = state.geocode.data.properties.street_address;
+                // const addressEncoded = encodeURIComponent(address);
+                return `//www.phila.gov/CityPlanning/projectreviews/RCO%20Related/List_of_RCOs.pdf`;
+              }
+            }
           },
           slots: {
             title: 'Registered Community Organizations',
