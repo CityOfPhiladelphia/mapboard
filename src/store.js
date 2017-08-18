@@ -96,6 +96,7 @@ function createStore(config) {
       map: null,
       bounds: null,
       basemap: defaultTopic.basemap,
+      basemapSelectValue: 'imagery2017',
       // circleMarkers: [],
       // this is the key for the active overlay image (eg regmap)
       imageOverlay: null,
@@ -260,6 +261,9 @@ function createStore(config) {
       },
       setBasemap(state, payload) {
         state.map.basemap = payload;
+      },
+      setBasemapSelectValue(state, payload) {
+        state.map.basemapSelectValue = payload;
       },
       setPictometryActive(state, payload) {
         if (!config.pictometry.enabled) {
