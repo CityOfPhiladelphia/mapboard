@@ -13,4 +13,8 @@
 </script>
 
 <style scoped>
+
+.callout {
+  position: inherit;
+}
 </style>

@@ -7,14 +7,19 @@
 
       <!-- after search -->
       <div v-if="geocode">
-        <div class="address-header" v-if="address">
-          <h1 class="address-header-line-1">{{ address }}</h1>
-          <div class="address-header-line-2 small-text">PHILADELPHIA, PA {{ zipCode }}</div>
+        <div class="address-spacer" v-if="address">
+          <div class="address-header">
+            <h1 class="address-header-line-1">{{ address }}</h1>
+            <div class="address-header-line-2 small-text">PHILADELPHIA, PA {{ zipCode }}</div>
+          </div>
         </div>
-        <topic v-for="topic in this.$config.topics"
-               :topicKey="topic.key"
-               :key="topic.key"
-        />
+        <div class="spacer-div"></div>
+        <div class="topics-container">
+          <topic v-for="topic in this.$config.topics"
+                 :topicKey="topic.key"
+                 :key="topic.key"
+          />
+        </div>
       </div>
     </div>
     <!-- <slot name="pictWidget" /> -->
@@ -73,16 +78,39 @@
     overflow-y: auto;
   }
 
-  /*TODO use patterns*/
+  .address-spacer {
+    position: absolute;
+    left: -5px;
+    height: 100px;
+    width: 49%;
+    background-color: white;
+  }
+
   .address-header {
+    /*position: absolute;*/
+    /*top: 20px;*/
     color: #666;
     border-left: 5px solid #58c04d;
-    margin-left: 10px;
+    margin-left: 15px;
     padding-left: 15px;
     margin-bottom: 25px;
+    margin-top: 20px;
   }
 
   .address-header-line-1 {
     margin-bottom: 0;
+    margin-top: 0;
+  }
+
+  .spacer-div {
+    height: 100px;
+  }
+
+  .topics-container {
+    /*position: relative;*/
+    /*overflow-y: auto;*/
+    /*max-height: calc(100hv - 80px)*/
+    /*overflow: scroll;*/
+    /*top: 180px;*/
   }
 </style>
