@@ -733,11 +733,12 @@ Mapboard.default({
                 options: {
                   topicKey: 'deeds',
                   id: 'dorDocuments',
+                  limit: 100,
                   fields: [
                     {
                       label: 'ID',
                       value(state, item) {
-                        return item.attributes.R_NUM;
+                        return "<a target='_blank' href='//pdx-app01/recorder/eagleweb/viewDoc.jsp?node=DOCC"+item.attributes.R_NUM+"'>"+item.attributes.R_NUM+"<i class='fa fa-external-link'></i></a>"
                       },
                     },
                     {
@@ -1054,6 +1055,7 @@ Mapboard.default({
           options: {
             topicKey: 'zoning',
             id: 'zoningOverlay',
+            limit: 100,
             fields: [
               {
                 label: 'Name',
@@ -1089,6 +1091,7 @@ Mapboard.default({
           options: {
             topicKey: 'zoning',
             id: 'zoningAppeals',
+            limit: 100,
             fields: [
               {
                 label: 'Date',
@@ -1139,6 +1142,7 @@ Mapboard.default({
           options: {
             topicKey: 'zoning',
             id: 'zoningDocs',
+            limit: 100,
             fields: [
               {
                 label: 'Date',
@@ -1194,6 +1198,7 @@ Mapboard.default({
           options: {
             topicKey: 'zoning',
             id: 'rco',
+            limit: 100,
             fields: [
               {
                 label: 'RCO',
@@ -1321,6 +1326,7 @@ Mapboard.default({
           options: {
             topicKey: 'water',
             id: 'stormwater',
+            limit: 100,
             // TODO this isn't used yet, but should be for highlighting rows/
             // map features.
             // overlay: '311',
@@ -1486,6 +1492,7 @@ Mapboard.default({
                 options: {
                   topicKey: 'vacancy',
                   id: '311',
+                  limit: 100,
                   // TODO this isn't used yet, but should be for highlighting rows/
                   // map features.
                   // filterForm: true,
@@ -1605,6 +1612,7 @@ Mapboard.default({
                   // TODO this isn't used yet, but should be for highlighting rows/
                   // map features.
                   // filterForm: true,
+                  limit: 100,
                   filters: [
                     {
                       type: 'time',
