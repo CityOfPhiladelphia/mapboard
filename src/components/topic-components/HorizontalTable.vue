@@ -1,5 +1,6 @@
 <template>
-  <div v-if="shouldShowTable ? slots.data === shouldShowTable: true">
+  <div>
+  <!-- <div v-if="shouldShowTable ? slots.data === shouldShowTable: true"> -->
     <!-- controls -->
     <div class="mb-horizontal-table-controls">
         <div v-if="!!this.$props.options.filters"
