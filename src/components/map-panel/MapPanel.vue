@@ -130,19 +130,29 @@
 
       <!-- CONTROLS: -->
       <!-- basemap control -->
+      <control-corner :vSide="'top'"
+                      :hSide="'almostright'"
+      >
+      </control-corner>
+
+      <control-corner :vSide="'bottom'"
+                      :hSide="'almostleft'"
+      >
+      </control-corner>
+
       <div v-once>
-        <basemap-control v-if="shouldShowImageryToggle"
+        <basemap-toggle-control v-if="shouldShowImageryToggle"
                          v-once
                          :position="'topright'"
-                         :imagery-years="imageryYears"
         />
       </div>
 
       <div v-once>
-        <historicmap-control v-if="shouldShowHistoricBasemapToggle"
-                         v-once
-                         :position="'topright'"
-                         :historic-years="historicYears"
+        <basemap-select-control v-if="shouldShowYears"
+                       v-once
+                       :position="'topalmostright'"
+                       :imagery-years="imageryYears"
+                       :historic-years="historicYears"
         />
       </div>
 

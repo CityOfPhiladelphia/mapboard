@@ -1,38 +1,21 @@
-<!--<template>
-  <ScaleControl :vSide="vSide" :hSide="hSide" />
-</template>-->
-
 <script>
   import L from 'leaflet';
-  import ScaleControl from './ScaleControl';
 
   export default {
-    components: {
-      //ScaleControl
-    },
     props: [
       'vSide',
       'hSide'
     ],
-    mounted() {
-      //const leafletElement = this.$leafletElement = this.createLeafletElement();
-      // console.log('controlcorner', this.$parent)
-      // for (let child of this.$children) {
-      //   child.parentMounted(this, this.$parent);
-      // }
-    },
     render(h) {
       return;
     },
     methods: {
       parentMounted(parent) {
         const map = parent.$leafletElement;
-        console.log(map._controlContainer)
         map._controlCorners[this.vSide + this.hSide] = L.DomUtil.create('div', 'leaflet-'+this.vSide+' leaflet-'+this.hSide, map._controlContainer);
       }
     }
   };
-
 </script>
 
 <style>
@@ -47,9 +30,8 @@
   }
 
   .leaflet-almostleft .leaflet-control {
-    margin-bottom: 10px;
+    margin-bottom: 0px;
   }
-
 
   .leaflet-almostright {
     position: absolute;
