@@ -66,7 +66,6 @@
       },
       // return a list of imagery basemap years in descending order
       handleHistoricToggleButtonClick(e) {
-        console.log('handleHistoricToggleButtonClick from HistoricmapControl fired')
         const prevBasemap = this.activeBasemap;
         const prevBasemapConfig = this.configForBasemap(prevBasemap);
         const prevBasemapType = prevBasemapConfig.type;
