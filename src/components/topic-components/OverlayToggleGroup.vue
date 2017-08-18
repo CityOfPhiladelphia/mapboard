@@ -1,10 +1,15 @@
 <template>
   <div>
-    <a class="button" href="#" v-for="item in items" :data-key="keyForItem(item)"
-              @click="handleClick"
-              :class="{'hollow': !isActive(item)}">
-      {{ keyForItem(item) }}
-    </a>
+    <div class="container">
+      <h4 v-if="slots.title">
+        {{ evaluateSlot(slots.title) }}
+      </h4>
+      <a class="button" href="#" v-for="item in items" :data-key="keyForItem(item)"
+                @click="handleClick"
+                :class="{'hollow': !isActive(item)}">
+        {{ keyForItem(item) }}
+      </a>
+    </div>
   </div>
 </template>
 
