@@ -464,9 +464,11 @@ Mapboard.default({
       globals: ['moment'],
       transform(value, globals) {
         const moment = globals.moment;
-        const transformed = moment(value).format('YYYY-MM-DD');
+        const transformed = moment(value).format('MM-DD-YYYY');
+        // const transformed = moment(value).format('YYYY-MM-DD');
         // console.log(value, transformed);
-        return moment(value).format('YYYY-MM-DD');
+        return moment(value).format('MM-DD-YYYY');
+        // return moment(value).format('YYYY-MM-DD');
       }
     },
     phoneNumber: {
@@ -873,6 +875,14 @@ Mapboard.default({
                 }
               },
             ],
+            sort: {
+              // this should return the val to sort on
+              getValue(item) {
+                return item.permitissuedate;
+              },
+              // asc or desc
+              order: 'desc'
+            },
             externalLink: {
               action(count) {
                 return `See ${count} more at L&I Property History`;
@@ -933,6 +943,14 @@ Mapboard.default({
                 }
               },
             ],
+            sort: {
+              // this should return the val to sort on
+              getValue(item) {
+                return item.inspectioncompleted;
+              },
+              // asc or desc
+              order: 'desc'
+            },
             externalLink: {
               action(count) {
                 return `See ${count} more at L&I Property History`;
@@ -993,6 +1011,14 @@ Mapboard.default({
                 }
               },
             ],
+            sort: {
+              // this should return the val to sort on
+              getValue(item) {
+                return item.caseaddeddate;
+              },
+              // asc or desc
+              order: 'desc'
+            },
             externalLink: {
               action(count) {
                 return `See ${count} more at L&I Property History`;
@@ -1124,6 +1150,14 @@ Mapboard.default({
                 }
               },
             ],
+            sort: {
+              // this should return the val to sort on
+              getValue(item) {
+                return item.processeddate;
+              },
+              // asc or desc
+              order: 'desc'
+            },
           },
           slots: {
             title : 'Appeals',
@@ -1180,6 +1214,14 @@ Mapboard.default({
                 }
               },
             ],
+            sort: {
+              // this should return the val to sort on
+              getValue(item) {
+                return item.scandate;
+              },
+              // asc or desc
+              order: 'desc'
+            },
           },
           slots: {
             title: 'Documents',

@@ -207,9 +207,17 @@
 
         return items;
       },
+      itemsAfterSort() {
+        const itemsAfterFilters = this.itemsAfterFilters;
+        const sortOpts = this.$props.options.sort || null;
+        const items = this.sortItems(itemsAfterFilters)//, sortOpts);
+
+        return items;
+      },
       // this takes filtered items and applies the max number of rows
       itemsLimited() {
-        return this.itemsAfterFilters.slice(0, this.limit);
+        console.log('items limited', this.itemsAfterSort.slice(0, this.limit));
+        return this.itemsAfterSort.slice(0, this.limit);
       },
       count() {
         return this.itemsAfterFilters.length;
@@ -337,8 +345,9 @@
         }
         return itemsFiltered;
       },
-      sortItems(items, sortOpts) {
-        // console.log('computed: itemsSorted');
+      // sortItems(items, sortOpts) {
+      sortItems(items) {
+        // console.log('sortItems sortOpts');
         // TODO finish this
         // if (Object.keys(this.filterData).length) {
         //   console.log('there is filterData', this.filterData);
@@ -349,22 +358,28 @@
         // }
 
         // const items = this.itemsFiltered;
-        // const sortOpts = this.options.sort;
+        const sortOpts = this.options.sort;
+        // console.log(sortOpts)
 
         // if there's no no sort config, just return the items.
         if (!sortOpts) {
           return items;
         }
 
-        const getValueFn = sortOpts.getValue;
-        const order = sortOpts.order;
+        // const getValueFn = sortOpts.getValue;
+        // const order = sortOpts.order;
 
         // get sort fn or use this basic one
         const sortFn = sortOpts.compare || this.defaultSortFn;
-
+        // console.log('sortFn', sortFn)
         return items.sort(sortFn);
       },
       defaultSortFn(a, b) {
+        // console.log('defaultSortFn is running');
+        const sortOpts = this.options.sort;
+        const getValueFn = sortOpts.getValue;
+        const order = sortOpts.order;
+
         const valA = getValueFn(a);
         const valB = getValueFn(b);
         let result;
