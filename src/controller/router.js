@@ -117,6 +117,12 @@ class Router {
 
     if (!prevTopic || prevTopic !== nextTopic) {
       this.store.commit('setActiveTopic', nextTopic);
+
+      // set basemap to match topic
+      const config = this.config.topics.filter((topic) => {
+        return topic.key === nextTopic;
+      })[0];
+      this.store.commit('setBasemap', config.parcels);
     }
 
     if (!this.silent) {
