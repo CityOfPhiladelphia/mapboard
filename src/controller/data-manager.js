@@ -506,12 +506,14 @@ class DataManager {
     );
 
     if (shouldGeocode) {
+      console.log('DATAMANAGER if shouldGeocode is running');
       // TODO sort by mapreg, status
       // this.geocode(features[0].properties.MAPREG);
       const feature = features.length > 0 ? features[0] : {};
       const props = feature.properties || {};
       const id = props.MAPREG;
-      if (id) this.controller.router.route(id);
+      // if (id) this.controller.router.route(id);
+      // if (id) this.controller.router.routeToAddress(id);
     } else {
       this.fetchData();
     }
