@@ -97,6 +97,7 @@
 
       <!-- geojson features -->
       <geojson v-for="geojsonFeature in geojsonFeatures"
+               v-if="shouldShowGeojson(geojsonFeature.key)"
                :geojson="geojsonFeature.geojson"
                :color="geojsonFeature.color"
                :weight="2"
@@ -320,6 +321,9 @@
       this.$controller.appDidLoad();
     },
     computed: {
+      activeDorParcel() {
+        return this.$store.state.activeDorParcel;
+      },
       legendControls() {
         return this.$config.legendControls;
       },
@@ -467,6 +471,9 @@
     methods: {
       configForBasemap(basemap) {
         return this.$config.map.basemaps[basemap] || {};
+      },
+      shouldShowGeojson(key) {
+        return key === this.activeDorParcel;
       },
       shouldShowImageOverlay(key) {
         return key === this.imageOverlay;

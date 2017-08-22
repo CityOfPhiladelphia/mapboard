@@ -44,6 +44,8 @@ class DorParcelClient extends BaseClient {
 
     const features = featureCollection.features;
     this.store.commit('setDorParcels', featureCollection.features);
+    this.store.commit('setActiveDorParcel', featureCollection.features[0].id);
+
 
     // this belongs in router?
     // const shouldGeocode = (

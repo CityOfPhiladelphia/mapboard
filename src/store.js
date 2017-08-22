@@ -116,6 +116,7 @@ function createStore(config) {
       // }
     },
     dorParcels: [],
+    activeDorParcel: null,
     pwdParcel: null,
     sources,
     cyclomedia: {
@@ -246,6 +247,9 @@ function createStore(config) {
       },
       setDorParcels(state, payload) {
         state.dorParcels = payload;
+      },
+      setActiveDorParcel(state, payload) {
+        state.activeDorParcel = payload;
       },
       setPwdParcel(state, payload) {
         state.pwdParcel = payload;

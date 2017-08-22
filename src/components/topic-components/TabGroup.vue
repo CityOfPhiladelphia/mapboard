@@ -7,8 +7,9 @@
           :key="keyForItem(item)"
       >
         <a :href="'#parcel-' + keyForItem(item)"
-           @click.prevent="activeItem = keyForItem(item)"
+           @click.prevent="clickedItem(item)"
         >
+        <!-- @click.prevent="activeItem = keyForItem(item)" -->
           {{ titleForItem(item) }}
         </a>
       </li>
@@ -66,6 +67,11 @@
       }
     },
     methods: {
+      clickedItem(item) {
+        this.$data.activeItem = this.keyForItem(item)
+        console.log('clickedItem is firing');
+        this.$store.commit('setActiveDorParcel', this.$data.activeItem);
+      },
       keyForItem(item) {
         try {
           return this.options.getKey(item);
