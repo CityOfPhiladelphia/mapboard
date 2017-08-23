@@ -5,7 +5,7 @@ and storing them in state.
 The router should own an instance of DataManager and make calls to it based on
 navigation events.
 */
-
+import L from 'leaflet';
 import {
   GeocodeClient,
   PwdParcelClient,
@@ -384,19 +384,48 @@ class DataManager {
     // if this is the result of a search from the search box, get parcels
     const lastSearchMethod = this.store.state.lastSearchMethod;
 
-    if (lastSearchMethod === 'geocode') {
-      /* DOR PARCELS */
-      const dorParcelId = feature.properties.dor_parcel_id;
-      this.clients.dorParcel.fetchById(dorParcelId);
+    if (lastSearchMethod) {
+      if (lastSearchMethod === 'geocode') {
+        /* DOR PARCELS */
+        console.log('lastSearchMethod', lastSearchMethod, 'dorParcelId', dorParcelId);
+        const dorParcelId = feature.properties.dor_parcel_id;
+        this.clients.dorParcel.fetchById(dorParcelId);
 
-      /* PWD PARCELS */
-      const pwdParcelId = feature.properties.pwd_parcel_id;
-      this.clients.pwdParcel.fetchById(pwdParcelId);
+        /* PWD PARCELS */
+        const pwdParcelId = feature.properties.pwd_parcel_id;
+        this.clients.pwdParcel.fetchById(pwdParcelId);
 
-      // pan and zoom map
-      const coords = feature.geometry.coordinates;
-      this.store.commit('setMapCenter', coords);
-      this.store.commit('setMapZoom', 18);
+        // pan and zoom map
+        const coords = feature.geometry.coordinates;
+        this.store.commit('setMapCenter', coords);
+
+        // let boundsPadded;
+        // if (this.activeParcelLayer === 'pwd') {
+        //   console.log('DATAMANAGER pwdParcel', this.store.state.pwdParcel);
+        //   const parcel = this.store.state.pwdParcel.geometry;
+        //   boundsPadded = parcel.getBounds().pad(1.15);
+        //   console.log('DATAMANAGER boundsPadded', boundsPadded);
+        // } else {
+        //   console.log('DATAMANAGER dorParcels', this.store.state.dorParcels);
+        //   const parcel = this.store.state.dorParcels[0].geometry;
+        //   boundsPadded = parcel.getBounds().pad(1.15);
+        //   console.log('DATAMANAGER boundsPadded', boundsPadded);
+        // }
+
+        this.store.commit('setMapZoom', 19);
+      }
+    } else {
+      // if we're here, then ais did not have a dor parcel id, so we'll use
+      // the ais xy to get intersecting dor parcels
+      const [lng, lat] = feature.geometry.coordinates;
+      const latlng = L.latLng(lat, lng);
+      // const latlng = {
+      //   lat,
+      //   lng
+      // }
+
+      console.log('DATAMANAGER DID GEOCODE', lat, lng);
+      this.getDorParcelsByLatLng(latlng);
     }
 
     // reset data
@@ -513,7 +542,7 @@ class DataManager {
       const props = feature.properties || {};
       const id = props.MAPREG;
       // if (id) this.controller.router.route(id);
-      // if (id) this.controller.router.routeToAddress(id);
+      if (id) this.controller.router.routeToAddress(id);
     } else {
       this.fetchData();
     }

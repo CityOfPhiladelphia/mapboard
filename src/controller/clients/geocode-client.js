@@ -15,7 +15,8 @@ class GeocodeClient extends BaseClient {
 
     // update state
     this.store.commit('setGeocodeStatus', 'waiting');
-    this.store.commit('setLastSearchMethod', 'geocode');
+    // console.log('GEOCODE CLIENT setting last search method to geocode');
+    // this.store.commit('setLastSearchMethod', 'geocode');
 
     const success = this.success.bind(this);
     const error = this.error.bind(this);
