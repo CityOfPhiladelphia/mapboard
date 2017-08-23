@@ -46,10 +46,14 @@
     </div> <!-- end of mb-horizontal-table-controls block -->
 
     <div class="mb-horizontal-table-body">
-      <h4 v-if="slots.title">
-        {{ evaluateSlot(slots.title) }} {{ countText }}
-      </h4>
-
+      <div v-if="slots.title">
+        <h4 style="display:inline-block">
+          {{ evaluateSlot(slots.title) }} {{ countText }}
+        </h4>
+        <h5 style="display:inline-block; color: gray">
+          {{ evaluateSlot(slots.subtitle) }}
+        </h5>
+      </div>
       <table role="grid" class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">
         <thead>
           <tr>

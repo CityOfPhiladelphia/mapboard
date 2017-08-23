@@ -1225,6 +1225,7 @@ Mapboard.default({
           },
           slots: {
             title: 'Documents',
+            subtitle: 'aka "Zoning Archive"',
             items(state) {
               const data = state.sources['zoningDocs'].data.rows;
               const rows = data.map(row => {
