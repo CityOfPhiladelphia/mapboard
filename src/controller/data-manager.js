@@ -385,48 +385,44 @@ class DataManager {
     const lastSearchMethod = this.store.state.lastSearchMethod;
 
     if (lastSearchMethod) {
+      // console.log('DATAMANAGER DIDGEOCODE YES LASTSEARCHMETHOD', lastSearchMethod);
       if (lastSearchMethod === 'geocode') {
+        // console.log('DATAMANAGER DIDGEOCODE YES LASTSEARCHMETHOD', lastSearchMethod, 'AND GEOCODE', dorParcelId);
         /* DOR PARCELS */
-        console.log('lastSearchMethod', lastSearchMethod, 'dorParcelId', dorParcelId);
         const dorParcelId = feature.properties.dor_parcel_id;
         this.clients.dorParcel.fetchById(dorParcelId);
 
         /* PWD PARCELS */
         const pwdParcelId = feature.properties.pwd_parcel_id;
         this.clients.pwdParcel.fetchById(pwdParcelId);
-
-        // pan and zoom map
-        const coords = feature.geometry.coordinates;
-        this.store.commit('setMapCenter', coords);
-
-        // let boundsPadded;
-        // if (this.activeParcelLayer === 'pwd') {
-        //   console.log('DATAMANAGER pwdParcel', this.store.state.pwdParcel);
-        //   const parcel = this.store.state.pwdParcel.geometry;
-        //   boundsPadded = parcel.getBounds().pad(1.15);
-        //   console.log('DATAMANAGER boundsPadded', boundsPadded);
-        // } else {
-        //   console.log('DATAMANAGER dorParcels', this.store.state.dorParcels);
-        //   const parcel = this.store.state.dorParcels[0].geometry;
-        //   boundsPadded = parcel.getBounds().pad(1.15);
-        //   console.log('DATAMANAGER boundsPadded', boundsPadded);
-        // }
-
-        this.store.commit('setMapZoom', 19);
       }
     } else {
+      // console.log('DATAMANAGER DIDGEOCODE NO LASTSEARCHMETHOD')
       // if we're here, then ais did not have a dor parcel id, so we'll use
       // the ais xy to get intersecting dor parcels
       const [lng, lat] = feature.geometry.coordinates;
       const latlng = L.latLng(lat, lng);
-      // const latlng = {
-      //   lat,
-      //   lng
-      // }
-
-      console.log('DATAMANAGER DID GEOCODE', lat, lng);
       this.getDorParcelsByLatLng(latlng);
     }
+
+    // pan and zoom map
+    const coords = feature.geometry.coordinates;
+    this.store.commit('setMapCenter', coords);
+
+    // let boundsPadded;
+    // if (this.activeParcelLayer === 'pwd') {
+    //   console.log('DATAMANAGER pwdParcel', this.store.state.pwdParcel);
+    //   const parcel = this.store.state.pwdParcel.geometry;
+    //   boundsPadded = parcel.getBounds().pad(1.15);
+    //   console.log('DATAMANAGER boundsPadded', boundsPadded);
+    // } else {
+    //   console.log('DATAMANAGER dorParcels', this.store.state.dorParcels);
+    //   const parcel = this.store.state.dorParcels[0].geometry;
+    //   boundsPadded = parcel.getBounds().pad(1.15);
+    //   console.log('DATAMANAGER boundsPadded', boundsPadded);
+    // }
+
+    this.store.commit('setMapZoom', 19);
 
     // reset data
     this.resetData();
