@@ -110,6 +110,10 @@ class Router {
     // }
   }
 
+  configForBasemap(key) {
+    return this.config.map.basemaps[key];
+  }
+
   // this gets called when you click a topic header.
   routeToTopic(nextTopic) {
     // check against active topic
