@@ -150,12 +150,12 @@
       </div>
 
       <div v-once>
-        <basemap-select-control v-if="shouldShowYears"
-                       v-once
+        <!-- v-once -->
+        <basemap-select-control
                        :position="'topalmostright'"
-                       :imagery-years="imageryYears"
-                       :historic-years="historicYears"
         />
+        <!-- :imagery-years="imageryYears"
+        :historic-years="historicYears" -->
       </div>
 
       <div v-once>
@@ -347,7 +347,13 @@
         return this.$config.map.dynamicMapLayers.regmaps;
       },
       activeBasemap() {
-        return this.$store.state.map.basemap;
+        const shouldShowImagery = this.$store.state.map.shouldShowImagery;
+        if (shouldShowImagery) {
+          return this.$store.state.map.imagery;
+        }
+        const defaultBasemap = this.$config.map.defaultBasemap;
+        const basemap = this.$store.state.map.basemap || defaultBasemap;
+        return basemap;
       },
       tiledLayers() {
         const activeBasemap = this.activeBasemap;
@@ -384,34 +390,13 @@
       shouldShowImageryToggle() {
         return this.hasImageryBasemaps && this.$config.map.imagery.enabled;
       },
-      shouldShowYears() {
-        return true;
-      },
-      allYears() {
-        const imageryYears = this.imageryBasemaps.map(x => x.year);
-        const historicYears = this.historicBasemaps.map(x => x.year);
-        return [...imageryYears, ...historicYears];
-      },
-      imageryYears() {
-        // pluck year from basemap objects
-        return this.imageryBasemaps.map(x => x.year);
-      },
-      historicBasemaps() {
-        return this.basemaps.filter(basemap => basemap.type === 'historic');
-      },
-      hasHistoricBasemaps() {
-        return this.historicBasemaps.length > 0;
-      },
-      shouldShowHistoricBasemapToggle() {
-        return this.hasHistoricBasemaps &&
-               this.$config.map.historicBasemaps.enabled;
-      },
-      historicYears() {
-        // pluck year from basemap objects
-        return this.historicBasemaps.map(x => x.year);
-      },
       identifyFeature() {
-        return (this.activeTopicConfig || {}).identifyFeature;
+        const configFeature = this.activeTopicConfig.identifyFeature;
+        if (configFeature) {
+          return configFeature;
+        } else {
+          return this.$config.map.defaultIdentifyFeature;
+        }
       },
       activeTopic() {
         return this.$store.state.activeTopic;
@@ -473,7 +458,11 @@
         return this.$config.map.basemaps[basemap] || {};
       },
       shouldShowGeojson(key) {
-        return key === this.activeDorParcel;
+        if (this.activeTopicConfig.basemap === 'pwd') {
+          return true;
+        } else {
+          return key === this.activeDorParcel;
+        }
       },
       shouldShowImageOverlay(key) {
         return key === this.imageOverlay;

@@ -122,6 +122,9 @@ Mapboard.default({
     right: 0,
   },
   map: {
+    // possibly should move to base config
+    defaultBasemap: 'pwd',
+    defaultIdentifyFeature: 'address-marker',
     imagery: {
       enabled: true
     },
@@ -577,7 +580,7 @@ Mapboard.default({
           options: {
             externalLink: {
               action(count) {
-                return `See more at Property Search`;
+                return `See more`;
               },
               name: 'Property Search',
               href(state) {

@@ -17,51 +17,23 @@
       'position'
     ],
     computed: {
-      activeBasemap() {
-        return this.$store.state.map.basemap;
-      },
-      basemapSelectValue() {
-        return this.$store.state.map.basemapSelectValue;
-      },
       toggleButtonImgSrc() {
-        const basemap = this.activeBasemap;
-        const basemapConfig = this.configForBasemap(basemap) || {};
-        const basemapType = basemapConfig.type;
+        const shouldShowImagery = this.$store.state.map.shouldShowImagery;
         let src;
-
-        if (basemapType === 'imagery' || basemapType === 'historic') {
+        if (shouldShowImagery) {
           src = "../../src/assets/basemap_small.png"
         }
         else {
           src = "../../src/assets/imagery_small.png"
         }
-
         return src;
       },
     },
     methods: Object.assign(methods, {
-      configForBasemap(key) {
-        return this.$config.map.basemaps[key] || {};
-      },
-      // return a list of imagery basemap years in descending order
       handleImageryToggleButtonClick(e) {
-        const prevBasemap = this.activeBasemap;
-        const prevBasemapConfig = this.configForBasemap(prevBasemap);
-        const prevBasemapType = prevBasemapConfig.type;
-        let nextBasemap;
-
-        // feature map => imagery
-        if (prevBasemapType === 'featuremap') {
-          nextBasemap = this.basemapSelectValue;
-        }
-        // imagery => feature map
-        else {
-          const activeTopic = this.$store.state.activeTopic;
-          const activeTopicConfig = this.$config.topics.filter(topic => topic.key === activeTopic)[0];
-          nextBasemap = activeTopicConfig.basemap;
-        }
-        console.log('handleImageryToggleButtonClick', nextBasemap);
-        this.$store.commit('setBasemap', nextBasemap);
+        const prevShouldShowImagery = this.$store.state.map.shouldShowImagery;
+        const nextShouldShowImagery = !prevShouldShowImagery;
+        this.$store.commit('setShouldShowImagery', nextShouldShowImagery);
       },
     })
   };

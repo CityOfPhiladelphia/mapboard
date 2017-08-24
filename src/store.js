@@ -96,7 +96,8 @@ function createStore(config) {
       map: null,
       bounds: null,
       basemap: defaultTopic.basemap,
-      basemapSelectValue: 'imagery2017',
+      imagery: 'imagery2017',
+      shouldShowImagery: false,
       // circleMarkers: [],
       // this is the key for the active overlay image (eg regmap)
       imageOverlay: null,
@@ -165,6 +166,10 @@ function createStore(config) {
       visibleTableIds(state) {
         // get active topic
         const activeTopic = state.activeTopic;
+
+        if (!activeTopic) {
+          return [];
+        }
 
         // get horizontal table ids for that topic
         const activeTopicConfig = (config.topics.filter(topic => topic.key === activeTopic) || [])[0];
@@ -266,8 +271,11 @@ function createStore(config) {
       setBasemap(state, payload) {
         state.map.basemap = payload;
       },
-      setBasemapSelectValue(state, payload) {
-        state.map.basemapSelectValue = payload;
+      setImagery(state, payload) {
+        state.map.imagery = payload;
+      },
+      setShouldShowImagery(state, payload) {
+        state.map.shouldShowImagery = payload;
       },
       setPictometryActive(state, payload) {
         if (!config.pictometry.enabled) {

@@ -54,7 +54,7 @@ class DataManager {
   }
 
   activeParcelLayer() {
-    return this.activeTopicConfig().parcels;
+    return this.activeTopicConfig().parcels || this.$config.map.defaultBasemap;
   }
 
   /* ROUTING */
@@ -376,13 +376,18 @@ class DataManager {
   }
 
   didGeocode(feature) {
-    console.log('DataManager.didGeocode:', feature);
+    // console.log('DataManager.didGeocode:', feature);
 
     // emit event to event bus
     this.eventBus.$emit('geocodeResult', feature);
 
     // if this is the result of a search from the search box, get parcels
     const lastSearchMethod = this.store.state.lastSearchMethod;
+    if (!feature) {
+      console.log('did geocode but no geom', feature);
+    }
+    const [lng, lat] = feature.geometry.coordinates;
+    const latlng = L.latLng(lat, lng);
 
     if (lastSearchMethod) {
       // console.log('DATAMANAGER DIDGEOCODE YES LASTSEARCHMETHOD', lastSearchMethod);
@@ -390,20 +395,26 @@ class DataManager {
         // console.log('DATAMANAGER DIDGEOCODE YES LASTSEARCHMETHOD', lastSearchMethod, 'AND GEOCODE', dorParcelId);
         /* DOR PARCELS */
         const dorParcelId = feature.properties.dor_parcel_id;
-        this.clients.dorParcel.fetchById(dorParcelId);
 
-        /* PWD PARCELS */
-        const pwdParcelId = feature.properties.pwd_parcel_id;
-        this.clients.pwdParcel.fetchById(pwdParcelId);
+        if (dorParcelId && dorParcelId.length > 0) {
+          this.clients.dorParcel.fetchById(dorParcelId);
+        } else {
+          // if we don't have a parcel id (aka mapreg), it's probably because
+          // the parcel hsa a data quality issue and isn't in ais. so search by
+          // latlng.
+          this.getDorParcelsByLatLng(latlng);
+        }
       }
     } else {
       // console.log('DATAMANAGER DIDGEOCODE NO LASTSEARCHMETHOD')
       // if we're here, then ais did not have a dor parcel id, so we'll use
       // the ais xy to get intersecting dor parcels
-      const [lng, lat] = feature.geometry.coordinates;
-      const latlng = L.latLng(lat, lng);
       this.getDorParcelsByLatLng(latlng);
     }
+
+    /* PWD PARCELS */
+    const pwdParcelId = feature.properties.pwd_parcel_id;
+    this.clients.pwdParcel.fetchById(pwdParcelId);
 
     // pan and zoom map
     const coords = feature.geometry.coordinates;
