@@ -54,7 +54,7 @@ class DataManager {
   }
 
   activeParcelLayer() {
-    return this.activeTopicConfig().parcels || this.$config.map.defaultBasemap;
+    return this.activeTopicConfig().parcels || this.config.map.defaultBasemap;
   }
 
   /* ROUTING */
