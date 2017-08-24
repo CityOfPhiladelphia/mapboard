@@ -142,22 +142,6 @@
 
         // notify controller (which will handle routing)
         this.$controller.handleTopicHeaderClick(nextTopic);
-
-        // handle basemap
-        const prevBasemap = this.$store.state.map.basemap;
-        const prevBasemapConfig = this.configForBasemap(prevBasemap);
-        const prevBasemapType = prevBasemapConfig.type;
-
-        if (prevBasemapType === 'featuremap') {
-          const nextTopicConfig = this.$config.topics.filter(topic => {
-            return topic.key === nextTopic;
-          })[0] || {};
-          const nextBasemap = nextTopicConfig.basemap;
-
-          if (prevBasemap !== nextBasemap) {
-            this.$store.commit('setBasemap', nextBasemap);
-          }
-        }
       },
     }
   };

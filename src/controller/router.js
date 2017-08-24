@@ -118,11 +118,18 @@ class Router {
     if (!prevTopic || prevTopic !== nextTopic) {
       this.store.commit('setActiveTopic', nextTopic);
 
-      // set basemap to match topic
-      const config = this.config.topics.filter((topic) => {
-        return topic.key === nextTopic;
-      })[0];
-      this.store.commit('setBasemap', config.parcels);
+      const prevBasemap = this.store.state.map.basemap;
+      const prevBasemapConfig = this.configForBasemap(prevBasemap);
+      const prevBasemapType = prevBasemapConfig.type;
+      if (prevBasemapType === 'featuremap') {
+        const nextTopicConfig = this.config.topics.filter(topic => {
+          return topic.key === nextTopic;
+        })[0] || {};
+        const nextBasemap = nextTopicConfig.parcels;
+        if (prevBasemap !== nextBasemap) {
+          this.store.commit('setBasemap', nextTopicConfig.parcels);
+        }
+      }
     }
 
     if (!this.silent) {
