@@ -56,7 +56,10 @@
 
         // sort
         const sortFn = this.options.sort;
-        const itemsSorted = sortFn(items);
+        let itemsSorted = items;
+        if (sortFn) {
+          itemsSorted = sortFn(items);
+        }
 
         return itemsSorted;
       },
