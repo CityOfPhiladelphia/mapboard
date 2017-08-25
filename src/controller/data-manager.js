@@ -405,6 +405,11 @@ class DataManager {
           // latlng.
           this.getDorParcelsByLatLng(latlng);
         }
+
+        /* PWD PARCELS */
+        const pwdParcelId = feature.properties.pwd_parcel_id;
+        // this.clients.pwdParcel.fetchById(pwdParcelId);
+        this.getPwdParcelById(pwdParcelId);
       }
     } else {
       // console.log('DATAMANAGER DIDGEOCODE NO LASTSEARCHMETHOD')
@@ -412,10 +417,6 @@ class DataManager {
       // the ais xy to get intersecting dor parcels
       this.getDorParcelsByLatLng(latlng);
     }
-
-    /* PWD PARCELS */
-    const pwdParcelId = feature.properties.pwd_parcel_id;
-    this.clients.pwdParcel.fetchById(pwdParcelId);
 
     // pan and zoom map
     const coords = feature.geometry.coordinates;
