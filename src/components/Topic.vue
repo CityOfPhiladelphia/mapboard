@@ -15,9 +15,11 @@
     </a>
 
     <!-- success -->
-    <div class="topic-body" v-if="shouldShowBody">
-      <topic-component-group :topic-components="topic.components" />
-    </div>
+    <transition name="topic-body">
+      <div class="topic-body" v-if="shouldShowBody">
+        <topic-component-group :topic-components="topic.components" />
+      </div>
+    </transition>
 
     <!-- error -->
     <div class="topic-body" v-show="shouldShowError">
@@ -186,5 +188,13 @@
 
   .loading {
     float: right;
+  }
+
+  .topic-body-enter-active, .topic-body-leave-active {
+    transition: opacity 0.18s;
+  }
+
+  .topic-body-enter, .topic-body-leave-to {
+    opacity: 0;
   }
 </style>
