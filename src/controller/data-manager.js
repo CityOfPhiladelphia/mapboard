@@ -397,7 +397,8 @@ class DataManager {
         const dorParcelId = feature.properties.dor_parcel_id;
 
         if (dorParcelId && dorParcelId.length > 0) {
-          this.clients.dorParcel.fetchById(dorParcelId);
+          // this.clients.dorParcel.fetchById(dorParcelId);
+          this.getDorParcelsById(dorParcelId);
         } else {
           // if we don't have a parcel id (aka mapreg), it's probably because
           // the parcel hsa a data quality issue and isn't in ais. so search by
@@ -530,9 +531,15 @@ class DataManager {
       console.warn('did get dor parcels, but no features');
       return;
     }
+
     const features = featureCollection.features;
-    this.store.commit('setDorParcels', featureCollection.features);
-    this.store.commit('setActiveDorParcel', featureCollection.features[0].id)
+
+    // sort
+    const featuresSorted = this.sortDorParcelFeatures(features);
+
+
+    this.store.commit('setDorParcels', featuresSorted);
+    this.store.commit('setActiveDorParcel', featuresSorted[0].id)
 
     const shouldGeocode = (
       this.activeParcelLayer() === 'dor' &&
@@ -553,6 +560,38 @@ class DataManager {
     } else {
       this.fetchData();
     }
+  }
+
+  sortDorParcelFeatures(features) {
+    // map parcel status to a numeric priority
+    // (basically so remainders come before inactives)
+    const STATUS_PRIORITY = {
+      1: 1,
+      2: 3,
+      3: 2
+    }
+
+    // first sort by mapreg (descending)
+    features.sort((a, b) => {
+      const mapregA = a.properties.MAPREG;
+      const mapregB = b.properties.MAPREG;
+
+      if (mapregA < mapregB) return 1;
+      if (mapregA > mapregB) return -1;
+      return 0;
+    });
+
+    // then sort by status
+    features.sort((a, b) => {
+      const statusA = STATUS_PRIORITY[a.properties.STATUS];
+      const statusB = STATUS_PRIORITY[b.properties.STATUS];
+
+      if (statusA < statusB) return -1;
+      if (statusA > statusB) return 1;
+      return 0;
+    });
+
+    return features;
   }
 }
 
