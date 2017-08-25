@@ -837,7 +837,7 @@ Mapboard.default({
     },
     {
       key: 'permits',
-      icon: 'building-o',
+      icon: 'wrench',
       label: 'Permits',
       dataSources: [
         'liPermits',
