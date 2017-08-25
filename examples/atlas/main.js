@@ -770,7 +770,7 @@ Mapboard.default({
                 options: {
                   topicKey: 'deeds',
                   id: 'dorDocuments',
-                  limit: 100,
+                  // limit: 100,
                   fields: [
                     {
                       label: 'ID',
@@ -881,6 +881,7 @@ Mapboard.default({
           options: {
             topicKey: 'permits',
             id: 'liPermits',
+            limit: 5,
             fields: [
               {
                 label: 'Date',
@@ -949,6 +950,7 @@ Mapboard.default({
           options: {
             topicKey: 'permits',
             id: 'liInspections',
+            limit: 5,
             fields: [
               {
                 label: 'Date',
@@ -1017,6 +1019,7 @@ Mapboard.default({
           options: {
             topicKey: 'permits',
             id: 'liViolations',
+            limit: 5,
             fields: [
               {
                 label: 'Date',
@@ -1117,7 +1120,7 @@ Mapboard.default({
           options: {
             topicKey: 'zoning',
             id: 'zoningOverlay',
-            limit: 100,
+            // limit: 100,
             fields: [
               {
                 label: 'Name',
@@ -1153,7 +1156,7 @@ Mapboard.default({
           options: {
             topicKey: 'zoning',
             id: 'zoningAppeals',
-            limit: 100,
+            // limit: 100,
             fields: [
               {
                 label: 'Date',
@@ -1212,7 +1215,7 @@ Mapboard.default({
           options: {
             topicKey: 'zoning',
             id: 'zoningDocs',
-            limit: 100,
+            // limit: 100,
             fields: [
               {
                 label: 'Date',
@@ -1277,7 +1280,7 @@ Mapboard.default({
           options: {
             topicKey: 'zoning',
             id: 'rco',
-            limit: 100,
+            // limit: 100,
             fields: [
               {
                 label: 'RCO',
@@ -1417,7 +1420,7 @@ Mapboard.default({
           options: {
             topicKey: 'water',
             id: 'stormwater',
-            limit: 100,
+            // limit: 100,
             // TODO this isn't used yet, but should be for highlighting rows/
             // map features.
             // overlay: '311',
@@ -1583,7 +1586,7 @@ Mapboard.default({
                 options: {
                   topicKey: 'vacancy',
                   id: '311',
-                  limit: 100,
+                  // limit: 100,
                   // TODO this isn't used yet, but should be for highlighting rows/
                   // map features.
                   // filterForm: true,
@@ -1703,7 +1706,7 @@ Mapboard.default({
                   // TODO this isn't used yet, but should be for highlighting rows/
                   // map features.
                   // filterForm: true,
-                  limit: 100,
+                  // limit: 100,
                   filters: [
                     {
                       type: 'time',

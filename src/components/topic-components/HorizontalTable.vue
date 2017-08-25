@@ -144,7 +144,7 @@
       },
       limit() {
         // try to get from config. if it's not there, set a reasonable default.
-        return this.options.limit || 5;
+        return this.options.limit// || 1000;
       },
       inputClass() {
         if (this.searchText === '') {
@@ -220,7 +220,7 @@
       },
       // this takes filtered items and applies the max number of rows
       itemsLimited() {
-        console.log('items limited', this.itemsAfterSort.slice(0, this.limit));
+        // console.log('items limited', this.itemsAfterSort.slice(0, this.limit));
         return this.itemsAfterSort.slice(0, this.limit);
       },
       count() {
