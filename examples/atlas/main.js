@@ -648,6 +648,37 @@ Mapboard.default({
             getTitle(item) {
               return item.properties.MAPREG;
             },
+            sort(items) {
+              // map parcel status to a numeric priority
+              // (basically so remainders come before inactives)
+              const STATUS_PRIORITY = {
+                1: 1,
+                2: 3,
+                3: 2
+              }
+
+              // first sort by mapreg (descending)
+              items.sort((a, b) => {
+                const mapregA = a.properties.MAPREG;
+                const mapregB = b.properties.MAPREG;
+
+                if (mapregA < mapregB) return 1;
+                if (mapregA > mapregB) return -1;
+                return 0;
+              });
+
+              // then sort by status
+              items.sort((a, b) => {
+                const statusA = STATUS_PRIORITY[a.properties.STATUS];
+                const statusB = STATUS_PRIORITY[b.properties.STATUS];
+
+                if (statusA < statusB) return -1;
+                if (statusA > statusB) return 1;
+                return 0;
+              });
+
+              return items;
+            },
             // components for the content pane. this essentially a topic body.
             components: [
               {
