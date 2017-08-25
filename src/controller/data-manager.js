@@ -8,8 +8,6 @@ navigation events.
 import L from 'leaflet';
 import {
   GeocodeClient,
-  PwdParcelClient,
-  DorParcelClient,
   HttpClient,
   EsriClient
 } from './clients';
@@ -28,8 +26,6 @@ class DataManager {
     // response back to this?
     const clientOpts = { config, store, dataManager: this };
     this.clients.geocode = new GeocodeClient(clientOpts);
-    this.clients.pwdParcel = new PwdParcelClient(clientOpts);
-    this.clients.dorParcel = new DorParcelClient(clientOpts);
     this.clients.http = new HttpClient(clientOpts);
     this.clients.esri = new EsriClient(clientOpts);
   }
