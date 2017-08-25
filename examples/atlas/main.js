@@ -652,6 +652,9 @@ Mapboard.default({
             components: [
               {
                 type: 'vertical-table',
+                options: {
+                  nullValue: 'None'
+                },
                 slots: {
                   title: 'Parcel Details',
                   fields: [
