@@ -144,7 +144,7 @@
       },
       limit() {
         // try to get from config. if it's not there, set a reasonable default.
-        return this.options.limit || 5;
+        return this.options.limit || 1000;
       },
       inputClass() {
         if (this.searchText === '') {
