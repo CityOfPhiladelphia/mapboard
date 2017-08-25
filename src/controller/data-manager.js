@@ -466,12 +466,15 @@ class DataManager {
       console.warn('did get pwd parcel error', error);
       return;
     }
+
     if (!featureCollection) {
       console.warn('did get pwd parcel, but no features');
       return;
     }
+
     const features = featureCollection.features;
     let feature;
+
     if (features.length === 0) {
       feature = null;
     } else {
@@ -481,6 +484,7 @@ class DataManager {
         console.debug('got more than one pwd parcel', features);
       }
     }
+
     this.store.commit('setPwdParcel', feature);
 
     const shouldGeocode = (
