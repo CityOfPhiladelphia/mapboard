@@ -94,7 +94,6 @@ function createStore(config) {
       center: config.map.center,
       zoom: config.map.zoom,
       map: null,
-      bounds: null,
       basemap: defaultTopic.basemap,
       imagery: 'imagery2017',
       shouldShowImagery: false,
@@ -239,9 +238,6 @@ function createStore(config) {
       },
       setMap(state, payload) {
         state.map.map = payload.map;
-      },
-      setMapBounds(state, payload) {
-        state.map.bounds = payload.bounds
       },
       // this is the map center as an xy coordinate array (not latlng)
       setMapCenter(state, payload) {
