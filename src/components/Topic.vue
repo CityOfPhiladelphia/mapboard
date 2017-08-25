@@ -55,7 +55,6 @@
       isActive() {
         const key = this.topic.key;
         const activeTopic = this.$store.state.activeTopic;
-        // console.log('is active?', key === activeTopic);
         return activeTopic === key;
       },
       shouldShowHeader() {
@@ -83,8 +82,15 @@
         return should;
       },
       shouldShowError() {
-        // console.log('shouldShowError', this.topic.label, this);
-        return this.status === 'error' || (this.status !== 'waiting' && !this.hasData);
+        return (
+          // topic must be active and
+          this.isActive && (
+            // there either has to be an error or
+            this.status === 'error' ||
+            // we got the response and it's empty
+            (this.status !== 'waiting' && !this.hasData)
+          )
+        );
       },
       // REVIEW this is getting cached and not updating when the deps update
       status: {
