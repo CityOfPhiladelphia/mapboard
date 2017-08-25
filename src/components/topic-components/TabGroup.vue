@@ -52,7 +52,13 @@
     // props: [],
     computed: {
       items() {
-        return this.evaluateSlot(this.slots.items);
+        const items = this.evaluateSlot(this.slots.items);
+
+        // sort
+        const sortFn = this.options.sort;
+        const itemsSorted = sortFn(items);
+
+        return itemsSorted;
       },
       comps() {
         return this.options.components;
