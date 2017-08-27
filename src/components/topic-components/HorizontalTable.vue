@@ -1,6 +1,5 @@
 <template>
-  <div>
-  <!-- <div v-if="shouldShowTable ? slots.data === shouldShowTable: true"> -->
+  <div v-if="shouldShowTable">
     <!-- controls -->
     <div class="mb-horizontal-table-controls">
         <div v-if="!!this.$props.options.filters"
@@ -118,13 +117,16 @@
       }
 
       // put row data in state once on load
-      const data = this.itemsAfterSearch;
-      const tableId = this.options.tableId;
+      // const data = this.itemsAfterSearch;
+      // const tableId = this.options.tableId;
 
-      this.$store.commit('setTableFilteredData', {
-        tableId,
-        data
-      });
+      // this.$store.commit('setTableFilteredData', {
+      //   tableId,
+      //   data
+      // });
+    },
+    mounted() {
+      this.updateTableFilteredData();
     },
     watch: {
       itemsAfterFilters(nextItems) {
@@ -135,12 +137,23 @@
     },
     computed: {
       shouldShowTable() {
-        if (this.item) {
-          const filterValue = this.$props.item;
-          return filterValue;
+        if (this.item.activeTable) {
+          const filterValue = this.item.activeTable;
+          const id = this.options.id;
+          if (filterValue === id) {
+            return true
+          } else {
+            return false;
+          }
         } else {
-          return undefined;
+          return true;
         }
+        // if (this.item) {
+        //   const filterValue = this.$props.item;
+        //   return filterValue;
+        // } else {
+        //   return undefined;
+        // }
       },
       limit() {
         // try to get from config. if it's not there, set a reasonable default.
@@ -318,7 +331,7 @@
                 // });
                 break;
               case 'time':
-                // console.log('TIME FILTER');
+                // console.log('TIME FILTER direction', direction);
                 let min, max;
 
                 if (direction === 'subtract') {

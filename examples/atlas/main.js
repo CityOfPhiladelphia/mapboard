@@ -1544,10 +1544,10 @@ Mapboard.default({
                     label: 'Crime Incidents',
                     value: 'crimeIncidents',
                   },
-                  {
-                    label: 'Zoning Appeals',
-                    value: 'zoningAppeals',
-                  }
+                  // {
+                  //   label: 'Zoning Appeals',
+                  //   value: 'zoningAppeals',
+                  // }
                 ]
               },
             ],

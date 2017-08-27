@@ -31,6 +31,29 @@ function assignTableIds(comps) {
   }
 }
 
+function assignTableGroupIds(comps) {
+  for (let comp of comps) {
+    const options = comp.options || {};
+    const innerComps = options.components;
+
+    // if this is a "group" component, recurse
+    if (!innerComps) {
+      continue;
+    }
+
+    // skip comps that aren't horizontal table groups
+    if (comp.type !== 'table-group') {
+      continue;
+    }
+
+     const id = generateUniqueId();
+     comp._id = id;
+     // the id also needs to get passed to the horizontal table component, so
+     // use the options object.
+     comp.options.tableGroupId = id;
+  }
+}
+
 export default (clientConfig) => {
   const baseConfigUrl = clientConfig.baseConfig;
 
@@ -53,6 +76,7 @@ export default (clientConfig) => {
       // assign table ids
       for (let topic of config.topics) {
         assignTableIds(topic.components);
+        assignTableGroupIds(topic.components);
       }
 
       // make config accessible from each component via this.$config
