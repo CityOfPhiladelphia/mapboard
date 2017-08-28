@@ -31,7 +31,7 @@
 <script>
   // import { mapMutations } from 'vuex';
 
-  import TopicComponentGroup from './TopicComponentGroup';
+  import TopicComponentGroup from './TopicComponentGroup.vue';
 
   export default {
     props: ['topicKey'],

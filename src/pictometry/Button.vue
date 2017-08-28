@@ -12,7 +12,7 @@
 </template>
 
 <script>
-  import Control from '../leaflet/Control';
+  import Control from '../leaflet/Control.vue';
 
   export default {
     extends: Control,

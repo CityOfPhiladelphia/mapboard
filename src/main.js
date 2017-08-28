@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import createStore from './store';
 import configMixin from './util/config-mixin';
-import Mapboard from './components/Mapboard';
+import Mapboard from './components/Mapboard.vue';
 import mergeDeep from './util/merge-deep';
 import controllerMixin from './controller';
 import generateUniqueId from './util/uniqueId';
@@ -139,3 +139,5 @@ export default (clientConfig) => {
     }
   });
 };
+
+export { Mapboard };

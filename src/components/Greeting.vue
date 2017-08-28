@@ -23,11 +23,11 @@
 
 <script>
   // TODO find a less explicit way of importing everything
-  import Badge from './topic-components/Badge';
-  import HorizontalTable from './topic-components/HorizontalTable';
-  import VerticalTable from './topic-components/VerticalTable';
+  import Badge from './topic-components/Badge.vue';
+  import HorizontalTable from './topic-components/HorizontalTable.vue';
+  import VerticalTable from './topic-components/VerticalTable.vue';
   // import Callout from './topic-components/Callout';
-  import Image_ from './topic-components/Image';
+  import Image_ from './topic-components/Image.vue';
 
   export default {
     components: {

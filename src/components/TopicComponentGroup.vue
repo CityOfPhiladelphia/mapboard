@@ -14,13 +14,13 @@
 
 <script>
   import generateUniqueId from '../util/uniqueId';
-  import Badge from './topic-components/Badge';
-  import Callout from './topic-components/Callout';
-  import CollectionSummary from './topic-components/CollectionSummary';
-  import HorizontalTable from './topic-components/HorizontalTable';
-  import Image_ from './topic-components/Image';
-  import VerticalTable from './topic-components/VerticalTable';
-  import OverlayToggleGroup from './topic-components/OverlayToggleGroup';
+  import Badge from './topic-components/Badge.vue';
+  import Callout from './topic-components/Callout.vue';
+  import CollectionSummary from './topic-components/CollectionSummary.vue';
+  import HorizontalTable from './topic-components/HorizontalTable.vue';
+  import Image_ from './topic-components/Image.vue';
+  import VerticalTable from './topic-components/VerticalTable.vue';
+  import OverlayToggleGroup from './topic-components/OverlayToggleGroup.vue';
 
   export default {
     props: ['topicComponents', 'item', 'filterData'],

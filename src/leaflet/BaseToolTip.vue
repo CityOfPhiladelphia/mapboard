@@ -18,7 +18,7 @@
 </template>
 
 <script>
-  import Control from './Control';
+  import Control from './Control.vue';
   const {props, methods} = Control;
 
   export default {

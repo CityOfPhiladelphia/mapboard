@@ -6,7 +6,7 @@
 </template>
 <script>
   import L from 'leaflet';
-  import OpacitySlider from '../leaflet/OpacitySlider';
+  import OpacitySlider from '../leaflet/OpacitySlider.vue';
   // TODO look into a cleaner way of importing from esri-leaflet
   const EsriDynamicMapLayer = L.esri.dynamicMapLayer;
 

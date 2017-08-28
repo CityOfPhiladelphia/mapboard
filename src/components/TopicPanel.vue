@@ -27,8 +27,8 @@
 </template>
 
 <script>
-  import Greeting from './Greeting';
-  import Topic from './Topic';
+  import Greeting from './Greeting.vue';
+  import Topic from './Topic.vue';
 
   export default {
     components: {
