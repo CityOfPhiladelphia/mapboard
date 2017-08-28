@@ -54,6 +54,54 @@ function createFilteredData(config) {
   return filteredData;
 }
 
+// this grabs table group ids from an array of topic components
+function getTableGroupIdFromComps(comps = []) {
+
+  let tableGroupId;
+
+  for (let comp of comps) {
+    const options = comp.options || {};
+    const innerComps = options.components;
+
+    // if this is a "group" component, recurse
+    if (!innerComps) {
+      continue;
+    }
+
+    // skip comps that aren't horizontal tables
+    if (comp.type !== 'table-group') {
+      continue;
+    }
+
+    tableGroupId = comp._id;
+  }
+
+  return tableGroupId;
+}
+
+// this makes the empty tableGroups object given a list of topics.
+function createTableGroups(config) {
+  const topics = config.topics;
+
+  let tableGroupIds = [];
+
+  for (let topic of topics) {
+    const comps = topic.components;
+    const compTableGroupId = getTableGroupIdFromComps(comps);
+    if (compTableGroupId) tableGroupIds.push(compTableGroupId);
+  }
+
+  let tableGroups = {};
+
+  for (let tableGroupId of tableGroupIds) {
+    tableGroups[tableGroupId] = {
+      activeTable: null,
+      activeTableId: null
+    };
+  }
+  return tableGroups;
+}
+
 function createStore(config) {
   const defaultTopic = config.topics[0];
 
@@ -146,6 +194,7 @@ function createStore(config) {
       // table id => filtered rows
       filteredData: createFilteredData(config),
     },
+    tableGroups: createTableGroups(config),
     activeFeature: {
       featureId: null,
       tableId: null
@@ -174,12 +223,25 @@ function createStore(config) {
         const activeTopicConfig = (config.topics.filter(topic => topic.key === activeTopic) || [])[0];
         const comps = activeTopicConfig.components;
 
-        return getTableIdsFromComps(comps);
+        const compTableGroup = getTableGroupIdFromComps(comps);
+        if (compTableGroup) {
+          // even though there is only 1 value, it has to be in array form in the state
+          const array = [];
+          array.push(state.tableGroups[compTableGroup].activeTableId);
+          return array;
+        } else {
+          const compTables = getTableIdsFromComps(comps);
+          return compTables;
+        }
       }
     },
     mutations: {
       setTables(state, payload) {
         state.tables = payload;
+      },
+      setTableGroupActiveTable(state, payload) {
+        state.tableGroups[payload.tableGroupId].activeTableId = payload.activeTableId;
+        state.tableGroups[payload.tableGroupId].activeTable = payload.activeTable;
       },
       setTableFilteredData(state, payload) {
         const { tableId, data } = payload;

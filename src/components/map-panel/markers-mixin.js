@@ -184,7 +184,8 @@ export default {
           const innerComps = options.components || [];
 
           if (innerComps.length > 0) {
-            const innerTable = this.getTableFromComps(innerComps);
+            const innerTable = this.getTableFromComps(innerComps, tableId);
+            // console.log('table on 2nd try', innerTable, innerComps);
 
             if (innerTable) return innerTable;
           }

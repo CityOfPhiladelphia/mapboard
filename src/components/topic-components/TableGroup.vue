@@ -3,7 +3,7 @@
     <div v-if="!!this.$props.options.filters"
          class="mb-horizontal-table-controls"
     >
-      <div v-for="(filter, index) in filters"
+      <div v-for="(filter, index) in this.$props.options.filters"
             :id="'filter-' + index"
             class="inline-block"
       >
@@ -22,7 +22,7 @@
         </select>
       </div>
     </div>
-    <topic-component-group :topic-components="comps" :item="activeTable" />
+    <topic-component-group :topic-components="options.components" :item="item" />
   </div>
 </template>
 
@@ -38,40 +38,32 @@
     // some internal state for things local enough that they shouldn't be in
     // vuex if we can avoid it.
     data() {
-      // computed props aren't accessible here, so evaluate slot separately
-      // const items = this.evaluateSlot(this.slots.items);
+      const item = {
+        'tableGroupId': this.options.tableGroupId,
+        'activeTable': null,
+        'activeTableId': null
+      }
       return {
-        activeTable: null,
+        item
       };
     },
     created() {
-      if (this.filters) {
-        for (let [index, filter] of this.filters.entries()) {
-          const defaultValue = filter.values[0].value || {};
-          // console.log(filter);
-          this.activeTable = defaultValue;
+      if (this.options.filters) {
+        for (let [index, filter] of this.options.filters.entries()) {
+          const defaultTableName = filter.values[0].value || {};
+
+          // add activeTable to local data
+          this.item.activeTable = defaultTableName;
+          // add activeTableId to local data
+          for (let comp of this.options.components) {
+            if (comp.options.id === defaultTableName) {
+              this.item.activeTableId = comp._id;
+            }
+          }
+
+          this.$store.commit('setTableGroupActiveTable', this.item)
         }
       }
-    },
-    computed: {
-      comps() {
-        return this.options.components;
-      },
-      filters() {
-        return this.options.filters;
-      },
-      activeFilters() {
-        //TODO make this work with not-always-on filters
-        return this.filters;
-      },
-    },
-    watch: {
-      // when items change, update the activeItem
-      // items(items) {
-      //   const nextFirstItem = items[0];
-      //   const nextActiveKey = this.keyForItem(nextFirstItem);
-      //   this.activeItem = nextActiveKey;
-      // }
     },
     methods: {
       slugifyFilterValue(filterValue) {
@@ -89,8 +81,19 @@
         const slug = target.value;
         // deslugify filter value
         const valueObj = this.deslugifyFilterValue(slug);
-        // console.log('value obj', valueObj);
-        this.activeTable = valueObj.value;
+        const tableName = valueObj.value;
+
+        // add activeTable to local data
+        this.item.activeTable = tableName;
+
+        // add activeTableId to local data
+        for (let comp of this.options.components) {
+          if (comp.options.id === tableName) {
+            this.item.activeTableId = comp._id;
+          }
+        }
+
+        this.$store.commit('setTableGroupActiveTable', this.item)
       },
     }
   };
