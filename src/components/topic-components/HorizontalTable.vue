@@ -137,13 +137,17 @@
     },
     computed: {
       shouldShowTable() {
-        if (this.item.activeTable) {
-          const filterValue = this.item.activeTable;
-          const id = this.options.id;
-          if (filterValue === id) {
-            return true
+        if (this.item) {
+          if (this.item.activeTable) {
+            const filterValue = this.item.activeTable;
+            const id = this.options.id;
+            if (filterValue === id) {
+              return true
+            } else {
+              return false;
+            }
           } else {
-            return false;
+            return true;
           }
         } else {
           return true;
