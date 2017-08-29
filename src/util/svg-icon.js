@@ -1,10 +1,8 @@
-//Leaflet-SVGIcon
-//SVG icon for any marker class
-//Ilya Atkin
-//ilya.atkin@unh.edu
-//https://github.com/iatkin/leaflet-svgicon
+// Based on:
+// https://github.com/iatkin/leaflet-svgicon
+// modified to support es6 imports
 
-L.DivIcon.SVGIcon = L.DivIcon.extend({
+const SvgIcon = L.DivIcon.extend({
     options: {
         "circleText": "",
         "className": "svg-icon",
@@ -129,52 +127,54 @@ L.DivIcon.SVGIcon = L.DivIcon.extend({
     }
 })
 
-L.divIcon.svgIcon = function(options) {
-    return new L.DivIcon.SVGIcon(options)
-}
+export default SvgIcon;
 
-L.Marker.SVGMarker = L.Marker.extend({
-    options: {
-        "iconFactory": L.divIcon.svgIcon,
-        "iconOptions": {}
-    },
-    initialize: function(latlng, options) {
-        options = L.Util.setOptions(this, options)
-        options.icon = options.iconFactory(options.iconOptions)
-        this._latlng = latlng
-    },
-    onAdd: function(map) {
-        L.Marker.prototype.onAdd.call(this, map)
-    },
-    setStyle: function(style) {
-        if (this._icon) {
-            var svg = this._icon.children[0]
-            var iconBody = this._icon.children[0].children[0]
-            var iconCircle = this._icon.children[0].children[1]
+// L.divIcon.svgIcon = function(options) {
+//     return new L.DivIcon.SVGIcon(options)
+// }
 
-            if (style.color && !style.iconOptions) {
-                var stroke = style.color.replace("rgb","rgba").replace(")", ","+this.options.icon.options.opacity+")")
-                var fill = style.color.replace("rgb","rgba").replace(")", ","+this.options.icon.options.fillOpacity+")")
-                iconBody.setAttribute("stroke", stroke)
-                iconBody.setAttribute("fill", fill)
-                iconCircle.setAttribute("stroke", stroke)
-
-                this.options.icon.fillColor = fill
-                this.options.icon.color = stroke
-                this.options.icon.circleColor = stroke
-            }
-            if (style.opacity) {
-                this.setOpacity(style.opacity)
-            }
-            if (style.iconOptions) {
-                if (style.color) { style.iconOptions.color = style.color }
-                iconOptions = L.Util.setOptions(this.options.icon, style.iconOptions)
-                this.setIcon(L.divIcon.svgIcon(iconOptions))
-            }
-        }
-    }
-})
-
-L.marker.svgMarker = function(latlng, options) {
-    return new L.Marker.SVGMarker(latlng, options)
-}
+// L.Marker.SVGMarker = L.Marker.extend({
+//     options: {
+//         "iconFactory": L.divIcon.svgIcon,
+//         "iconOptions": {}
+//     },
+//     initialize: function(latlng, options) {
+//         options = L.Util.setOptions(this, options)
+//         options.icon = options.iconFactory(options.iconOptions)
+//         this._latlng = latlng
+//     },
+//     onAdd: function(map) {
+//         L.Marker.prototype.onAdd.call(this, map)
+//     },
+//     setStyle: function(style) {
+//         if (this._icon) {
+//             var svg = this._icon.children[0]
+//             var iconBody = this._icon.children[0].children[0]
+//             var iconCircle = this._icon.children[0].children[1]
+//
+//             if (style.color && !style.iconOptions) {
+//                 var stroke = style.color.replace("rgb","rgba").replace(")", ","+this.options.icon.options.opacity+")")
+//                 var fill = style.color.replace("rgb","rgba").replace(")", ","+this.options.icon.options.fillOpacity+")")
+//                 iconBody.setAttribute("stroke", stroke)
+//                 iconBody.setAttribute("fill", fill)
+//                 iconCircle.setAttribute("stroke", stroke)
+//
+//                 this.options.icon.fillColor = fill
+//                 this.options.icon.color = stroke
+//                 this.options.icon.circleColor = stroke
+//             }
+//             if (style.opacity) {
+//                 this.setOpacity(style.opacity)
+//             }
+//             if (style.iconOptions) {
+//                 if (style.color) { style.iconOptions.color = style.color }
+//                 iconOptions = L.Util.setOptions(this.options.icon, style.iconOptions)
+//                 this.setIcon(L.divIcon.svgIcon(iconOptions))
+//             }
+//         }
+//     }
+// })
+//
+// L.marker.svgMarker = function(latlng, options) {
+//     return new L.Marker.SVGMarker(latlng, options)
+// }
