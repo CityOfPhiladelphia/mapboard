@@ -332,6 +332,7 @@ Mapboard.default({
         geometryServerUrl: 'http://192.168.103.143:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer/',
         radius: 500,
         units: 'feet',
+        calculateDistance: true
       },
     },
     crimeIncidents: {
@@ -468,11 +469,7 @@ Mapboard.default({
       globals: ['moment'],
       transform(value, globals) {
         const moment = globals.moment;
-        const transformed = moment(value).format('MM-DD-YYYY');
-        // const transformed = moment(value).format('YYYY-MM-DD');
-        // console.log(value, transformed);
-        return moment(value).format('MM-DD-YYYY');
-        // return moment(value).format('YYYY-MM-DD');
+        return moment(value).format('MM/DD/YYYY');
       }
     },
     phoneNumber: {
@@ -1896,8 +1893,7 @@ Mapboard.default({
               {
                 label: 'Distance',
                 value(state, item) {
-                  // return item.properties.DISTANCE;
-                  return 'TODO';
+                  return `${item._distance} ft`;
                 }
               }
             ]
