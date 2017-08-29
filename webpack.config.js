@@ -41,11 +41,13 @@ module.exports = {
     // }
   },
   externals: {
-    'vue': 'Vue',
     'axios': 'axios',
-    'leaflet': 'L',
     'jQuery': '$',
-    'moment': 'moment'
+    'leaflet': 'L',
+    'moment': 'moment',
+    'turf': 'turf',
+    'vue': 'Vue',
+    'md5': 'md5'
   },
   devServer: {
     clientLogLevel: 'none',
