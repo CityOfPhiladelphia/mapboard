@@ -11,7 +11,7 @@
 </template>
 
 <script>
-  import Control from '../leaflet/Control';
+  import Control from '../leaflet/Control.vue';
   import CyclomediaRecordingsClient from './recordings-client';
 
   export default {

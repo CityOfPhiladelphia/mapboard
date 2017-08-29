@@ -83,8 +83,8 @@
 </template>
 
 <script>
-  import TopicComponent from './TopicComponent';
-  import HorizontalTableRow from './HorizontalTableRow';
+  import TopicComponent from './TopicComponent.vue';
+  import HorizontalTableRow from './HorizontalTableRow.vue';
 
   export default {
     mixins: [TopicComponent],

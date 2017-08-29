@@ -25,7 +25,7 @@
 </template>
 
 <script>
-  import Control from '../leaflet/Control';
+  import Control from '../leaflet/Control.vue';
 
   // REVIEW is there a better way to extend a vue component?
   const {props, methods} = Control;

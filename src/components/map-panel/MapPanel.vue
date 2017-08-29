@@ -246,27 +246,27 @@
   import pictometryMixin from '../../pictometry/map-panel-mixin';
 
   // vue doesn't like it when you import this as Map (reserved-ish word)
-  import Map_ from '../../leaflet/Map';
-  import Control from '../../leaflet/Control';
-  import EsriTiledMapLayer from '../../esri-leaflet/TiledMapLayer';
-  import EsriDynamicMapLayer from '../../esri-leaflet/DynamicMapLayer';
-  import EsriFeatureLayer from '../../esri-leaflet/FeatureLayer';
-  import Geojson from '../../leaflet/Geojson';
-  import CircleMarker from '../../leaflet/CircleMarker';
-  import OpacitySlider from '../../leaflet/OpacitySlider';
-  import VectorMarker from '../VectorMarker';
-  import PngMarker from '../PngMarker';
-  import SvgMarker from '../SvgMarker';
-  import BasemapToggleControl from '../BasemapToggleControl';
-  import BasemapSelectControl from '../BasemapSelectControl';
+  import Map_ from '../../leaflet/Map.vue';
+  import Control from '../../leaflet/Control.vue';
+  import EsriTiledMapLayer from '../../esri-leaflet/TiledMapLayer.vue';
+  import EsriDynamicMapLayer from '../../esri-leaflet/DynamicMapLayer.vue';
+  import EsriFeatureLayer from '../../esri-leaflet/FeatureLayer.vue';
+  import Geojson from '../../leaflet/Geojson.vue';
+  import CircleMarker from '../../leaflet/CircleMarker.vue';
+  import OpacitySlider from '../../leaflet/OpacitySlider.vue';
+  import VectorMarker from '../VectorMarker.vue';
+  import PngMarker from '../PngMarker.vue';
+  import SvgMarker from '../SvgMarker.vue';
+  import BasemapToggleControl from '../BasemapToggleControl.vue';
+  import BasemapSelectControl from '../BasemapSelectControl.vue';
   // import HistoricmapControl from '../HistoricmapControl';
-  import CyclomediaButton from '../../cyclomedia/Button';
-  import PictometryButton from '../../pictometry/Button';
-  import CyclomediaRecordingCircle from '../../cyclomedia/RecordingCircle';
+  import CyclomediaButton from '../../cyclomedia/Button.vue';
+  import PictometryButton from '../../pictometry/Button.vue';
+  import CyclomediaRecordingCircle from '../../cyclomedia/RecordingCircle.vue';
   import CyclomediaRecordingsClient from '../../cyclomedia/recordings-client';
-  import MeasureControl from '../../leaflet/MeasureControl';
-  import LegendControl from '../../leaflet/LegendControl';
-  import BaseToolTip from '../../leaflet/BaseToolTip';
+  import MeasureControl from '../../leaflet/MeasureControl.vue';
+  import LegendControl from '../../leaflet/LegendControl.vue';
+  import BaseToolTip from '../../leaflet/BaseToolTip.vue';
   import ControlCorner from '../../leaflet/ControlCorner.vue';
   import ScaleControl from '../../leaflet/ScaleControl.vue';
 

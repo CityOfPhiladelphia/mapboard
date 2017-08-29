@@ -19,7 +19,7 @@
 </template>
 
 <script>
-  import Control from '../leaflet/Control';
+  import Control from '../leaflet/Control.vue';
   const {props, methods} = Control;
 
   export default {

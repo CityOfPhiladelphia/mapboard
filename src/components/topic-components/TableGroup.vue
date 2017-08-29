@@ -27,8 +27,8 @@
 </template>
 
 <script>
-  import TopicComponent from './TopicComponent';
-  import TopicComponentGroup from '../TopicComponentGroup';
+  import TopicComponent from './TopicComponent.vue';
+  import TopicComponentGroup from '../TopicComponentGroup.vue';
 
   export default {
     mixins: [TopicComponent],

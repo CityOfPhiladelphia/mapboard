@@ -44,13 +44,13 @@
 </template>
 
 <script>
-  import TopicPanel from './TopicPanel';
-  import MapPanel from './map-panel/MapPanel';
-  import CyclomediaWidget from '../cyclomedia/Widget';
-  import PictometryWidget from '../pictometry/Widget';
-  import Layer from '../pictometry/Layer';
-  import ViewCone from '../pictometry/ViewCone';
-  import PngMarker from '../pictometry/PngMarker';
+  import TopicPanel from './TopicPanel.vue';
+  import MapPanel from './map-panel/MapPanel.vue';
+  import CyclomediaWidget from '../cyclomedia/Widget.vue';
+  import PictometryWidget from '../pictometry/Widget.vue';
+  import Layer from '../pictometry/Layer.vue';
+  import ViewCone from '../pictometry/ViewCone.vue';
+  import PngMarker from '../pictometry/PngMarker.vue';
 
   export default {
     components: {
