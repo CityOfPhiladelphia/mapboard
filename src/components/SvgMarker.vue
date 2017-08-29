@@ -5,7 +5,8 @@
 
 <script>
   import L from 'leaflet';
-  import DivIcon from 'leaflet';
+  // import DivIcon from 'leaflet';
+  import TriangleIcon from '../util/triangle-icon';
 
   export default {
     props: [
@@ -58,9 +59,9 @@
     methods: {
       createLeafletElement() {
         const coneCoords = this.coneCoords;
-        const icon = new L.divIcon.svgIcon.triangleIcon({
+        const icon = new TriangleIcon({
           iconSize: L.point(this.coneCoords[0], this.coneCoords[1]),
-          iconAnchor: [this.coneCoords[0]/2, this.coneCoords[1]],
+          iconAnchor: [this.coneCoords[0] / 2, this.coneCoords[1]],
         });
         return L.marker(this.latlng, {
           icon: icon,
