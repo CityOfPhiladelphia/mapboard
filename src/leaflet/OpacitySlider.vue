@@ -17,7 +17,7 @@
     ],
     created() {
       let opacityValue = this.$props.initialOpacity * 100
-      console.log("opacityValue", opacityValue);
+      // console.log("opacityValue", opacityValue);
 
       L.Control.opacitySlider = L.Control.extend({
         options: {
