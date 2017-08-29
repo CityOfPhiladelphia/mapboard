@@ -188,20 +188,24 @@ class DataManager {
                                     dataSourceKey,
                                     targetIdFn);
             break;
+
           case 'http-get-nearby':
             this.clients.http.fetchNearby(target,
-                                    dataSource,
-                                    dataSourceKey,
-                                    targetIdFn);
+                                          dataSource,
+                                          dataSourceKey,
+                                          targetIdFn);
             break;
+
           case 'esri':
             // TODO add targets id fn
             this.clients.esri.fetch(target, dataSource, dataSourceKey);
             break;
+
           case 'esri-nearby':
             // TODO add targets id fn
             this.clients.esri.fetchNearby(target, dataSource, dataSourceKey);
             break;
+
           default:
             throw `Unknown data source type: ${type}`;
             break;
