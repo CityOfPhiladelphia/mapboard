@@ -6,10 +6,6 @@
 <script>
   import L from 'leaflet';
   import DivIcon from 'leaflet';
-  import SVGIcon from '../../src/util/svg-icon.js';
-  import svgIcon from '../../src/util/svg-icon.js';
-  import TriangleIcon from '../../src/util/triangleIcon.js';
-  import triangleIcon from '../../src/util/triangleIcon.js';
 
   export default {
     props: [
