@@ -11,7 +11,7 @@
                 :id="'filter-' + index"
                 class="inline-block"
           >
-            <div class='vertically-centered mb-select-text'>{{ filter.label }}</div>
+            <div class="vertically-centered mb-select-text">{{ filter.label }}</div>
             <select @change="handleFilterValueChange"
                     class="mb-select"
             >
@@ -25,6 +25,21 @@
               </optgroup>
             </select>
           </div>
+
+          <div class="vertically-centered mb-select-text">Sort by</div>
+          <select @change="handleSortValueChange"
+                  class="mb-select"
+          >
+            <optgroup>
+              <option v-for="defaultSortMethod in defaultSortMethods"
+                      :value="defaultSortMethod"
+                      class="mb-select-option"
+              >
+                {{ defaultSortMethod }}
+              </option>
+            </optgroup>
+          </select>
+
         </div>
 
         <form @submit.prevent="handleFilterFormX"
@@ -86,10 +101,15 @@
   import TopicComponent from './TopicComponent.vue';
   import HorizontalTableRow from './HorizontalTableRow.vue';
 
+  const DEFAULT_SORT_METHODS = [
+    'date',
+    'distance'
+  ];
+
   export default {
     mixins: [TopicComponent],
     data() {
-      const filters = this.$props.options.filters || [];
+      const filters = this.options.filters || [];
       const defaultFilterSelections = Object.keys(filters).reduce((acc, i) =>
                                       {
                                         const key = `filter-${i}`;
@@ -97,9 +117,12 @@
                                         return acc;
                                       }, {});
 
+      const defaultSortMethods = this.defaultSortMethods;
+
       const initialData = {
         filterSelections: defaultFilterSelections,
-        searchText: ''
+        searchText: '',
+        sortMethod: DEFAULT_SORT_METHODS[0],
       };
 
       return initialData;
@@ -188,11 +211,16 @@
         return this.evaluateSlot(itemsSlot) || [];
       },
       itemsAfterSearch() {
+        const items = this.items;
         const searchText = this.searchText;
+
+        if (!searchText) {
+          return items;
+        }
+
         const searchTextLower = searchText.toLowerCase();
 
         // get full set of items
-        const items = this.items;
 
         // if text search is not enabled, return all items
         const searchFields = this.options.filterFieldsByText || [];
@@ -230,10 +258,33 @@
       },
       itemsAfterSort() {
         const itemsAfterFilters = this.itemsAfterFilters;
-        const sortOpts = this.$props.options.sort || null;
-        const items = this.sortItems(itemsAfterFilters)//, sortOpts);
+        const sortOpts = this.options.sort;
 
-        return items;
+        // determine if the user selected a sort method
+        // let sortMethod;
+        // if (this.sortMethod && this.sortMethod.length > 0) {
+        //   sortMethod = this.sortMethod;
+        // }
+
+        // let itemsAfterSort = itemsAfterFilters;
+
+        // if (sortMethod) {
+        //   // get field to sort on
+        //   // and then sort
+        //   console.log('we got a sort method', sortMethod);
+        //
+        //   itemsAfterSort
+        // // otherwise, if there are sort opts, use those and this.sortItems
+        // } else if (sortOpts) {
+        //   itemsAfterSort = this.sortItems(itemsAfterFilters, sortOpts);
+        // }
+
+        // itemsAfterSort = ;
+
+        return this.sortItems(itemsAfterFilters, sortOpts);
+      },
+      defaultSortMethods() {
+        return DEFAULT_SORT_METHODS;
       },
       // this takes filtered items and applies the max number of rows
       itemsLimited() {
@@ -282,6 +333,12 @@
         const parts = slug.split('-');
         const [direction, value, unit] = parts;
         return {value, unit, direction};
+      },
+      handleSortValueChange(e) {
+        console.log('handleSortValueChange running', e);
+
+        const value = e.target.value;
+        this.sortMethod = value;
       },
       handleFilterValueChange(e) {
         // console.log('handle filter value change', e);
@@ -367,7 +424,7 @@
         return itemsFiltered;
       },
       // sortItems(items, sortOpts) {
-      sortItems(items) {
+      sortItems(items, sortOpts) {
         // console.log('sortItems sortOpts');
         // TODO finish this
         // if (Object.keys(this.filterData).length) {
@@ -379,7 +436,7 @@
         // }
 
         // const items = this.itemsFiltered;
-        const sortOpts = this.options.sort;
+        // const sortOpts = this.options.sort;
         // console.log(sortOpts)
 
         // if there's no no sort config, just return the items.
@@ -399,10 +456,11 @@
         // console.log('defaultSortFn is running');
         const sortOpts = this.options.sort;
         const getValueFn = sortOpts.getValue;
+        const sortMethod = this.sortMethod;
         const order = sortOpts.order;
 
-        const valA = getValueFn(a);
-        const valB = getValueFn(b);
+        const valA = getValueFn(a, sortMethod);
+        const valB = getValueFn(b, sortMethod);
         let result;
 
         if (valA < valB) {
@@ -413,11 +471,13 @@
           result = 0;
         }
 
-        // reverse if the target order is desc
-        if (order === 'desc') {
-          result = result * -1;
-        } else if (order !== 'asc') {
-          throw `Unknown sort order: ${order}`;
+        // reverse if we have an order and the target order is desc
+        if (order) {
+          if (order === 'desc') {
+            result = result * -1;
+          } else if (order !== 'asc') {
+            throw `Unknown sort order: ${order}`;
+          }
         }
 
         // console.log('compare', valA, 'to', valB, ', result:', result);
@@ -490,6 +550,7 @@
     padding: 8px;
     font-size: 16px;
     width: 300px;
+    margin-left: 50px;
   }
 
   .mb-search-control-input-full {

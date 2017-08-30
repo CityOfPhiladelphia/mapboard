@@ -1557,6 +1557,19 @@ Mapboard.default({
                 options: {
                   topicKey: 'vacancy',
                   id: '311',
+                  sort: {
+                    getValue(item, method) {
+                      let val;
+
+                      if (method === 'date') {
+                        val = item.properties.REQUESTED_DATETIME;
+                      } else if (method === 'distance') {
+                        val = item._distance;
+                      }
+
+                      return val;
+                    }
+                  },
                   filters: [
                     {
                       type: 'time',
