@@ -1576,7 +1576,7 @@ Mapboard.default({
                       getValue(item) {
                         return item.properties.REQUESTED_DATETIME;
                       },
-                      label: 'from the last',
+                      label: 'From the last',
                       values: [
                         {
                           label: '30 days',
@@ -1688,7 +1688,7 @@ Mapboard.default({
                       getValue(item) {
                         return item.dispatch_date;
                       },
-                      label: 'from the last',
+                      label: 'From the last',
                       values: [
                         {
                           label: '30 days',
@@ -1883,7 +1883,7 @@ Mapboard.default({
                 getValue(item) {
                   return item.properties.REQUESTED_DATETIME;
                 },
-                label: 'from the last',
+                label: 'From the last',
                 values: [
                   {
                     label: '30 days',
