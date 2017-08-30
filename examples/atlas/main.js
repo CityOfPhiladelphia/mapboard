@@ -206,11 +206,14 @@ Mapboard.default({
       }
     },
     zoningAppeals: {
-      type: 'http-get',
+      type: 'http-get-nearby',
       url: 'https://phl.carto.com/api/v2/sql',
       options: {
+        table: 'li_appeals',
+        calculateDistance: true,
+        // dateField: 'dispatch_date',
         params: {
-          q: feature => "select * from li_appeals where address = '" + feature.properties.street_address + "'"// + "' or addrkey = " + feature.properties.li_address_key,
+          // q: feature => "select * from li_appeals where address = '" + feature.properties.street_address + "'"// + "' or addrkey = " + feature.properties.li_address_key,
         }
       }
     },
@@ -339,7 +342,10 @@ Mapboard.default({
       type: 'http-get-nearby',
       url: 'https://phl.carto.com/api/v2/sql',
       options: {
-        table: "incidents_part1_part2",
+        table: 'incidents_part1_part2',
+        dateMinNum: 1,
+        dateMinType: 'year',
+        dateField: 'dispatch_date',
         params: {
           // q: feature => "select * from incidents_part1_part2"// where dc_key = '201501056051'"//the_geom.STDistance(" + ")"// + feature.properties.street_address + "'"// + "' or addrkey = " + feature.properties.li_address_key,
         },
@@ -1835,7 +1841,7 @@ Mapboard.default({
                   title: 'Zoning Appeals',
                   data: 'zoningAppeals',
                   items(state) {
-                    const data = state.sources['zoningAppeals'].data.rows || [];
+                    const data = state.sources['zoningAppeals'].data || [];
                     const rows = data.map(row => {
                       const itemRow = Object.assign({}, row);
                       return itemRow;
