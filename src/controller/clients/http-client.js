@@ -52,16 +52,30 @@ class HttpClient extends BaseClient {
 
   fetchNearby(feature, dataSource, dataSourceKey, targetIdFn) {
     const params = this.evaluateParams(feature, dataSource);
-    params['q'] = 'SELECT * from incidents_part1_part2 where ST_Distance(the_geom::geography, ST_SetSRID(ST_Point(' + feature.geometry.coordinates[0] + ',' + feature.geometry.coordinates[1] + '),4326)::geography) < 250'
-    console.log('params:', params, params['q']);
+    const distQuery = "ST_Distance(the_geom::geography, ST_SetSRID(ST_Point("
+                      + feature.geometry.coordinates[0]
+                      + "," + feature.geometry.coordinates[1]
+                      + "),4326)::geography)";
     const url = dataSource.url;
     const options = dataSource.options;
     const successFn = options.success;
+    const calculateDistance = options.calculateDistance;
+    const table = options.table;
+
+    let select = '*'
+    if (calculateDistance) {
+      select = "*, " + distQuery + " as distance";
+      console.log('calcuateDistance is on using select:', select);
+    }
+
+    params['q'] = "select" + select + " from " + table + " where " + distQuery + " < 250"
+                  + " and dispatch_date > '" + moment().subtract(1, 'year').format('YYYY-MM-DD') + "'"
 
     // if the data is not dependent on other data
     axios.get(url, { params }).then(response => {
       // call success fn
       let data = response.data.rows;
+      console.log('data', data);
 
       if (successFn) {
         data = successFn(data);

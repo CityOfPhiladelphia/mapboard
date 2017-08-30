@@ -339,9 +339,11 @@ Mapboard.default({
       type: 'http-get-nearby',
       url: 'https://phl.carto.com/api/v2/sql',
       options: {
+        table: "incidents_part1_part2",
         params: {
-          q: feature => "select * from incidents_part1_part2"// where dc_key = '201501056051'"//the_geom.STDistance(" + ")"// + feature.properties.street_address + "'"// + "' or addrkey = " + feature.properties.li_address_key,
-        }
+          // q: feature => "select * from incidents_part1_part2"// where dc_key = '201501056051'"//the_geom.STDistance(" + ")"// + feature.properties.street_address + "'"// + "' or addrkey = " + feature.properties.li_address_key,
+        },
+        calculateDistance: true
       }
     },
     vacantLand: {
@@ -1643,8 +1645,7 @@ Mapboard.default({
                     {
                       label: 'Distance',
                       value(state, item) {
-                        // return item.properties.DISTANCE;
-                        return 'TODO';
+                        return `${item._distance} ft`;
                       }
                     }
                   ]
@@ -1744,8 +1745,7 @@ Mapboard.default({
                     {
                       label: 'Distance',
                       value(state, item) {
-                        // return item.properties.DISTANCE;
-                        return 'TODO';
+                        return parseInt(item.distance) + ' ft';
                       }
                     }
                   ]
