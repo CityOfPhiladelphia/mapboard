@@ -1,16 +1,21 @@
 <template>
   <div>
-    <a class="button" href="#" v-for="item in items" :data-key="keyForItem(item)"
-              @click="handleClick"
-              :class="{'hollow': !isActive(item)}">
-      {{ keyForItem(item) }}
-    </a>
+    <div class="container">
+      <h4 v-if="slots.title">
+        {{ evaluateSlot(slots.title) }}
+      </h4>
+      <a class="button" href="#" v-for="item in items" :data-key="keyForItem(item)"
+                @click="handleClick"
+                :class="{'hollow': !isActive(item)}">
+        {{ keyForItem(item) }}
+      </a>
+    </div>
   </div>
 </template>
 
 
 <script>
-  import TopicComponent from './TopicComponent';
+  import TopicComponent from './TopicComponent.vue';
 
   export default {
     mixins: [TopicComponent],
@@ -44,6 +49,10 @@
 </script>
 
 <style>
+
+.container {
+  margin-bottom: 30px;
+}
 
 .button {
   margin-left: 5px;

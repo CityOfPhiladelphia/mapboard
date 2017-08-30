@@ -44,13 +44,13 @@
 </template>
 
 <script>
-  import TopicPanel from './TopicPanel';
-  import MapPanel from './map-panel/MapPanel';
-  import CyclomediaWidget from '../cyclomedia/Widget';
-  import PictometryWidget from '../pictometry/Widget';
-  import Layer from '../pictometry/Layer';
-  import ViewCone from '../pictometry/ViewCone';
-  import PngMarker from '../pictometry/PngMarker';
+  import TopicPanel from './TopicPanel.vue';
+  import MapPanel from './map-panel/MapPanel.vue';
+  import CyclomediaWidget from '../cyclomedia/Widget.vue';
+  import PictometryWidget from '../pictometry/Widget.vue';
+  import Layer from '../pictometry/Layer.vue';
+  import ViewCone from '../pictometry/ViewCone.vue';
+  import PngMarker from '../pictometry/PngMarker.vue';
 
   export default {
     components: {
@@ -62,6 +62,29 @@
       ViewCone,
       PngMarker
     },
+    // created() {
+    //   console.log('MAPBOARD.VUE CREATED', this.$config);
+    //   let tables = {};
+    //   for (let topic of this.$config.topics) {
+    //     for (let component of topic.components) {
+    //       if (component.type === 'horizontal-table') {
+    //         // console.log('topic:', topic.label, component.type, component.slots.title);
+    //         const tableName = topic.key + '_' + component.options.id
+    //         tables[tableName] = null
+    //       }
+    //       else if (component.type === 'tab-group' || component.type === 'table-group') {
+    //         for (let innerComponent of component.options.components) {
+    //           if (innerComponent.type === 'horizontal-table') {
+    //             // console.log('topic:', topic.label, component.type, innerComponent.type, innerComponent.slots.title);
+    //             const tableName = topic.key + '_' + innerComponent.options.id
+    //             tables[tableName] = null
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    //   this.$store.commit('setTables', tables);
+    // },
     computed: {
       cyclomediaActive() {
         return this.$store.state.cyclomedia.active
@@ -104,13 +127,11 @@
 
   @media (min-width: 1024px) {
     .mb-root {
-      height: 600px;
     }
   }
 
   @media (min-width: 1024px) {
     .mb-root {
-      height: 600px;
     }
   }
 

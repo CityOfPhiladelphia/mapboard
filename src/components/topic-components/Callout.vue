@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  import TopicComponent from './TopicComponent';
+  import TopicComponent from './TopicComponent.vue';
 
   export default {
     mixins: [TopicComponent]
@@ -13,4 +13,8 @@
 </script>
 
 <style scoped>
+
+.callout {
+  position: inherit;
+}
 </style>

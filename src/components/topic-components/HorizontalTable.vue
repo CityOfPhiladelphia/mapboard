@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="shouldShowTable">
     <!-- controls -->
     <div class="mb-horizontal-table-controls">
         <div v-if="!!this.$props.options.filters"
@@ -9,18 +9,37 @@
           to make them globally unique -->
           <div v-for="(filter, index) in filters"
                 :id="'filter-' + index"
+                class="inline-block"
           >
-            <div class='vertically-centered mb-select-text'>{{ filter.label }}</div>
+            <div class="vertically-centered mb-select-text">{{ filter.label }}</div>
             <select @change="handleFilterValueChange"
                     class="mb-select"
             >
-              <option v-for="filterValue in filter.values"
-                      :value="slugifyFilterValue(filterValue)"
-              >
-                {{ filterValue.label }}
-              </option>
+              <optgroup>
+                <option v-for="filterValue in filter.values"
+                        :value="slugifyFilterValue(filterValue)"
+                        class="mb-select-option"
+                >
+                  {{ filterValue.label }}
+                </option>
+              </optgroup>
             </select>
           </div>
+
+          <div class="vertically-centered mb-select-text">Sort by</div>
+          <select @change="handleSortValueChange"
+                  class="mb-select"
+          >
+            <optgroup>
+              <option v-for="defaultSortMethod in defaultSortMethods"
+                      :value="defaultSortMethod"
+                      class="mb-select-option"
+              >
+                {{ defaultSortMethod }}
+              </option>
+            </optgroup>
+          </select>
+
         </div>
 
         <form @submit.prevent="handleFilterFormX"
@@ -32,7 +51,7 @@
                  id="theInput"
                  @keyup="handleFilterFormKeyup"
           />
-          <button v-if="this.filterWords !=''"
+          <button v-if="this.searchText !=''"
                   class="mb-search-control-button"
           >
             <i class="fa fa-times fa-lg"></i>
@@ -41,10 +60,14 @@
     </div> <!-- end of mb-horizontal-table-controls block -->
 
     <div class="mb-horizontal-table-body">
-      <h4 v-if="slots.title">
-        {{ evaluateSlot(slots.title) }} {{ count }}
-      </h4>
-
+      <div v-if="slots.title">
+        <h4 style="display:inline-block">
+          {{ evaluateSlot(slots.title) }} {{ countText }}
+        </h4>
+        <h5 style="display:inline-block; color: gray">
+          {{ evaluateSlot(slots.subtitle) }}
+        </h5>
+      </div>
       <table role="grid" class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">
         <thead>
           <tr>
@@ -52,37 +75,57 @@
           </tr>
         </thead>
         <tbody>
-          <!-- <tr v-for="item in evaluateSlot(slots.items)"
-              :class="{ active: item._featureId === activeFeature }"
-          > -->
-          <horizontal-table-row v-for="item in itemsSorted"
+          <horizontal-table-row v-for="item in itemsLimited"
                                 :item="item"
                                 :fields="fields"
                                 :key="item._featureId"
                                 :hasOverlay="hasOverlay"
+                                :tableId="options.tableId"
           />
         </tbody>
       </table>
+
+      <!-- external link (aka "see more")-->
+      <a v-if="options.externalLink && shouldShowExternalLink"
+         :href="externalLinkHref"
+         class="external"
+         target="_blank"
+      >
+        {{ externalLinkText }}
+      </a>
     </div>
   </div>
 </template>
 
 <script>
-  import moment from 'moment';
-  import TopicComponent from './TopicComponent';
-  import HorizontalTableRow from './HorizontalTableRow';
+  import TopicComponent from './TopicComponent.vue';
+  import HorizontalTableRow from './HorizontalTableRow.vue';
+
+  const DEFAULT_SORT_METHODS = [
+    'date',
+    'distance'
+  ];
 
   export default {
     mixins: [TopicComponent],
     data() {
-      return {
-        filterData: {
-          'filter-0': {},
-          'filter-1': {},
-          'filter-2': {}
-        },
-        filterWords: '',
-      }
+      const filters = this.options.filters || [];
+      const defaultFilterSelections = Object.keys(filters).reduce((acc, i) =>
+                                      {
+                                        const key = `filter-${i}`;
+                                        acc[key] = {};
+                                        return acc;
+                                      }, {});
+
+      const defaultSortMethods = this.defaultSortMethods;
+
+      const initialData = {
+        filterSelections: defaultFilterSelections,
+        searchText: '',
+        sortMethod: DEFAULT_SORT_METHODS[0],
+      };
+
+      return initialData;
     },
     components: {
       HorizontalTableRow
@@ -91,15 +134,60 @@
       if (this.filters) {
         for (let [index, filter] of this.filters.entries()) {
           const key = `filter-${index}`;
-          // console.log(filter);
           const defaultValue = filter.values[0] || {};
-          this.filterData[key] = defaultValue;
+          this.filterSelections[key] = defaultValue;
         }
+      }
+
+      // put row data in state once on load
+      // const data = this.itemsAfterSearch;
+      // const tableId = this.options.tableId;
+
+      // this.$store.commit('setTableFilteredData', {
+      //   tableId,
+      //   data
+      // });
+    },
+    mounted() {
+      this.updateTableFilteredData();
+    },
+    watch: {
+      itemsAfterFilters(nextItems) {
+        // console.log('WATCH items after filters', nextItems);
+
+        this.updateTableFilteredData();
       }
     },
     computed: {
+      shouldShowTable() {
+        if (this.item) {
+          if (this.item.activeTable) {
+            const filterValue = this.item.activeTable;
+            const id = this.options.id;
+            if (filterValue === id) {
+              return true
+            } else {
+              return false;
+            }
+          } else {
+            return true;
+          }
+        } else {
+          return true;
+        }
+        // if (this.item) {
+        //   const filterValue = this.$props.item;
+        //   return filterValue;
+        // } else {
+        //   return undefined;
+        // }
+      },
+      limit() {
+        // try to get from config. if it's not there, set a reasonable default.
+        return this.options.limit// || 1000;
+      },
       inputClass() {
-        if (this.filterWords === '') {
+        if (this.searchText === '') {
           return 'mb-search-control-input';
         } else {
           return 'mb-search-control-input-full';
@@ -112,41 +200,199 @@
         //TODO make this work with not-always-on filters
         return this.filters;
       },
-      // activeFeature() {
-      //   return this.$store.state.activeFeature
-      // },
       fields() {
         return this.options.fields;
       },
       hasOverlay() {
-        return !!this.options.overlay;
+        return !!this.options.mapOverlay;
       },
       items() {
         const itemsSlot = this.slots.items;
         return this.evaluateSlot(itemsSlot) || [];
       },
-      count() {
-        const length = this.itemsFiltered.length;
-        return `(${length})`;
-      },
-      itemsFiltered() {
-        // console.log('computed: itemFiltered, filterData:', this.filterData);
+      itemsAfterSearch() {
         const items = this.items;
-        let itemsFiltered = items.slice();
-        // console.log('test1, itemsFiltered:', itemsFiltered)
-        if (this.filters) {
-          for (let [index, filter] of this.filters.entries()) {
-            // console.log('filter', filter, index);
+        const searchText = this.searchText;
 
+        if (!searchText) {
+          return items;
+        }
+
+        const searchTextLower = searchText.toLowerCase();
+
+        // get full set of items
+
+        // if text search is not enabled, return all items
+        const searchFields = this.options.filterFieldsByText || [];
+        if (searchFields.length === 0) {
+          return items;
+        }
+
+        // get items that contain the search text in one of their filter fields
+        const matchingItems = items.filter(item => {
+          const searchVals = searchFields.map(filterField => {
+            const props = item.properties;
+            const searchVal = props ? props[filterField] : item[filterField];
+            return searchVal.toLowerCase();
+          });
+
+          for (let searchVal of searchVals) {
+            if (searchVal.includes(searchTextLower)) {
+              return true;
+            } else {
+              return false;
+            }
+          }
+        })
+
+        return matchingItems;
+      },
+      // this takes itemsAfterSearch and applies selected filters
+      itemsAfterFilters() {
+        const itemsAfterSearch = this.itemsAfterSearch;
+        const items = this.filterItems(itemsAfterSearch,
+                                       this.filters,
+                                       this.filterSelections);
+
+        return items;
+      },
+      itemsAfterSort() {
+        const itemsAfterFilters = this.itemsAfterFilters;
+        const sortOpts = this.options.sort;
+
+        // determine if the user selected a sort method
+        // let sortMethod;
+        // if (this.sortMethod && this.sortMethod.length > 0) {
+        //   sortMethod = this.sortMethod;
+        // }
+
+        // let itemsAfterSort = itemsAfterFilters;
+
+        // if (sortMethod) {
+        //   // get field to sort on
+        //   // and then sort
+        //   console.log('we got a sort method', sortMethod);
+        //
+        //   itemsAfterSort
+        // // otherwise, if there are sort opts, use those and this.sortItems
+        // } else if (sortOpts) {
+        //   itemsAfterSort = this.sortItems(itemsAfterFilters, sortOpts);
+        // }
+
+        // itemsAfterSort = ;
+
+        return this.sortItems(itemsAfterFilters, sortOpts);
+      },
+      defaultSortMethods() {
+        return DEFAULT_SORT_METHODS;
+      },
+      // this takes filtered items and applies the max number of rows
+      itemsLimited() {
+        // console.log('items limited', this.itemsAfterSort.slice(0, this.limit));
+        return this.itemsAfterSort.slice(0, this.limit);
+      },
+      count() {
+        return this.itemsAfterFilters.length;
+      },
+      countText() {
+        return `(${this.count})`;
+      },
+      shouldShowExternalLink() {
+        if (this.options.externalLink.forceShow) {
+          return this.options.externalLink.forceShow;
+        } else {
+          return this.itemsAfterSearch.length > this.limit;
+        }
+      },
+      externalLinkAction() {
+        return this.options.externalLink.action || 'See more';
+      },
+      externalLinkText() {
+        const externalLinkConf = this.options.externalLink;
+        const actionFn = externalLinkConf.action;
+        const actionText = actionFn(this.externalLinkCount);
+        const name = externalLinkConf.name;
+
+        return `${actionText}`;
+        // return `${actionText} at ${name}`;
+      },
+      externalLinkHref() {
+        return this.evaluateSlot(this.options.externalLink.href);
+      },
+      // the number of items that aren't being shown (e.g. See 54 more...)
+      externalLinkCount() {
+        return this.count - this.limit;
+      },
+    },
+    methods: {
+      slugifyFilterValue(filterValue) {
+        const { direction, value, unit } = filterValue;
+        return [direction, value, unit].join('-');
+      },
+      deslugifyFilterValue(slug) {
+        const parts = slug.split('-');
+        const [direction, value, unit] = parts;
+        return {value, unit, direction};
+      },
+      handleSortValueChange(e) {
+        console.log('handleSortValueChange running', e);
+
+        const value = e.target.value;
+        this.sortMethod = value;
+      },
+      handleFilterValueChange(e) {
+        // console.log('handle filter value change', e);
+
+        const target = e.target;
+        const slug = target.value;
+
+        // deslugify filter value
+        const valueObj = this.deslugifyFilterValue(slug);
+
+        const parent = target.parentElement;
+        const parentId = parent.id;
+
+        // patch and replace filter selections
+        const prevFilterSelections = this.filterSelections;
+        const nextFilterSelections = Object.assign({}, prevFilterSelections);
+        nextFilterSelections[parentId] = valueObj;
+        this.filterSelections = nextFilterSelections;
+      },
+      values(item) {
+        const fields = this.options.fields;
+        const sourceFields = fields.map(field => field.sourceField);
+        return sourceFields.map(sourceField => item[sourceField])
+      },
+      handleFilterFormKeyup(e) {
+        const input = e.target.value;
+        this.searchText = input;
+      },
+      handleFilterFormX(e) {
+        e.target[0].value = ''
+        this.searchText = '';
+      },
+      filterItems(items, filters, filterSelections) {
+        let itemsFiltered = items.slice();
+
+        if (filters) {
+          for (let [index, filter] of filters.entries()) {
             const key = `filter-${index}`;
-            const data = this.filterData[key];
+            const data = filterSelections[key];
             const {type, getValue} = filter;
             const {direction, unit, value} = data;
-            // console.log('unit:', unit, 'value:', value);
 
             // TODO put these in separate methods
             switch(type) {
+              case 'data':
+                // console.log('DATA FILTER');
+                // itemsFiltered = itemsFiltered.filter(item => {
+                //   const itemValue = getValue(item);
+                //   console.log('horiz table itemValue:', itemValue);
+                //   return itemValue;
+                // });
+                break;
               case 'time':
+                // console.log('TIME FILTER direction', direction);
                 let min, max;
 
                 if (direction === 'subtract') {
@@ -161,17 +407,12 @@
                 }
 
                 itemsFiltered = itemsFiltered.filter(item => {
-                  // console.log('item', item);
                   const itemValue = getValue(item);
-                  // console.log('item value', itemValue);
                   const itemMoment = moment(itemValue);
-                  // console.log('comparing', min, itemMoment, max);
                   const isBetween = itemMoment.isBetween(min, max)
-                  // if (isBetween === true) {
-                    // console.log('is between?', isBetween);
-                  // }
                   return isBetween;
                 });
+                // console.log('ITEMS FILTERED BY TIME FILTER', itemsFiltered);
                 break;
 
               default:
@@ -180,25 +421,11 @@
             }
           }
         }
-
-        itemsFiltered = itemsFiltered.filter(item => {
-          let string = ''
-          for (let field of this.$props.options.filterFieldsByText) {
-            string += item.properties[field].toLowerCase()
-          }
-          return string.includes(this.filterWords.toLowerCase());
-        })
-        let idsFiltered = []
-        for (let item of itemsFiltered) {
-          idsFiltered.push(item._featureId);
-        }
-        this.$store.commit('setMapFilters', idsFiltered);
-
-        // console.log('end of computed itemsFiltered:', itemsFiltered);
         return itemsFiltered;
       },
-      itemsSorted() {
-        // console.log('computed: itemsSorted');
+      // sortItems(items, sortOpts) {
+      sortItems(items, sortOpts) {
+        // console.log('sortItems sortOpts');
         // TODO finish this
         // if (Object.keys(this.filterData).length) {
         //   console.log('there is filterData', this.filterData);
@@ -208,84 +435,67 @@
         //   return this.items;
         // }
 
-        const items = this.itemsFiltered;
-        const sortOpts = this.options.sort;
+        // const items = this.itemsFiltered;
+        // const sortOpts = this.options.sort;
+        // console.log(sortOpts)
 
         // if there's no no sort config, just return the items.
         if (!sortOpts) {
           return items;
         }
 
-        const getValueFn = sortOpts.getValue;
-        const order = sortOpts.order;
+        // const getValueFn = sortOpts.getValue;
+        // const order = sortOpts.order;
 
         // get sort fn or use this basic one
-        function defaultSortFn(a, b) {
-          const valA = getValueFn(a);
-          const valB = getValueFn(b);
-          let result;
+        const sortFn = sortOpts.compare || this.defaultSortFn;
+        // console.log('sortFn', sortFn)
+        return items.sort(sortFn);
+      },
+      defaultSortFn(a, b) {
+        // console.log('defaultSortFn is running');
+        const sortOpts = this.options.sort;
+        const getValueFn = sortOpts.getValue;
+        const sortMethod = this.sortMethod;
+        const order = sortOpts.order;
 
-          if (valA < valB) {
-            result = -1;
-          } else if (valB < valA) {
-            result = 1;
-          } else {
-            result = 0;
-          }
+        const valA = getValueFn(a, sortMethod);
+        const valB = getValueFn(b, sortMethod);
+        let result;
 
-          // reverse if the target order is desc
+        if (valA < valB) {
+          result = -1;
+        } else if (valB < valA) {
+          result = 1;
+        } else {
+          result = 0;
+        }
+
+        // reverse if we have an order and the target order is desc
+        if (order) {
           if (order === 'desc') {
             result = result * -1;
           } else if (order !== 'asc') {
             throw `Unknown sort order: ${order}`;
           }
-
-          // console.log('compare', valA, 'to', valB, ', result:', result);
-
-          return result;
         }
-        const sortFn = sortOpts.compare || defaultSortFn;
 
-        return items.sort(sortFn);
-      }
-    },
-    methods: {
-      slugifyFilterValue(filterValue) {
-        const { direction, value, unit } = filterValue;
-        return [direction, value, unit].join('-');
-      },
-      deslugifyFilterValue(slug) {
-        const parts = slug.split('-');
-        const [direction, value, unit] = parts;
-        return {value, unit, direction};
-      },
-      handleFilterValueChange(e) {
-        // console.log('handle filter value change', e);
+        // console.log('compare', valA, 'to', valB, ', result:', result);
 
-        const target = e.target;
-        const slug = target.value;
-
-        // deslugify filter value
-        const valueObj = this.deslugifyFilterValue(slug);
-        // console.log('value obj', valueObj);
-
-        const parent = target.parentElement;
-        const parentId = parent.id;
-
-        this.filterData[parentId] = valueObj;
+        return result;
       },
-      values(item) {
-        const fields = this.options.fields;
-        const sourceFields = fields.map(field => field.sourceField);
-        return sourceFields.map(sourceField => item[sourceField])
-      },
-      handleFilterFormKeyup(e) {
-        const input = e.target.value;
-        this.filterWords = input;
-      },
-      handleFilterFormX(e) {
-        e.target[0].value = ''
-        this.filterWords = '';
+      // this updates the global state that stores filtered table rows
+      updateTableFilteredData() {
+        // console.log('update table filtered data');
+
+        // get table id
+        const { tableId } = this.options;
+
+        // update global state
+        this.$store.commit('setTableFilteredData', {
+          tableId,
+          data: this.itemsAfterFilters
+        });
       }
     }
   };
@@ -295,6 +505,10 @@
   th {
     font-size: 15px;
     text-align: left;
+  }
+
+  .inline-block {
+    display: inline-block;
   }
 
   .vertically-centered {
@@ -312,12 +526,20 @@
   .mb-select-text {
     font-size: 16px;
     padding-right: 5px;
+    padding-left: 5px;
   }
 
   .mb-select {
-    width: 100px;
+    width: auto;
     height: 40px;
     vertical-align: middle;
+    /*padding-right: 20px;*/
+  }
+
+  .mb-select-option {
+    display: inline-block;
+    padding-right: 100px;
+    margin-right: 100px;
   }
 
   /* input filters using text */
@@ -328,6 +550,7 @@
     padding: 8px;
     font-size: 16px;
     width: 300px;
+    margin-left: 50px;
   }
 
   .mb-search-control-input-full {

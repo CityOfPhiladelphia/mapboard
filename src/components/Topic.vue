@@ -2,7 +2,7 @@
   <div>
     <a href="#"
        class="topic-header"
-       @click="setActiveTopic"
+       @click.prevent="handleTopicHeaderClick"
        v-if="shouldShowHeader"
     >
       <span v-show="status === 'waiting'" class="loading">
@@ -15,9 +15,11 @@
     </a>
 
     <!-- success -->
-    <div class="topic-body" v-if="shouldShowBody">
-      <topic-component-group :topic-components="topic.components" />
-    </div>
+    <transition name="topic-body">
+      <div class="topic-body" v-if="shouldShowBody">
+        <topic-component-group :topic-components="topic.components" />
+      </div>
+    </transition>
 
     <!-- error -->
     <div class="topic-body" v-show="shouldShowError">
@@ -29,7 +31,7 @@
 <script>
   // import { mapMutations } from 'vuex';
 
-  import TopicComponentGroup from './TopicComponentGroup';
+  import TopicComponentGroup from './TopicComponentGroup.vue';
 
   export default {
     props: ['topicKey'],
@@ -55,7 +57,6 @@
       isActive() {
         const key = this.topic.key;
         const activeTopic = this.$store.state.activeTopic;
-        // console.log('is active?', key === activeTopic);
         return activeTopic === key;
       },
       shouldShowHeader() {
@@ -83,8 +84,15 @@
         return should;
       },
       shouldShowError() {
-        // console.log('shouldShowError', this.topic.label, this);
-        return this.status === 'error' || (this.status !== 'waiting' && !this.hasData);
+        return (
+          // topic must be active and
+          this.isActive && (
+            // there either has to be an error or
+            this.status === 'error' ||
+            // we got the response and it's empty
+            (this.status !== 'waiting' && !this.hasData)
+          )
+        );
       },
       // REVIEW this is getting cached and not updating when the deps update
       status: {
@@ -129,31 +137,19 @@
         return this.$config.map.basemaps[key];
       },
 
-      // TODO use mapMuptations for less boilerplate
-      setActiveTopic() {
+      handleTopicHeaderClick(e) {
         const topic = this.$props.topicKey;
+
         let nextTopic;
+
         if (topic === this.$store.state.activeTopic) {
           nextTopic = null;
         } else {
           nextTopic = topic;
         }
-        this.$store.commit('setActiveTopic', { topic: nextTopic });
 
-        // handle basemap
-        const prevBasemap = this.$store.state.map.basemap;
-        const prevBasemapConfig = this.configForBasemap(prevBasemap);
-        const prevBasemapType = prevBasemapConfig.type;
-        let nextBasemap;
-
-        // if featuremap - maybe change
-        if (prevBasemapType === 'featuremap') {
-          const nextTopicConfig = this.$config.topics.filter(top => top.key === nextTopic)[0];
-          nextBasemap = nextTopicConfig.basemap;
-          if (prevBasemap != nextBasemap) {
-            this.$store.commit('setBasemap', nextBasemap);
-          }
-        }
+        // notify controller (which will handle routing)
+        this.$controller.handleTopicHeaderClick(nextTopic);
       },
     }
   };
@@ -187,10 +183,18 @@
 
   .topic-body {
     padding: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
 
   .loading {
     float: right;
+  }
+
+  .topic-body-enter-active, .topic-body-leave-active {
+    transition: opacity 0.18s;
+  }
+
+  .topic-body-enter, .topic-body-leave-to {
+    opacity: 0;
   }
 </style>

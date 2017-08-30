@@ -1,7 +1,7 @@
 <template>
   <div style="display: inline">
     <div class="year-selector-container"
-         v-show="activeBasemap.startsWith('historic')"
+         v-show="activeBasemap && activeBasemap.startsWith('historic')"
     >
       <ul>
         <li v-for="historicYear in historicYears"
@@ -25,7 +25,7 @@
 </template>
 
 <script>
-  import Control from '../leaflet/Control';
+  import Control from '../leaflet/Control.vue';
 
   // REVIEW is there a better way to extend a vue component?
   const {props, methods} = Control;
@@ -45,7 +45,7 @@
       },
       toggleButtonImgSrc() {
         const basemap = this.activeBasemap;
-        const basemapConfig = this.configForBasemap(basemap);
+        const basemapConfig = this.configForBasemap(basemap) || {};
         const basemapType = basemapConfig.type;
         let src;
 
@@ -66,7 +66,6 @@
       },
       // return a list of imagery basemap years in descending order
       handleHistoricToggleButtonClick(e) {
-        console.log('handleHistoricToggleButtonClick from HistoricmapControl fired')
         const prevBasemap = this.activeBasemap;
         const prevBasemapConfig = this.configForBasemap(prevBasemap);
         const prevBasemapType = prevBasemapConfig.type;

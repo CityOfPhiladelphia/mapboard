@@ -13,7 +13,11 @@
 </template>
 
 <script>
-  import { Map, LatLngBounds } from 'leaflet';
+  import {
+    Map,
+    LatLng
+    // LatLngBounds
+  } from 'leaflet';
   import bindEvents from './util/bind-events';
 
   export default {
@@ -25,7 +29,7 @@
       'maxZoom',
       // 'markers'
     ],
-    // watch: {
+    watch: {
     //   markers(next, prev) {
     //     // get markers
     //     // fit bounds
@@ -33,7 +37,23 @@
     //     // console.log('watch markers fired', leafletMarkers);
     //     this.refit();
     //   }
-    // },
+      center(nextCenter) {
+        // check for not-null coords
+        if (!nextCenter) return;
+
+        const [ lng, lat ] = nextCenter;
+        const latLng = new LatLng(lat, lng);
+
+        // we used "setView" here because when you refreshed the app with an address in the url,
+        // "panTo" was getting stepped on by "setZoom" and it was not happening
+        this.$leafletElement.setView(latLng, this.zoom);
+      },
+      zoom(nextZoom) {
+        if (!nextZoom) return;
+
+        this.$leafletElement.setZoom(nextZoom);
+      }
+    },
     mounted() {
       const map = this.$leafletElement = this.createLeafletElement();
 
@@ -50,7 +70,6 @@
       this.$nextTick(() => {
         map.attributionControl.setPrefix('<a target="_blank" href="//www.phila.gov/it/aboutus/units/Pages/GISServicesGroup.aspx">City of Philadelphia | GIS Services Group</a>');
       })
-
 
       // signal children to mount
       for (let child of this.$children) {

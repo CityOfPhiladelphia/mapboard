@@ -6,7 +6,7 @@
 </template>
 <script>
   import L from 'leaflet';
-  import OpacitySlider from '../leaflet/OpacitySlider';
+  import OpacitySlider from '../leaflet/OpacitySlider.vue';
   // TODO look into a cleaner way of importing from esri-leaflet
   const EsriDynamicMapLayer = L.esri.dynamicMapLayer;
 
@@ -14,16 +14,32 @@
     components: {
       OpacitySlider
     },
-    props: [
-      'url',
-      'minZoom',
-      'maxZoom',
-      'zIndex',
-      'opacity',
-      'layers',
-      'layerDefs',
-      'transparent',
-    ],
+    props: {
+      url: {
+
+      },
+      minZoom: {
+
+      },
+      maxZoom: {
+
+      },
+      zIndex: {
+
+      },
+      opacity: {
+        default: 1.0
+      },
+      layers: {
+
+      },
+      layerDefs: {
+
+      },
+      transparent: {
+
+      },
+    },
     created() {
       const leafletElement = this.$leafletElement = this.createLeafletElement();
       const map = this.$store.state.map.map;
@@ -46,7 +62,6 @@
     methods: {
       createLeafletElement() {
         const props = Object.assign({}, this.$props);
-        // console.log('dynamic map', props);
         return new EsriDynamicMapLayer(props);
       },
       parentMounted(parent) {

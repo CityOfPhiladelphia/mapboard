@@ -20,31 +20,32 @@
 
       <!-- basemaps -->
       <esri-tiled-map-layer v-for="(basemap, key) in this.$config.map.basemaps"
-                         v-if="activeBasemap === key"
-                         :key="key"
-                         :url="basemap.url"
-                         :max-zoom="basemap.maxZoom"
-                         :attribution="basemap.attribution"
+                            v-if="activeBasemap === key"
+                            :key="key"
+                            :url="basemap.url"
+                            :max-zoom="basemap.maxZoom"
+                            :attribution="basemap.attribution"
       />
 
       <!-- basemap labels and parcels outlines -->
       <esri-tiled-map-layer v-for="(tiledLayer, key) in this.$config.map.tiledLayers"
-                         v-if="activeTiles.includes(key)"
-                         :key="key"
-                         :url="tiledLayer.url"
-                         :zIndex="tiledLayer.zIndex"
-                         :attribution="tiledLayer.attribution"
+                            v-if="tiledLayers.includes(key)"
+                            :key="key"
+                            :url="tiledLayer.url"
+                            :zIndex="tiledLayer.zIndex"
+                            :attribution="tiledLayer.attribution"
       />
 
       <esri-dynamic-map-layer v-for="(dynamicLayer, key) in this.$config.map.dynamicMapLayers"
-                          v-if="activeDynamicMaps.includes(key)"
-                         :key="key"
-                         :url="dynamicLayer.url"
-                         :attribution="dynamicLayer.attribution"
-                         :transparent="true"
-                         :opacity="dynamicLayer.opacity"
+                              v-if="activeDynamicMaps.includes(key)"
+                              :key="key"
+                              :url="dynamicLayer.url"
+                              :attribution="dynamicLayer.attribution"
+                              :transparent="true"
+                              :opacity="dynamicLayer.opacity"
       />
 
+      <!-- dorParcels, pwdParcels, vacantLand, vacantBuilding -->
       <esri-feature-layer v-for="(featureLayer, key) in this.$config.map.featureLayers"
                           v-if="shouldShowFeatureLayer(key, featureLayer.minZoom)"
                           :key="key"
@@ -79,23 +80,21 @@
       <!-- NEW METHOD: try rendering markers generically based on marker type -->
       <!-- vector markers -->
       <vector-marker v-for="(marker, index) in markers"
-                    :latlng="marker.latlng"
-                    :key="marker.key"
+                     :latlng="marker.latlng"
+                     :key="marker.key"
       />
 
       <!-- marker using a png and ablility to rotate it -->
       <png-marker v-if="this.cyclomediaActive"
-                    :icon="'../../src/assets/camera.png'"
-                    :orientation="this.$store.state.cyclomedia.viewer.props.orientation"
+                  :icon="'../../src/assets/camera.png'"
       />
 
       <!-- marker using custom code extending icons - https://github.com/iatkin/leaflet-svgicon -->
-      <svg-marker v-if="this.cyclomediaActive"
-                    :orientation="this.$store.state.cyclomedia.viewer.props.orientation"
-      />
+      <svg-marker v-if="this.cyclomediaActive" />
 
       <!-- geojson features -->
       <geojson v-for="geojsonFeature in geojsonFeatures"
+               v-if="shouldShowGeojson(geojsonFeature.key)"
                :geojson="geojsonFeature.geojson"
                :color="geojsonFeature.color"
                :weight="2"
@@ -105,7 +104,6 @@
 
        <!-- TODO give these a real key -->
       <circle-marker v-for="circleMarker in circleMarkers"
-                     @l-click="handleCircleMarkerClick"
                      @l-mouseover="handleCircleMarkerMouseover"
                      @l-mouseout="handleCircleMarkerMouseout"
                      :latlng="circleMarker.latlng"
@@ -116,7 +114,10 @@
                    	 :opacity="circleMarker.opacity"
                    	 :fillOpacity="circleMarker.fillOpacity"
                      :key="Math.random()"
-                     :data="{featureId: circleMarker.featureId}"
+                     :data="{
+                       featureId: circleMarker.featureId,
+                       tableId: circleMarker.tableId
+                     }"
       />
 
        <!-- <vector-marker v-for="marker in threeOneOneMarkers"
@@ -128,20 +129,30 @@
 
       <!-- CONTROLS: -->
       <!-- basemap control -->
+      <control-corner :vSide="'top'"
+                      :hSide="'almostright'"
+      >
+      </control-corner>
+
+      <control-corner :vSide="'bottom'"
+                      :hSide="'almostleft'"
+      >
+      </control-corner>
+
       <div v-once>
-        <basemap-control v-if="shouldShowImageryToggle"
+        <basemap-toggle-control v-if="shouldShowImageryToggle"
                          v-once
                          :position="'topright'"
-                         :imagery-years="imageryYears"
         />
       </div>
 
       <div v-once>
-        <historicmap-control v-if="shouldShowHistoricBasemapToggle"
-                         v-once
-                         :position="'topright'"
-                         :historic-years="historicYears"
+        <!-- v-once -->
+        <basemap-select-control
+                       :position="'topalmostright'"
         />
+        <!-- :imagery-years="imageryYears"
+        :historic-years="historicYears" -->
       </div>
 
       <div v-once>
@@ -162,6 +173,29 @@
                            @click="handleCyclomediaButtonClick"
         />
       </div>
+
+      <div v-once>
+        <measure-control :position="'bottomleft'"
+        />
+      </div>
+
+      <div v-once>
+        <legend-control v-for="legendControl in Object.keys(legendControls)"
+                        :key="legendControl"
+                        :position="'bottomleft'"
+                        :topic="legendControl"
+                        :items="legendControls[legendControl]"
+        />
+      </div>
+
+      <base-tool-tip :position="'bottomalmostleft'"
+      />
+
+      <!-- <scale-control :vSide="'top'"
+                     :hSide="'almostright'"
+      >
+      </scale-control> -->
+
 
       <!-- search control -->
       <!-- custom components seem to have to be wrapped like this to work
@@ -202,36 +236,42 @@
 
 <script>
   // mixins
-  import dataMixin from './data-mixin';
+  // import dataMixin from './data-mixin';
   import markersMixin from './markers-mixin';
-  import geocodeMixin from './geocode-mixin';
+  // import geocodeMixin from './geocode-mixin';
   import cyclomediaMixin from '../../cyclomedia/map-panel-mixin';
   import pictometryMixin from '../../pictometry/map-panel-mixin';
 
   // vue doesn't like it when you import this as Map (reserved-ish word)
-  import Map_ from '../../leaflet/Map';
-  import Control from '../../leaflet/Control';
-  import EsriTiledMapLayer from '../../esri-leaflet/TiledMapLayer';
-  import EsriDynamicMapLayer from '../../esri-leaflet/DynamicMapLayer';
-  import EsriFeatureLayer from '../../esri-leaflet/FeatureLayer';
-  import Geojson from '../../leaflet/Geojson';
-  import CircleMarker from '../../leaflet/CircleMarker';
-  import OpacitySlider from '../../leaflet/OpacitySlider';
-  import VectorMarker from '../VectorMarker';
-  import PngMarker from '../PngMarker';
-  import SvgMarker from '../SvgMarker';
-  import BasemapControl from '../BasemapControl';
-  import HistoricmapControl from '../HistoricmapControl';
-  import CyclomediaButton from '../../cyclomedia/Button';
-  import PictometryButton from '../../pictometry/Button';
-  import CyclomediaRecordingCircle from '../../cyclomedia/RecordingCircle';
+  import Map_ from '../../leaflet/Map.vue';
+  import Control from '../../leaflet/Control.vue';
+  import EsriTiledMapLayer from '../../esri-leaflet/TiledMapLayer.vue';
+  import EsriDynamicMapLayer from '../../esri-leaflet/DynamicMapLayer.vue';
+  import EsriFeatureLayer from '../../esri-leaflet/FeatureLayer.vue';
+  import Geojson from '../../leaflet/Geojson.vue';
+  import CircleMarker from '../../leaflet/CircleMarker.vue';
+  import OpacitySlider from '../../leaflet/OpacitySlider.vue';
+  import VectorMarker from '../VectorMarker.vue';
+  import PngMarker from '../PngMarker.vue';
+  import SvgMarker from '../SvgMarker.vue';
+  import BasemapToggleControl from '../BasemapToggleControl.vue';
+  import BasemapSelectControl from '../BasemapSelectControl.vue';
+  // import HistoricmapControl from '../HistoricmapControl';
+  import CyclomediaButton from '../../cyclomedia/Button.vue';
+  import PictometryButton from '../../pictometry/Button.vue';
+  import CyclomediaRecordingCircle from '../../cyclomedia/RecordingCircle.vue';
   import CyclomediaRecordingsClient from '../../cyclomedia/recordings-client';
+  import MeasureControl from '../../leaflet/MeasureControl.vue';
+  import LegendControl from '../../leaflet/LegendControl.vue';
+  import BaseToolTip from '../../leaflet/BaseToolTip.vue';
+  import ControlCorner from '../../leaflet/ControlCorner.vue';
+  import ScaleControl from '../../leaflet/ScaleControl.vue';
 
   export default {
     mixins: [
-      dataMixin,
+      // dataMixin,
       markersMixin,
-      geocodeMixin,
+      // geocodeMixin,
       cyclomediaMixin,
       pictometryMixin,
     ],
@@ -247,20 +287,50 @@
       VectorMarker,
       PngMarker,
       SvgMarker,
-      BasemapControl,
-      HistoricmapControl,
+      BasemapToggleControl,
+      BasemapSelectControl,
+      // HistoricmapControl,
       PictometryButton,
       CyclomediaButton,
-      CyclomediaRecordingCircle
+      CyclomediaRecordingCircle,
+      MeasureControl,
+      LegendControl,
+      BaseToolTip,
+      ControlCorner,
+      ScaleControl
+    },
+    created() {
+      // if there's a default address, navigate to it
+      const defaultAddress = this.$config.defaultAddress;
+      if (defaultAddress) {
+        this.$controller.goToDefaultAddress(defaultAddress);
+      }
+
+      // create cyclomedia recordings client
+      this.$cyclomediaRecordingsClient = new CyclomediaRecordingsClient(
+        this.$config.cyclomedia.recordingsUrl,
+        this.$config.cyclomedia.username,
+        this.$config.cyclomedia.password,
+        4326
+      );
+    },
+    mounted() {
+      this.$controller.appDidLoad();
     },
     computed: {
+      activeDorParcel() {
+        return this.$store.state.activeDorParcel;
+      },
+      legendControls() {
+        return this.$config.legendControls;
+      },
       imageOverlay() {
         return this.$store.state.map.imageOverlay;
       },
       imageOverlayItems() {
         // console.log('calculating imageOverlayItem');
         if (this.activeTopicConfig.imageOverlayGroup) {
-          const overlayGroup = this.activeTopicConfig.imageOverlayGroup
+          const overlayGroup = this.activeTopicConfig.imageOverlayGroup;
           const state = this.$store.state;
           const overlay = this.$config.imageOverlayGroups[overlayGroup].items(state);
           // console.log('returning imageOverlayItem', overlay);
@@ -274,10 +344,19 @@
         return this.$config.map.dynamicMapLayers.regmaps;
       },
       activeBasemap() {
-        return this.$store.state.map.basemap;
+        const shouldShowImagery = this.$store.state.map.shouldShowImagery;
+        if (shouldShowImagery) {
+          return this.$store.state.map.imagery;
+        }
+        const defaultBasemap = this.$config.map.defaultBasemap;
+        const basemap = this.$store.state.map.basemap || defaultBasemap;
+        return basemap;
       },
-      activeTiles() {
-        return this.$config.map.basemaps[this.activeBasemap].tiledLayers;
+      tiledLayers() {
+        const activeBasemap = this.activeBasemap;
+        const activeBasemapConfig = this.configForBasemap(activeBasemap)
+
+        return activeBasemapConfig.tiledLayers || [];
       },
       activeDynamicMaps() {
         if (!this.activeTopicConfig || !this.activeTopicConfig.dynamicMapLayers) {
@@ -308,38 +387,29 @@
       shouldShowImageryToggle() {
         return this.hasImageryBasemaps && this.$config.map.imagery.enabled;
       },
-      imageryYears() {
-        // pluck year from basemap objects
-        return this.imageryBasemaps.map(x => x.year);
-      },
-      historicBasemaps() {
-        return this.basemaps.filter(basemap => basemap.type === 'historic');
-      },
-      hasHistoricBasemaps() {
-        return this.historicBasemaps.length > 0;
-      },
-      shouldShowHistoricBasemapToggle() {
-        return this.hasHistoricBasemaps &&
-               this.$config.map.historicBasemaps.enabled;
-      },
-      historicYears() {
-        // pluck year from basemap objects
-        return this.historicBasemaps.map(x => x.year);
-      },
       identifyFeature() {
-        return (this.activeTopicConfig || {}).identifyFeature;
+        const configFeature = this.activeTopicConfig.identifyFeature;
+        if (configFeature) {
+          return configFeature;
+        } else {
+          return this.$config.map.defaultIdentifyFeature;
+        }
+      },
+      activeTopic() {
+        return this.$store.state.activeTopic;
       },
       activeTopicConfig() {
-        const key = this.$store.state.activeTopic;
+        const key = this.activeTopic;
+        let config;
 
         // if no active topic, return null
-        if (!key) {
-          return null;
+        if (key) {
+          config = this.$config.topics.filter((topic) => {
+            return topic.key === key;
+          })[0];
         }
 
-        return this.$config.topics.filter((topic) => {
-          return topic.key === key;
-        })[0];
+        return config || {};
       },
       activeParcelLayer() {
         return this.activeTopicConfig.parcels;
@@ -351,10 +421,10 @@
         return this.$store.state.pwdParcel;
       },
       geocodeResult() {
-        return this.$store.state.geocode.data;
+        return this.$store.state.geocode.data || {};
       },
       geocodeGeom() {
-        return (this.geocodeResult || {}).geometry;;
+        return this.geocodeResult.geometry;
       },
       streetAddress() {
         return this.geocodeResult.properties.street_address;
@@ -369,21 +439,9 @@
       mapBounds() {
         // TODO calculate map bounds based on leaflet markers above
       },
-    },
-    created() {
-      // if there's a default address, navigate to it
-      const defaultAddress = this.$config.defaultAddress;
-      if (defaultAddress) {
-        this.geocode(defaultAddress);
+      isGeocoding() {
+        return this.$store.state.geocode.status === 'waiting';
       }
-
-      // create cyclomedia recordings client
-      this.$cyclomediaRecordingsClient = new CyclomediaRecordingsClient(
-        this.$config.cyclomedia.recordingsUrl,
-        this.$config.cyclomedia.username,
-        this.$config.cyclomedia.password,
-        4326
-      );
     },
     watch: {
       picOrCycloActive(value) {
@@ -393,6 +451,16 @@
       }
     },
     methods: {
+      configForBasemap(basemap) {
+        return this.$config.map.basemaps[basemap] || {};
+      },
+      shouldShowGeojson(key) {
+        if (this.activeTopicConfig.basemap === 'pwd') {
+          return true;
+        } else {
+          return key === this.activeDorParcel;
+        }
+      },
       shouldShowImageOverlay(key) {
         return key === this.imageOverlay;
       },
@@ -404,44 +472,51 @@
         }
       },
       handleMapClick(e) {
-        // console.log('handle map click');
-
-        // TODO figure out why form submits via enter key are generating a map
-        // click event and remove this
-        if (e.originalEvent.keyCode === 13) {
-          return;
-        }
-        this.$store.commit('setLastSearchMethod', 'reverseGeocode')
-
-        // METHOD 1: intersect map click latlng with parcel layers
-        this.getDorParcelsByLatLng(e.latlng);
-        this.getPwdParcelByLatLng(e.latlng);
-
-        // METHOD 2: reverse geocode via AIS
-        // this.getReverseGeocode(e.latlng);
+        this.$controller.handleMapClick(e);
       },
+
       handleMapMove(e) {
-        // update state
-        const center = this.$store.state.map.map.getCenter();
-        this.$store.commit('setMapCenter', center);
-        const zoom = this.$store.state.map.map.getZoom();
-        this.$store.commit('setMapZoom', zoom);
-        this.updateCyclomediaRecordings();
+        const map = this.$store.state.map.map;
+
+        const pictometryConfig = this.$config.pictometry || {};
+
+        if (pictometryConfig.enabled) {
+          // update state for pictometry
+          const center = map.getCenter();
+          const { lat, lng } = center;
+          const coords = [lng, lat];
+          this.$store.commit('setPictometryMapCenter', coords);
+
+          const zoom = map.getZoom();
+          this.$store.commit('setPictometryMapZoom', zoom);
+        }
+
+        const cyclomediaConfig = this.$config.cyclomedia || {};
+
+        if (cyclomediaConfig.enabled) {
+          // update cyclo recordings
+          this.updateCyclomediaRecordings();
+        }
       },
       handleSearchFormSubmit(e) {
-        const input = e.target[0].value;
+        this.$controller.handleSearchFormSubmit(e);
+      },
+      fillColorForCircleMarker(markerId, tableId) {
+        // get map overlay style and hover style for table
+        const tableConfig = this.getConfigForTable(tableId);
+        const mapOverlay = tableConfig.options.mapOverlay;
+        const { style, hoverStyle } = mapOverlay;
 
-        if (input.length === 0) {
-          alert('Please enter a valid search address to search for.');
-          return;
-        }
+        // compare id to active feature id
+        const activeFeature = this.activeFeature;
+        const useHoverStyle = (
+          markerId === activeFeature.featureId &&
+          tableId === activeFeature.tableId
+        );
+        const curStyle = useHoverStyle ? hoverStyle : style;
 
-        this.$store.commit('setLastSearchMethod', 'geocode');
-        this.$store.commit('setPwdParcel', null);
-        this.$store.commit('setDorParcels', []);
-
-        this.geocode(input);
-      }
+        return curStyle.fillColor;
+      },
     }, // end of methods
   }; //end of export
 </script>

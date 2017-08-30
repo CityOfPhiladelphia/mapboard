@@ -9,7 +9,7 @@
       'hSide'
     ],
     mounted() {
-      //console.log('scalecontrol', this.$parent)
+      // console.log('scalecontrol mounted', vSide + hSide)
       const leafletElement = this.$leafletElement = this.createLeafletElement();
       //const map = this.$store.state.map;
       // REVIEW kind of hacky/not reactive?
@@ -27,16 +27,17 @@
     },
     methods: {
       createLeafletElement() {
-        //console.log('scalecontrol create')
+        // console.log('scalecontrol create', vSide + hSide)
         return new ScaleControl({
-          position: 'topalmostright'
+          position: this.$props.vSide + this.$props.hSide
+          // position: 'topalmostright'
         });
         //const map = this.$store.state.map;
 
       },
       parentMounted(parent, grandparent) {
         const map = parent.$leafletElement
-        console.log('scaleControl', map)
+        // console.log('scaleControl', map)
         this.$leafletElement.addTo(map);
       }
     }

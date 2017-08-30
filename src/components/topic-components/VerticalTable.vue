@@ -4,19 +4,42 @@
     <table>
       <tbody>
         <tr v-for="field in slots.fields">
-          <th>{{ evaluateSlot(field.label) }}</th>
-          <td>{{ evaluateSlot(field.value, field.transforms, nullValue) }}</td>
+          <th v-html="evaluateSlot(field.label)" />
+          <td v-html="evaluateSlot(field.value, field.transforms, nullValue)" />
         </tr>
       </tbody>
     </table>
+    <a v-if="options && options.externalLink"
+       :href="externalLinkHref"
+       class="external"
+       target="_blank"
+    >
+      {{ externalLinkText }}
+    </a>
   </div>
 </template>
 
 <script>
-  import TopicComponent from './TopicComponent';
+  import TopicComponent from './TopicComponent.vue';
 
   export default {
-    mixins: [TopicComponent]
+    mixins: [TopicComponent],
+    computed: {
+      externalLinkAction() {
+        return this.options.externalLink.action || 'See more';
+      },
+      externalLinkText() {
+        const externalLinkConf = this.options.externalLink;
+        const actionFn = externalLinkConf.action;
+        const actionText = actionFn(this.externalLinkCount);
+        const name = externalLinkConf.name;
+
+        return `${actionText} at ${name}`;
+      },
+      externalLinkHref() {
+        return this.evaluateSlot(this.options.externalLink.href);
+      },
+    }
   };
 </script>
 

@@ -1,9 +1,43 @@
 export default {
   watch: {
-    activeFeature(nextActiveFeature) {
-      //console.log('watch', nextActiveFeature);
-      //console.log(this.circleMarkers);
-    }
+    activeFeature(nextActiveFeature, prevActiveFeature) {
+      // console.log('WATCH active feature', prevActiveFeature, '=>', nextActiveFeature);
+
+      let updateFeature;
+
+      if (nextActiveFeature && nextActiveFeature.tableId && nextActiveFeature.featureId) {
+        updateFeature = nextActiveFeature;
+      } else {
+        updateFeature = prevActiveFeature;
+      }
+
+      const featureId = updateFeature.featureId;
+      const tableId = updateFeature.tableId;
+
+      // get marker
+      const layerMap = this.$store.state.map.map._layers;
+      const layers = Object.values(layerMap);
+
+      const matchingLayer = layers.filter(layer => {
+        const options = layer.options || {};
+        const data = options.data;
+
+        if (!data) return;
+
+        const layerFeatureId = data.featureId;
+        const layerTableId = data.tableId;
+
+        return layerFeatureId === featureId && layerTableId === tableId;
+      })[0];
+
+
+      // if (!matchingLayer) return;
+
+      this.updateCircleMarkerFillColor(matchingLayer);
+
+      // bring to front
+      this.bringCircleMarkerToFront(matchingLayer);
+    },
   },
   computed: {
     // returns map markers as simple object with a geometry property, key,
@@ -22,60 +56,55 @@ export default {
 
       return markers;
     },
-    // returns all geojson features to be rendered on the map along with
-    // necessary props.
     circleMarkers() {
+      const filteredData = this.$store.state.tables.filteredData;
       let circleMarkers = [];
-      const overlayKeys = this.activeTopicConfig.overlays || [];
-      const circleOverlayKeys = overlayKeys.filter(overlayKey => {
-        const overlay = this.$config.overlays[overlayKey];
-        const options = overlay.options;
-        return options && options.marker === 'circle';
-      });
 
-      // if active topic has no circle overlays, return
-      if (circleOverlayKeys.length === 0) {
-        return circleMarkers;
-      }
+      // get visible tables based on active topic
+      const tableIds = this.$store.getters.visibleTableIds;
 
-      const sources = this.$store.state.sources;
+      for (let tableId of tableIds) {
+        const tableConfig = this.getConfigForTable(tableId) || {};
+        const mapOverlay = (tableConfig.options || {}).mapOverlay;
 
-      // loop over circle overlays
-      for (let circleOverlayKey of circleOverlayKeys) {
-        const circleOverlay = this.$config.overlays[circleOverlayKey];
-        const dataSource = circleOverlay.dataSource
-        const options = circleOverlay.options;
-        const data = sources[dataSource].data;
+        if (!mapOverlay) {
+          continue;
+        }
 
-        const activeFeature = this.$store.state.activeFeature;
+        const items = filteredData[tableId];
 
-        for (let row of data) {
+        if (items.length < 1) {
+          continue;
+        }
 
-          const [x, y] = row.geometry.coordinates;
-          const latlng = [y, x];
+        const style = mapOverlay.style;
+
+        // go through rows
+        for (let item of items) {
+          let latlng;
+
+          // TODO - get geometry field name from config
+          if (item.geometry) {
+            const [x, y] = item.geometry.coordinates;
+            latlng = [y, x];
+          } else {
+            latlng = [item.point_y, item.point_x];
+          }
 
           // check for active feature TODO - bind style props to state
-          const style = options.style;
-          const props = Object.assign({}, style);
-          if (row._featureId === activeFeature) {
-            props.fillColor = 'yellow';
-            //console.log('inside circleOverlay', circleOverlay);
-            //this.bringCircleMarkerToFront(this);
-            //props.zIndexOffset = 100;
-          }
+          let props = Object.assign({}, style);
           props.latlng = latlng;
-          props.featureId = row._featureId;
+          props.featureId = item._featureId;
+          props.tableId = tableId;
           circleMarkers.push(props);
         }
       }
 
-      circleMarkers = circleMarkers.filter(marker => {
-        const filteredMarkers = this.$store.state.map.filters
-        return filteredMarkers.includes(marker.featureId)
-      })
-
       return circleMarkers;
     },
+
+    // returns all geojson features to be rendered on the map along with
+    // necessary props.
     geojsonFeatures() {
       const features = [];
 
@@ -85,24 +114,12 @@ export default {
       if (identifyFeature === 'pwd-parcel' && activeParcelLayer === 'pwd' && this.pwdParcel) {
         const geojson = this.pwdParcel;
         const color = 'blue';
-        // const overlayFeature = {
-        //   type: null,
-        //   style: {
-        //     color: 'blue'
-        //   }
-        // };
         const key = geojson.properties.PARCELID;
+
         features.push({geojson, color, key});
       // dor parcel
       } else if (identifyFeature === 'dor-parcel' && activeParcelLayer === 'dor') {
-        // const overlayFeature = {
-        //   type: null,
-        //   style: {
-        //     color: 'green'
-        //   }
-        // };
         const color = 'green';
-        //const type = null;
         const dorParcelFeatures = this.dorParcels.map(dorParcel => {
           const geojson = dorParcel;
           const key = geojson.properties.OBJECTID;
@@ -140,12 +157,42 @@ export default {
     },
   },
   methods: {
-    handleCircleMarkerClick(e) {
-      const featureId = e.target.options.data.featureId;
-      this.$store.commit('setActiveFeature', featureId);
+    getTableFromComps(comps, tableId) {
+      const matchingComps = comps.filter(comp => {
+        return (
+          comp.type === 'horizontal-table' &&
+          comp._id == tableId
+        );
+      }) || [];
+      return matchingComps[0];
+    },
+    getConfigForTable(tableId) {
+      const topics = this.$config.topics || [];
+
+      for (let topic of topics) {
+        const comps = topic.components || [];
+
+        // try outer comps
+        const table = this.getTableFromComps(comps, tableId);
+
+        if (table) return table;
+
+        // try inner comps
+        for (let comp of comps) {
+          const options = comp.options || {};
+
+          const innerComps = options.components || [];
+
+          if (innerComps.length > 0) {
+            const innerTable = this.getTableFromComps(innerComps, tableId);
+            // console.log('table on 2nd try', innerTable, innerComps);
+
+            if (innerTable) return innerTable;
+          }
+        }
+      }
     },
     bringCircleMarkerToFront(circleMarker) {
-      //console.log('bringCircleMarkerToFront', circleMarker);
       // put marker on top
       const el = circleMarker._path;
 
@@ -157,16 +204,24 @@ export default {
       group.appendChild(el);
     },
     handleCircleMarkerMouseover(e) {
-      //console.log('handleCircleMarkerMouseover', e);
-      const target = e.target;
-      const featureId = target.options.data.featureId;
-      this.$store.commit('setActiveFeature', featureId);
-
-      // bring to front
-      this.bringCircleMarkerToFront(target);
+      const { target } = e;
+      const { featureId, tableId } = target.options.data;
+      this.$store.commit('setActiveFeature', { featureId, tableId });
     },
     handleCircleMarkerMouseout(e) {
+      const { target } = e;
       this.$store.commit('setActiveFeature', null);
+    },
+    updateCircleMarkerFillColor(marker) {
+      // get next fill color
+      const { featureId, tableId } = marker.options.data;
+      const nextFillColor = this.fillColorForCircleMarker(featureId, tableId);
+
+      // highlight. we're doing this here (non-reactively) because binding the
+      // fill color property was not performing well enough.
+      const nextStyle = Object.assign({}, marker.options);
+      nextStyle.fillColor = nextFillColor;
+      marker.setStyle(nextStyle);
     },
   }
 };

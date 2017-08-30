@@ -1,3 +1,15 @@
 header.site-header > .row:last-of-type {
     background: #2176d2;
 }
+
+html {
+  overflow-y: hidden;
+}
+
+.mb-root {
+  position: absolute,
+  bottom: 0,
+  top: 87px,
+  left: 0,
+  right: 0,
+}

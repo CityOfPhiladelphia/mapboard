@@ -1,5 +1,5 @@
 <script>
-    export default {
+  export default {
     props: ['slots', 'options', 'item'],
     computed: {
       nullValue() {
@@ -41,6 +41,9 @@
           val = valOrGetter;
         }
 
+        // format nulls
+        if (!val) return nullValue;
+
         // apply transforms
         for (let transformKey of transforms) {
           // get transform definition from config by name
@@ -60,9 +63,6 @@
           const fn = transform.transform;
           val = fn(val, globals);
         }
-
-        // format nulls
-        val = val || nullValue;
 
         return val;
       },

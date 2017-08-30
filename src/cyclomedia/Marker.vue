@@ -3,7 +3,7 @@
 
 <script>
   //import L from 'leaflet';
-  import VectorMarker from '../components/VectorMarker';
+  import VectorMarker from '../components/VectorMarker.vue';
 
   export default {
     extends: VectorMarker,

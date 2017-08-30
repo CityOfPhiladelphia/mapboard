@@ -1,5 +1,5 @@
 <script>
-  import Circle from '../leaflet/Circle';
+  import Circle from '../leaflet/Circle.vue';
 
   export default {
     mixins: [Circle],

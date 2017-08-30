@@ -4,6 +4,104 @@ import Vuex from 'vuex';
 // when you load vuex from a script tag this seems to happen automatically
 // Vue.use(Vuex);
 
+// this grabs horizontal table ids from an array of topic components,
+// recursively
+function getTableIdsFromComps(comps = []) {
+  // const topics = config.topics;
+
+  let tableIds = [];
+
+  for (let comp of comps) {
+    const options = comp.options || {};
+    const innerComps = options.components;
+
+    // if this is a "group" component, recurse
+    if (innerComps) {
+      const innerTableIds = getTableIdsFromComps(innerComps);
+      tableIds = tableIds.concat(innerTableIds);
+      continue;
+    }
+
+    // skip comps that aren't horizontal tables
+    if (comp.type !== 'horizontal-table') {
+      continue;
+    }
+
+    const tableId = comp._id;
+
+    tableIds.push(tableId);
+  }
+
+  return tableIds;
+}
+
+// this makes the empty filtered data object given a list of topics.
+function createFilteredData(config) {
+  const topics = config.topics;
+  let tableIds = [];
+
+  for (let topic of topics) {
+    const comps = topic.components;
+    const compTableIds = getTableIdsFromComps(comps);
+    tableIds = tableIds.concat(compTableIds);
+  }
+
+  const filteredData = tableIds.reduce((acc, tableId) => {
+    acc[tableId] = [];
+    return acc;
+  }, {});
+
+  return filteredData;
+}
+
+// this grabs table group ids from an array of topic components
+function getTableGroupIdFromComps(comps = []) {
+
+  let tableGroupId;
+
+  for (let comp of comps) {
+    const options = comp.options || {};
+    const innerComps = options.components;
+
+    // if this is a "group" component, recurse
+    if (!innerComps) {
+      continue;
+    }
+
+    // skip comps that aren't horizontal tables
+    if (comp.type !== 'table-group') {
+      continue;
+    }
+
+    tableGroupId = comp._id;
+  }
+
+  return tableGroupId;
+}
+
+// this makes the empty tableGroups object given a list of topics.
+function createTableGroups(config) {
+  const topics = config.topics;
+
+  let tableGroupIds = [];
+
+  for (let topic of topics) {
+    const comps = topic.components;
+    const compTableGroupId = getTableGroupIdFromComps(comps);
+    if (compTableGroupId) tableGroupIds.push(compTableGroupId);
+  }
+
+  let tableGroups = {};
+
+  for (let tableGroupId of tableGroupIds) {
+    tableGroups[tableGroupId] = {
+      activeTable: null,
+      activeTableId: null
+    };
+  }
+  return tableGroups;
+}
+
 function createStore(config) {
   const defaultTopic = config.topics[0];
 
@@ -38,13 +136,15 @@ function createStore(config) {
       data: null,
       input: null
     },
+    lastSearchMethod: null,
     // the leaflet map object
     map: {
       center: config.map.center,
       zoom: config.map.zoom,
       map: null,
-      bounds: null,
       basemap: defaultTopic.basemap,
+      imagery: 'imagery2017',
+      shouldShowImagery: false,
       // circleMarkers: [],
       // this is the key for the active overlay image (eg regmap)
       imageOverlay: null,
@@ -64,6 +164,7 @@ function createStore(config) {
       // }
     },
     dorParcels: [],
+    activeDorParcel: null,
     pwdParcel: null,
     sources,
     cyclomedia: {
@@ -80,18 +181,78 @@ function createStore(config) {
       shapeIds: [],
       pngMarkerIds: [],
       zoom: null,
+      // this is the state of the main leaflet map. when these values change
+      // the pictometry widget should react. the reason these are duplicated
+      // here is to avoid an infinite loop in the Map component when the
+      // viewport changes.
+      map: {
+        center: config.map.center,
+        zoom: config.map.zoom
+      }
     },
-    activeFeature: null,
-    lastSearchMethod: null
+    tables: {
+      // table id => filtered rows
+      filteredData: createFilteredData(config),
+    },
+    tableGroups: createTableGroups(config),
+    activeFeature: {
+      featureId: null,
+      tableId: null
+    }
   };
 
   // TODO standardize how payloads are passed around/handled
   return new Vuex.Store({
     state: initialState,
-    getters: {},
+    // getters: {
+    //   topicTables: (state, getters) => (activeTopicKey) => {
+    //     console.log(state.tables);
+    //     return state.tables.filter(table => table.key === activeTopicKey);
+    //   }
+    // },
+    getters: {
+      visibleTableIds(state) {
+        // get active topic
+        const activeTopic = state.activeTopic;
+
+        if (!activeTopic) {
+          return [];
+        }
+
+        // get horizontal table ids for that topic
+        const activeTopicConfig = (config.topics.filter(topic => topic.key === activeTopic) || [])[0];
+        const comps = activeTopicConfig.components;
+
+        const compTableGroup = getTableGroupIdFromComps(comps);
+        if (compTableGroup) {
+          // even though there is only 1 value, it has to be in array form in the state
+          const array = [];
+          array.push(state.tableGroups[compTableGroup].activeTableId);
+          return array;
+        } else {
+          const compTables = getTableIdsFromComps(comps);
+          return compTables;
+        }
+      }
+    },
     mutations: {
+      setTables(state, payload) {
+        state.tables = payload;
+      },
+      setTableGroupActiveTable(state, payload) {
+        state.tableGroups[payload.tableGroupId].activeTableId = payload.activeTableId;
+        state.tableGroups[payload.tableGroupId].activeTable = payload.activeTable;
+      },
+      setTableFilteredData(state, payload) {
+        const { tableId, data } = payload;
+
+        // check for not-null table id
+        if (!tableId) return;
+
+        state.tables.filteredData[tableId] = data;
+      },
       setActiveTopic(state, payload) {
-        state.activeTopic = payload.topic;
+        state.activeTopic = payload;
       },
       setSourceStatus(state, payload) {
         const key = payload.key;
@@ -140,9 +301,7 @@ function createStore(config) {
       setMap(state, payload) {
         state.map.map = payload.map;
       },
-      setMapBounds(state, payload) {
-        state.map.bounds = payload.bounds
-      },
+      // this is the map center as an xy coordinate array (not latlng)
       setMapCenter(state, payload) {
         state.map.center = payload;
       },
@@ -151,6 +310,9 @@ function createStore(config) {
       },
       setDorParcels(state, payload) {
         state.dorParcels = payload;
+      },
+      setActiveDorParcel(state, payload) {
+        state.activeDorParcel = payload;
       },
       setPwdParcel(state, payload) {
         state.pwdParcel = payload;
@@ -166,6 +328,12 @@ function createStore(config) {
       },
       setBasemap(state, payload) {
         state.map.basemap = payload;
+      },
+      setImagery(state, payload) {
+        state.map.imagery = payload;
+      },
+      setShouldShowImagery(state, payload) {
+        state.map.shouldShowImagery = payload;
       },
       setPictometryActive(state, payload) {
         if (!config.pictometry.enabled) {
@@ -192,7 +360,9 @@ function createStore(config) {
         state.cyclomedia.locFromViewer = payload;
       },
       setActiveFeature(state, payload) {
-        state.activeFeature = payload;
+        const { featureId, tableId } = payload || {};
+        const nextActiveFeature = { featureId, tableId };
+        state.activeFeature = nextActiveFeature;
       },
       setLastSearchMethod(state, payload) {
         state.lastSearchMethod = payload;
@@ -205,6 +375,13 @@ function createStore(config) {
       },
       setPictometryPngMarkerIds(state, payload) {
         state.pictometry.pngMarkerIds = payload;
+      },
+      // this is the leaflet map center updated when the map is moved
+      setPictometryMapCenter(state, payload) {
+        state.pictometry.map.center = payload;
+      },
+      setPictometryMapZoom(state, payload) {
+        state.pictometry.map.zoom = payload;
       },
       setPictometryZoom(state, payload) {
         state.pictometry.zoom = payload;

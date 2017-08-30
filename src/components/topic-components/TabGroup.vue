@@ -7,8 +7,9 @@
           :key="keyForItem(item)"
       >
         <a :href="'#parcel-' + keyForItem(item)"
-           @click.prevent="activeItem = keyForItem(item)"
+           @click.prevent="clickedItem(item)"
         >
+        <!-- @click.prevent="activeItem = keyForItem(item)" -->
           {{ titleForItem(item) }}
         </a>
       </li>
@@ -27,8 +28,8 @@
 </template>
 
 <script>
-  import TopicComponent from './TopicComponent';
-  import TopicComponentGroup from '../TopicComponentGroup';
+  import TopicComponent from './TopicComponent.vue';
+  import TopicComponentGroup from '../TopicComponentGroup.vue';
 
   export default {
     mixins: [TopicComponent],
@@ -51,7 +52,16 @@
     // props: [],
     computed: {
       items() {
-        return this.evaluateSlot(this.slots.items);
+        const items = this.evaluateSlot(this.slots.items);
+
+        // sort
+        const sortFn = this.options.sort;
+        let itemsSorted = items;
+        if (sortFn) {
+          itemsSorted = sortFn(items);
+        }
+
+        return itemsSorted;
       },
       comps() {
         return this.options.components;
@@ -66,6 +76,11 @@
       }
     },
     methods: {
+      clickedItem(item) {
+        this.$data.activeItem = this.keyForItem(item)
+        console.log('clickedItem is firing');
+        this.$store.commit('setActiveDorParcel', this.$data.activeItem);
+      },
       keyForItem(item) {
         try {
           return this.options.getKey(item);
@@ -91,5 +106,6 @@
 <style scoped>
   .tabs-panel {
     padding: 20px;
+    padding-bottom: 10px;
   }
 </style>
