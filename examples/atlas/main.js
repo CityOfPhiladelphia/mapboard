@@ -327,7 +327,7 @@ Mapboard.default({
     },
     '311': {
       type: 'esri-nearby',
-      url: 'http://192.168.103.143:6080/arcgis/rest/services/GSG/GIS311_365DAYS04/MapServer/0',
+      url: 'http://192.168.103.143:6080/arcgis/rest/services/GSG/GIS311_365DAYSab/MapServer/0',
       options: {
         geometryServerUrl: 'http://192.168.103.143:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer/',
         radius: 500,
@@ -1541,10 +1541,10 @@ Mapboard.default({
                     label: 'Crime Incidents',
                     value: 'crimeIncidents',
                   },
-                  // {
-                  //   label: 'Zoning Appeals',
-                  //   value: 'zoningAppeals',
-                  // }
+                  {
+                    label: 'Zoning Appeals',
+                    value: 'zoningAppeals',
+                  }
                 ]
               },
             ],
@@ -1555,10 +1555,6 @@ Mapboard.default({
                 options: {
                   topicKey: 'vacancy',
                   id: '311',
-                  // limit: 100,
-                  // TODO this isn't used yet, but should be for highlighting rows/
-                  // map features.
-                  // filterForm: true,
                   filters: [
                     {
                       type: 'time',
@@ -1672,10 +1668,6 @@ Mapboard.default({
                 options: {
                   topicKey: 'vacancy',
                   id: 'crimeIncidents',
-                  // TODO this isn't used yet, but should be for highlighting rows/
-                  // map features.
-                  // filterForm: true,
-                  // limit: 100,
                   filters: [
                     {
                       type: 'time',
@@ -1766,6 +1758,73 @@ Mapboard.default({
                     const rows = data.map(row => {
                       const itemRow = Object.assign({}, row);
                       itemRow.DISTANCE = 'TODO';
+                      return itemRow;
+                    });
+                    return rows;
+                  },
+                } // end of slots
+              }, // end of horizontal-table
+              {
+                type: 'horizontal-table',
+                options: {
+                  topicKey: 'vacancy',
+                  id: 'zoningAppeals',
+                  mapOverlay: {
+                    marker: 'circle',
+                    style: {
+                      radius: 6,
+                      fillColor: '#6674df',
+                    	color: '#6674df',
+                    	weight: 1,
+                    	opacity: 1,
+                    	fillOpacity: 1.0
+                    },
+                    hoverStyle: {
+                      radius: 6,
+                      fillColor: 'yellow',
+                    	color: '#6674df',
+                    	weight: 1,
+                    	opacity: 1,
+                    	fillOpacity: 1.0
+                    }
+                  },
+                  fields: [
+                    {
+                      label: 'Date',
+                      value(state, item) {
+                        return item.decisiondate;
+                      },
+                      transforms: [
+                        'date'
+                      ]
+                    },
+                    {
+                      label: 'Location',
+                      value(state, item) {
+                        return item.address;
+                      }
+                    },
+                    {
+                      label: 'Description',
+                      value(state, item) {
+                        return item.appealgrounds;
+                      }
+                    },
+                    // {
+                    //   label: 'Distance',
+                    //   value(state, item) {
+                    //     return parseInt(item.distance) + ' ft';
+                    //   }
+                    // }
+                  ]
+                },
+                slots: {
+                  title: 'Zoning Appeals',
+                  data: 'zoningAppeals',
+                  items(state) {
+                    const data = state.sources['zoningAppeals'].data.rows || [];
+                    const rows = data.map(row => {
+                      const itemRow = Object.assign({}, row);
                       return itemRow;
                     });
                     return rows;
