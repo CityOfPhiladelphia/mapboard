@@ -409,7 +409,7 @@
         return this.activeTopicConfig.parcels;
       },
       dorParcels() {
-        return this.$store.state.dorParcels;
+        return this.$store.state.dorParcels.data;
       },
       pwdParcel() {
         return this.$store.state.pwdParcel;

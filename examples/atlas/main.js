@@ -282,7 +282,7 @@ Mapboard.default({
       type: 'http-get',
       targets: {
         get(state) {
-          return state.dorParcels;
+          return state.dorParcels.data;
         },
         getTargetId(target) {
           return target.properties.OBJECTID;
@@ -293,7 +293,6 @@ Mapboard.default({
         params: {
           where(feature, state) {
             // METHOD 1: via address
-            // const parcel = state.dorParcels[0];
             const parcelBaseAddress = concatDorAddress(feature);
 
             // REVIEW if the parcel has no address, we don't want to query
@@ -635,7 +634,7 @@ Mapboard.default({
           },
           slots: {
             items(state) {
-              return state.dorParcels;
+              return state.dorParcels.data;
             }
           }
         },
@@ -805,7 +804,7 @@ Mapboard.default({
             // REVIEW should this go in options? maybe not, since it should be
             // reactive.
             items(state) {
-              return state.dorParcels;
+              return state.dorParcels.data;
             }
           }
         }, // end dor parcel tab group comp

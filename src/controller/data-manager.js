@@ -526,6 +526,11 @@ class DataManager {
 
     if (error) {
       console.warn('did get dor parcels error', error);
+
+      // update state
+      this.store.commit('setDorParcelData', []);
+      this.store.commit('setDorParcelStatus', 'error');
+
       return;
     }
     if (!featureCollection) {
@@ -538,8 +543,9 @@ class DataManager {
     // sort
     const featuresSorted = this.sortDorParcelFeatures(features);
 
-
-    this.store.commit('setDorParcels', featuresSorted);
+    // update state
+    this.store.commit('setDorParcelData', featuresSorted);
+    this.store.commit('setDorParcelStatus', 'success');
     this.store.commit('setActiveDorParcel', featuresSorted[0].id)
 
     const shouldGeocode = (
