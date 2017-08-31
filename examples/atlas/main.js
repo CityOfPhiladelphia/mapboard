@@ -232,6 +232,15 @@ Mapboard.default({
         }
       }
     },
+    liBusinessLicenses: {
+      type: 'http-get',
+      url: 'https://phl.carto.com/api/v2/sql',
+      options: {
+        params: {
+          q: feature => "select * from li_business_licenses where street_address = '" + feature.properties.street_address + "'",// + "' or addresskey = '" + feature.properties.li_address_key.toString() + "'",
+        }
+      }
+    },
     zoningDocs: {
       type: 'http-get',
       url: 'https://phl.carto.com/api/v2/sql',
@@ -455,21 +464,6 @@ Mapboard.default({
   //       },
   //     },
   //   },
-    // 'zoningAppeals': {
-    //   type: 'point',
-    //   dataSource: 'zoningAppeals',
-    //   options: {
-    //     marker: 'circle',
-    //     style: {
-    //       radius: 6,
-    //       fillColor: '#477bd2',
-    //     	color: '#477bd2',
-    //     	weight: 1,
-    //     	opacity: 1,
-    //     	fillOpacity: 1.0
-    //     },
-    //   },
-    // },
   // },
   cyclomedia: {
     enabled: true
@@ -1075,6 +1069,81 @@ Mapboard.default({
             },
           },
         },
+        {
+          type: 'horizontal-table',
+          options: {
+            topicKey: 'permits',
+            id: 'liBusinessLicenses',
+            limit: 5,
+            fields: [
+              {
+                label: 'Issue Date',
+                value(state, item){
+                  return item.initialissuedate
+                },
+                transforms: [
+                  'date'
+                ]
+              },
+              {
+                label: 'License Number',
+                value(state, item){
+                  return item.licensenum
+                }
+              },
+              {
+                label: 'Name',
+                value(state, item){
+                  return item.business_name
+                }
+              },
+              {
+                label: 'Type',
+                value(state, item){
+                  return item.licensetype
+                }
+              },
+              {
+                label: 'Status',
+                value(state, item){
+                  return item.licensestatus
+                }
+              },
+            ],
+            sort: {
+              // this should return the val to sort on
+              getValue(item) {
+                return item.caseaddeddate;
+              },
+              // asc or desc
+              order: 'desc'
+            },
+            externalLink: {
+              action(count) {
+                return `See ${count} more at L&I Property History`;
+              },
+              name: 'L&I Property History',
+              href(state) {
+                const address = state.geocode.data.properties.street_address;
+                const addressEncoded = encodeURIComponent(address);
+                return `//li.phila.gov/#summary?address=${addressEncoded}`;
+              }
+            }
+          },
+          slots: {
+            title: 'Business Licenses',
+            items(state) {
+              const data = state.sources['liBusinessLicenses'].data.rows;
+              const rows = data.map(row => {
+                const itemRow = Object.assign({}, row);
+                //itemRow.DISTANCE = 'TODO';
+                return itemRow;
+              });
+              // console.log('rows', rows);
+              return rows;
+            },
+          },
+        }
       ],
       basemap: 'pwd',
       dynamicMapLayers: [
