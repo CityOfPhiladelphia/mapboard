@@ -205,15 +205,6 @@ Mapboard.default({
         }
       }
     },
-    zoningAppeals: {
-      type: 'http-get',
-      url: 'https://phl.carto.com/api/v2/sql',
-      options: {
-        params: {
-          q: feature => "select * from li_appeals where address = '" + feature.properties.street_address + "'"// + "' or addrkey = " + feature.properties.li_address_key,
-        }
-      }
-    },
     liPermits: {
       type: 'http-get',
       url: 'https://phl.carto.com/api/v2/sql',
@@ -332,18 +323,33 @@ Mapboard.default({
         geometryServerUrl: 'http://192.168.103.143:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer/',
         radius: 500,
         units: 'feet',
-        calculateDistance: true
+        calculateDistance: true,
       },
     },
     crimeIncidents: {
       type: 'http-get-nearby',
       url: 'https://phl.carto.com/api/v2/sql',
       options: {
-        table: "incidents_part1_part2",
-        params: {
-          // q: feature => "select * from incidents_part1_part2"// where dc_key = '201501056051'"//the_geom.STDistance(" + ")"// + feature.properties.street_address + "'"// + "' or addrkey = " + feature.properties.li_address_key,
-        },
-        calculateDistance: true
+        table: 'incidents_part1_part2',
+        dateMinNum: 1,
+        dateMinType: 'year',
+        dateField: 'dispatch_date',
+        // xField: 'point_x',
+        // yField: 'point_y',
+        params: {},
+      }
+    },
+    zoningAppeals: {
+      type: 'http-get-nearby',
+      url: 'https://phl.carto.com/api/v2/sql',
+      options: {
+        table: 'li_appeals',
+        dateMinNum: 1,
+        dateMinType: 'year',
+        dateField: 'decisiondate',
+        // xField: 'geocode_x',
+        // yField: 'geocode_y',
+        params: {}
       }
     },
     vacantLand: {
@@ -418,43 +424,58 @@ Mapboard.default({
         'Other Impervious Surface': '#F2DCFF'
       }
   },
-  overlays: {
-    '311': {
-      type: 'point',
-      dataSource: '311',
-      options: {
-        marker: 'circle',
-        style: {
-          radius: 6,
-          fillColor: '#ff3f3f',
-        	color: '#ff0000',
-        	weight: 1,
-        	opacity: 1,
-        	fillOpacity: 1.0
-        },
-      },
-    },
-    'crimeIncidents': {
-      type: 'point',
-      dataSource: 'crimeIncidents',
-      options: {
-        marker: 'circle',
-        style: {
-          radius: 6,
-          fillColor: '#477bd2',
-        	color: '#477bd2',
-        	weight: 1,
-        	opacity: 1,
-        	fillOpacity: 1.0
-        },
-      },
-    },
-  },
+  // overlays: {
+  //   '311': {
+  //     type: 'point',
+  //     dataSource: '311',
+  //     options: {
+  //       marker: 'circle',
+  //       style: {
+  //         radius: 6,
+  //         fillColor: '#ff3f3f',
+  //       	color: '#ff0000',
+  //       	weight: 1,
+  //       	opacity: 1,
+  //       	fillOpacity: 1.0
+  //       },
+  //     },
+  //   },
+  //   'crimeIncidents': {
+  //     type: 'point',
+  //     dataSource: 'crimeIncidents',
+  //     options: {
+  //       marker: 'circle',
+  //       style: {
+  //         radius: 6,
+  //         fillColor: '#477bd2',
+  //       	color: '#477bd2',
+  //       	weight: 1,
+  //       	opacity: 1,
+  //       	fillOpacity: 1.0
+  //       },
+  //     },
+  //   },
+    // 'zoningAppeals': {
+    //   type: 'point',
+    //   dataSource: 'zoningAppeals',
+    //   options: {
+    //     marker: 'circle',
+    //     style: {
+    //       radius: 6,
+    //       fillColor: '#477bd2',
+    //     	color: '#477bd2',
+    //     	weight: 1,
+    //     	opacity: 1,
+    //     	fillOpacity: 1.0
+    //     },
+    //   },
+    // },
+  // },
   cyclomedia: {
-    enabled: false
+    enabled: true
   },
   pictometry: {
-    enabled: false
+    enabled: true
   },
   // reusable transforms for topic data. see `topics` section for usage.
   transforms: {
@@ -1782,12 +1803,15 @@ Mapboard.default({
                 options: {
                   topicKey: 'vacancy',
                   id: 'zoningAppeals',
+                  filterFieldsByText: [
+                    'appealgrounds',
+                  ],
                   mapOverlay: {
                     marker: 'circle',
                     style: {
                       radius: 6,
-                      fillColor: '#6674df',
-                    	color: '#6674df',
+                      fillColor: '#009900',
+                    	color: '#009900',
                     	weight: 1,
                     	opacity: 1,
                     	fillOpacity: 1.0
@@ -1795,7 +1819,7 @@ Mapboard.default({
                     hoverStyle: {
                       radius: 6,
                       fillColor: 'yellow',
-                    	color: '#6674df',
+                    	color: '#009900',
                     	weight: 1,
                     	opacity: 1,
                     	fillOpacity: 1.0
@@ -1835,7 +1859,7 @@ Mapboard.default({
                   title: 'Zoning Appeals',
                   data: 'zoningAppeals',
                   items(state) {
-                    const data = state.sources['zoningAppeals'].data.rows || [];
+                    const data = state.sources['zoningAppeals'].data || [];
                     const rows = data.map(row => {
                       const itemRow = Object.assign({}, row);
                       return itemRow;
