@@ -859,7 +859,8 @@ Mapboard.default({
       dataSources: [
         'liPermits',
         'liInspections',
-        'liViolations'
+        'liViolations',
+        'liBusinessLicenses'
       ],
       components: [
         {
@@ -881,7 +882,7 @@ Mapboard.default({
               {
                 label: 'ID',
                 value(state, item){
-                  return "<a target='_blank' href='//li.phila.gov/#details?entity=permits&eid="+item.permitnumber+"'>"+item.permitnumber+" <i class='fa fa-external-link'></i></a>"
+                  return "<a target='_blank' href='//li.phila.gov/#details?entity=permits&eid="+item.permitnumber+"&key="+item.addresskey+"&address="+item.address+"'>"+item.permitnumber+" <i class='fa fa-external-link'></i></a>"
                 }
               },
               {
@@ -950,7 +951,8 @@ Mapboard.default({
               {
                 label: 'ID',
                 value(state, item){
-                  return item.casenumber
+                  return "<a target='_blank' href='//li.phila.gov/#details?entity=violationdetails&eid="+item.casenumber+"&key="+item.addresskey+"&address="+item.address+"'>"+item.casenumber+" <i class='fa fa-external-link'></i></a>"
+                  // return item.casenumber
                 }
               },
               {
@@ -1019,7 +1021,8 @@ Mapboard.default({
               {
                 label: 'ID',
                 value(state, item){
-                  return item.casenumber
+                  return "<a target='_blank' href='//li.phila.gov/#details?entity=violationdetails&eid="+item.casenumber+"&key="+item.addresskey+"&address="+item.address+"'>"+item.casenumber+" <i class='fa fa-external-link'></i></a>"
+                  // return item.casenumber
                 }
               },
               {
@@ -1088,6 +1091,7 @@ Mapboard.default({
               {
                 label: 'License Number',
                 value(state, item){
+                  return "<a target='_blank' href='//li.phila.gov/#details?entity=licenses&eid="+item.licensenum+"&key="+item.street_address+"&address="+item.street_address+"'>"+item.licensenum+" <i class='fa fa-external-link'></i></a>"
                   return item.licensenum
                 }
               },
