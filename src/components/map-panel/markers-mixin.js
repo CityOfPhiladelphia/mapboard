@@ -87,8 +87,13 @@ export default {
           if (item.geometry) {
             const [x, y] = item.geometry.coordinates;
             latlng = [y, x];
-          } else {
-            latlng = [item.point_y, item.point_x];
+          } else if (item.lat) {
+            latlng = [item.lat, item.lng]
+            // if (item.point_x) {
+            //   latlng = [item.point_y, item.point_x];
+            // } else if (item.geocode_x) {
+            //   latlng = [item.geocode_y, item.geocode_x];
+            // }
           }
 
           // check for active feature TODO - bind style props to state

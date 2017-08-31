@@ -55,35 +55,30 @@ class HttpClient extends BaseClient {
     const params = this.evaluateParams(feature, dataSource);
     const url = dataSource.url;
     const options = dataSource.options;
-    const srid = options.srid || 4326;
+    // const srid = options.srid || 4326;
+    const table = options.table;
     const dateMinNum = options.dateMinNum || null;
     const dateMinType = options.dateMinType || null;
     const dateField = options.dateField || null;
     const successFn = options.success;
-    const calculateDistance = options.calculateDistance;
-    const table = options.table;
-
-    // const EPSG2272 = '+proj=lcc +lat_1=40.96666666666667 +lat_2=39.93333333333333 +lat_0=39.33333333333334 +lon_0=-77.75 +x_0=600000 +y_0=0 +ellps=GRS80 +datum=NAD83 +to_meter=0.3048006096012192 +no_defs'
-    // const coords = proj4(EPSG2272, feature.geometry.coordinates);
-    // console.log('proj4 coords', coords);
 
     const distQuery = "ST_Distance(the_geom::geography, ST_SetSRID(ST_Point("
                     + feature.geometry.coordinates[0]
                     + "," + feature.geometry.coordinates[1]
-                    + ")," + srid + ")::geography)";
+                    + "),4326)::geography)";
 
+    const latQuery = "ST_Y(the_geom)";
+    const lngQuery = "ST_X(the_geom)";
 
-    let select = '*'
-    if (calculateDistance) {
-      select = "*, " + distQuery + " as distance";
-      console.log('calculateDistance is on using select:', select);
-    }
+    // let select = '*'
+    // if (calculateDistance) {
+    const select = "*, " + distQuery + 'as distance,' + latQuery + 'as lat, ' + lngQuery + 'as lng';
+    // }
 
     params['q'] = "select" + select + " from " + table + " where " + distQuery + " < 250";
 
     if (dateMinNum) {
-      console.log('date if 1 year is running');
-      params['q'] = params['q'] + " and dispatch_date > '" + moment().subtract(1, 'year').format('YYYY-MM-DD') + "'"
+      params['q'] = params['q'] + " and " + dateField + " > '" + moment().subtract(dateMinNum, dateMinType).format('YYYY-MM-DD') + "'"
     }
 
     // if the data is not dependent on other data
