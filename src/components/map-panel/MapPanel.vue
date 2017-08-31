@@ -191,7 +191,7 @@
         />
       </div>
 
-      <base-tool-tip :position="'bottomalmostleft'"
+      <basemap-tooltip :position="'bottomalmostleft'"
       />
 
       <!-- <scale-control :vSide="'top'"
@@ -250,7 +250,7 @@
   import EsriFeatureLayer from '../../esri-leaflet/FeatureLayer.vue';
   import Geojson from '../../leaflet/Geojson.vue';
   import CircleMarker from '../../leaflet/CircleMarker.vue';
-  import OpacitySlider from '../../leaflet/OpacitySlider.vue';
+  import OpacitySlider from '../OpacitySlider.vue';
   import VectorMarker from '../VectorMarker.vue';
   import PngMarker from '../PngMarker.vue';
   import SvgMarker from '../SvgMarker.vue';
@@ -260,9 +260,9 @@
   import PictometryButton from '../../pictometry/Button.vue';
   import CyclomediaRecordingCircle from '../../cyclomedia/RecordingCircle.vue';
   import CyclomediaRecordingsClient from '../../cyclomedia/recordings-client';
-  import MeasureControl from '../../leaflet/MeasureControl.vue';
-  import LegendControl from '../../leaflet/LegendControl.vue';
-  import BaseToolTip from '../../leaflet/BaseToolTip.vue';
+  import MeasureControl from '../MeasureControl.vue';
+  import LegendControl from '../LegendControl.vue';
+  import BasemapTooltip from '../BasemapTooltip.vue';
   import ControlCorner from '../../leaflet/ControlCorner.vue';
 
   export default {
@@ -290,7 +290,7 @@
       CyclomediaRecordingCircle,
       MeasureControl,
       LegendControl,
-      BaseToolTip,
+      BasemapTooltip,
       ControlCorner,
     },
     created() {
