@@ -417,20 +417,6 @@ class DataManager {
     // pan and zoom map
     const coords = feature.geometry.coordinates;
     this.store.commit('setMapCenter', coords);
-
-    // let boundsPadded;
-    // if (this.activeParcelLayer === 'pwd') {
-    //   console.log('DATAMANAGER pwdParcel', this.store.state.pwdParcel);
-    //   const parcel = this.store.state.pwdParcel.geometry;
-    //   boundsPadded = parcel.getBounds().pad(1.15);
-    //   console.log('DATAMANAGER boundsPadded', boundsPadded);
-    // } else {
-    //   console.log('DATAMANAGER dorParcels', this.store.state.dorParcels);
-    //   const parcel = this.store.state.dorParcels[0].geometry;
-    //   boundsPadded = parcel.getBounds().pad(1.15);
-    //   console.log('DATAMANAGER boundsPadded', boundsPadded);
-    // }
-
     this.store.commit('setMapZoom', 19);
 
     // reset data

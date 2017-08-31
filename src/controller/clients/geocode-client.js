@@ -46,39 +46,6 @@ class GeocodeClient extends BaseClient {
     store.commit('setGeocodeStatus', 'success');
 
     return feature;
-
-    // // everything after this point can go somewhere else
-    //
-    // // send geocode result event to host
-    // this.eventBus.$emit('geocodeResult', feature);
-    //
-    // // check for parcels
-    // // const dorParcels = this.$store.state.dorParcels;
-    // // const pwdParcel = this.$store.state.pwdParcel;
-    // // if (!(dorParcels.length > 0 || pwdParcel)) {
-    //
-    // // if this is the result of a search (from the search box), get
-    // // parcels
-    // const lastSearchMethod = this.$store.state.lastSearchMethod;
-    // if (lastSearchMethod === 'geocode') {
-    //   const dorParcelId = feature.properties.dor_parcel_id;
-    //   const pwdParcelId = feature.properties.pwd_parcel_id;
-    //   this.getDorParcelsById(dorParcelId);
-    //   this.getPwdParcelById(pwdParcelId);
-    // }
-    //
-    // // clear out address-specific state
-    // this.resetData();
-    //
-    // // fetch data from ready sources
-    // this.fetchData();
-    //
-    // // pan and center map
-    // // TODO ideally the map should fit its bounds to the combined extent
-    // // of markers/other content, reactively
-    // const map = this.$store.state.map.map;
-    // const [x, y] = feature.geometry.coordinates;
-    // map.setView([y, x]);
   }
 
   error(error) {
