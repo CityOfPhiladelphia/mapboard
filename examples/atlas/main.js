@@ -241,6 +241,24 @@ Mapboard.default({
         }
       }
     },
+    zoningAppeals: {
+      type: 'http-get',
+      url: 'https://phl.carto.com/api/v2/sql',
+      options: {
+        params: {
+          q(feature) {
+            let stmt = "select * from li_appeals where address = '" + feature.properties.street_address + "'";
+            const addressKey = feature.properties.li_address_key;
+
+            if (addressKey && addressKey.length > 0) {
+              stmt += " or addresskey = '" + feature.properties.li_address_key.toString() + "'";
+            }
+
+            return stmt;
+          }
+        }
+      }
+    },
     zoningDocs: {
       type: 'http-get',
       url: 'https://phl.carto.com/api/v2/sql',
@@ -342,12 +360,10 @@ Mapboard.default({
         dateMinNum: 1,
         dateMinType: 'year',
         dateField: 'dispatch_date',
-        // xField: 'point_x',
-        // yField: 'point_y',
         params: {},
       }
     },
-    zoningAppeals: {
+    nearbyZoningAppeals: {
       type: 'http-get-nearby',
       url: 'https://phl.carto.com/api/v2/sql',
       options: {
@@ -355,8 +371,6 @@ Mapboard.default({
         dateMinNum: 1,
         dateMinType: 'year',
         dateField: 'decisiondate',
-        // xField: 'geocode_x',
-        // yField: 'geocode_y',
         params: {}
       }
     },
@@ -443,16 +457,6 @@ Mapboard.default({
         return data;
       }
     },
-    // zoningOverlays: {
-    //   type: 'esri',
-    //   url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/1/',
-    //   options: {
-    //     relationship: 'contains',
-    //   },
-    //   success(data) {
-    //     return data;
-    //   }
-    // },
   },
   imageOverlayGroups: {
     regmaps: {
@@ -1260,9 +1264,9 @@ Mapboard.default({
             // limit: 100,
             fields: [
               {
-                label: 'Date',
-                value(state, item){
-                  return item.processeddate
+                label: 'Processed Date',
+                value(state, item) {
+                  return item.processeddate;
                 },
                 transforms: [
                   'date'
@@ -1272,14 +1276,24 @@ Mapboard.default({
                 label: 'ID',
                 value(state, item){
                   //return item.appeal_key
-                  return "<a target='_blank' href='//li.phila.gov/#details?entity=zoningboardappeals&eid="+item.appealno+"'>"+item.appealno+"<i class='fa fa-external-link'></i></a>"
+                  // return "<a target='_blank' href='//li.phila.gov/#details?entity=violationdetails&eid="+item.casenumber+"&key="+item.addresskey+"&address="+item.address+"'>"+item.casenumber+" <i class='fa fa-external-link'></i></a>"
+                  return "<a target='_blank' href='//li.phila.gov/#details?entity=appeals&eid="+item.appeal_key+"&key="+item.addresskey+"&address="+item.address+"'>"+item.appealno+"<i class='fa fa-external-link'></i></a>"
                 }
               },
               {
                 label: 'Description',
                 value(state, item){
-                  return item.appealgrounds
+                  return item.appealgrounds;
                 }
+              },
+              {
+                label: 'Scheduled Date',
+                value(state, item) {
+                  return item.date_scheduled;
+                },
+                transforms: [
+                  'date'
+                ]
               },
               {
                 label: 'Status',
@@ -1292,7 +1306,7 @@ Mapboard.default({
             sort: {
               // this should return the val to sort on
               getValue(item) {
-                return item.processeddate;
+                return item.date_scheduled;
               },
               // asc or desc
               order: 'desc'
@@ -1675,7 +1689,7 @@ Mapboard.default({
                   },
                   {
                     label: 'Zoning Appeals',
-                    value: 'zoningAppeals',
+                    value: 'nearbyZoningAppeals',
                   }
                 ]
               },
@@ -1911,7 +1925,7 @@ Mapboard.default({
                 type: 'horizontal-table',
                 options: {
                   topicKey: 'vacancy',
-                  id: 'zoningAppeals',
+                  id: 'nearbyZoningAppeals',
                   filterFieldsByText: [
                     'appealgrounds',
                   ],
@@ -1966,9 +1980,9 @@ Mapboard.default({
                 },
                 slots: {
                   title: 'Zoning Appeals',
-                  data: 'zoningAppeals',
+                  data: 'nearbyZoningAppeals',
                   items(state) {
-                    const data = state.sources['zoningAppeals'].data || [];
+                    const data = state.sources['nearbyZoningAppeals'].data || [];
                     const rows = data.map(row => {
                       const itemRow = Object.assign({}, row);
                       return itemRow;
