@@ -1,12 +1,23 @@
 import axios from 'axios';
 import BaseClient from './base-client';
+import Leaflet from 'leaflet';
 
 class EsriClient extends BaseClient {
   fetch(feature, dataSource, dataSourceKey) {
     const options = dataSource.options;
     const url = dataSource.url;
     const relationship = options.relationship;
-    const geom = feature.geometry;
+
+    // check if a target geometry fn was specified. otherwise, use geocode feat
+    const targetGeomFn = options.targetGeometry;
+    let geom;
+
+    if (targetGeomFn) {
+      const state = this.store.state;
+      geom = targetGeomFn(state, Leaflet);
+    } else {
+      geom = feature.geometry;
+    }
 
     this.fetchSpatialQuery(dataSourceKey, url, relationship, geom);
   }
@@ -17,10 +28,11 @@ class EsriClient extends BaseClient {
     const query = L.esri.query({ url })[relationship](targetGeom);
 
     query.run((error, featureCollection, response) => {
-      // console.log('did get esri spatial query', response, error);
+      console.log('did get esri spatial query', response, error);
 
       const data = (featureCollection || {}).features;
       const status = error ? 'error' : 'success';
+
       this.dataManager.didFetchData(dataSourceKey, status, data);
     });
   }
