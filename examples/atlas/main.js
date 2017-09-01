@@ -300,7 +300,7 @@ Mapboard.default({
       type: 'http-get',
       targets: {
         get(state) {
-          return state.dorParcels;
+          return state.dorParcels.data;
         },
         getTargetId(target) {
           return target.properties.OBJECTID;
@@ -311,7 +311,6 @@ Mapboard.default({
         params: {
           where(feature, state) {
             // METHOD 1: via address
-            // const parcel = state.dorParcels[0];
             const parcelBaseAddress = concatDorAddress(feature);
 
             // REVIEW if the parcel has no address, we don't want to query
@@ -414,8 +413,45 @@ Mapboard.default({
     regmaps: {
       type: 'esri',
       url: '//gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/0',
+      deps: ['dorParcels'],
       options: {
         relationship: 'intersects',
+        targetGeometry(state, Leaflet) {
+          // get combined extent of dor parcels
+          const parcels = state.dorParcels.data;
+
+          // build up sets of x and y values
+          const xVals = [];
+          const yVals = [];
+
+          // loop over parcels
+          for (let parcel of parcels) {
+            const coordSets = parcel.geometry.coordinates;
+            // loop over coordinate sets
+            for (let coordSet of coordSets) {
+              // loop over coordinates
+              for (let coord of coordSet) {
+                const [x, y] = coord;
+                xVals.push(x);
+                yVals.push(y);
+              }
+            }
+          }
+
+          // take max/min
+          const xMin = Math.min(...xVals);
+          const xMax = Math.max(...xVals);
+          const yMin = Math.min(...yVals);
+          const yMax = Math.max(...yVals);
+
+          // construct geometry
+          const bounds = L.latLngBounds([
+            [yMin, xMin],
+            [yMax, xMax]
+          ]);
+
+          return bounds;
+        }
       },
       success(data) {
         return data;
@@ -653,7 +689,7 @@ Mapboard.default({
           },
           slots: {
             items(state) {
-              return state.dorParcels;
+              return state.dorParcels.data;
             }
           }
         },
@@ -823,7 +859,7 @@ Mapboard.default({
             // REVIEW should this go in options? maybe not, since it should be
             // reactive.
             items(state) {
-              return state.dorParcels;
+              return state.dorParcels.data;
             }
           }
         }, // end dor parcel tab group comp

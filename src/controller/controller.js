@@ -44,7 +44,8 @@ class Controller {
 
     // clear out state
     this.store.commit('setPwdParcel', null);
-    this.store.commit('setDorParcels', []);
+    this.store.commit('setDorParcelData', []);
+    this.store.commit('setDorParcelStatus', null);
 
     // tell router
     this.router.routeToAddress(input);

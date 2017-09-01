@@ -188,7 +188,7 @@
         />
       </div>
 
-      <base-tool-tip :position="'bottomalmostleft'"
+      <basemap-tooltip :position="'bottomalmostleft'"
       />
 
       <!-- <scale-control :vSide="'top'"
@@ -236,12 +236,9 @@
 
 <script>
   // mixins
-  // import dataMixin from './data-mixin';
   import markersMixin from './markers-mixin';
-  // import geocodeMixin from './geocode-mixin';
   import cyclomediaMixin from '../../cyclomedia/map-panel-mixin';
   import pictometryMixin from '../../pictometry/map-panel-mixin';
-
   // vue doesn't like it when you import this as Map (reserved-ish word)
   import Map_ from '../../leaflet/Map.vue';
   import Control from '../../leaflet/Control.vue';
@@ -250,28 +247,24 @@
   import EsriFeatureLayer from '../../esri-leaflet/FeatureLayer.vue';
   import Geojson from '../../leaflet/Geojson.vue';
   import CircleMarker from '../../leaflet/CircleMarker.vue';
-  import OpacitySlider from '../../leaflet/OpacitySlider.vue';
+  import OpacitySlider from '../OpacitySlider.vue';
   import VectorMarker from '../VectorMarker.vue';
   import PngMarker from '../PngMarker.vue';
   import SvgMarker from '../SvgMarker.vue';
   import BasemapToggleControl from '../BasemapToggleControl.vue';
   import BasemapSelectControl from '../BasemapSelectControl.vue';
-  // import HistoricmapControl from '../HistoricmapControl';
   import CyclomediaButton from '../../cyclomedia/Button.vue';
   import PictometryButton from '../../pictometry/Button.vue';
   import CyclomediaRecordingCircle from '../../cyclomedia/RecordingCircle.vue';
   import CyclomediaRecordingsClient from '../../cyclomedia/recordings-client';
-  import MeasureControl from '../../leaflet/MeasureControl.vue';
-  import LegendControl from '../../leaflet/LegendControl.vue';
-  import BaseToolTip from '../../leaflet/BaseToolTip.vue';
+  import MeasureControl from '../MeasureControl.vue';
+  import LegendControl from '../LegendControl.vue';
+  import BasemapTooltip from '../BasemapTooltip.vue';
   import ControlCorner from '../../leaflet/ControlCorner.vue';
-  import ScaleControl from '../../leaflet/ScaleControl.vue';
 
   export default {
     mixins: [
-      // dataMixin,
       markersMixin,
-      // geocodeMixin,
       cyclomediaMixin,
       pictometryMixin,
     ],
@@ -289,15 +282,13 @@
       SvgMarker,
       BasemapToggleControl,
       BasemapSelectControl,
-      // HistoricmapControl,
       PictometryButton,
       CyclomediaButton,
       CyclomediaRecordingCircle,
       MeasureControl,
       LegendControl,
-      BaseToolTip,
+      BasemapTooltip,
       ControlCorner,
-      ScaleControl
     },
     created() {
       // if there's a default address, navigate to it
@@ -415,7 +406,7 @@
         return this.activeTopicConfig.parcels;
       },
       dorParcels() {
-        return this.$store.state.dorParcels;
+        return this.$store.state.dorParcels.data;
       },
       pwdParcel() {
         return this.$store.state.pwdParcel;

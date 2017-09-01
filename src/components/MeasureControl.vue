@@ -5,10 +5,6 @@
     props: ['position'],
     mounted() {
       const leafletElement = this.$leafletElement = this.createLeafletElement();
-      const map = this.$store.state.map;
-      if (map) {
-        leafletElement.addTo(map.map);
-      }
     },
     destroyed() {
       this.$leafletElement._map.removeControl(this.$leafletElement);

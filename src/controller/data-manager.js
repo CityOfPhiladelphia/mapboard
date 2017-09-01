@@ -276,6 +276,8 @@ class DataManager {
     }
 
   checkDataSourcesFetched(paths = []) {
+    // console.log('check data sources fetched', paths);
+
     const state = this.store.state;
 
     return paths.every(path => {
@@ -285,20 +287,20 @@ class DataManager {
 
       // TODO/TEMP restructure state so parcels and geocode live in
       // state.sources? the following targets the dorDocuments data source.
-      const isDataSource = !(pathKeys.length === 1 && pathKeys[0] === 'dorParcels');
-      const parentObj = isDataSource ? state.sources : state;
+      const isDorParcels = (pathKeys.length === 1
+                            && pathKeys[0] === 'dorParcels');
+
+      if (isDorParcels) {
+        return state.dorParcels.status === 'success';
+      }
 
       // traverse state to get the parent of the data object we need to
       // check.
-      let stateObj = pathKeys.reduce((acc, pathKey) => {
+      const stateObj = pathKeys.reduce((acc, pathKey) => {
         return acc[pathKey];
-      }, parentObj);
+      }, state);
 
-      if (isDataSource) {
-        return stateObj.status === 'success';
-      } else {
-        return !!stateObj;
-      }
+      return stateObj.status === 'success';
     });
   }
 
@@ -421,20 +423,6 @@ class DataManager {
     // pan and zoom map
     const coords = feature.geometry.coordinates;
     this.store.commit('setMapCenter', coords);
-
-    // let boundsPadded;
-    // if (this.activeParcelLayer === 'pwd') {
-    //   console.log('DATAMANAGER pwdParcel', this.store.state.pwdParcel);
-    //   const parcel = this.store.state.pwdParcel.geometry;
-    //   boundsPadded = parcel.getBounds().pad(1.15);
-    //   console.log('DATAMANAGER boundsPadded', boundsPadded);
-    // } else {
-    //   console.log('DATAMANAGER dorParcels', this.store.state.dorParcels);
-    //   const parcel = this.store.state.dorParcels[0].geometry;
-    //   boundsPadded = parcel.getBounds().pad(1.15);
-    //   console.log('DATAMANAGER boundsPadded', boundsPadded);
-    // }
-
     this.store.commit('setMapZoom', 19);
 
     // reset data
@@ -530,6 +518,11 @@ class DataManager {
 
     if (error) {
       console.warn('did get dor parcels error', error);
+
+      // update state
+      this.store.commit('setDorParcelData', []);
+      this.store.commit('setDorParcelStatus', 'error');
+
       return;
     }
     if (!featureCollection) {
@@ -542,8 +535,9 @@ class DataManager {
     // sort
     const featuresSorted = this.sortDorParcelFeatures(features);
 
-
-    this.store.commit('setDorParcels', featuresSorted);
+    // update state
+    this.store.commit('setDorParcelData', featuresSorted);
+    this.store.commit('setDorParcelStatus', 'success');
     this.store.commit('setActiveDorParcel', featuresSorted[0].id)
 
     const shouldGeocode = (
