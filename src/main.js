@@ -4,7 +4,7 @@ import configMixin from './util/config-mixin';
 import Mapboard from './components/Mapboard.vue';
 import mergeDeep from './util/merge-deep';
 import controllerMixin from './controller';
-import generateUniqueId from './util/uniqueId';
+import generateUniqueId from './util/unique-id';
 
 // helper function to auto-assign ids to horizontal tables
 function assignTableIds(comps) {

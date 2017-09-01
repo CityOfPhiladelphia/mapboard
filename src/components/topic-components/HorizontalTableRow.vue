@@ -22,7 +22,7 @@
         return this.$store.state.activeFeature
       },
       isActive() {
-        return this.activeFeature === this.$props.item._featureId
+        return this.activeFeature.featureId === this.$props.item._featureId
       },
     },
     watch: {

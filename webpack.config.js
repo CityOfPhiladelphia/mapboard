@@ -34,27 +34,21 @@ module.exports = {
       }
     ]
   },
-  resolve: {
-    extensions: ['.js'],
-    // alias: {
-    //   'vue$': 'vue/dist/vue.esm.js'
-    // }
-  },
   externals: {
-    'vue': 'Vue',
     'axios': 'axios',
-    'leaflet': 'L',
     'jQuery': '$',
-    'moment': 'moment'
+    'leaflet': 'L',
+    'moment': 'moment',
+    'turf': 'turf',
+    'vue': 'Vue',
+    'md5': 'md5'
   },
   devServer: {
     clientLogLevel: 'none',
     historyApiFallback: true,
     noInfo: true,
-    host: '127.0.0.1',
-    port: 8080
-    // host: process.env.WEBPACK_DEV_HOST,
-    // port: process.env.WEBPACK_DEV_PORT
+    host: process.env.WEBPACK_DEV_HOST,
+    port: process.env.WEBPACK_DEV_PORT
   },
   performance: {
     hints: false

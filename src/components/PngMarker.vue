@@ -9,16 +9,19 @@
   export default {
     props: [
       'icon',
-      'orientation'
     ],
     render(h) {
-      const a = this.$props.orientation
+      // for some reason, the react prop that `this.orientation` depends on has
+      // to be evaluated once in order to receive updates.
+      this.orientation;
+
       return;
     },
     mounted() {
       // console.log('pngMarker mounted fired, latlng is', this.latlng);
       const leafletElement = this.$leafletElement = this.createLeafletElement();
       const map = this.$store.state.map.map;
+
       // REVIEW kind of hacky/not reactive?
       if (map) {
         leafletElement.addTo(map);
@@ -29,6 +32,7 @@
       this.$leafletElement._map.removeLayer(this.$leafletElement);
       const leafletElement = this.$leafletElement = this.createLeafletElement();
       const map = this.$store.state.map.map;
+
       // REVIEW kind of hacky/not reactive?
       if (map) {
         leafletElement.addTo(map);
@@ -40,20 +44,25 @@
     },
     computed: {
       latlng() {
-        const xyz = this.$props.orientation.xyz;
+        const xyz = this.orientation.xyz;
         return [xyz[1], xyz[0]];
       },
       rotationAngle() {
-        return this.$props.orientation.yaw * (180/3.14159265359);
+        return this.orientation.yaw * (180/3.14159265359);
+      },
+      orientation() {
+        // access the orientation prop of the cyclomedia react component
+        return this.$store.state.cyclomedia.viewer.props.orientation;
       }
     },
     methods: {
       createLeafletElement() {
         const icon = L.icon({
-            iconUrl: this.$props.icon,
+            iconUrl: this.icon,
             iconSize: [26, 16],
             iconAnchor: [11, 8],
           })
+
         return L.marker(this.latlng, {
           icon: icon,
           rotationAngle: this.rotationAngle,

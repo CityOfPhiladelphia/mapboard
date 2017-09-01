@@ -13,7 +13,7 @@
 </template>
 
 <script>
-  import generateUniqueId from '../util/uniqueId';
+  import generateUniqueId from '../util/unique-id';
   import Badge from './topic-components/Badge.vue';
   import Callout from './topic-components/Callout.vue';
   import CollectionSummary from './topic-components/CollectionSummary.vue';

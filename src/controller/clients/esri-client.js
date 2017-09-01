@@ -1,4 +1,5 @@
 import axios from 'axios';
+import turf from 'turf';
 import BaseClient from './base-client';
 import Leaflet from 'leaflet';
 
@@ -22,34 +23,21 @@ class EsriClient extends BaseClient {
     this.fetchSpatialQuery(dataSourceKey, url, relationship, geom);
   }
 
-  fetchSpatialQuery(dataSourceKey, url, relationship, targetGeom) {
-    // console.log('fetch esri spatial query', dataSourceKey, url, relationship, targetGeom);
-
-    const query = L.esri.query({ url })[relationship](targetGeom);
-
-    query.run((error, featureCollection, response) => {
-      console.log('did get esri spatial query', response, error);
-
-      const data = (featureCollection || {}).features;
-      const status = error ? 'error' : 'success';
-
-      this.dataManager.didFetchData(dataSourceKey, status, data);
-    });
-  }
-
   fetchNearby(feature, dataSource, dataSourceKey) {
-    // console.log('fetch esri nearby', feature);
+    console.log('fetch esri nearby', feature);
 
     // const url = dataSource.url;
     const { options } = dataSource;
     const dataSourceUrl = dataSource.url;
     const { geometryServerUrl } = options;
+    const calculateDistance = options.calculateDistance;
 
     // params.geometries = `[${feature.geometry.coordinates.join(', ')}]`
     // TODO get some of these values from map, etc.
+    const coords = feature.geometry.coordinates;
     const params = {
       // geometries: feature => '[' + feature.geometry.coordinates[0] + ', ' + feature.geometry.coordinates[1] + ']',
-      geometries: `[${feature.geometry.coordinates.join(', ')}]`,
+      geometries: `[${coords.join(', ')}]`,
       inSR: 4326,
       outSR: 4326,
       bufferSR: 4326,
@@ -62,7 +50,6 @@ class EsriClient extends BaseClient {
 
     // get buffer polygon
     const bufferUrl = geometryServerUrl.replace(/\/$/, '') + '/buffer';
-    // console.log('im getting the points', bufferUrl);
 
     axios.get(bufferUrl, { params }).then(response => {
       const data = response.data;
@@ -74,16 +61,57 @@ class EsriClient extends BaseClient {
 
       // get nearby features using buffer
       const buffer = L.polygon(latLngCoords);
+      const map = this.dataManager.store.state.map.map
+
+      // DEBUG
+      // buffer.addTo(map);
+
       this.fetchSpatialQuery(dataSourceKey,
-                                 dataSourceUrl,
-                                 'within',
-                                 buffer
-      );
+                             dataSourceUrl,
+                             'within',
+                             buffer,
+                             calculateDistance ? coords : null
+                            );
     }, response => {
       // console.log('did fetch esri nearby error', response);
       this.didFetchData(dataSource, 'error');
     });
   }
+
+  fetchSpatialQuery(dataSourceKey, url, relationship, targetGeom, calculateDistancePt) {
+    console.log('fetch esri spatial query', dataSourceKey, url, relationship, targetGeom);
+
+    const query = L.esri.query({ url })[relationship](targetGeom);
+
+    query.run((error, featureCollection, response) => {
+      console.log('did get esri spatial query', response, error);
+
+      let features = (featureCollection || {}).features;
+      const status = error ? 'error' : 'success';
+
+      // calculate distance
+      if (calculateDistancePt) {
+        const from = turf.point(calculateDistancePt);
+
+        features = features.map(feature => {
+          // console.log('feat', feature);
+          const featureCoords = feature.geometry.coordinates;
+          const to = turf.point(featureCoords);
+          const dist = turf.distance(from, to, 'miles');
+
+          // TODO make distance units an option. for now, just hard code to ft.
+          const distFeet = parseInt(dist * 5280);
+
+          feature._distance = distFeet;
+
+          return feature;
+        })
+      }
+
+      this.dataManager.didFetchData(dataSourceKey, status, features);
+    });
+  }
+
 }
 
 export default EsriClient;

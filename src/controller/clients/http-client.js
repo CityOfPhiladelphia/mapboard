@@ -1,5 +1,6 @@
 import axios from 'axios';
 import BaseClient from './base-client';
+import proj4 from 'proj4';
 
 class HttpClient extends BaseClient {
   evaluateParams(feature, dataSource) {
@@ -52,16 +53,39 @@ class HttpClient extends BaseClient {
 
   fetchNearby(feature, dataSource, dataSourceKey, targetIdFn) {
     const params = this.evaluateParams(feature, dataSource);
-    params['q'] = 'SELECT * from incidents_part1_part2 where ST_Distance(the_geom::geography, ST_SetSRID(ST_Point(' + feature.geometry.coordinates[0] + ',' + feature.geometry.coordinates[1] + '),4326)::geography) < 250'
-    console.log('params:', params, params['q']);
     const url = dataSource.url;
     const options = dataSource.options;
+    // const srid = options.srid || 4326;
+    const table = options.table;
+    const dateMinNum = options.dateMinNum || null;
+    const dateMinType = options.dateMinType || null;
+    const dateField = options.dateField || null;
     const successFn = options.success;
+
+    const distQuery = "ST_Distance(the_geom::geography, ST_SetSRID(ST_Point("
+                    + feature.geometry.coordinates[0]
+                    + "," + feature.geometry.coordinates[1]
+                    + "),4326)::geography)";
+
+    const latQuery = "ST_Y(the_geom)";
+    const lngQuery = "ST_X(the_geom)";
+
+    // let select = '*'
+    // if (calculateDistance) {
+    const select = "*, " + distQuery + 'as distance,' + latQuery + 'as lat, ' + lngQuery + 'as lng';
+    // }
+
+    params['q'] = "select" + select + " from " + table + " where " + distQuery + " < 250";
+
+    if (dateMinNum) {
+      params['q'] = params['q'] + " and " + dateField + " > '" + moment().subtract(dateMinNum, dateMinType).format('YYYY-MM-DD') + "'"
+    }
 
     // if the data is not dependent on other data
     axios.get(url, { params }).then(response => {
       // call success fn
       let data = response.data.rows;
+      console.log('table and data', table, data);
 
       if (successFn) {
         data = successFn(data);
