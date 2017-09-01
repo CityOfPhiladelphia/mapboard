@@ -272,6 +272,8 @@ class DataManager {
     }
 
   checkDataSourcesFetched(paths = []) {
+    // console.log('check data sources fetched', paths);
+
     const state = this.store.state;
 
     return paths.every(path => {
@@ -281,20 +283,20 @@ class DataManager {
 
       // TODO/TEMP restructure state so parcels and geocode live in
       // state.sources? the following targets the dorDocuments data source.
-      const isDataSource = !(pathKeys.length === 1 && pathKeys[0] === 'dorParcels');
-      const parentObj = isDataSource ? state.sources : state;
+      const isDorParcels = (pathKeys.length === 1
+                            && pathKeys[0] === 'dorParcels');
+
+      if (isDorParcels) {
+        return state.dorParcels.status === 'success';
+      }
 
       // traverse state to get the parent of the data object we need to
       // check.
-      let stateObj = pathKeys.reduce((acc, pathKey) => {
+      const stateObj = pathKeys.reduce((acc, pathKey) => {
         return acc[pathKey];
-      }, parentObj);
+      }, state);
 
-      if (isDataSource) {
-        return stateObj.status === 'success';
-      } else {
-        return !!stateObj;
-      }
+      return stateObj.status === 'success';
     });
   }
 
