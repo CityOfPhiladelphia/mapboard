@@ -163,7 +163,10 @@ function createStore(config) {
       //   ]
       // }
     },
-    dorParcels: [],
+    dorParcels: {
+      data: [],
+      status: null
+    },
     activeDorParcel: null,
     pwdParcel: null,
     sources,
@@ -308,8 +311,11 @@ function createStore(config) {
       setMapZoom(state, payload) {
         state.map.zoom = payload
       },
-      setDorParcels(state, payload) {
-        state.dorParcels = payload;
+      setDorParcelData(state, payload) {
+        state.dorParcels.data = payload;
+      },
+      setDorParcelStatus(state, payload) {
+        state.dorParcels.status = payload;
       },
       setActiveDorParcel(state, payload) {
         state.activeDorParcel = payload;
