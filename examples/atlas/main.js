@@ -569,6 +569,13 @@ Mapboard.default({
       transform(value) {
         return value ? 'Yes' : 'No';
       }
+    },
+    thousandsPlace: {
+      transform(value) {
+        const number = String(value).match(/\d+/)[0].replace(/(.)(?=(\d{3})+$)/g,'$1,');
+        const label = String(value).replace(/[0-9]/g, '') || '';
+        return number + ' ' + label;
+      }
     }
   },
   topics: [
@@ -792,12 +799,18 @@ Mapboard.default({
                       value(state, item) {
                         return Math.round(item.properties['SHAPE.LEN']) + ' ft';
                       },
+                      transforms: [
+                        'thousandsPlace'
+                      ]
                     },
                     {
                       label: 'Area',
                       value(state, item) {
                         return Math.round(item.properties['SHAPE.AREA']) + ' sq ft';
                       },
+                      transforms: [
+                        'thousandsPlace'
+                      ]
                     },
                   ]
                 }  // end slots
@@ -1521,13 +1534,19 @@ Mapboard.default({
                 label: 'Gross Area',
                 value(state) {
                   return state.sources.stormwater.data.Parcel.GrossArea + ' sq ft';
-                }
+                },
+                transforms: [
+                  'thousandsPlace'
+                ]
               },
               {
                 label: 'Impervious Area',
                 value(state) {
                   return state.sources.stormwater.data.Parcel.ImpervArea + ' sq ft';
-                }
+                },
+                transforms: [
+                  'thousandsPlace'
+                ]
               },
               {
                 label: 'CAP Eligible',
