@@ -1829,6 +1829,20 @@ Mapboard.default({
                 options: {
                   topicKey: 'vacancy',
                   id: 'crimeIncidents',
+                  sort: {
+                    select: true,
+                    getValue(item, method) {
+                      let val;
+
+                      if (method === 'date') {
+                        val = item.dispatch_date;
+                      } else if (method === 'distance') {
+                        val = item.distance;
+                      }
+
+                      return val;
+                    }
+                  },
                   filters: [
                     {
                       type: 'time',
@@ -1929,6 +1943,20 @@ Mapboard.default({
                 options: {
                   topicKey: 'vacancy',
                   id: 'nearbyZoningAppeals',
+                  sort: {
+                    select: true,
+                    getValue(item, method) {
+                      let val;
+
+                      if (method === 'date') {
+                        val = item.decisiondate;
+                      } else if (method === 'distance') {
+                        val = item.distance;
+                      }
+
+                      return val;
+                    }
+                  },
                   filterFieldsByText: [
                     'appealgrounds',
                   ],
@@ -1973,12 +2001,12 @@ Mapboard.default({
                         return item.appealgrounds;
                       }
                     },
-                    // {
-                    //   label: 'Distance',
-                    //   value(state, item) {
-                    //     return parseInt(item.distance) + ' ft';
-                    //   }
-                    // }
+                    {
+                      label: 'Distance',
+                      value(state, item) {
+                        return parseInt(item.distance) + ' ft';
+                      }
+                    }
                   ]
                 },
                 slots: {
