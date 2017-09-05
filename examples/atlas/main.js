@@ -1863,12 +1863,6 @@ Mapboard.default({
                           unit: 'days',
                           direction: 'subtract',
                         },
-                        // {
-                        //   label: 'year',
-                        //   value: '1',
-                        //   unit: 'years',
-                        //   direction: 'subtract',
-                        // }
                       ]
                     }
                   ],
@@ -1931,7 +1925,6 @@ Mapboard.default({
                     const data = state.sources['crimeIncidents'].data || [];
                     const rows = data.map(row => {
                       const itemRow = Object.assign({}, row);
-                      itemRow.DISTANCE = 'TODO';
                       return itemRow;
                     });
                     return rows;
@@ -2041,7 +2034,6 @@ Mapboard.default({
       dataSources: ['311'],
       basemap: 'pwd',
       identifyFeature: 'address-marker',
-      // overlays: ['311'],
       parcels: 'pwd',
       components: [
         {
