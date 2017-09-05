@@ -352,6 +352,17 @@ Mapboard.default({
         calculateDistance: true,
       },
     },
+    '311Carto': {
+      type: 'http-get-nearby',
+      url: 'https://phl.carto.com/api/v2/sql',
+      options: {
+        table: 'public_cases_fc',
+        dateMinNum: 1,
+        dateMinType: 'year',
+        dateField: 'requested_datetime',
+        params: {},
+      }
+    },
     crimeIncidents: {
       type: 'http-get-nearby',
       url: 'https://phl.carto.com/api/v2/sql',
@@ -1607,14 +1618,13 @@ Mapboard.default({
       key: 'vacancy',
       icon: 'map-marker',
       label: 'Vacancy',
-      dataSources: ['vacantLand', 'vacantBuilding', '311', 'crimeIncidents'],
+      dataSources: ['vacantLand', 'vacantBuilding', '311Carto', 'crimeIncidents', 'nearbyZoningAppeals'],
       basemap: 'pwd',
       featureLayers: [
         'vacantLand',
         'vacantBuilding'
       ],
       identifyFeature: 'address-marker',
-      overlays: ['311', 'crimeIncidents'],
       parcels: 'pwd',
       // TODO implement this
       // computed: {
@@ -1702,13 +1712,14 @@ Mapboard.default({
                   topicKey: 'vacancy',
                   id: '311',
                   sort: {
+                    select: true,
                     getValue(item, method) {
                       let val;
 
                       if (method === 'date') {
-                        val = item.properties.REQUESTED_DATETIME;
+                        val = item.requested_datetime;
                       } else if (method === 'distance') {
-                        val = item._distance;
+                        val = item.distance;
                       }
 
                       return val;
@@ -1718,7 +1729,7 @@ Mapboard.default({
                     {
                       type: 'time',
                       getValue(item) {
-                        return item.properties.REQUESTED_DATETIME;
+                        return item.requested_datetime;
                       },
                       label: 'From the last',
                       values: [
@@ -1744,9 +1755,8 @@ Mapboard.default({
                     }
                   ],
                   filterFieldsByText: [
-                    'DESCRIPTION',
-                    'SUBJECT',
-                    'ADDRESS'
+                    'subject',
+                    'address'
                   ],
                   mapOverlay: {
                     marker: 'circle',
@@ -1771,7 +1781,7 @@ Mapboard.default({
                     {
                       label: 'Date',
                       value(state, item) {
-                        return item.properties.REQUESTED_DATETIME;
+                        return item.requested_datetime;
                       },
                       transforms: [
                         'date'
@@ -1780,29 +1790,23 @@ Mapboard.default({
                     {
                       label: 'Address',
                       value(state, item) {
-                        return item.properties.ADDRESS;
+                        return item.address;
                       }
                     },
                     {
                       label: 'Subject',
                       value(state, item) {
-                        if (item.properties.MEDIA_URL) {
-                          return '<a target="_blank" href='+item.properties.MEDIA_URL+'>'+item.properties.SUBJECT+'</a>';
+                        if (item.media_url) {
+                          return '<a target="_blank" href='+item.media_url+'>'+item.service_name+'</a>';
                         } else {
-                          return item.properties.SUBJECT;
+                          return item.service_name;
                         }
-                      }
-                    },
-                    {
-                      label: 'Description',
-                      value(state, item) {
-                        return item.properties.DESCRIPTION;
                       }
                     },
                     {
                       label: 'Distance',
                       value(state, item) {
-                        return `${item._distance} ft`;
+                        return parseInt(item.distance) + ' ft';
                       }
                     }
                   ]
@@ -1811,10 +1815,9 @@ Mapboard.default({
                   title: 'Nearby Service Requests',
                   data: '311',
                   items(state) {
-                    const data = state.sources['311'].data;
+                    const data = state.sources['311Carto'].data || [];
                     const rows = data.map(row => {
                       const itemRow = Object.assign({}, row);
-                      itemRow.DISTANCE = 'TODO';
                       return itemRow;
                     });
                     return rows;
@@ -2024,6 +2027,19 @@ Mapboard.default({
           options: {
             topicKey: '311',
             id: '311',
+            sort: {
+              getValue(item, method) {
+                let val;
+
+                if (method === 'date') {
+                  val = item.properties.REQUESTED_DATETIME;
+                } else if (method === 'distance') {
+                  val = item._distance;
+                }
+
+                return val;
+              }
+            },
             filters: [
               {
                 type: 'time',
@@ -2123,7 +2139,7 @@ Mapboard.default({
               const data = state.sources['311'].data;
               const rows = data.map(row => {
                 const itemRow = Object.assign({}, row);
-                itemRow.DISTANCE = 'TODO';
+                // itemRow.DISTANCE = 'TODO';
                 return itemRow;
               });
               return rows;
