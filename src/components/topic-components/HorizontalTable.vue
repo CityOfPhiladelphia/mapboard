@@ -25,7 +25,10 @@
               </optgroup>
             </select>
           </div>
-
+        </div>
+        <div v-if="!!this.$props.options.sort.select"
+             class="vertically-centered"
+        >
           <div class="vertically-centered mb-select-text">Sort by</div>
           <select @change="handleSortValueChange"
                   class="mb-select"
