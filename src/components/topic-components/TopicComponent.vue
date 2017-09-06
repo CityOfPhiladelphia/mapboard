@@ -16,6 +16,7 @@
 
         const valOrGetterType = typeof valOrGetter;
         let val;
+        console.log('valOrGetter', valOrGetter, 'valOrGetterType', valOrGetterType);
 
         // fn
         if (valOrGetterType === 'function') {

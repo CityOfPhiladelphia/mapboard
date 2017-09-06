@@ -1,6 +1,7 @@
 const GATEKEEPER_KEY = '35ae5b7bf8f0ff2613134935ce6b4c1e';
 // const BASE_CONFIG_URL = '//raw.githubusercontent.com/rbrtmrtn/mapboard-base-config/develop/config.js';
-const BASE_CONFIG_URL = '//rawgit.com/rbrtmrtn/mapboard-base-config/cabbd47a580c15bc58b1944d21abc47009c4aba3/config.js';
+// const BASE_CONFIG_URL = '//rawgit.com/rbrtmrtn/mapboard-base-config/cabbd47a580c15bc58b1944d21abc47009c4aba3/config.js';
+const BASE_CONFIG_URL = '//rawgit.com/rbrtmrtn/mapboard-base-config/1d658c93807ba91d84460b84c1dd5796dbe221f1/config.js';
 
 const ZONING_CODE_MAP = {
   'RSD-1': 'Residential Single Family Detached-1',
@@ -579,6 +580,31 @@ Mapboard.default({
     }
   },
   topics: [
+    {
+      key: 'related',
+      icon: 'home',
+      label: 'Related Addresses',
+      components: [
+        // {
+        //   type: 'callout',
+        //   slots: {
+        //     text: 'This information is a test.'
+        //   }
+        // },
+        {
+          type: 'list',
+          slots: {
+            // text: 'test text in list',
+            relatedAddresses(state) {
+              return state.geocode.related;
+            }
+            // value(state) {
+            //   return state.geocode.related;
+            // }
+          },
+        }
+      ],
+    },
     {
       key: 'opa',
       icon: 'map-marker',

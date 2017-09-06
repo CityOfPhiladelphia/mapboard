@@ -21,6 +21,7 @@
   import Image_ from './topic-components/Image.vue';
   import VerticalTable from './topic-components/VerticalTable.vue';
   import OverlayToggleGroup from './topic-components/OverlayToggleGroup.vue';
+  import List from './topic-components/List.vue'
 
   export default {
     props: ['topicComponents', 'item', 'filterData'],
@@ -32,6 +33,7 @@
       Image_,
       VerticalTable,
       OverlayToggleGroup,
+      List
     },
     beforeCreate() {
       // TabGroup imports TopicComponentGroup, which causes a circular
