@@ -119,7 +119,8 @@ Mapboard.default({
   rootStyle: {
     position: 'absolute',
     bottom: 0,
-    top: '78px',
+    // top: '78px',
+    top: '118px',
     left: 0,
     right: 0,
   },
