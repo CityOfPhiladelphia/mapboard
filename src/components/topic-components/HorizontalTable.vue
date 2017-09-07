@@ -158,9 +158,10 @@
     },
     watch: {
       itemsAfterFilters(nextItems) {
-        console.log('WATCH items after filters', nextItems);
-
+        // console.log('WATCH items after filters', nextItems);
+        // this.$nextTick(() => {
         this.updateTableFilteredData();
+        // })
       }
     },
     computed: {
@@ -216,6 +217,7 @@
         return this.evaluateSlot(itemsSlot) || [];
       },
       itemsAfterSearch() {
+        // console.log('itemsAfterSearch is running');
         const items = this.items;
         const searchText = this.searchText;
 
@@ -255,6 +257,7 @@
       },
       // this takes itemsAfterSearch and applies selected filters
       itemsAfterFilters() {
+        // console.log('itemsAfterFilters is running');
         const itemsAfterSearch = this.itemsAfterSearch;
         const items = this.filterItems(itemsAfterSearch,
                                        this.filters,
@@ -341,7 +344,7 @@
         return {value, unit, direction};
       },
       handleSortValueChange(e) {
-        console.log('handleSortValueChange running', e);
+        // console.log('handleSortValueChange running', e);
 
         const value = e.target.value;
         this.sortMethod = value;
@@ -378,6 +381,7 @@
         this.searchText = "";
       },
       filterItems(items, filters, filterSelections) {
+        // console.log('FILTER ITEMS is running, items:', items, 'filters:', filters, 'filterSelections:', filterSelections);
         let itemsFiltered = items.slice();
 
         if (filters) {
@@ -385,7 +389,8 @@
             const key = `filter-${index}`;
             const data = filterSelections[key];
             const {type, getValue} = filter;
-            const {direction, unit, value} = data;
+            const {unit, value} = data;
+            const direction = data.direction || 'subtract';
 
             // TODO put these in separate methods
             switch(type) {
