@@ -24,7 +24,7 @@ class EsriClient extends BaseClient {
   }
 
   fetchNearby(feature, dataSource, dataSourceKey) {
-    console.log('fetch esri nearby', feature);
+    // console.log('fetch esri nearby', feature);
 
     // const url = dataSource.url;
     const { options } = dataSource;
@@ -79,12 +79,12 @@ class EsriClient extends BaseClient {
   }
 
   fetchSpatialQuery(dataSourceKey, url, relationship, targetGeom, calculateDistancePt) {
-    console.log('fetch esri spatial query', dataSourceKey, url, relationship, targetGeom);
+    // console.log('fetch esri spatial query', dataSourceKey, url, relationship, targetGeom);
 
     const query = L.esri.query({ url })[relationship](targetGeom);
 
     query.run((error, featureCollection, response) => {
-      console.log('did get esri spatial query', response, error);
+      // console.log('did get esri spatial query', response, error);
 
       let features = (featureCollection || {}).features;
       const status = error ? 'error' : 'success';

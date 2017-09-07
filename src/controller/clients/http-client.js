@@ -85,7 +85,7 @@ class HttpClient extends BaseClient {
     axios.get(url, { params }).then(response => {
       // call success fn
       let data = response.data.rows;
-      console.log('table and data', table, data);
+      // console.log('table and data', table, data);
 
       if (successFn) {
         data = successFn(data);

@@ -27,7 +27,7 @@
           opacity_layer = layer;
         },
         onAdd: function (map) {
-          console.log('on add', this, this.$props);
+          // console.log('on add', this, this.$props);
           var opacity_slider_div = L.DomUtil.create('div', 'opacity_slider_control');
 
           $(opacity_slider_div).slider({
