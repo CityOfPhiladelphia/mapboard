@@ -1801,7 +1801,7 @@ Mapboard.default({
                     }
                   ],
                   filterFieldsByText: [
-                    'subject',
+                    'service_name',
                     'address'
                   ],
                   mapOverlay: {

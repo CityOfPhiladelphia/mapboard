@@ -2,7 +2,7 @@
   <div v-if="shouldShowTable">
     <!-- controls -->
     <div class="mb-horizontal-table-controls">
-        <div v-if="!!this.$props.options.filters"
+        <div v-if="!!options.filters"
              class="vertically-centered"
         >
           <!-- TODO the ids for filter spans should incorporate some sort of topic comp
@@ -26,7 +26,9 @@
             </select>
           </div>
         </div>
-        <div v-if="!!this.$props.options.sort.select"
+
+        <!-- <div v-if="!!this.$props.options.sort && !!this.$props.options.sort.select" -->
+        <div v-if="!!options.sort && !!options.sort.select"
              class="vertically-centered"
         >
           <div class="vertically-centered mb-select-text">Sort by</div>
@@ -46,7 +48,7 @@
         </div>
 
         <form @submit.prevent="handleFilterFormX"
-              v-if="!!this.$props.options.filterFieldsByText"
+              v-if="!!options.filterFieldsByText"
               class="vertically-centered"
         >
           <input :class="this.inputClass"
@@ -54,8 +56,8 @@
                  id="theInput"
                  @keyup="handleFilterFormKeyup"
           />
-          <button v-if="this.searchText !=''"
-                  class="mb-search-control-button"
+          <button class="mb-search-control-button"
+          v-if="this.searchText !=''"
           >
             <i class="fa fa-times fa-lg"></i>
           </button>
@@ -156,7 +158,7 @@
     },
     watch: {
       itemsAfterFilters(nextItems) {
-        // console.log('WATCH items after filters', nextItems);
+        console.log('WATCH items after filters', nextItems);
 
         this.updateTableFilteredData();
       }
@@ -236,6 +238,7 @@
           const searchVals = searchFields.map(filterField => {
             const props = item.properties;
             const searchVal = props ? props[filterField] : item[filterField];
+            // console.log('props', props, 'searchVal', searchVal);
             return searchVal.toLowerCase();
           });
 
@@ -372,7 +375,7 @@
       },
       handleFilterFormX(e) {
         e.target[0].value = ''
-        this.searchText = '';
+        this.searchText = "";
       },
       filterItems(items, filters, filterSelections) {
         let itemsFiltered = items.slice();
