@@ -860,6 +860,7 @@ Mapboard.default({
                       value(state, item) {
                         return item.attributes.RECORDING_DATE;
                       },
+                      nullValue: 'no date available',
                       transforms: [
                         'date'
                       ]
@@ -966,6 +967,7 @@ Mapboard.default({
                 value(state, item){
                   return item.permitissuedate
                 },
+                nullValue: 'no date available',
                 transforms: [
                   'date'
                 ]
@@ -999,7 +1001,7 @@ Mapboard.default({
             },
             externalLink: {
               action(count) {
-                return `See ${count} more at L&I Property History`;
+                return `See ${count} older permits at L&I Property History`;
               },
               name: 'L&I Property History',
               href(state) {
@@ -1035,6 +1037,7 @@ Mapboard.default({
                 value(state, item){
                   return item.inspectioncompleted
                 },
+                nullValue: 'no date available',
                 transforms: [
                   'date'
                 ]
@@ -1069,7 +1072,7 @@ Mapboard.default({
             },
             externalLink: {
               action(count) {
-                return `See ${count} more at L&I Property History`;
+                return `See ${count} older inspections at L&I Property History`;
               },
               name: 'L&I Property History',
               href(state) {
@@ -1105,6 +1108,7 @@ Mapboard.default({
                 value(state, item){
                   return item.caseaddeddate
                 },
+                nullValue: 'no date available',
                 transforms: [
                   'date'
                 ]
@@ -1139,7 +1143,7 @@ Mapboard.default({
             },
             externalLink: {
               action(count) {
-                return `See ${count} more at L&I Property History`;
+                return `See ${count} older violations at L&I Property History`;
               },
               name: 'L&I Property History',
               href(state) {
@@ -1215,7 +1219,7 @@ Mapboard.default({
             },
             externalLink: {
               action(count) {
-                return `See ${count} more at L&I Property History`;
+                return `See ${count} older business licenses at L&I Property History`;
               },
               name: 'L&I Property History',
               href(state) {
@@ -1388,6 +1392,7 @@ Mapboard.default({
                 value(state, item){
                   return item.scandate
                 },
+                nullValue: 'no date available',
                 transforms: [
                   'date'
                 ]
@@ -1829,6 +1834,7 @@ Mapboard.default({
                       value(state, item) {
                         return item.requested_datetime;
                       },
+                      nullValue: 'no date available',
                       transforms: [
                         'date'
                       ]
@@ -1940,6 +1946,7 @@ Mapboard.default({
                       value(state, item) {
                         return item.dispatch_date;
                       },
+                      nullValue: 'no date available',
                       transforms: [
                         'date'
                       ]
@@ -2024,6 +2031,7 @@ Mapboard.default({
                       value(state, item) {
                         return item.decisiondate;
                       },
+                      nullValue: 'no date available',
                       transforms: [
                         'date'
                       ]
@@ -2165,6 +2173,7 @@ Mapboard.default({
                 value(state, item) {
                   return item.properties.REQUESTED_DATETIME;
                 },
+                nullValue: 'no date available',
                 transforms: [
                   'date'
                 ]

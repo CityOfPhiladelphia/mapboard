@@ -464,7 +464,7 @@
         return items.sort(sortFn);
       },
       defaultSortFn(a, b) {
-        // console.log('defaultSortFn is running');
+        // console.log('defaultSortFn is running, a:', a, 'b:', b);
         const sortOpts = this.options.sort;
         const getValueFn = sortOpts.getValue;
         const sortMethod = this.sortMethod;
@@ -474,7 +474,19 @@
         const valB = getValueFn(b, sortMethod);
         let result;
 
-        if (valA < valB) {
+        if (valA === null) {
+          if (order === 'desc') {
+            result = -1
+          } else {
+            result = 1
+          }
+        } else if (valB === null) {
+          if (order === 'desc') {
+            result = 1
+          } else {
+            result = -1
+          }
+        } else if (valA < valB) {
           result = -1;
         } else if (valB < valA) {
           result = 1;
@@ -585,4 +597,9 @@
     display: table;
     clear: both;
   }
+
+  .mb-horizontal-table-body {
+    padding-bottom: 15px;
+  }
+
 </style>

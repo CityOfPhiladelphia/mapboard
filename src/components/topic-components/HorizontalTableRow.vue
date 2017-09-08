@@ -6,7 +6,7 @@
       @mouseout="handleRowMouseout"
   >
     <td v-for="field in fields"
-        v-html="evaluateSlot(field.value, field.transforms)"
+        v-html="evaluateSlot(field.value, field.transforms, field.nullValue)"
     />
   </tr>
 </template>
