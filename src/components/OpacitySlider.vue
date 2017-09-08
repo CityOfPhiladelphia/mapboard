@@ -50,6 +50,10 @@
             }
           });
 
+          $(opacity_slider_div).click(function(e) {
+            e.stopPropagation();
+          })
+
           return opacity_slider_div;
         }
       });
