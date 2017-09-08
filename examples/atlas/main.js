@@ -266,7 +266,17 @@ Mapboard.default({
       url: 'https://phl.carto.com/api/v2/sql',
       options: {
         params: {
-          q: feature => "select * from zoning_documents_20170420 where address_std = '" + feature.properties.street_address + "' or addrkey = " + feature.properties.li_address_key,
+          // q: feature => "select * from zoning_documents_20170420 where address_std = '" + feature.properties.street_address + "' or addrkey = " + feature.properties.li_address_key,
+          q(feature) {
+            let stmt = "select * from zoning_documents_20170420 where address_std = '" + feature.properties.street_address + "'";
+            const addressKey = feature.properties.li_address_key;
+
+            if (addressKey && addressKey.length > 0) {
+              stmt += " or addrkey = " + feature.properties.li_address_key;
+            }
+
+            return stmt;
+          }
         }
       }
     },
@@ -1370,13 +1380,17 @@ Mapboard.default({
           slots: {
             title : 'Appeals',
             items(state) {
-              const data = state.sources['zoningAppeals'].data.rows;
-              const rows = data.map(row => {
-                const itemRow = Object.assign({}, row);
-                //itemRow.DISTANCE = 'TODO';
-                return itemRow;
-              });
-              return rows;
+              if (state.sources['zoningAppeals'].data) {
+                if (state.sources['zoningAppeals'].data.rows) {
+                  const data = state.sources['zoningAppeals'].data.rows;
+                  const rows = data.map(row => {
+                    const itemRow = Object.assign({}, row);
+                    //itemRow.DISTANCE = 'TODO';
+                    return itemRow;
+                  });
+                  return rows;
+                }
+              }
             },
           },
         },
@@ -1436,13 +1450,17 @@ Mapboard.default({
             title: 'Documents',
             subtitle: 'aka "Zoning Archive"',
             items(state) {
-              const data = state.sources['zoningDocs'].data.rows;
-              const rows = data.map(row => {
-                const itemRow = Object.assign({}, row);
-                //itemRow.DISTANCE = 'TODO';
-                return itemRow;
-              });
-              return rows;
+              if (state.sources['zoningDocs'].data) {
+                if (state.sources['zoningDocs'].data.rows) {
+                  const data = state.sources['zoningDocs'].data.rows;
+                  const rows = data.map(row => {
+                    const itemRow = Object.assign({}, row);
+                    //itemRow.DISTANCE = 'TODO';
+                    return itemRow;
+                  });
+                  return rows;
+                }
+              }
             },
           },
         },
@@ -1502,13 +1520,14 @@ Mapboard.default({
           slots: {
             title: 'Registered Community Organizations',
             items(state) {
-              const data = state.sources['rco'].data;
-              const rows = data.map(row => {
-                const itemRow = Object.assign({}, row);
-                //itemRow.DISTANCE = 'TODO';
-                return itemRow;
-              });
-              return rows;
+              if (state.sources['rco'].data) {
+                const data = state.sources['rco'].data;
+                const rows = data.map(row => {
+                  const itemRow = Object.assign({}, row);
+                  return itemRow;
+                });
+                return rows;
+              }
             },
           },
         },
