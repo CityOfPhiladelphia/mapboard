@@ -106,6 +106,6 @@
 <style scoped>
   .tabs-panel {
     padding: 20px;
-    padding-bottom: 10px;
+    padding-bottom: 0px;
   }
 </style>

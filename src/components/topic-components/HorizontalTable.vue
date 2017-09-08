@@ -599,7 +599,7 @@
   }
 
   .mb-horizontal-table-body {
-    padding-bottom: 15px;
+    padding-bottom: 10px;
   }
 
 </style>

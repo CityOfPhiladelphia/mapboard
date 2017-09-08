@@ -9,7 +9,9 @@
         </a>
       </li>
     </ul>
-    <p v-else>
+    <p v-else
+       class="message-p"
+    >
       No related addresses were found for this address.
     </p>
   </div>
@@ -27,6 +29,7 @@
 
 .list {
   position: inherit;
+  margin-bottom: 0px !important;
 }
 
 ul {
@@ -34,5 +37,13 @@ ul {
   padding-left: 0;
   margin-left: 0;
 }
+
+.message-p {
+  margin-bottom: 0px;
+}
+
+/*.topic-body {
+  margin-bottom: 0px;
+}*/
 
 </style>
