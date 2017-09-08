@@ -607,11 +607,12 @@ Mapboard.default({
           slots: {
             // text: 'test text in list',
             relatedAddresses(state) {
-              return state.geocode.related;
+              if (state.geocode.related.length > 0) {
+                return state.geocode.related;
+              } else {
+                return false;
+              }
             }
-            // value(state) {
-            //   return state.geocode.related;
-            // }
           },
         }
       ],
