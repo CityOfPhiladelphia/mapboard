@@ -124,7 +124,7 @@ export default {
         features.push({geojson, color, key});
       // dor parcel
       } else if (identifyFeature === 'dor-parcel' && activeParcelLayer === 'dor') {
-        const color = 'green';
+        const color = 'blue';
         const dorParcelFeatures = this.dorParcels.map(dorParcel => {
           const geojson = dorParcel;
           const key = geojson.properties.OBJECTID;
