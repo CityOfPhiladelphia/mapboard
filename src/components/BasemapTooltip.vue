@@ -60,9 +60,9 @@
 
 <style>
 .basetooltip {
-  width: 26px;
-  height: 26px;
-  padding: 2px 11px;
+  width: 32px;
+  height: 32px;
+  padding: 5px 13px;
   font: 20px/22px Arial, Helvetica, sans-serif;
   background: white;
   background: rgba(255,255,255,1);
@@ -71,11 +71,12 @@
 }
 
 .basetooltip2 {
+  float: right;
   width: 80%;
-  height: 20%;
+  height: 32px;
   padding: 3px 10px;
   padding-right: 40px;
-  font: 14px/16px Arial, Helvetica, sans-serif;
+  font: 12px/14px Arial, Helvetica, sans-serif;
   background: white;
   background: rgba(255,255,255,1);
   box-shadow: 0 0 15px rgba(0,0,0,0.2);
