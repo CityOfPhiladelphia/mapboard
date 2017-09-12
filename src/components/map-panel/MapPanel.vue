@@ -134,10 +134,13 @@
       >
       </control-corner>
 
-      <control-corner :vSide="'bottom'"
+      <!-- <control-corner :vSide="'bottom'"
                       :hSide="'almostleft'"
       >
-      </control-corner>
+      </control-corner> -->
+
+      <basemap-tooltip :position="'topright'"
+      />
 
       <div v-once>
         <basemap-toggle-control v-if="shouldShowImageryToggle"
@@ -188,8 +191,8 @@
         />
       </div>
 
-      <basemap-tooltip :position="'bottomalmostleft'"
-      />
+      <!-- <basemap-tooltip :position="'bottomalmostleft'"
+      /> -->
 
       <!-- <scale-control :vSide="'top'"
                      :hSide="'almostright'"

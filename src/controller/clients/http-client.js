@@ -25,6 +25,7 @@ class HttpClient extends BaseClient {
 
   fetch(feature, dataSource, dataSourceKey, targetIdFn) {
     const params = this.evaluateParams(feature, dataSource);
+    // console.log('http-client fetch, feature:', feature, 'dataSource:', dataSource, 'dataSourceKey:', dataSourceKey, 'targetIdFn:', targetIdFn, 'params:', params);
     const url = dataSource.url;
     const options = dataSource.options;
     const successFn = options.success;
@@ -85,7 +86,7 @@ class HttpClient extends BaseClient {
     axios.get(url, { params }).then(response => {
       // call success fn
       let data = response.data.rows;
-      console.log('table and data', table, data);
+      // console.log('table and data', table, data);
 
       if (successFn) {
         data = successFn(data);

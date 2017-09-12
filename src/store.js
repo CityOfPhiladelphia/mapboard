@@ -134,7 +134,8 @@ function createStore(config) {
     geocode: {
       status: null,
       data: null,
-      input: null
+      input: null,
+      related: null,
     },
     lastSearchMethod: null,
     // the leaflet map object
@@ -328,6 +329,9 @@ function createStore(config) {
       },
       setGeocodeData(state, payload) {
         state.geocode.data = payload;
+      },
+      setGeocodeRelated(state, payload) {
+        state.geocode.related = payload;
       },
       setGeocodeInput(state, payload) {
         state.geocode.input = payload;

@@ -41,8 +41,12 @@
           val = valOrGetter;
         }
 
-        // format nulls
-        if (!val) return nullValue;
+        // format nulls but not falses
+        if (val === false) {
+
+        } else if (!val) {
+          return nullValue;
+        }
 
         // apply transforms
         for (let transformKey of transforms) {

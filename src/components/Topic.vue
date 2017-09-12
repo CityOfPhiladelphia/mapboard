@@ -182,7 +182,7 @@
   }
 
   .topic-body {
-    padding: 10px;
+    padding: 5px;
     margin-bottom: 10px;
   }
 

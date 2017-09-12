@@ -42,7 +42,19 @@ class GeocodeClient extends BaseClient {
 
     // TODO do some checking here
     const feature = data.features[0];
+    let relatedFeatures = [];
+    for (let relatedFeature of data.features.slice(1)){
+      if (!!feature.properties.address_high) {
+        if (relatedFeature.properties.address_high) {
+          relatedFeatures.push(relatedFeature);
+        }
+      } else {
+        relatedFeatures.push(relatedFeature);
+      }
+    }
+
     store.commit('setGeocodeData', feature);
+    store.commit('setGeocodeRelated', relatedFeatures);
     store.commit('setGeocodeStatus', 'success');
 
     return feature;

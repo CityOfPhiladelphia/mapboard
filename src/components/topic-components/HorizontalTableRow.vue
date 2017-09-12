@@ -6,7 +6,7 @@
       @mouseout="handleRowMouseout"
   >
     <td v-for="field in fields"
-        v-html="evaluateSlot(field.value, field.transforms)"
+        v-html="evaluateSlot(field.value, field.transforms, field.nullValue)"
     />
   </tr>
 </template>
@@ -32,6 +32,7 @@
           const inVp = this.inViewport(el);
           if (!inVp) {
             el.scrollIntoView();
+            // el.scrollIntoView({block: "end", inline: "nearest"});
           }
         }
       }
@@ -51,7 +52,7 @@
       inViewport(el) {
         var rect = el.getBoundingClientRect();
         return (
-         rect.top >= 0 &&
+         rect.top >= parseInt(this.$config.rootStyle.top.replace('px', '')) + 100 &&
          rect.left >= 0 &&
          rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
          rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */

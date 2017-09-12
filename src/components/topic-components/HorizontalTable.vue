@@ -2,61 +2,72 @@
   <div v-if="shouldShowTable">
     <!-- controls -->
     <div class="mb-horizontal-table-controls">
-        <div v-if="!!this.$props.options.filters"
-             class="vertically-centered"
+      <div v-if="!!options.filters"
+           class="vertically-centered"
+      >
+        <!-- TODO the ids for filter spans should incorporate some sort of topic comp
+        to make them globally unique -->
+        <div v-for="(filter, index) in filters"
+              :id="'filter-' + index"
+              class="inline-block"
         >
-          <!-- TODO the ids for filter spans should incorporate some sort of topic comp
-          to make them globally unique -->
-          <div v-for="(filter, index) in filters"
-                :id="'filter-' + index"
-                class="inline-block"
-          >
-            <div class="vertically-centered mb-select-text">{{ filter.label }}</div>
-            <select @change="handleFilterValueChange"
-                    class="mb-select"
-            >
-              <optgroup>
-                <option v-for="filterValue in filter.values"
-                        :value="slugifyFilterValue(filterValue)"
-                        class="mb-select-option"
-                >
-                  {{ filterValue.label }}
-                </option>
-              </optgroup>
-            </select>
-          </div>
-
-          <div class="vertically-centered mb-select-text">Sort by</div>
-          <select @change="handleSortValueChange"
+          <div class="vertically-centered mb-select-text">{{ filter.label }}</div>
+          <select @change="handleFilterValueChange"
                   class="mb-select"
           >
             <optgroup>
-              <option v-for="defaultSortMethod in defaultSortMethods"
-                      :value="defaultSortMethod"
+              <option v-for="filterValue in filter.values"
+                      :value="slugifyFilterValue(filterValue)"
                       class="mb-select-option"
               >
-                {{ defaultSortMethod }}
+                {{ filterValue.label }}
               </option>
             </optgroup>
           </select>
-
         </div>
+      </div>
 
+      <!-- <div v-if="!!this.$props.options.sort && !!this.$props.options.sort.select" -->
+      <div v-if="!!options.sort && !!options.sort.select"
+           class="vertically-centered"
+      >
+        <div class="vertically-centered mb-select-text">Sort by</div>
+        <select @change="handleSortValueChange"
+                class="mb-select"
+        >
+          <optgroup>
+            <option v-for="defaultSortMethod in defaultSortMethods"
+                    :value="defaultSortMethod"
+                    class="mb-select-option"
+            >
+              {{ defaultSortMethod }}
+            </option>
+          </optgroup>
+        </select>
+
+      </div>
+
+      <div v-if="filterByTextFields"
+           class="vertically-centered"
+      >
+        <div class="mb-select-text inline-block">
+          {{ options.filterByText.label }}
+        </div>
         <form @submit.prevent="handleFilterFormX"
-              v-if="!!this.$props.options.filterFieldsByText"
-              class="vertically-centered"
+              class="inline-block"
         >
           <input :class="this.inputClass"
-                 placeholder="Search for text"
+                 placeholder="text"
                  id="theInput"
                  @keyup="handleFilterFormKeyup"
           />
-          <button v-if="this.searchText !=''"
-                  class="mb-search-control-button"
+          <button class="mb-search-control-button"
+          v-if="this.searchText !=''"
           >
             <i class="fa fa-times fa-lg"></i>
           </button>
         </form>
+      </div>
     </div> <!-- end of mb-horizontal-table-controls block -->
 
     <div class="mb-horizontal-table-body">
@@ -154,8 +165,9 @@
     watch: {
       itemsAfterFilters(nextItems) {
         // console.log('WATCH items after filters', nextItems);
-
+        // this.$nextTick(() => {
         this.updateTableFilteredData();
+        // })
       }
     },
     computed: {
@@ -210,7 +222,15 @@
         const itemsSlot = this.slots.items;
         return this.evaluateSlot(itemsSlot) || [];
       },
+      filterByTextFields() {
+        if (this.options.filterByText) {
+          return this.options.filterByText.fields;
+        } else {
+          return null;
+        }
+      },
       itemsAfterSearch() {
+        // console.log('itemsAfterSearch is running');
         const items = this.items;
         const searchText = this.searchText;
 
@@ -223,7 +243,7 @@
         // get full set of items
 
         // if text search is not enabled, return all items
-        const searchFields = this.options.filterFieldsByText || [];
+        const searchFields = this.filterByTextFields || [];
         if (searchFields.length === 0) {
           return items;
         }
@@ -233,22 +253,25 @@
           const searchVals = searchFields.map(filterField => {
             const props = item.properties;
             const searchVal = props ? props[filterField] : item[filterField];
+            // console.log('props', props, 'searchVal', searchVal);
             return searchVal.toLowerCase();
           });
 
+          let boolean = false;
           for (let searchVal of searchVals) {
+            // console.log('searchVal', searchVal, 'searchTextLower', searchTextLower);
             if (searchVal.includes(searchTextLower)) {
-              return true;
-            } else {
-              return false;
+              boolean = true;
             }
           }
+          return boolean;
         })
 
         return matchingItems;
       },
       // this takes itemsAfterSearch and applies selected filters
       itemsAfterFilters() {
+        // console.log('itemsAfterFilters is running');
         const itemsAfterSearch = this.itemsAfterSearch;
         const items = this.filterItems(itemsAfterSearch,
                                        this.filters,
@@ -335,7 +358,7 @@
         return {value, unit, direction};
       },
       handleSortValueChange(e) {
-        console.log('handleSortValueChange running', e);
+        // console.log('handleSortValueChange running', e);
 
         const value = e.target.value;
         this.sortMethod = value;
@@ -369,9 +392,10 @@
       },
       handleFilterFormX(e) {
         e.target[0].value = ''
-        this.searchText = '';
+        this.searchText = "";
       },
       filterItems(items, filters, filterSelections) {
+        // console.log('FILTER ITEMS is running, items:', items, 'filters:', filters, 'filterSelections:', filterSelections);
         let itemsFiltered = items.slice();
 
         if (filters) {
@@ -379,7 +403,8 @@
             const key = `filter-${index}`;
             const data = filterSelections[key];
             const {type, getValue} = filter;
-            const {direction, unit, value} = data;
+            const {unit, value} = data;
+            const direction = data.direction || 'subtract';
 
             // TODO put these in separate methods
             switch(type) {
@@ -453,7 +478,7 @@
         return items.sort(sortFn);
       },
       defaultSortFn(a, b) {
-        // console.log('defaultSortFn is running');
+        // console.log('defaultSortFn is running, a:', a, 'b:', b);
         const sortOpts = this.options.sort;
         const getValueFn = sortOpts.getValue;
         const sortMethod = this.sortMethod;
@@ -463,7 +488,19 @@
         const valB = getValueFn(b, sortMethod);
         let result;
 
-        if (valA < valB) {
+        if (valA === null) {
+          if (order === 'desc') {
+            result = -1
+          } else {
+            result = 1
+          }
+        } else if (valB === null) {
+          if (order === 'desc') {
+            result = 1
+          } else {
+            result = -1
+          }
+        } else if (valA < valB) {
           result = -1;
         } else if (valB < valA) {
           result = 1;
@@ -550,7 +587,7 @@
     padding: 8px;
     font-size: 16px;
     width: 300px;
-    margin-left: 50px;
+    /*margin-left: 10px;*/
   }
 
   .mb-search-control-input-full {
@@ -574,4 +611,9 @@
     display: table;
     clear: both;
   }
+
+  .mb-horizontal-table-body {
+    padding-bottom: 10px;
+  }
+
 </style>
