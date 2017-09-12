@@ -1,5 +1,6 @@
 <template>
   <div class="mb-root row collapse"
+       id="mb-root"
        :style="this.$config.rootStyle"
   >
     <topic-panel>
