@@ -2071,7 +2071,7 @@ Mapboard.default({
                 }
               },
               {
-                label: 'Description',
+                label: 'Description (not shared with the public)',
                 value(state, item) {
                   return item.properties.DESCRIPTION;
                 }
