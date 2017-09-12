@@ -592,32 +592,6 @@ Mapboard.default({
   },
   topics: [
     {
-      key: 'related',
-      icon: 'home',
-      label: 'Related Addresses',
-      components: [
-        // {
-        //   type: 'callout',
-        //   slots: {
-        //     text: 'This information is a test.'
-        //   }
-        // },
-        {
-          type: 'list',
-          slots: {
-            // text: 'test text in list',
-            relatedAddresses(state) {
-              if (state.geocode.related.length > 0) {
-                return state.geocode.related;
-              } else {
-                return false;
-              }
-            }
-          },
-        }
-      ],
-    },
-    {
       key: 'opa',
       icon: 'map-marker',
       label: 'Property Assessments',
@@ -1541,151 +1515,6 @@ Mapboard.default({
       parcels: 'dor'
     },
     {
-      key: 'water',
-      icon: 'tint',
-      label: 'Water',
-      dataSources: ['stormwater'],
-      basemap: 'pwd',
-      dynamicMapLayers: [
-        'stormwater'
-      ],
-      identifyFeature: 'pwd-parcel',
-      parcels: 'pwd',
-      components: [
-        {
-          type: 'callout',
-          slots: {
-            text: 'The property boundaries displayed on the map for reference only and may not be used in place of recorded deeds or land surveys. Boundaries are generalized for ease of visualization. Source: Philadelphia Water'
-          }
-        },
-        {
-          type: 'vertical-table',
-          slots: {
-            title: 'Parcel',
-            fields: [
-              {
-                label: 'Parcel ID',
-                value(state) {
-                  // return state.geocode.data.properties.pwd_parcel_id;
-                  return state.sources.stormwater.data.Parcel.ParcelID;
-                }
-              },
-              {
-                label: 'Address',
-                value(state) {
-                  return state.sources.stormwater.data.Parcel.Address;
-                }
-              },
-              {
-                label: 'Building Type',
-                value(state) {
-                  return state.sources.stormwater.data.Parcel.BldgType;
-                }
-              },
-              {
-                label: 'Gross Area',
-                value(state) {
-                  return state.sources.stormwater.data.Parcel.GrossArea + ' sq ft';
-                },
-                transforms: [
-                  'thousandsPlace'
-                ]
-              },
-              {
-                label: 'Impervious Area',
-                value(state) {
-                  return state.sources.stormwater.data.Parcel.ImpervArea + ' sq ft';
-                },
-                transforms: [
-                  'thousandsPlace'
-                ]
-              },
-              {
-                label: 'CAP Eligible',
-                value(state) {
-                  return state.sources.stormwater.data.Parcel.CAPEligible;
-                },
-                transforms: [
-                  'booleanToYesNo'
-                ]
-              },
-            ]
-          },
-        },
-        {
-          type: 'horizontal-table',
-          options: {
-            topicKey: 'water',
-            id: 'stormwater',
-            // limit: 100,
-            // TODO this isn't used yet, but should be for highlighting rows/
-            // map features.
-            // overlay: '311',
-            fields: [
-              {
-                label: 'Account #',
-                value(state, item) {
-                  return item.AccountNumber;
-                }
-              },
-              {
-                label: 'Customer',
-                value(state, item) {
-                  return item.CustomerName;
-                }
-              },
-              {
-                label: 'Status',
-                value(state, item) {
-                  return item.AcctStatus;
-                }
-              },
-              {
-                label: 'Service Type',
-                value(state, item) {
-                  return item.ServiceTypeLabel;
-                }
-              },
-              {
-                label: 'Size',
-                value(state, item) {
-                  return item.MeterSize;
-                }
-              },
-              {
-                label: 'Stormwater',
-                value(state, item) {
-                  return item.StormwaterStatus;
-                }
-              }
-            ],
-            externalLink: {
-              forceShow: true,
-              action(count) {
-                return `See more at Stormwater Billing`;
-              },
-              name: 'Stormwater Billing',
-              href(state) {
-                const id = state.sources.stormwater.data.Parcel.ParcelID;
-                return `//www.phila.gov/water/swmap/Parcel.aspx?parcel_id=${id}`;
-              }
-            }
-          },
-          slots: {
-            title: 'Accounts',
-            items(state) {
-              const data = state.sources['stormwater'].data
-              const rows = data.Accounts.map(row => {
-                const itemRow = Object.assign({}, row);
-                return itemRow;
-              });
-              return rows;
-            }
-          }
-        }
-      ]
-    },
-    {
       key: 'vacancy',
       icon: 'map-marker',
       label: 'Vacancy',
@@ -2259,6 +2088,177 @@ Mapboard.default({
           }
         }
       ]
+    },
+    {
+      key: 'water',
+      icon: 'tint',
+      label: 'Stormwater',
+      dataSources: ['stormwater'],
+      basemap: 'pwd',
+      dynamicMapLayers: [
+        'stormwater'
+      ],
+      identifyFeature: 'pwd-parcel',
+      parcels: 'pwd',
+      components: [
+        {
+          type: 'callout',
+          slots: {
+            text: 'The property boundaries displayed on the map for reference only and may not be used in place of recorded deeds or land surveys. Boundaries are generalized for ease of visualization. Source: Philadelphia Water'
+          }
+        },
+        {
+          type: 'vertical-table',
+          slots: {
+            title: 'Parcel',
+            fields: [
+              {
+                label: 'Parcel ID',
+                value(state) {
+                  // return state.geocode.data.properties.pwd_parcel_id;
+                  return state.sources.stormwater.data.Parcel.ParcelID;
+                }
+              },
+              {
+                label: 'Address',
+                value(state) {
+                  return state.sources.stormwater.data.Parcel.Address;
+                }
+              },
+              {
+                label: 'Building Type',
+                value(state) {
+                  return state.sources.stormwater.data.Parcel.BldgType;
+                }
+              },
+              {
+                label: 'Gross Area',
+                value(state) {
+                  return state.sources.stormwater.data.Parcel.GrossArea + ' sq ft';
+                },
+                transforms: [
+                  'thousandsPlace'
+                ]
+              },
+              {
+                label: 'Impervious Area',
+                value(state) {
+                  return state.sources.stormwater.data.Parcel.ImpervArea + ' sq ft';
+                },
+                transforms: [
+                  'thousandsPlace'
+                ]
+              },
+              {
+                label: 'CAP Eligible',
+                value(state) {
+                  return state.sources.stormwater.data.Parcel.CAPEligible;
+                },
+                transforms: [
+                  'booleanToYesNo'
+                ]
+              },
+            ]
+          },
+        },
+        {
+          type: 'horizontal-table',
+          options: {
+            topicKey: 'water',
+            id: 'stormwater',
+            // limit: 100,
+            // TODO this isn't used yet, but should be for highlighting rows/
+            // map features.
+            // overlay: '311',
+            fields: [
+              {
+                label: 'Account #',
+                value(state, item) {
+                  return item.AccountNumber;
+                }
+              },
+              {
+                label: 'Customer',
+                value(state, item) {
+                  return item.CustomerName;
+                }
+              },
+              {
+                label: 'Status',
+                value(state, item) {
+                  return item.AcctStatus;
+                }
+              },
+              {
+                label: 'Service Type',
+                value(state, item) {
+                  return item.ServiceTypeLabel;
+                }
+              },
+              {
+                label: 'Size',
+                value(state, item) {
+                  return item.MeterSize;
+                }
+              },
+              {
+                label: 'Stormwater',
+                value(state, item) {
+                  return item.StormwaterStatus;
+                }
+              }
+            ],
+            externalLink: {
+              forceShow: true,
+              action(count) {
+                return `See more at Stormwater Billing`;
+              },
+              name: 'Stormwater Billing',
+              href(state) {
+                const id = state.sources.stormwater.data.Parcel.ParcelID;
+                return `//www.phila.gov/water/swmap/Parcel.aspx?parcel_id=${id}`;
+              }
+            }
+          },
+          slots: {
+            title: 'Accounts',
+            items(state) {
+              const data = state.sources['stormwater'].data
+              const rows = data.Accounts.map(row => {
+                const itemRow = Object.assign({}, row);
+                return itemRow;
+              });
+              return rows;
+            }
+          }
+        }
+      ]
+    },
+    {
+      key: 'related',
+      icon: 'home',
+      label: 'Related Addresses',
+      components: [
+        // {
+        //   type: 'callout',
+        //   slots: {
+        //     text: 'This information is a test.'
+        //   }
+        // },
+        {
+          type: 'list',
+          slots: {
+            // text: 'test text in list',
+            relatedAddresses(state) {
+              if (state.geocode.related.length > 0) {
+                return state.geocode.related;
+              } else {
+                return false;
+              }
+            }
+          },
+        }
+      ],
     }
   ],
   // events: {

@@ -103,7 +103,7 @@ function createTableGroups(config) {
 }
 
 function createStore(config) {
-  const defaultTopic = config.topics[1];
+  const defaultTopic = config.topics[0];
 
   // create initial state for sources. data key => {}
   const sourceKeys = Object.keys(config.dataSources || {});

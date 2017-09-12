@@ -51,7 +51,6 @@
       },
       inViewport(el) {
         var rect = el.getBoundingClientRect();
-        console.log('rect', rect, 'rootStyle', this.$config.rootStyle);
         return (
          rect.top >= parseInt(this.$config.rootStyle.top.replace('px', '')) + 100 &&
          rect.left >= 0 &&
