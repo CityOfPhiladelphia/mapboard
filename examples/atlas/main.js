@@ -1654,10 +1654,17 @@ Mapboard.default({
                       ]
                     }
                   ],
-                  filterFieldsByText: [
-                    'service_name',
-                    'address'
-                  ],
+                  // filterFieldsByText: [
+                  //   'service_name',
+                  //   'address'
+                  // ],
+                  filterByText: {
+                    label: 'Filter by',
+                    fields: [
+                      'service_name',
+                      'address'
+                    ]
+                  },
                   mapOverlay: {
                     marker: 'circle',
                     style: {
@@ -1767,9 +1774,15 @@ Mapboard.default({
                       ]
                     }
                   ],
-                  filterFieldsByText: [
-                    'text_general_code',
-                  ],
+                  // filterFieldsByText: [
+                  //   'text_general_code',
+                  // ],
+                  filterByText: {
+                    label: 'Filter by',
+                    fields: [
+                      'text_general_code',
+                    ]
+                  },
                   mapOverlay: {
                     marker: 'circle',
                     style: {
@@ -1852,9 +1865,15 @@ Mapboard.default({
                       return val;
                     }
                   },
-                  filterFieldsByText: [
-                    'appealgrounds',
-                  ],
+                  // filterFieldsByText: [
+                  //   'appealgrounds',
+                  // ],
+                  filterByText: {
+                    label: 'Filter by',
+                    fields: [
+                      'appealgrounds'
+                    ]
+                  },
                   mapOverlay: {
                     marker: 'circle',
                     style: {
@@ -1992,11 +2011,19 @@ Mapboard.default({
                 ]
               }
             ],
-            filterFieldsByText: [
-              'DESCRIPTION',
-              'SUBJECT',
-              'ADDRESS'
-            ],
+            // filterFieldsByText: [
+            //   'DESCRIPTION',
+            //   'SUBJECT',
+            //   'ADDRESS'
+            // ],
+            filterByText: {
+              label: 'Filter by',
+              fields: [
+                'DESCRIPTION',
+                'SUBJECT',
+                'ADDRESS'
+              ]
+            },
             mapOverlay: {
               marker: 'circle',
               style: {

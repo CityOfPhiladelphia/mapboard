@@ -2,57 +2,62 @@
   <div v-if="shouldShowTable">
     <!-- controls -->
     <div class="mb-horizontal-table-controls">
-        <div v-if="!!options.filters"
-             class="vertically-centered"
+      <div v-if="!!options.filters"
+           class="vertically-centered"
+      >
+        <!-- TODO the ids for filter spans should incorporate some sort of topic comp
+        to make them globally unique -->
+        <div v-for="(filter, index) in filters"
+              :id="'filter-' + index"
+              class="inline-block"
         >
-          <!-- TODO the ids for filter spans should incorporate some sort of topic comp
-          to make them globally unique -->
-          <div v-for="(filter, index) in filters"
-                :id="'filter-' + index"
-                class="inline-block"
-          >
-            <div class="vertically-centered mb-select-text">{{ filter.label }}</div>
-            <select @change="handleFilterValueChange"
-                    class="mb-select"
-            >
-              <optgroup>
-                <option v-for="filterValue in filter.values"
-                        :value="slugifyFilterValue(filterValue)"
-                        class="mb-select-option"
-                >
-                  {{ filterValue.label }}
-                </option>
-              </optgroup>
-            </select>
-          </div>
-        </div>
-
-        <!-- <div v-if="!!this.$props.options.sort && !!this.$props.options.sort.select" -->
-        <div v-if="!!options.sort && !!options.sort.select"
-             class="vertically-centered"
-        >
-          <div class="vertically-centered mb-select-text">Sort by</div>
-          <select @change="handleSortValueChange"
+          <div class="vertically-centered mb-select-text">{{ filter.label }}</div>
+          <select @change="handleFilterValueChange"
                   class="mb-select"
           >
             <optgroup>
-              <option v-for="defaultSortMethod in defaultSortMethods"
-                      :value="defaultSortMethod"
+              <option v-for="filterValue in filter.values"
+                      :value="slugifyFilterValue(filterValue)"
                       class="mb-select-option"
               >
-                {{ defaultSortMethod }}
+                {{ filterValue.label }}
               </option>
             </optgroup>
           </select>
-
         </div>
+      </div>
 
+      <!-- <div v-if="!!this.$props.options.sort && !!this.$props.options.sort.select" -->
+      <div v-if="!!options.sort && !!options.sort.select"
+           class="vertically-centered"
+      >
+        <div class="vertically-centered mb-select-text">Sort by</div>
+        <select @change="handleSortValueChange"
+                class="mb-select"
+        >
+          <optgroup>
+            <option v-for="defaultSortMethod in defaultSortMethods"
+                    :value="defaultSortMethod"
+                    class="mb-select-option"
+            >
+              {{ defaultSortMethod }}
+            </option>
+          </optgroup>
+        </select>
+
+      </div>
+
+      <div v-if="!!options.filterByText.fields"
+           class="vertically-centered"
+      >
+        <div class="mb-select-text inline-block">
+          {{ options.filterByText.label }}
+        </div>
         <form @submit.prevent="handleFilterFormX"
-              v-if="!!options.filterFieldsByText"
-              class="vertically-centered"
+              class="inline-block"
         >
           <input :class="this.inputClass"
-                 placeholder="Search for text"
+                 placeholder="text"
                  id="theInput"
                  @keyup="handleFilterFormKeyup"
           />
@@ -62,6 +67,7 @@
             <i class="fa fa-times fa-lg"></i>
           </button>
         </form>
+      </div>
     </div> <!-- end of mb-horizontal-table-controls block -->
 
     <div class="mb-horizontal-table-body">
@@ -230,7 +236,7 @@
         // get full set of items
 
         // if text search is not enabled, return all items
-        const searchFields = this.options.filterFieldsByText || [];
+        const searchFields = this.options.filterByText.fields || [];
         if (searchFields.length === 0) {
           return items;
         }
@@ -244,13 +250,14 @@
             return searchVal.toLowerCase();
           });
 
+          let boolean = false;
           for (let searchVal of searchVals) {
+            // console.log('searchVal', searchVal, 'searchTextLower', searchTextLower);
             if (searchVal.includes(searchTextLower)) {
-              return true;
-            } else {
-              return false;
+              boolean = true;
             }
           }
+          return boolean;
         })
 
         return matchingItems;
@@ -573,7 +580,7 @@
     padding: 8px;
     font-size: 16px;
     width: 300px;
-    margin-left: 50px;
+    /*margin-left: 10px;*/
   }
 
   .mb-search-control-input-full {
