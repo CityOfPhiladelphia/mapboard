@@ -6,15 +6,18 @@
       <greeting v-show="!geocode" />
 
       <!-- after search -->
-      <div v-if="geocode">
+      <div v-if="geocode" class="address-found-div">
         <div class="address-spacer" v-if="address">
           <div class="address-header">
             <h1 class="address-header-line-1">{{ address }}</h1>
             <div class="address-header-line-2 small-text">PHILADELPHIA, PA {{ zipCode }}</div>
           </div>
         </div>
-        <div class="spacer-div"></div>
-        <div class="topics-container">
+        <!-- <div class="spacer-div"></div> -->
+        <div class="topics-container"
+             id="topics-container"
+             :style="styleObject"
+        >
           <topic v-for="topic in this.$config.topics"
                  :topicKey="topic.key"
                  :key="topic.key"
@@ -35,18 +38,23 @@
       Greeting,
       Topic
     },
-    methods: {
-      shouldShowTopic(topic) {
-        const requiredSources = topic.dataSources || [];
-
-        // if there aren't any required topics, show it
-        if (requiredSources.length === 0) {
-          return true;
+    data() {
+      const data = {
+        styleObject: {
+          'position': 'relative',
+          'top': '100px',
+          'overflow-y': 'auto',
+          'height': '100px'
         }
-
-        const sources = this.$store.state.sources;
-        return requiredSources.every(key => sources[key].data)
-      }
+      };
+      return data;
+    },
+    mounted() {
+      window.addEventListener('resize', this.handleWindowResize);
+      this.handleWindowResize();
+    },
+    beforeDestroy() {
+      window.removeEventListener('resize', this.handleWindowResize);
     },
     computed: {
       geocode() {
@@ -65,17 +73,47 @@
         const parts = [zipCode];
         if (zip4) parts.push(zip4);
         return parts.join('-');
+      },
+    },
+    methods: {
+      shouldShowTopic(topic) {
+        const requiredSources = topic.dataSources || [];
+
+        // if there aren't any required topics, show it
+        if (requiredSources.length === 0) {
+          return true;
+        }
+
+        const sources = this.$store.state.sources;
+        return requiredSources.every(key => sources[key].data)
+      },
+      handleWindowResize() {
+        // console.log('handleWindowResize is running');
+        const rootElement = document.getElementById('mb-root');
+        const rootStyle = window.getComputedStyle(rootElement);
+        const rootHeight = rootStyle.getPropertyValue('height');
+        const rootHeightNum = parseInt(rootHeight.replace('px', ''));
+        const topicsHeight = rootHeightNum - 100;
+        this.styleObject.height = topicsHeight.toString() + 'px';
       }
     }
   };
 </script>
 
 <style>
+  /*.row {
+    height: 100%;
+  }
+
+  .address-found-div {
+    height: 100%;
+  }*/
+
   .mb-panel-topics {
     background: #fff;
     padding-left: 20px !important;
     padding-right: 20px !important;
-    overflow-y: auto;
+    /*overflow-y: auto;*/
   }
 
   .address-spacer {
@@ -87,8 +125,7 @@
   }
 
   .address-header {
-    /*position: absolute;*/
-    /*top: 20px;*/
+    position: absolute;
     color: #666;
     border-left: 5px solid #58c04d;
     margin-left: 15px;
@@ -102,15 +139,13 @@
     margin-top: 0;
   }
 
-  .spacer-div {
+  /*.spacer-div {
     height: 100px;
-  }
+  }*/
 
-  .topics-container {
-    /*position: relative;*/
-    /*overflow-y: auto;*/
-    /*max-height: calc(100hv - 80px)*/
-    /*overflow: scroll;*/
-    /*top: 180px;*/
-  }
+  /*.topics-container {
+    position: relative;
+    top: 100px;
+    overflow-y: auto;
+  }*/
 </style>
