@@ -122,7 +122,7 @@ class Router {
     if (!prevTopic || prevTopic !== nextTopic) {
       this.store.commit('setActiveTopic', nextTopic);
       const prevBasemap = this.store.state.map.basemap || null;
-      if (!this.store.state.map.shouldShowImagery) {
+      // if (!this.store.state.map.shouldShowImagery) {
         const nextTopicConfig = this.config.topics.filter(topic => {
           return topic.key === nextTopic;
         })[0] || {};
@@ -130,7 +130,7 @@ class Router {
         if (prevBasemap !== nextBasemap) {
           this.store.commit('setBasemap', nextTopicConfig.parcels);
         }
-      }
+      // }
     }
 
     if (!this.silent) {
