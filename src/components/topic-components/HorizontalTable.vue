@@ -47,7 +47,7 @@
 
       </div>
 
-      <div v-if="!!options.filterByText.fields"
+      <div v-if="filterByTextFields"
            class="vertically-centered"
       >
         <div class="mb-select-text inline-block">
@@ -222,6 +222,13 @@
         const itemsSlot = this.slots.items;
         return this.evaluateSlot(itemsSlot) || [];
       },
+      filterByTextFields() {
+        if (this.options.filterByText) {
+          return this.options.filterByText.fields;
+        } else {
+          return null;
+        }
+      },
       itemsAfterSearch() {
         // console.log('itemsAfterSearch is running');
         const items = this.items;
@@ -236,7 +243,7 @@
         // get full set of items
 
         // if text search is not enabled, return all items
-        const searchFields = this.options.filterByText.fields || [];
+        const searchFields = this.filterByTextFields || [];
         if (searchFields.length === 0) {
           return items;
         }

@@ -1654,10 +1654,6 @@ Mapboard.default({
                       ]
                     }
                   ],
-                  // filterFieldsByText: [
-                  //   'service_name',
-                  //   'address'
-                  // ],
                   filterByText: {
                     label: 'Filter by',
                     fields: [
@@ -1774,9 +1770,6 @@ Mapboard.default({
                       ]
                     }
                   ],
-                  // filterFieldsByText: [
-                  //   'text_general_code',
-                  // ],
                   filterByText: {
                     label: 'Filter by',
                     fields: [
@@ -1865,9 +1858,6 @@ Mapboard.default({
                       return val;
                     }
                   },
-                  // filterFieldsByText: [
-                  //   'appealgrounds',
-                  // ],
                   filterByText: {
                     label: 'Filter by',
                     fields: [
@@ -2011,11 +2001,6 @@ Mapboard.default({
                 ]
               }
             ],
-            // filterFieldsByText: [
-            //   'DESCRIPTION',
-            //   'SUBJECT',
-            //   'ADDRESS'
-            // ],
             filterByText: {
               label: 'Filter by',
               fields: [
