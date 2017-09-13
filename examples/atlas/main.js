@@ -218,6 +218,23 @@ Mapboard.default({
         }
       }
     },
+    liPermitsAdditional: {
+      type: 'http-get',
+      url: 'http://ase.phila.gov/arcgis/rest/services/GSG/GIS_LNI_LI_PERMITS_PLANNING/FeatureServer/0/query?',
+      options: {
+        params: {
+          where: function(feature){ return 'ADDRESSKEY = ' + feature.properties.li_address_key },
+          outFields: '*',
+          f: 'json'
+        },
+        success: function(data) {
+          return data.features;
+        },
+        // success: function(data) {
+        //   return data;
+        // }
+      },
+    },
     liInspections: {
       type: 'http-get',
       url: 'https://phl.carto.com/api/v2/sql',
@@ -1248,6 +1265,89 @@ Mapboard.default({
             },
           },
         }
+      ],
+      basemap: 'pwd',
+      dynamicMapLayers: [
+        //'zoning'
+      ],
+      identifyFeature: 'address-marker',
+      parcels: 'pwd'
+    },
+    {
+      key: 'permitsAdditional',
+      icon: 'plus',
+      label: 'Additional Permit Information',
+      dataSources: [
+        'liPermitsAdditional',
+      ],
+      components: [
+        {
+          type: 'horizontal-table',
+          options: {
+            topicKey: 'permits',
+            id: 'liPermitsAdditional',
+            fields: [
+              {
+                label: 'Date',
+                value: function(state, item){
+                  return item.attributes.PERMITISSUEDATE
+                },
+                nullValue: 'no date available',
+                transforms: [
+                  'date'
+                ]
+              },
+              {
+                label: 'ID',
+                value: function(state, item){
+                  return "<a target='_blank' href='//li.phila.gov/#details?entity=permits&eid="+item.attributes.PERMITNUMBER+"&key="+item.attributes.ADDRESSKEY+"&address="+item.attributes.ADDRESS+"'>"+item.attributes.PERMITNUMBER+" <i class='fa fa-external-link'></i></a>"
+                }
+              },
+              {
+                label: 'Building Area',
+                value: function(state, item){
+                  return item.attributes.BLDGAREA
+                },
+                nullValue: 'no area available',
+                transforms: [
+                  'thousandsPlace'
+                ]
+              },
+              {
+                label: 'Declared Value',
+                value: function(state, item){
+                  return item.attributes.DECLAREDVALUE
+                },
+                nullValue: 'no value available',
+                transforms: [
+                  'currency'
+                ]
+              },
+            ],
+            sort: {
+              // this should return the val to sort on
+              getValue: function(item) {
+                return item.attributes.PERMITISSUEDATE;
+              },
+              // asc or desc
+              order: 'desc'
+            },
+          },
+          slots: {
+            title: 'Permits',
+            items: function(state) {
+              var data = state.sources['liPermitsAdditional'].data;
+              var rows = data.map(function(row){
+                var itemRow = row;
+                // var itemRow = Object.assign({}, row);
+                //itemRow.DISTANCE = 'TODO';
+                return itemRow;
+              });
+              // console.log('rows', rows);
+              return rows;
+            },
+          },
+        },
       ],
       basemap: 'pwd',
       dynamicMapLayers: [
