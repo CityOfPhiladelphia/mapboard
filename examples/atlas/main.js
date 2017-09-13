@@ -1489,7 +1489,7 @@ Mapboard.default({
                   return item.properties.PRIMARY_NAME + '<br>'
                   + item.properties.PRIMARY_PHONE + '<br>'
                   // + `<b><a :href="'mailto:' + item.properties.PRIMARY_EMAIL">`
-                  + item.properties.PRIMARY_EMAIL + '</a></b>'
+                  + item.properties.PRIMARY_EMAIL// + '</a></b>'
                 },
                 transforms: [
                   'rcoPrimaryContact'
