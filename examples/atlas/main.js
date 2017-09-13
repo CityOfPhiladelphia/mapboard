@@ -445,6 +445,7 @@ Mapboard.default({
         targetGeometry: function(state, Leaflet) {
           // get combined extent of dor parcels
           var parcels = state.dorParcels.data;
+          // console.log('parcels', parcels);
 
           // build up sets of x and y values
           var xVals = [];
@@ -452,13 +453,16 @@ Mapboard.default({
 
           // loop over parcels
           for (var i=0; i < parcels.length; i++) {
+            // console.log('parcels[i]', parcels[i])
             var coordSets = parcels[i].geometry.coordinates;
             // loop over coordinate sets
             for (var j=0; j < coordSets.length; j++) {
+              // console.log('coordSets[j]', coordSets[j]);
               // loop over coordinates
               for (var k=0; k < coordSets[j].length; k++) {
-                var x = coordSets[j][k]['x'];
-                var y = coordSets[j][k]['y'];
+                // console.log('coordSets[j][k]', coordSets[j][k]);
+                var x = coordSets[j][k][0];
+                var y = coordSets[j][k][1];
 
                 xVals.push(x);
                 yVals.push(y);
@@ -467,10 +471,13 @@ Mapboard.default({
           }
 
           // take max/min
-          var xMin = Math.min(xVals);
-          var xMax = Math.max(xVals);
-          var yMin = Math.min(yVals);
-          var yMax = Math.max(yVals);
+          var xMin = Math.min.apply(null, xVals);
+          var xMax = Math.max.apply(null, xVals);
+          var yMin = Math.min.apply(null, yVals);
+          var yMax = Math.max.apply(null, yVals);
+
+          // console.log('xVals', xVals, 'xMin', xMin, 'xMax', xMax);
+          // console.log('yVals', yVals, 'yMin', yMin, 'yMax', yMax);
 
           // varruct geometry
           var bounds = L.latLngBounds([
