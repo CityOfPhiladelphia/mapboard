@@ -6,4 +6,7 @@ yarn-error.log
 src/config.js
 src/util/streetsmart.js
 
+examples/atlas/main_es6.js
+examples/atlas/main_es5.js
+
 sh.exe.stackdump
