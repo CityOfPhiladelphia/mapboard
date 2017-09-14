@@ -131,11 +131,14 @@ function createStore(config) {
   const initialState = {
     activeTopic: defaultTopic.key,
     // the ais feature
+    clickCoords: null,
     geocode: {
       status: null,
       data: null,
       input: null,
       related: null,
+      forwardStatus: null,
+      reverseStatus: null,
     },
     lastSearchMethod: null,
     // the leaflet map object
@@ -240,6 +243,9 @@ function createStore(config) {
       }
     },
     mutations: {
+      setClickCoords(state, payload) {
+        state.clickCoords = payload;
+      },
       setTables(state, payload) {
         state.tables = payload;
       },
@@ -326,6 +332,12 @@ function createStore(config) {
       },
       setGeocodeStatus(state, payload) {
         state.geocode.status = payload;
+      },
+      setGeocodeForwardStatus(state, payload) {
+        state.geocode.forwardStatus = payload;
+      },
+      setGeocodeReverseStatus(state, payload) {
+        state.geocode.reverseStatus = payload;
       },
       setGeocodeData(state, payload) {
         state.geocode.data = payload;

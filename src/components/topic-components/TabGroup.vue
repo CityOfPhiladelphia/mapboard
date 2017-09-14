@@ -78,7 +78,7 @@
     methods: {
       clickedItem(item) {
         this.$data.activeItem = this.keyForItem(item)
-        console.log('clickedItem is firing');
+        // console.log('clickedItem is firing');
         this.$store.commit('setActiveDorParcel', this.$data.activeItem);
       },
       keyForItem(item) {
