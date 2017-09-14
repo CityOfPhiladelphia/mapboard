@@ -3,10 +3,11 @@
     <div class="row">
     <!-- <div class="row" :class="{ 'row-with-widget': this.$store.state.pictometry.active }"> -->
       <!-- before search -->
-      <greeting v-show="!geocode" />
+      <!-- <greeting v-show="!geocode" /> -->
+      <greeting v-show="shouldShowGreeting" />
 
       <!-- after search -->
-      <div v-if="geocode" class="address-found-div">
+      <div v-if="!shouldShowGreeting" class="address-found-div">
         <div class="address-spacer" v-if="address">
           <div class="address-header">
             <h1 class="address-header-line-1">{{ address }}</h1>
@@ -59,6 +60,16 @@
     computed: {
       geocode() {
         return this.$store.state.geocode.data;
+      },
+      dorParcels() {
+        return this.$store.state.dorParcels.data.length > 0;
+      },
+      shouldShowGreeting() {
+        if (!this.geocode && !this.dorParcels) {
+          return true;
+        } else {
+          return false;
+        }
       },
       address() {
         const geocode = this.geocode;
