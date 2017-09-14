@@ -337,7 +337,8 @@ Mapboard.default({
           return target.properties.OBJECTID;
         },
       },
-      url: '//ase.phila.gov/arcgis/rest/services/RTT/MapServer/0/query',
+      // url: '//ase.phila.gov/arcgis/rest/services/RTT/MapServer/0/query',
+      url: '//ase.phila.gov/arcgis/rest/services/DOR/rttsummary/MapServer/0/query',
       options: {
         params: {
           where: function(feature, state) {
@@ -349,13 +350,13 @@ Mapboard.default({
             if (!parcelBaseAddress || parcelBaseAddress === 'null') return '1 = 0';
 
             // var where = `ADDRESS = '${parcelBaseAddress}'`;
-            var where = 'ADDRESS = ' + parcelBaseAddress;
+            var where = "STREET_ADDRESS = '" + parcelBaseAddress + "'";
 
             // check for unit num
             var unitNum = cleanDorAttribute(feature.properties.UNIT);
 
             if (unitNum) {
-              where += ' AND CONDO_UNIT = ' + unitNum;
+              where += " AND UNIT_NUM = '" + unitNum + "'";
             }
 
             // METHOD 2: via parcel id - the layer doesn't have mapreg yet, though
@@ -636,7 +637,6 @@ Mapboard.default({
         {
           type: 'vertical-table',
           slots: {
-            // title: 'Account',
             fields: [
               {
                 label: 'OPA Account #',
@@ -699,8 +699,6 @@ Mapboard.default({
               name: 'Property Search',
               href: function(state) {
                 var id = state.geocode.data.properties.opa_account_num;
-                // var addressEncoded = encodeURIComponent(address);
-                // return `//property.phila.gov/?p=${id}`;
                 return '//property.phila.gov/?p=' + id;
               }
             }
@@ -883,19 +881,19 @@ Mapboard.default({
                     {
                       label: 'Type',
                       value: function(state, item) {
-                        return item.attributes.DOC_TYPE;
+                        return item.attributes.DOCUMENT_TYPE;
                       },
                     },
                     {
                       label: 'Grantor',
                       value: function(state, item) {
-                        return item.attributes.GRANTOR;
+                        return item.attributes.GRANTORS;
                       },
                     },
                     {
                       label: 'Grantee',
                       value: function(state, item) {
-                        return item.attributes.GRANTEE;
+                        return item.attributes.GRANTEES;
                       },
                     },
                   ], // end fields
@@ -923,8 +921,6 @@ Mapboard.default({
             ] // end parcel tab content comps
           }, // end parcel tab options
           slots: {
-            // REVIEW should this go in options? maybe not, since it should be
-            // reactive.
             items: function(state) {
               return state.dorParcels.data;
             }
@@ -1016,14 +1012,12 @@ Mapboard.default({
             },
             externalLink: {
               action: function(count) {
-                // return `See ${count} older permits at L&I Property History`;
                 return 'See ' + count + ' older permits at L&I Property History';
               },
               name: 'L&I Property History',
               href: function(state) {
                 var address = state.geocode.data.properties.street_address;
                 var addressEncoded = encodeURIComponent(address);
-                // return `//li.phila.gov/#summary?address=${addressEncoded}`;
                 return '//li.phila.gov/#summary?address=' + addressEncoded;
               }
             }
@@ -1034,11 +1028,8 @@ Mapboard.default({
               var data = state.sources['liPermits'].data.rows;
               var rows = data.map(function(row){
                 var itemRow = row;
-                // var itemRow = Object.assign({}, row);
-                //itemRow.DISTANCE = 'TODO';
                 return itemRow;
               });
-              // console.log('rows', rows);
               return rows;
             },
           },
@@ -1699,12 +1690,6 @@ Mapboard.default({
         {
           type: 'table-group',
           options: {
-            // getKey: function(item) {
-            //   return item.properties.OBJECTID;
-            // },
-            // getTitle: function(item) {
-            //   return item.properties.MAPREG;
-            // },
             filters: [
               {
                 type: 'data',
@@ -1728,7 +1713,7 @@ Mapboard.default({
                 ]
               },
             ],
-            // components for the content pane. this essentially a topic body.
+            // components for the content pane.
             components: [
               {
                 type: 'horizontal-table',
@@ -2390,7 +2375,6 @@ Mapboard.default({
         {
           type: 'list',
           slots: {
-            // text: 'test text in list',
             relatedAddresses: function(state) {
               if (state.geocode.related.length > 0) {
                 return state.geocode.related;
@@ -2398,7 +2382,7 @@ Mapboard.default({
                 return false;
               }
             }
-          },
+          }
         }
       ],
     }
