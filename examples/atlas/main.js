@@ -1260,6 +1260,73 @@ Mapboard.default({
               return rows;
             },
           },
+        },
+        {
+          type: 'horizontal-table',
+          options: {
+            topicKey: 'permits',
+            id: 'liPermitsAdditional',
+            fields: [
+              {
+                label: 'Date',
+                value: function(state, item){
+                  return item.attributes.PERMITISSUEDATE
+                },
+                nullValue: 'no date available',
+                transforms: [
+                  'date'
+                ]
+              },
+              {
+                label: 'ID',
+                value: function(state, item){
+                  return "<a target='_blank' href='//li.phila.gov/#details?entity=permits&eid="+item.attributes.PERMITNUMBER+"&key="+item.attributes.ADDRESSKEY+"&address="+item.attributes.ADDRESS+"'>"+item.attributes.PERMITNUMBER+" <i class='fa fa-external-link'></i></a>"
+                }
+              },
+              {
+                label: 'Building Area',
+                value: function(state, item){
+                  return item.attributes.BLDGAREA
+                },
+                nullValue: 'no area available',
+                transforms: [
+                  'thousandsPlace'
+                ]
+              },
+              {
+                label: 'Declared Value',
+                value: function(state, item){
+                  return item.attributes.DECLAREDVALUE
+                },
+                nullValue: 'no value available',
+                transforms: [
+                  'currency'
+                ]
+              },
+            ],
+            sort: {
+              // this should return the val to sort on
+              getValue: function(item) {
+                return item.attributes.PERMITISSUEDATE;
+              },
+              // asc or desc
+              order: 'desc'
+            },
+          },
+          slots: {
+            title: 'Building Area and Value',
+            items: function(state) {
+              var data = state.sources['liPermitsAdditional'].data;
+              var rows = data.map(function(row){
+                var itemRow = row;
+                // var itemRow = Object.assign({}, row);
+                //itemRow.DISTANCE = 'TODO';
+                return itemRow;
+              });
+              // console.log('rows', rows);
+              return rows;
+            },
+          },
         }
       ],
       basemap: 'pwd',
@@ -1269,7 +1336,7 @@ Mapboard.default({
       identifyFeature: 'address-marker',
       parcels: 'pwd'
     },
-    {
+/*    {
       key: 'permitsAdditional',
       icon: 'plus',
       label: 'Additional Permit Information',
@@ -1351,7 +1418,7 @@ Mapboard.default({
       ],
       identifyFeature: 'address-marker',
       parcels: 'pwd'
-    },
+    },*/
     {
       key: 'zoning',
       icon: 'building-o',
