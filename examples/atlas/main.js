@@ -627,7 +627,7 @@ Mapboard.default({
     {
       key: 'opa',
       icon: 'map-marker',
-      label: 'Property Assessments',
+      label: 'Assessments',
       // REVIEW can these be calculated from vue deps?
       dataSources: ['opa'],
       components: [
@@ -1507,7 +1507,20 @@ Mapboard.default({
               {
                 label: 'ID',
                 value: function(state, item){
-                  return item.appid + '-' + item.docid
+                  return "<a target='_blank' href='//www.phila.gov/zoningarchive/Preview.aspx?address="
+                          + item.address
+                          + "&&docType="
+                          + item.doctype
+                          + "&numofPages="
+                          + item.page_numbers
+                          + "&docID="
+                          + item.docid
+                          + "&app="
+                          + item.appid
+                          +"'>"
+                          + item.appid + '-' + item.docid + ' '
+                          + "<i class='fa fa-external-link'></i></a>"
+                  // return item.appid + '-' + item.docid
                 }
               },
               {
@@ -1522,13 +1535,13 @@ Mapboard.default({
                   return item.page_numbers
                 }
               },
-              {
-                label: 'Link',
-                value: function(state, item){
-                  // return "<a href='//www.washingtonpost.com/'>View Scan</a>"
-                  return "<a target='_blank' href='//www.phila.gov/zoningarchive/Preview.aspx?address=" + item.address + "&&docType=" + item.doctype + "&numofPages=" + item.page_numbers + "&docID=" + item.docid + "&app=" + item.appid +"'>View Scan <i class='fa fa-external-link'></i></a>"
-                }
-              },
+              // {
+              //   label: 'Link',
+              //   value: function(state, item){
+              //     // return "<a href='//www.washingtonpost.com/'>View Scan</a>"
+              //     return "<a target='_blank' href='//www.phila.gov/zoningarchive/Preview.aspx?address=" + item.address + "&&docType=" + item.doctype + "&numofPages=" + item.page_numbers + "&docID=" + item.docid + "&app=" + item.appid +"'>View Scan <i class='fa fa-external-link'></i></a>"
+              //   }
+              // },
             ],
             sort: {
               // this should return the val to sort on
@@ -1540,7 +1553,7 @@ Mapboard.default({
             },
           },
           slots: {
-            title: 'Documents',
+            title: 'Archived Documents',
             subtitle: 'aka "Zoning Archive"',
             items: function(state) {
               if (state.sources['zoningDocs'].data) {
@@ -2077,6 +2090,7 @@ Mapboard.default({
             topicKey: '311',
             id: '311',
             sort: {
+              select: true,
               getValue: function(item, method) {
                 var val;
 
