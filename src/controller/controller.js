@@ -42,8 +42,9 @@ class Controller {
 
     this.store.commit('setLastSearchMethod', 'geocode');
     this.store.commit('setClickCoords', null);
-    this.store.commit('setGeocodeForwardStatus', null);
-    this.store.commit('setGeocodeReverseStatus', null);
+    this.store.commit('setGeocodeStatus', null);
+    // this.store.commit('setGeocodeForwardStatus', null);
+    // this.store.commit('setGeocodeReverseStatus', null);
 
     // clear out state
     this.store.commit('setPwdParcel', null);
@@ -64,8 +65,9 @@ class Controller {
     }
     this.store.commit('setLastSearchMethod', 'reverseGeocode');
     this.store.commit('setClickCoords', null);
-    this.store.commit('setGeocodeForwardStatus', null);
-    this.store.commit('setGeocodeReverseStatus', null);
+    // this.store.commit('setGeocodeStatus', null);
+    // this.store.commit('setGeocodeForwardStatus', null);
+    // this.store.commit('setGeocodeReverseStatus', null);
 
     // get parcels that intersect map click xy
     const latLng = e.latlng;
