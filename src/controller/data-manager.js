@@ -384,45 +384,62 @@ class DataManager {
     // emit event to event bus
     this.eventBus.$emit('geocodeResult', feature);
 
-    // if this is the result of a search from the search box, get parcels
-    const lastSearchMethod = this.store.state.lastSearchMethod;
+    // if it is a dor parcel query, and the geocode fails, coordinates can still be used
+    // to get dor parcels which are not in ais
+    // set coords to the ais coords OR the click if there is no ais result
+    let coords;
     if (!feature) {
       console.log('did geocode but no geom', feature);
+      const clickCoords = this.store.state.clickCoords;
+      coords = [clickCoords.lng, clickCoords.lat];
+    } else {
+      coords = feature.geometry.coordinates;
     }
-    const [lng, lat] = feature.geometry.coordinates;
+    const [lng, lat] = coords;
     const latlng = L.latLng(lat, lng);
 
+    const lastSearchMethod = this.store.state.lastSearchMethod;
+    // there is a lastSearchMethod if the map was clicked or the searchbox was used
     if (lastSearchMethod) {
-      // console.log('DATAMANAGER DIDGEOCODE YES LASTSEARCHMETHOD', lastSearchMethod);
+      console.log('datamanager didGeocode lastSearchMethod', lastSearchMethod)
+      // if this is the result of a search from the search box, get pwd and dor parcels
       if (lastSearchMethod === 'geocode') {
-        // console.log('DATAMANAGER DIDGEOCODE YES LASTSEARCHMETHOD', lastSearchMethod, 'AND GEOCODE', dorParcelId);
         /* DOR PARCELS */
         const dorParcelId = feature.properties.dor_parcel_id;
 
         if (dorParcelId && dorParcelId.length > 0) {
-          // this.clients.dorParcel.fetchById(dorParcelId);
           this.getDorParcelsById(dorParcelId);
         } else {
           // if we don't have a parcel id (aka mapreg), it's probably because
-          // the parcel hsa a data quality issue and isn't in ais. so search by
+          // the parcel has a data quality issue and isn't in ais. so search by
           // latlng.
           this.getDorParcelsByLatLng(latlng);
         }
 
         /* PWD PARCELS */
         const pwdParcelId = feature.properties.pwd_parcel_id;
-        // this.clients.pwdParcel.fetchById(pwdParcelId);
         this.getPwdParcelById(pwdParcelId);
+
+      // if this is the result of a map-click, you may need to get dor parcels
+      } else {
+        // if this is the result of a map-click in a pwd-parcel topic
+        // use the click latlng to get intersecting dor parcels.
+        // this is needed because it will not automatically get the dor parcels
+        // in case it does not find a pwd parcel
+        if (this.activeParcelLayer() === 'pwd') {
+          // console.log('reverseGeocode happened and only got pwd parcel, getting dorParcels now with latlng')
+          this.getDorParcelsByLatLng(latlng);
+        }
       }
     } else {
-      // console.log('DATAMANAGER DIDGEOCODE NO LASTSEARCHMETHOD')
-      // if we're here, then ais did not have a dor parcel id, so we'll use
-      // the ais xy to get intersecting dor parcels
+      // OLD COMMENT (not sure if it is wrong) - if we're here, then ais did not have a dor parcel id, so we'll use the ais xy to get intersecting dor parcels
+
+      // NEW COMMENT - if we're here, the app routed to an address automatically, so it needs dor parcels
       this.getDorParcelsByLatLng(latlng);
     }
 
     // pan and zoom map
-    const coords = feature.geometry.coordinates;
+    // console.log('coords', coords);
     this.store.commit('setMapCenter', coords);
     this.store.commit('setMapZoom', 19);
 
