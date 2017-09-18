@@ -15,13 +15,13 @@
       },
     },
     mounted() {
-      console.log('mounting PngMarker', this.icon);
+      // console.log('mounting PngMarker', this.icon);
       this.placeMarker(this.$props.latlng);
     },
     beforeDestroy() {
-      console.log('before destroying PngMarker', this.icon);
+      // console.log('before destroying PngMarker', this.icon);
       this.ipa.removeShapes(this.$store.state.pictometry.pngMarkerIds);
-      console.log('before destroyed PngMarker', this.icon);
+      // console.log('before destroyed PngMarker', this.icon);
     },
     // destroyed() {
     //   console.log('destroying PngMarker', this.icon);
@@ -30,7 +30,7 @@
     // },
     watch: {
       latlng(nextLatlng) {
-        console.log('PngMarker: latlng changed');
+        // console.log('PngMarker: latlng changed');
         this.ipa.removeShapes(this.$store.state.pictometry.pngMarkerIds);
         this.placeMarker(nextLatlng);
       }
@@ -40,7 +40,7 @@
         return 'http://' + host + path1 + path2;
       },
       placeMarker(nextLatlng) {
-        console.log('starting placeMarker', nextLatlng, this.$props.icon);
+        // console.log('starting placeMarker', nextLatlng, this.$props.icon);
         const pngMarker = {
           type : this.ipa.SHAPE_TYPE.MARKER,
           center: { y: nextLatlng[0], x: nextLatlng[1]},
