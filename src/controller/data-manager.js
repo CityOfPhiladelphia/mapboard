@@ -543,7 +543,7 @@ class DataManager {
 
       return;
     }
-    if (!featureCollection) {
+    if (!featureCollection || featureCollection.features.length === 0) {
       console.warn('did get dor parcels, but no features');
       return;
     }
