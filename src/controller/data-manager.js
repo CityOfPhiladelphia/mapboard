@@ -107,7 +107,7 @@ class DataManager {
       const type = dataSource.type;
       const targetsDef = dataSource.targets;
 
-      // console.log('key:', dataSourceKey)
+      // console.log('key:', dataSourceKey, type);
 
       // if the data sources specifies a features getter, use that to source
       // features for evaluating params/forming requests. otherwise,
@@ -182,7 +182,7 @@ class DataManager {
         // TODO do this for all targets
         switch(type) {
           case 'http-get':
-            // console.log('http-get', targetIdFn);
+            // console.log('http-get', dataSourceKey, targetIdFn);
             this.clients.http.fetch(target,
                                     dataSource,
                                     dataSourceKey,
@@ -190,6 +190,7 @@ class DataManager {
             break;
 
           case 'http-get-nearby':
+          // console.log('http-get-nearby', dataSourceKey, targetIdFn)
             this.clients.http.fetchNearby(target,
                                           dataSource,
                                           dataSourceKey,
@@ -197,12 +198,14 @@ class DataManager {
             break;
 
           case 'esri':
+            // console.log('esri', dataSourceKey)
             // TODO add targets id fn
             this.clients.esri.fetch(target, dataSource, dataSourceKey);
             break;
 
             break;
           case 'esri-nearby':
+            // console.log('esri-nearby', dataSourceKey)
             // TODO add targets id fn
             this.clients.esri.fetchNearby(target, dataSource, dataSourceKey);
             break;
@@ -210,9 +213,11 @@ class DataManager {
           default:
             throw `Unknown data source type: ${type}`;
             break;
-        }
-      }
-    }
+        }  // end of switch
+      }  // end of for targets loop
+      // console.log('end of targets loop for', dataSourceKey);
+    } // end of for dataSource loop
+    // console.log('end of outer loop');
   }
 
   didFetchData(key, status, data, targetId) {
@@ -306,10 +311,12 @@ class DataManager {
   }
 
   checkDataSourceReady(key, options, targetId) {
-    // console.log(`check data source ready: ${key} ${targetId || ''}`);
+    // console.log(`check data source ready: ${key} ${targetId || ''}`, options);
 
     const deps = options.deps;
+    // console.log('deps', deps);
     const depsMet = this.checkDataSourcesFetched(deps);
+    // console.log('depsMet', depsMet);
     let isReady = false;
 
     // if data deps have been met
@@ -324,6 +331,7 @@ class DataManager {
       isReady = !targetObj.status;
     }
 
+    // console.log('checkDataSourceReady isReady:', isReady);
     return isReady;
   }
 

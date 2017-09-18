@@ -79,7 +79,7 @@ class Router {
   }
 
   routeToAddress(nextAddress) {
-    // console.log('Router.routeToAddress', nextAddress);
+    console.log('Router.routeToAddress', nextAddress);
 
     if (nextAddress) {
       // check against current address

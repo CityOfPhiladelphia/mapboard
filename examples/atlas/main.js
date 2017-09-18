@@ -231,9 +231,6 @@ Mapboard.default({
         success: function(data) {
           return data.features;
         },
-        // success: function(data) {
-        //   return data;
-        // }
       },
     },
     liInspections: {
@@ -286,15 +283,12 @@ Mapboard.default({
       url: 'https://phl.carto.com/api/v2/sql',
       options: {
         params: {
-          // q: feature => "select * from zoning_documents_20170420 where address_std = '" + feature.properties.street_address + "' or addrkey = " + feature.properties.li_address_key,
           q: function(feature) {
             var stmt = "select * from zoning_documents_20170420 where address_std = '" + feature.properties.street_address + "'";
             var addressKey = feature.properties.li_address_key;
-
             if (addressKey && addressKey.length > 0) {
               stmt += " or addrkey = " + feature.properties.li_address_key;
             }
-
             return stmt;
           }
         }
