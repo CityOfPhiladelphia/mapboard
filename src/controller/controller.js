@@ -26,23 +26,23 @@ class Controller {
   }
 
 
-  activeTopicConfig() {
-    const key = this.store.state.activeTopic;
-    let config;
-
-    // if no active topic, return null
-    if (key) {
-      config = this.config.topics.filter((topic) => {
-        return topic.key === key;
-      })[0];
-    }
-
-    return config || {};
-  }
-
-  activeParcelLayer() {
-    return this.activeTopicConfig().parcels || this.config.map.defaultBasemap;
-  }
+  // activeTopicConfig() {
+  //   const key = this.store.state.activeTopic;
+  //   let config;
+  //
+  //   // if no active topic, return null
+  //   if (key) {
+  //     config = this.config.topics.filter((topic) => {
+  //       return topic.key === key;
+  //     })[0];
+  //   }
+  //
+  //   return config || {};
+  // }
+  //
+  // activeParcelLayer() {
+  //   return this.activeTopicConfig().parcels || this.config.map.defaultBasemap;
+  // }
 
 
   /*
@@ -92,13 +92,13 @@ class Controller {
     const latLng = e.latlng;
     this.store.commit('setClickCoords', latLng);
 
-    console.log('activeParcelLayer', this.activeParcelLayer());
+    console.log('activeParcelLayer', this.store.state.activeParcelLayer);
     // if click is on a topic with pwd parcels, you do not want to find dor parcels unless the
     // click was actually on a pwd parcel that could be geocoded, because just running
     // getDorParcelsByLatLng changes the Deeds topic in the UI, and the click could have been
     // on the road
     // there is a callback after geocode to get dor parcels
-    if (this.activeParcelLayer() === 'pwd') {
+    if (this.store.state.activeParcelLayer === 'pwd') {
       this.dataManager.getPwdParcelByLatLng(latLng)
     } else {
       this.dataManager.getPwdParcelByLatLng(latLng);

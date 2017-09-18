@@ -130,6 +130,7 @@ function createStore(config) {
 
   const initialState = {
     activeTopic: defaultTopic.key,
+    activeParcelLayer: defaultTopic.parcels,
     // the ais feature
     clickCoords: null,
     geocode: {
@@ -265,6 +266,9 @@ function createStore(config) {
       },
       setActiveTopic(state, payload) {
         state.activeTopic = payload;
+      },
+      setActiveParcelLayer(state, payload) {
+        state.activeParcelLayer = payload;
       },
       setSourceStatus(state, payload) {
         const key = payload.key;

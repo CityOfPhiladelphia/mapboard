@@ -35,23 +35,23 @@ class DataManager {
   // REVIEW maybe the getXXXParcelsById methods should just take an argument
   // activeParcelLayer? that's the only reason these are in here.
 
-  activeTopicConfig() {
-    const key = this.store.state.activeTopic;
-    let config;
-
-    // if no active topic, return null
-    if (key) {
-      config = this.config.topics.filter((topic) => {
-        return topic.key === key;
-      })[0];
-    }
-
-    return config || {};
-  }
-
-  activeParcelLayer() {
-    return this.activeTopicConfig().parcels || this.config.map.defaultBasemap;
-  }
+  // activeTopicConfig() {
+  //   const key = this.store.state.activeTopic;
+  //   let config;
+  //
+  //   // if no active topic, return null
+  //   if (key) {
+  //     config = this.config.topics.filter((topic) => {
+  //       return topic.key === key;
+  //     })[0];
+  //   }
+  //
+  //   return config || {};
+  // }
+  //
+  // activeParcelLayer() {
+  //   return this.activeTopicConfig().parcels || this.config.map.defaultBasemap;
+  // }
 
   /* ROUTING */
 
@@ -434,7 +434,8 @@ class DataManager {
         // use the click latlng to get intersecting dor parcels.
         // this is needed because it will not automatically get the dor parcels
         // in case it does not find a pwd parcel
-        if (this.activeParcelLayer() === 'pwd') {
+        // if (this.activeParcelLayer() === 'pwd') {
+        if (this.store.state.activeParcelLayer === 'pwd') {
           // console.log('reverseGeocode happened and only got pwd parcel, getting dorParcels now with latlng')
           this.getDorParcelsByLatLng(latlng);
         }
@@ -503,7 +504,7 @@ class DataManager {
     this.store.commit('setPwdParcel', feature);
 
     const shouldGeocode = (
-      this.activeParcelLayer() === 'pwd' &&
+      this.store.state.activeParcelLayer === 'pwd' &&
       feature &&
       this.store.state.lastSearchMethod === 'reverseGeocode'
     );
@@ -567,7 +568,7 @@ class DataManager {
     this.store.commit('setActiveDorParcel', featuresSorted[0].id)
 
     const shouldGeocode = (
-      this.activeParcelLayer() === 'dor' &&
+      this.store.state.activeParcelLayer === 'dor' &&
       //features.length < 1 &&
       // features.length < 1 &&
       this.store.state.lastSearchMethod === 'reverseGeocode'

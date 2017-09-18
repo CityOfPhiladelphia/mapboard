@@ -19,6 +19,24 @@ class Router {
     }
   }
 
+  activeTopicConfig() {
+    const key = this.store.state.activeTopic;
+    let config;
+
+    // if no active topic, return null
+    if (key) {
+      config = this.config.topics.filter((topic) => {
+        return topic.key === key;
+      })[0];
+    }
+
+    return config || {};
+  }
+
+  activeParcelLayer() {
+    return this.activeTopicConfig().parcels || this.config.map.defaultBasemap;
+  }
+
   makeHash(address, topic) {
     console.log('make hash', address, topic);
 
@@ -121,6 +139,7 @@ class Router {
 
     if (!prevTopic || prevTopic !== nextTopic) {
       this.store.commit('setActiveTopic', nextTopic);
+      this.store.commit('setActiveParcelLayer', this.activeParcelLayer());
       const prevBasemap = this.store.state.map.basemap || null;
       // if (!this.store.state.map.shouldShowImagery) {
         const nextTopicConfig = this.config.topics.filter(topic => {
