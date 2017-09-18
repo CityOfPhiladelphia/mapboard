@@ -1,6 +1,6 @@
 var GATEKEEPER_KEY = '35ae5b7bf8f0ff2613134935ce6b4c1e';
 // var BASE_CONFIG_URL = '//raw.githubusercontent.com/rbrtmrtn/mapboard-base-config/develop/config.js';
-var BASE_CONFIG_URL = '//rawgit.com/rbrtmrtn/mapboard-base-config/b897bfe890cda97af079a6883895d89fbe3adfad/config.js';
+var BASE_CONFIG_URL = '//rawgit.com/rbrtmrtn/mapboard-base-config/affe2b676697273ca10805c1cb3f663754dd08ae/config.js';
 
 var ZONING_CODE_MAP = {
   'RSD-1': 'Residential Single Family Detached-1',
