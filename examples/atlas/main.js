@@ -63,7 +63,8 @@ function concatDorAddress(parcel, includeUnit) {
   // handle house num
   var addressLow = cleanDorAttribute(props.HOUSE);
   var addressHigh = cleanDorAttribute(props.STEX);
-  var addressSuffix = cleanDorAttribute(props.SUFFIX);
+  // maybe should be props.SUF below (it said props.SUFFIX)
+  var addressSuffix = cleanDorAttribute(props.SUF);
   var address = addressLow;
   address = address + (addressHigh ? '-' + addressHigh : '');
   address = address + (addressSuffix || '');
