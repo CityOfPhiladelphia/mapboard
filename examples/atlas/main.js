@@ -42,20 +42,28 @@ var ZONING_CODE_MAP = {
 };
 
 function cleanDorAttribute(attr) {
+  // console.log('cleanDorAttribute is running with attr', attr);
   // trim leading and trailing whitespace
   var cleanAttr = attr ? String(attr) : '';
   cleanAttr = cleanAttr.replace(/\s+/g, '');
 
   // return null for zeros and empty strings
-  if (['', '0'].indexOf(cleanAttr) > -1) {
-    return null;
+  // if (['', '0'].indexOf(cleanAttr) > -1) {
+  //   return null;
+  // }
+
+  // return empty for zeros and null
+  if ([null, '0'].indexOf(cleanAttr) > -1) {
+    return '';
   }
 
+  // console.log('cleanDorAttribute cleanAttr result:', cleanAttr);
   return cleanAttr;
 }
 
 // TODO put this in base config transforms
 function concatDorAddress(parcel, includeUnit) {
+  console.log('concatDorAddress is running with parcel:', parcel, 'includeUnit:', includeUnit);
   includeUnit = typeof includeUnit !== 'undefined' ? includeUnit: true;
   var STREET_FIELDS = ['STDIR', 'STNAM', 'STDES', 'STDESSUF'];
   var props = parcel.properties;
@@ -71,7 +79,7 @@ function concatDorAddress(parcel, includeUnit) {
 
   // handle unit
   var unit = cleanDorAttribute(props.UNIT);
-  if (unit) unit += '# ' + unit;
+  if (unit) unit = '# ' + unit;
 
   // clean up attributes
   var comps = STREET_FIELDS.map(function(streetField) {
@@ -95,6 +103,10 @@ function concatDorAddress(parcel, includeUnit) {
   // remove nulls and concat
   address = comps.filter(Boolean).join(' ');
 
+  console.log('concatDorAddress address result:', address);
+  if (address === '') {
+    address = 'Parcel has no address';
+  }
   return address;
 }
 
