@@ -398,6 +398,16 @@ class DataManager {
     let coords;
     if (!feature) {
       console.log('did geocode but no geom', feature);
+
+      if (this.store.state.activeParcelLayer === 'dor') {
+        console.log('ran ais on a dor parcel and got no response');
+        const pwdParcel = this.store.state.pwdParcel;
+        if (pwdParcel) {
+          console.log('running ais again on the pwd parcel', pwdParcel.properties.PARCELID);
+          this.geocode(pwdParcel.properties.PARCELID);
+        }
+      }
+
       const clickCoords = this.store.state.clickCoords;
       coords = [clickCoords.lng, clickCoords.lat];
     } else {
