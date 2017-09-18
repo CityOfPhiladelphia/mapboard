@@ -201,6 +201,7 @@ class DataManager {
             this.clients.esri.fetch(target, dataSource, dataSourceKey);
             break;
 
+            break;
           case 'esri-nearby':
             // TODO add targets id fn
             this.clients.esri.fetchNearby(target, dataSource, dataSourceKey);
