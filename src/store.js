@@ -172,6 +172,8 @@ function createStore(config) {
       status: null
     },
     activeDorParcel: null,
+    activeDorAddress: null,
+    activeDorMapreg: null,
     pwdParcel: null,
     sources,
     cyclomedia: {
@@ -326,6 +328,12 @@ function createStore(config) {
       },
       setActiveDorParcel(state, payload) {
         state.activeDorParcel = payload;
+      },
+      setActiveDorAddress(state, payload) {
+        state.activeDorAddress = payload;
+      },
+      setActiveDorMapreg(state, payload) {
+        state.activeDorMapreg = payload;
       },
       setPwdParcel(state, payload) {
         state.pwdParcel = payload;
