@@ -98,6 +98,15 @@ class GeocodeClient extends BaseClient {
     store.commit('setGeocodeData', null);
     store.commit('setGeocodeRelated', null);
 
+    if (this.store.state.activeParcelLayer === 'dor') {
+      console.log('ran ais on a dor parcel and got no response');
+      const pwdParcel = store.state.pwdParcel;
+      if (pwdParcel) {
+        console.log('running ais again on the pwd parcel', pwdParcel.properties.PARCELID);
+        this.fetch(pwdParcel.properties.PARCELID);
+      }
+    }
+
     // Everything below was added for adding reverse geocoding, which was deprecated
     // console.log('error config', error.config);
     // const url = error.config.url;

@@ -63,7 +63,7 @@ function cleanDorAttribute(attr) {
 
 // TODO put this in base config transforms
 function concatDorAddress(parcel, includeUnit) {
-  console.log('concatDorAddress is running with parcel:', parcel, 'includeUnit:', includeUnit);
+  // console.log('concatDorAddress is running with parcel:', parcel, 'includeUnit:', includeUnit);
   includeUnit = typeof includeUnit !== 'undefined' ? includeUnit: true;
   var STREET_FIELDS = ['STDIR', 'STNAM', 'STDES', 'STDESSUF'];
   var props = parcel.properties;
@@ -103,7 +103,7 @@ function concatDorAddress(parcel, includeUnit) {
   // remove nulls and concat
   address = comps.filter(Boolean).join(' ');
 
-  console.log('concatDorAddress address result:', address);
+  // console.log('concatDorAddress address result:', address);
   if (address === '') {
     address = 'Parcel has no address';
   }
