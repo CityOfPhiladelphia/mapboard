@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="shouldShowTable">
     <h4 v-if="slots.title">{{ evaluateSlot(slots.title) }}</h4>
     <table>
       <tbody>
@@ -25,6 +25,23 @@
   export default {
     mixins: [TopicComponent],
     computed: {
+      shouldShowTable() {
+        if (this.item) {
+          if (this.item.activeTable) {
+            const filterValue = this.item.activeTable;
+            const id = this.options.id;
+            if (filterValue === id) {
+              return true
+            } else {
+              return false;
+            }
+          } else {
+            return true;
+          }
+        } else {
+          return true;
+        }
+      },
       externalLinkAction() {
         return this.options.externalLink.action || 'See more';
       },
