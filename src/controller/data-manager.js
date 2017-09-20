@@ -570,7 +570,7 @@ class DataManager {
       console.log('putting pwd parcel in state');
       this.store.commit('setPwdParcel', feature);
 
-      if (this.store.state.activeParcelLayer === 'pwd'){
+      if (this.store.state.activeParcelLayer === 'pwd' && this.store.state.lastSearchMethod === 'reverseGeocode'){
         console.log('didGetPwdParcel is wiping out the dor parcel in the state');
         this.store.commit('setDorParcelData', []);
         this.store.commit('setDorParcelStatus', null);
@@ -604,7 +604,7 @@ class DataManager {
   }
 
   getDorParcelsByLatLng(latlng) {
-    console.log('get dor parcels by latlng');
+    console.log('get dor parcels by latlng', latlng);
 
     const url = this.config.map.featureLayers.dorParcels.url;
     const parcelQuery = L.esri.query({ url });
