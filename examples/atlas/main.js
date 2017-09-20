@@ -464,6 +464,25 @@ Mapboard.default({
         return data;
       }
     },
+    condoList: {
+      type: 'http-get',
+      url: 'http://api.phila.gov/ais/v1/search/',
+      options: {
+        params: {
+          urlAddition: function(feature) {
+            console.log('testing feature in params:', feature);
+            return feature;
+          },
+          gatekeeperKey: GATEKEEPER_KEY,
+          include_units: true,
+          opa_only: true,
+          page: 1,
+        },
+        success: function(data) {
+          return data;
+        }
+      }
+    },
     regmaps: {
       type: 'esri',
       url: '//gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/0',
