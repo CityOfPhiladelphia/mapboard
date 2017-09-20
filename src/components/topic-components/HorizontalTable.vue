@@ -105,6 +105,17 @@
         {{ externalLinkText }}
       </a>
     </div>
+
+    <a class="button center-button"
+       @click="this.getMoreRecords"
+       v-if="this.shouldShowRetrieveButton"
+    >
+      Retrieve 100 More Records
+      <span v-show="secondaryStatus === 'waiting'" class="loading">
+        <i class="fa fa-spinner fa-lg spin"></i>
+      </span>
+    </a>
+
   </div>
 </template>
 
@@ -171,6 +182,9 @@
       }
     },
     computed: {
+      secondaryStatus() {
+        return this.$store.state.sources[this.options.id].secondaryStatus;
+      },
       shouldShowTable() {
         if (this.item) {
           if (this.item.activeTable) {
@@ -187,12 +201,18 @@
         } else {
           return true;
         }
-        // if (this.item) {
-        //   const filterValue = this.$props.item;
-        //   return filterValue;
-        // } else {
-        //   return undefined;
-        // }
+      },
+      shouldShowRetrieveButton() {
+        return this.pageCount > this.highestPageRetrieved;
+      },
+      highestPageRetrieved() {
+        return this.evaluateSlot(this.slots.highestPageRetrieved);
+      },
+      pageCount() {
+        return this.evaluateSlot(this.slots.pageCount);
+      },
+      totalSize() {
+        return this.evaluateSlot(this.slots.totalSize);
       },
       limit() {
         // try to get from config. if it's not there, set a reasonable default.
@@ -315,10 +335,18 @@
         return this.itemsAfterSort.slice(0, this.limit);
       },
       count() {
-        return this.itemsAfterFilters.length;
+        if (this.$props.options.useApiCount) {
+          return this.totalSize;
+        } else {
+          return this.itemsAfterFilters.length;
+        }
       },
       countText() {
-        return `(${this.count})`;
+        if (this.$props.options.noCount) {
+          return '';
+        } else {
+          return `(${this.count})`;
+        }
       },
       shouldShowExternalLink() {
         if (this.options.externalLink.forceShow) {
@@ -348,6 +376,11 @@
       },
     },
     methods: {
+      getMoreRecords() {
+        const dataSource = this.options.id;
+        const highestPageRetrieved = this.highestPageRetrieved;
+        this.$controller.getMoreRecords(dataSource, highestPageRetrieved);
+      },
       slugifyFilterValue(filterValue) {
         const { direction, value, unit } = filterValue;
         return [direction, value, unit].join('-');
@@ -614,6 +647,16 @@
 
   .mb-horizontal-table-body {
     padding-bottom: 10px;
+  }
+
+  .center-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .loading {
+    float: right;
   }
 
 </style>
