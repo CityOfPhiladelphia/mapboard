@@ -66,24 +66,43 @@
         return this.topic.dataSources || [];
       },
       hasData() {
-        return this.dataSources.every(dataSource => {
-          const targetsFn = this.$config.dataSources[dataSource].targets
-          if (targetsFn) {
-            const targetsMap = this.$store.state.sources[dataSource].targets;
-            const targets = Object.values(targetsMap);
-            return targets.every(target => target.status !== 'waiting');
-          } else {
-            return this.$store.state.sources[dataSource].data;
-          }
-        });
+        if (this.dataSources.includes('condoList') && this.condoListExists) {
+          return true;
+        } else {
+          return this.dataSources.every(dataSource => {
+            const targetsFn = this.$config.dataSources[dataSource].targets
+            if (targetsFn) {
+              const targetsMap = this.$store.state.sources[dataSource].targets;
+              const targets = Object.values(targetsMap);
+              return targets.every(target => target.status !== 'waiting');
+            } else {
+              return this.$store.state.sources[dataSource].data;
+            }
+          });
+        }
       },
       shouldShowBody() {
         const succeeded = this.status === 'success';
         const hasData = this.hasData;
+        const condoListExists = this.condoListExists;
         const should = succeeded && hasData && this.isActive;
         return should;
       },
+      condoListExists() {
+        const condoList = this.$store.state.sources.condoList.data;
+        // let status;
+        if (!condoList) {
+          return false;
+        } else {
+          if (condoList.features.length === 1) {
+            return false;
+          } else {
+            return true;
+          }
+        }
+      },
       shouldShowError() {
+        // console.log('Topic.vue shouldShowError this.hasData', this.topicKey, this.hasData, this.condoListExists);
         return (
           // topic must be active and
           this.isActive && (
