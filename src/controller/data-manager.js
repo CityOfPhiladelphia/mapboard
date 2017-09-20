@@ -86,6 +86,62 @@ class DataManager {
 
   /* DATA FETCHING METHODS */
 
+  fetchMoreData(dataSourceKey, highestPageRetrieved) {
+    // console.log('datamanager get 100 More records was clicked, dataSource', dataSourceKey, 'highestPageRetrieved', highestPageRetrieved);
+    const feature = this.store.state.geocode.data;
+    const dataSource = this.config.dataSources[dataSourceKey];
+
+    const state = this.store.state;
+    const type = dataSource.type;
+
+    // update secondary status to `waiting`
+    const setSecondarySourceStatusOpts = {
+      key: dataSourceKey,
+      secondaryStatus: 'waiting'
+    };
+    this.store.commit('setSecondarySourceStatus', setSecondarySourceStatusOpts);
+
+    switch(type) {
+      case 'http-get':
+        // console.log('http-get', dataSourceKey, targetIdFn);
+        this.clients.http.fetchMore(feature,
+                                dataSource,
+                                dataSourceKey,
+                                highestPageRetrieved);
+        break;
+    }
+
+  }
+
+  didFetchMoreData(key, secondaryStatus, data) {
+    console.log('DID FETCH More DATA:', key, secondaryStatus, data);
+
+    const dataOrNull = status === 'error' ? null : data;
+    let stateData = dataOrNull;
+
+    // if this is an array, assign feature ids
+    if (Array.isArray(stateData)) {
+      stateData = this.assignFeatureIds(stateData, key);
+    }
+
+    // console.log('stateData', stateData);
+
+    // put data in state
+    const setSourceDataOpts = {
+      key,
+      data: stateData,
+    };
+    const setSecondarySourceStatusOpts = {
+      key,
+      secondaryStatus
+    };
+
+    // commit
+    this.store.commit('setSourceDataMore', setSourceDataOpts);
+    this.store.commit('setSecondarySourceStatus', setSecondarySourceStatusOpts);
+  }
+
+
   fetchData() {
     // console.log('\nFETCH DATA');
     // console.log('-----------');
@@ -514,7 +570,7 @@ class DataManager {
       console.log('putting pwd parcel in state');
       this.store.commit('setPwdParcel', feature);
 
-      if (this.store.state.activeParcelLayer === 'pwd'){
+      if (this.store.state.activeParcelLayer === 'pwd' && this.store.state.lastSearchMethod === 'reverseGeocode'){
         console.log('didGetPwdParcel is wiping out the dor parcel in the state');
         this.store.commit('setDorParcelData', []);
         this.store.commit('setDorParcelStatus', null);
@@ -548,7 +604,7 @@ class DataManager {
   }
 
   getDorParcelsByLatLng(latlng) {
-    console.log('get dor parcels by latlng');
+    console.log('get dor parcels by latlng', latlng);
 
     const url = this.config.map.featureLayers.dorParcels.url;
     const parcelQuery = L.esri.query({ url });

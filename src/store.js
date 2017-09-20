@@ -119,6 +119,7 @@ function createStore(config) {
        // we have to define these here, because vue can't observe properties that
        // are added later.
        status: null,
+       secondaryStatus: null,
        data: null
      };
     }
@@ -283,6 +284,19 @@ function createStore(config) {
           state.sources[key].status = status;
         }
       },
+      setSecondarySourceStatus(state, payload) {
+        const key = payload.key;
+        const secondaryStatus = payload.secondaryStatus;
+
+        // if a target id was passed in, set the status for that target
+        const targetId = payload.targetId;
+
+        // if (targetId) {
+        //   state.sources[key].targets[targetId].status = status;
+        // } else {
+        state.sources[key].secondaryStatus = secondaryStatus;
+        // }
+      },
       setSourceData(state, payload) {
         const key = payload.key;
         const data = payload.data;
@@ -295,6 +309,24 @@ function createStore(config) {
         } else {
           state.sources[key].data = data;
         }
+      },
+      setSourceDataMore(state, payload) {
+        const key = payload.key;
+        const data = payload.data;
+        const oldData = state.sources[key].data;
+        console.log('oldData features', oldData.features, 'data features', data.features);
+        const allData = oldData.features.concat(data.features);
+        console.log('allData', allData);
+        // if a target id was passed in, set the data object for that target
+        // const targetId = payload.targetId;
+
+        // if (targetId) {
+        //   state.sources[key].targets[targetId].data = data;
+        // } else {
+
+        state.sources[key].data.features = allData;
+        state.sources[key].data.page = 2;
+        // }
       },
       setMapFilters(state, payload) {
         state.map.filters = payload;

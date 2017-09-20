@@ -60,10 +60,42 @@
               this.item.activeTableId = comp._id;
             }
           }
-
+          // console.log('tablegroup this.item', this.item);
           this.$store.commit('setTableGroupActiveTable', this.item)
         }
       }
+      if (this.options.alternate) {
+        // console.log('TableGroup created - mainTable', this.options.alternate.mainTable, this.altMainTable, 'dependentTable', this.options.alternate.dependentTable, this.altDepTable);
+        const sources = this.$store.state.sources;
+        // console.log('Tablegroup source check dep', sources[this.altDepTable.dataSource].data);
+        // console.log('Tablegroup source check main', sources[this.altMainTable.dataSource].data);
+        if (sources[this.altDepTable.dataSource].data && !sources[this.altMainTable.dataSource].data) {
+          // console.log('Tablegroup there is a dep table, and not a main table');
+          this.item.activeTable = this.altDepTable.id;
+          this.item.activeTableId = 'aaa'
+          this.$store.commit('setTableGroupActiveTable', this.item);
+        } else if (sources[this.altMainTable.dataSource].data) {
+          this.item.activeTable = this.altMainTable.id;
+          this.item.activeTableId = 'bbb'
+          this.$store.commit('setTableGroupActiveTable', this.item);
+        }
+      }
+    },
+    computed: {
+      altMainTable() {
+        if (this.options.alternate) {
+          return this.options.alternate.mainTable;
+        } else {
+          return null
+        }
+      },
+      altDepTable() {
+        if (this.options.alternate) {
+          return this.options.alternate.dependentTable;
+        } else {
+          return null
+        }
+      },
     },
     methods: {
       slugifyFilterValue(filterValue) {

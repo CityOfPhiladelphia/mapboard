@@ -24,11 +24,19 @@ class HttpClient extends BaseClient {
   }
 
   fetch(feature, dataSource, dataSourceKey, targetIdFn) {
-    const params = this.evaluateParams(feature, dataSource);
+    let params = this.evaluateParams(feature, dataSource);
     // console.log('http-client fetch, feature:', feature, 'dataSource:', dataSource, 'dataSourceKey:', dataSourceKey, 'targetIdFn:', targetIdFn, 'params:', params);
-    const url = dataSource.url;
+    let url = dataSource.url;
     const options = dataSource.options;
+    const urlAddition = params.urlAddition;
+    if (urlAddition) {
+      url += encodeURIComponent(urlAddition.properties.street_address);
+    }
+    // console.log('url', url);
+    // console.log('http-client fetch, feature:', feature, 'dataSource:', dataSource, 'dataSourceKey:', dataSourceKey, 'targetIdFn:', targetIdFn, 'params:', params);
     const successFn = options.success;
+
+    //if (params.urlAddition)
 
     // if the data is not dependent on other data
     axios.get(url, { params }).then(response => {
@@ -49,6 +57,33 @@ class HttpClient extends BaseClient {
     }, response => {
       console.log('fetch json error', response);
       this.dataManager.didFetchData(dataSourceKey, 'error');
+    });
+  }
+
+  fetchMore(feature, dataSource, dataSourceKey, highestPageRetrieved) {
+    let params = this.evaluateParams(feature, dataSource);
+    params.page = highestPageRetrieved + 1;
+    // console.log('http-client fetchMore feature', feature, 'dataSource', dataSource, 'dataSourceKey', dataSourceKey, 'highestPageRetrieved', highestPageRetrieved, 'params', params);
+    let url = dataSource.url;
+    const options = dataSource.options;
+    const urlAddition = params.urlAddition;
+    if (urlAddition) {
+      url += encodeURIComponent(urlAddition.properties.street_address);
+    }
+    const successFn = options.success;
+
+    // if the data is not dependent on other data
+    axios.get(url, { params }).then(response => {
+      // call success fn
+      let data = response.data;
+      if (successFn) {
+        data = successFn(data);
+      }
+      // console.log('data', data);
+      this.dataManager.didFetchMoreData(dataSourceKey, 'success', data);
+    }, response => {
+      console.log('fetch json error', response);
+      this.dataManager.didFetchMoreData(dataSourceKey, 'error');
     });
   }
 

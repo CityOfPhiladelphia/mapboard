@@ -54,6 +54,11 @@ class Controller {
     this.router.hashChanged();
   }
 
+  getMoreRecords(dataSource, highestPageRetrieved) {
+    // console.log('controller get 100 More records was clicked, dataSource', dataSource, 'highestPageRetrieved', highestPageRetrieved);
+    this.dataManager.fetchMoreData(dataSource, highestPageRetrieved);
+  }
+
   handleSearchFormSubmit(e) {
     console.log('handle search form submit', e, this);
 
