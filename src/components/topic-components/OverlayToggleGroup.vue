@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="items.length">
     <div class="container">
       <h4 v-if="slots.title">
         {{ evaluateSlot(slots.title) }}
