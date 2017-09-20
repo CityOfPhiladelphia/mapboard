@@ -98,11 +98,10 @@ class Controller {
     // getDorParcelsByLatLng changes the Deeds topic in the UI, and the click could have been
     // on the road
     // there is a callback after geocode to get dor parcels
-    if (this.store.state.activeParcelLayer === 'pwd') {
-      this.dataManager.getPwdParcelByLatLng(latLng)
+    if (this.store.state.activeParcelLayer === 'dor') {
+      this.dataManager.getDorParcelsByLatLng(latLng);
     } else {
       this.dataManager.getPwdParcelByLatLng(latLng);
-      this.dataManager.getDorParcelsByLatLng(latLng);
     }
   }
 

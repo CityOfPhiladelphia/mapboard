@@ -448,13 +448,17 @@ class DataManager {
         if (this.store.state.activeParcelLayer === 'pwd') {
           // console.log('reverseGeocode happened and only got pwd parcel, getting dorParcels now with latlng')
           this.getDorParcelsByLatLng(latlng);
+        } else {
+          console.log('reverseGeocode happened and only got dor parcel, getting pwdParcels now with latlng')
+          this.getPwdParcelByLatLng(latlng);
         }
       }
     } else {
       // OLD COMMENT (not sure if it is wrong) - if we're here, then ais did not have a dor parcel id, so we'll use the ais xy to get intersecting dor parcels
 
-      // NEW COMMENT - if we're here, the app routed to an address automatically, so it needs dor parcels
+      // NEW COMMENT - if we're here, the app routed to an address automatically, so it needs dor parcels and pwd parcel
       this.getDorParcelsByLatLng(latlng);
+      this.getPwdParcelByLatLng(latlng);
     }
 
     // pan and zoom map
@@ -466,6 +470,7 @@ class DataManager {
     this.resetData();
 
     // fetch new data
+    console.log('didGeocode is calling fetchData()');
     this.fetchData();
   } // end didGeocode
 
@@ -479,6 +484,7 @@ class DataManager {
   }
 
   getPwdParcelById(id) {
+    console.log('getPwdParcelById');
     const url = this.config.map.featureLayers.pwdParcels.url;
     const parcelQuery = L.esri.query({ url });
     parcelQuery.where('PARCELID = ' + id);
@@ -505,13 +511,21 @@ class DataManager {
       feature = null;
     } else {
       feature = features[0]
+      console.log('putting pwd parcel in state');
+      this.store.commit('setPwdParcel', feature);
+
+      if (this.store.state.activeParcelLayer === 'pwd'){
+        console.log('didGetPwdParcel is wiping out the dor parcel in the state');
+        this.store.commit('setDorParcelData', []);
+        this.store.commit('setDorParcelStatus', null);
+      }
+
       // this shouldn't happen
       if (features.length > 1) {
         console.debug('got more than one pwd parcel', features);
       }
     }
 
-    this.store.commit('setPwdParcel', feature);
 
     const shouldGeocode = (
       this.store.state.activeParcelLayer === 'pwd' &&
@@ -528,6 +542,7 @@ class DataManager {
       // this.geocode(id);
       this.controller.router.routeToAddress(id);
     } else {
+      console.log('didGetPwdParcel is calling fetchData()');
       this.fetchData();
     }
   }
@@ -565,6 +580,11 @@ class DataManager {
     if (!featureCollection || featureCollection.features.length === 0) {
       console.warn('did get dor parcels, but no features');
       return;
+    } else {
+      if (this.store.state.activeParcelLayer === 'dor') {
+        console.log('didGetDorParcels is wiping out the pwdParcel in state');
+        this.store.commit('setPwdParcel', null);
+      }
     }
 
     const features = featureCollection.features;
@@ -594,6 +614,7 @@ class DataManager {
       // if (id) this.controller.router.route(id);
       if (id) this.controller.router.routeToAddress(id);
     } else {
+      console.log('didGetDorParcels is calling fetchData()');
       this.fetchData();
     }
   }
