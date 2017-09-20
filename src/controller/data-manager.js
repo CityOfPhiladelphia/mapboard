@@ -35,23 +35,23 @@ class DataManager {
   // REVIEW maybe the getXXXParcelsById methods should just take an argument
   // activeParcelLayer? that's the only reason these are in here.
 
-  activeTopicConfig() {
-    const key = this.store.state.activeTopic;
-    let config;
-
-    // if no active topic, return null
-    if (key) {
-      config = this.config.topics.filter((topic) => {
-        return topic.key === key;
-      })[0];
-    }
-
-    return config || {};
-  }
-
-  activeParcelLayer() {
-    return this.activeTopicConfig().parcels || this.config.map.defaultBasemap;
-  }
+  // activeTopicConfig() {
+  //   const key = this.store.state.activeTopic;
+  //   let config;
+  //
+  //   // if no active topic, return null
+  //   if (key) {
+  //     config = this.config.topics.filter((topic) => {
+  //       return topic.key === key;
+  //     })[0];
+  //   }
+  //
+  //   return config || {};
+  // }
+  //
+  // activeParcelLayer() {
+  //   return this.activeTopicConfig().parcels || this.config.map.defaultBasemap;
+  // }
 
   /* ROUTING */
 
@@ -107,7 +107,7 @@ class DataManager {
       const type = dataSource.type;
       const targetsDef = dataSource.targets;
 
-      // console.log('key:', dataSourceKey)
+      // console.log('key:', dataSourceKey, type);
 
       // if the data sources specifies a features getter, use that to source
       // features for evaluating params/forming requests. otherwise,
@@ -182,7 +182,7 @@ class DataManager {
         // TODO do this for all targets
         switch(type) {
           case 'http-get':
-            // console.log('http-get', targetIdFn);
+            // console.log('http-get', dataSourceKey, targetIdFn);
             this.clients.http.fetch(target,
                                     dataSource,
                                     dataSourceKey,
@@ -190,6 +190,7 @@ class DataManager {
             break;
 
           case 'http-get-nearby':
+          // console.log('http-get-nearby', dataSourceKey, targetIdFn)
             this.clients.http.fetchNearby(target,
                                           dataSource,
                                           dataSourceKey,
@@ -197,11 +198,14 @@ class DataManager {
             break;
 
           case 'esri':
+            // console.log('esri', dataSourceKey)
             // TODO add targets id fn
             this.clients.esri.fetch(target, dataSource, dataSourceKey);
             break;
 
+            break;
           case 'esri-nearby':
+            // console.log('esri-nearby', dataSourceKey)
             // TODO add targets id fn
             this.clients.esri.fetchNearby(target, dataSource, dataSourceKey);
             break;
@@ -209,9 +213,11 @@ class DataManager {
           default:
             throw `Unknown data source type: ${type}`;
             break;
-        }
-      }
-    }
+        }  // end of switch
+      }  // end of for targets loop
+      // console.log('end of targets loop for', dataSourceKey);
+    } // end of for dataSource loop
+    // console.log('end of outer loop');
   }
 
   didFetchData(key, status, data, targetId) {
@@ -305,10 +311,12 @@ class DataManager {
   }
 
   checkDataSourceReady(key, options, targetId) {
-    // console.log(`check data source ready: ${key} ${targetId || ''}`);
+    // console.log(`check data source ready: ${key} ${targetId || ''}`, options);
 
     const deps = options.deps;
+    // console.log('deps', deps);
     const depsMet = this.checkDataSourcesFetched(deps);
+    // console.log('depsMet', depsMet);
     let isReady = false;
 
     // if data deps have been met
@@ -323,6 +331,7 @@ class DataManager {
       isReady = !targetObj.status;
     }
 
+    // console.log('checkDataSourceReady isReady:', isReady);
     return isReady;
   }
 
@@ -383,45 +392,77 @@ class DataManager {
     // emit event to event bus
     this.eventBus.$emit('geocodeResult', feature);
 
-    // if this is the result of a search from the search box, get parcels
-    const lastSearchMethod = this.store.state.lastSearchMethod;
+    // if it is a dor parcel query, and the geocode fails, coordinates can still be used
+    // to get dor parcels which are not in ais
+    // set coords to the ais coords OR the click if there is no ais result
+    let coords;
     if (!feature) {
       console.log('did geocode but no geom', feature);
+
+      if (this.store.state.activeParcelLayer === 'dor') {
+        console.log('ran ais on a dor parcel and got no response');
+        const pwdParcel = this.store.state.pwdParcel;
+        if (pwdParcel) {
+          console.log('running ais again on the pwd parcel', pwdParcel.properties.PARCELID);
+          this.geocode(pwdParcel.properties.PARCELID);
+        }
+      }
+
+      const clickCoords = this.store.state.clickCoords;
+      coords = [clickCoords.lng, clickCoords.lat];
+    } else {
+      coords = feature.geometry.coordinates;
     }
-    const [lng, lat] = feature.geometry.coordinates;
+    const [lng, lat] = coords;
     const latlng = L.latLng(lat, lng);
 
+    const lastSearchMethod = this.store.state.lastSearchMethod;
+    // there is a lastSearchMethod if the map was clicked or the searchbox was used
     if (lastSearchMethod) {
-      // console.log('DATAMANAGER DIDGEOCODE YES LASTSEARCHMETHOD', lastSearchMethod);
+      console.log('datamanager didGeocode lastSearchMethod', lastSearchMethod)
+      // if this is the result of a search from the search box, get pwd and dor parcels
       if (lastSearchMethod === 'geocode') {
-        // console.log('DATAMANAGER DIDGEOCODE YES LASTSEARCHMETHOD', lastSearchMethod, 'AND GEOCODE', dorParcelId);
         /* DOR PARCELS */
         const dorParcelId = feature.properties.dor_parcel_id;
 
         if (dorParcelId && dorParcelId.length > 0) {
-          // this.clients.dorParcel.fetchById(dorParcelId);
           this.getDorParcelsById(dorParcelId);
         } else {
           // if we don't have a parcel id (aka mapreg), it's probably because
-          // the parcel hsa a data quality issue and isn't in ais. so search by
+          // the parcel has a data quality issue and isn't in ais. so search by
           // latlng.
           this.getDorParcelsByLatLng(latlng);
         }
 
         /* PWD PARCELS */
         const pwdParcelId = feature.properties.pwd_parcel_id;
-        // this.clients.pwdParcel.fetchById(pwdParcelId);
         this.getPwdParcelById(pwdParcelId);
+
+      // if this is the result of a map-click, you may need to get dor parcels
+      } else {
+        // if this is the result of a map-click in a pwd-parcel topic
+        // use the click latlng to get intersecting dor parcels.
+        // this is needed because it will not automatically get the dor parcels
+        // in case it does not find a pwd parcel
+        // if (this.activeParcelLayer() === 'pwd') {
+        if (this.store.state.activeParcelLayer === 'pwd') {
+          // console.log('reverseGeocode happened and only got pwd parcel, getting dorParcels now with latlng')
+          this.getDorParcelsByLatLng(latlng);
+        } else {
+          console.log('reverseGeocode happened and only got dor parcel, getting pwdParcels now with latlng')
+          this.getPwdParcelByLatLng(latlng);
+        }
       }
     } else {
-      // console.log('DATAMANAGER DIDGEOCODE NO LASTSEARCHMETHOD')
-      // if we're here, then ais did not have a dor parcel id, so we'll use
-      // the ais xy to get intersecting dor parcels
+      // OLD COMMENT (not sure if it is wrong) - if we're here, then ais did not have a dor parcel id, so we'll use the ais xy to get intersecting dor parcels
+
+      // NEW COMMENT - if we're here, the app routed to an address automatically, so it needs dor parcels and pwd parcel
       this.getDorParcelsByLatLng(latlng);
+      this.getPwdParcelByLatLng(latlng);
     }
 
     // pan and zoom map
-    const coords = feature.geometry.coordinates;
+    // console.log('coords', coords);
     this.store.commit('setMapCenter', coords);
     this.store.commit('setMapZoom', 19);
 
@@ -429,6 +470,7 @@ class DataManager {
     this.resetData();
 
     // fetch new data
+    console.log('didGeocode is calling fetchData()');
     this.fetchData();
   } // end didGeocode
 
@@ -442,6 +484,7 @@ class DataManager {
   }
 
   getPwdParcelById(id) {
+    console.log('getPwdParcelById');
     const url = this.config.map.featureLayers.pwdParcels.url;
     const parcelQuery = L.esri.query({ url });
     parcelQuery.where('PARCELID = ' + id);
@@ -468,16 +511,24 @@ class DataManager {
       feature = null;
     } else {
       feature = features[0]
+      console.log('putting pwd parcel in state');
+      this.store.commit('setPwdParcel', feature);
+
+      if (this.store.state.activeParcelLayer === 'pwd'){
+        console.log('didGetPwdParcel is wiping out the dor parcel in the state');
+        this.store.commit('setDorParcelData', []);
+        this.store.commit('setDorParcelStatus', null);
+      }
+
       // this shouldn't happen
       if (features.length > 1) {
         console.debug('got more than one pwd parcel', features);
       }
     }
 
-    this.store.commit('setPwdParcel', feature);
 
     const shouldGeocode = (
-      this.activeParcelLayer() === 'pwd' &&
+      this.store.state.activeParcelLayer === 'pwd' &&
       feature &&
       this.store.state.lastSearchMethod === 'reverseGeocode'
     );
@@ -491,6 +542,7 @@ class DataManager {
       // this.geocode(id);
       this.controller.router.routeToAddress(id);
     } else {
+      console.log('didGetPwdParcel is calling fetchData()');
       this.fetchData();
     }
   }
@@ -525,9 +577,14 @@ class DataManager {
 
       return;
     }
-    if (!featureCollection) {
+    if (!featureCollection || featureCollection.features.length === 0) {
       console.warn('did get dor parcels, but no features');
       return;
+    } else {
+      if (this.store.state.activeParcelLayer === 'dor') {
+        console.log('didGetDorParcels is wiping out the pwdParcel in state');
+        this.store.commit('setPwdParcel', null);
+      }
     }
 
     const features = featureCollection.features;
@@ -541,7 +598,7 @@ class DataManager {
     this.store.commit('setActiveDorParcel', featuresSorted[0].id)
 
     const shouldGeocode = (
-      this.activeParcelLayer() === 'dor' &&
+      this.store.state.activeParcelLayer === 'dor' &&
       //features.length < 1 &&
       // features.length < 1 &&
       this.store.state.lastSearchMethod === 'reverseGeocode'
@@ -557,6 +614,7 @@ class DataManager {
       // if (id) this.controller.router.route(id);
       if (id) this.controller.router.routeToAddress(id);
     } else {
+      console.log('didGetDorParcels is calling fetchData()');
       this.fetchData();
     }
   }

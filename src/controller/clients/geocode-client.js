@@ -11,18 +11,20 @@ class GeocodeClient extends BaseClient {
   fetch(input) {
     console.log('geocode fetch is running, input:', input);
     const store = this.store;
-    let geocodeConfig;
 
-    // use forward geocode unless it has failed, reverse geocode it if fails
-    if (store.state.geocode.forwardStatus === null) {
-      console.log('setting to forward geocode');
-      geocodeConfig = this.config.geocoder.forward;
-      this.store.commit('setGeocodeForwardStatus', 'waiting');
-    } else {
-      console.log('setting to reverse geocode');
-      geocodeConfig = this.config.geocoder.reverse;
-      this.store.commit('setGeocodeReverseStatus', 'waiting');
-    }
+    // // use forward geocode unless it has failed, reverse geocode it if fails
+    // let geocodeConfig;
+    // if (store.state.geocode.forwardStatus === null) {
+    //   console.log('setting to forward geocode');
+    //   geocodeConfig = this.config.geocoder.forward;
+    //   this.store.commit('setGeocodeForwardStatus', 'waiting');
+    // } else {
+    //   console.log('setting to reverse geocode');
+    //   geocodeConfig = this.config.geocoder.reverse;
+    //   this.store.commit('setGeocodeReverseStatus', 'waiting');
+    // }
+
+    const geocodeConfig = this.config.geocoder;
     const url = geocodeConfig.url(input);
     const params = geocodeConfig.params;
 
@@ -47,12 +49,14 @@ class GeocodeClient extends BaseClient {
     const data = response.data;
     const url = response.config.url;
     // console.log(url)
-    let direction;
-    if (url.includes('search')){
-      direction = 'forward';
-    } else {
-      direction = 'reverse';
-    }
+
+    // The section below was added for adding reverse geocoding, which was deprecated
+    // let direction;
+    // if (url.includes('search')){
+    //   direction = 'forward';
+    // } else {
+    //   direction = 'reverse';
+    // }
     // console.log('success direction', direction);
 
     // TODO handle multiple results
@@ -78,40 +82,55 @@ class GeocodeClient extends BaseClient {
     store.commit('setGeocodeData', feature);
     store.commit('setGeocodeRelated', relatedFeatures);
     store.commit('setGeocodeStatus', 'success');
-    if (direction === 'forward') {
-      store.commit('setGeocodeForwardStatus', 'success');
-    } else {
-      store.commit('setGeocodeReverseStatus', 'success');
-    }
+    // if (direction === 'forward') {
+    //   store.commit('setGeocodeForwardStatus', 'success');
+    // } else {
+    //   store.commit('setGeocodeReverseStatus', 'success');
+    // }
 
     return feature;
   }
 
   error(error) {
     console.log('geocode error', error);
-    // console.log('error config', error.config);
-    const url = error.config.url;
-    let direction;
-    if (url.includes('search')){
-      direction = 'forward';
-    } else {
-      direction = 'reverse';
-    }
     const store = this.store;
-    const clickCoords = store.state.clickCoords;
+    store.commit('setGeocodeStatus', 'error');
+    store.commit('setGeocodeData', null);
+    store.commit('setGeocodeRelated', null);
 
-    this.store.commit('setGeocodeData', null);
-    this.store.commit('setGeocodeStatus', 'error');
-    if (direction === 'forward') {
-      store.commit('setGeocodeForwardStatus', 'error');
-      console.log('geocode error going forward, checking if there are coordinates to run reverse');
-      if (clickCoords) {
-        console.log('geocode error going forward, now going in reverse with ', clickCoords);
-        this.fetch([clickCoords.lng, clickCoords.lat]);
-      }
-    } else {
-      store.commit('setGeocodeReverseStatus', 'error');
-    }
+    // if (this.store.state.activeParcelLayer === 'dor') {
+    //   console.log('ran ais on a dor parcel and got no response');
+    //   const pwdParcel = store.state.pwdParcel;
+    //   if (pwdParcel) {
+    //     console.log('running ais again on the pwd parcel', pwdParcel.properties.PARCELID);
+    //     this.dataManager.fetch(pwdParcel.properties.PARCELID);
+    //   }
+    // }
+
+    // Everything below was added for adding reverse geocoding, which was deprecated
+    // console.log('error config', error.config);
+    // const url = error.config.url;
+    // let direction;
+    // if (url.includes('search')){
+    //   direction = 'forward';
+    // } else {
+    //   direction = 'reverse';
+    // }
+    // const store = this.store;
+    // const clickCoords = store.state.clickCoords;
+    //
+    // this.store.commit('setGeocodeData', null);
+    // this.store.commit('setGeocodeStatus', 'error');
+    // if (direction === 'forward') {
+    //   store.commit('setGeocodeForwardStatus', 'error');
+    //   console.log('geocode error going forward, checking if there are coordinates to run reverse');
+    //   if (clickCoords) {
+    //     console.log('geocode error going forward, now going in reverse with ', clickCoords);
+    //     this.fetch([clickCoords.lng, clickCoords.lat]);
+    //   }
+    // } else {
+    //   store.commit('setGeocodeReverseStatus', 'error');
+    // }
   }
 }
 

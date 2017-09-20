@@ -73,8 +73,26 @@
       },
       address() {
         const geocode = this.geocode;
-        if (!geocode) return null;
-        return geocode.properties.street_address;
+        const dorParcels = this.$store.state.dorParcels.data
+        const activeDorParcel = this.$store.state.activeDorParcel;
+        // a DOR address might be found even if there is no geocode
+        // if (!geocode) return null;
+        // return geocode.properties.street_address;
+
+        if (geocode) {
+           return geocode.properties.street_address;
+        } else {
+          if (activeDorParcel) {
+            for (let dorParcel of dorParcels) {
+              if (dorParcel.properties.OBJECTID === activeDorParcel) {
+                const address = concatDorAddress(dorParcel);
+                this.$store.commit('setActiveDorAddress', address);
+                this.$store.commit('setActiveDorMapreg', dorParcel.properties.MAPREG)
+                return address;
+              }
+            }
+          }
+        }
       },
       zipCode() {
         const geocode = this.geocode;

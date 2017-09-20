@@ -1,6 +1,6 @@
 var GATEKEEPER_KEY = '35ae5b7bf8f0ff2613134935ce6b4c1e';
 // var BASE_CONFIG_URL = '//raw.githubusercontent.com/rbrtmrtn/mapboard-base-config/develop/config.js';
-var BASE_CONFIG_URL = '//rawgit.com/rbrtmrtn/mapboard-base-config/b897bfe890cda97af079a6883895d89fbe3adfad/config.js';
+var BASE_CONFIG_URL = '//rawgit.com/rbrtmrtn/mapboard-base-config/affe2b676697273ca10805c1cb3f663754dd08ae/config.js';
 
 var ZONING_CODE_MAP = {
   'RSD-1': 'Residential Single Family Detached-1',
@@ -42,20 +42,28 @@ var ZONING_CODE_MAP = {
 };
 
 function cleanDorAttribute(attr) {
+  // console.log('cleanDorAttribute is running with attr', attr);
   // trim leading and trailing whitespace
   var cleanAttr = attr ? String(attr) : '';
   cleanAttr = cleanAttr.replace(/\s+/g, '');
 
   // return null for zeros and empty strings
-  if (['', '0'].indexOf(cleanAttr) > -1) {
-    return null;
+  // if (['', '0'].indexOf(cleanAttr) > -1) {
+  //   return null;
+  // }
+
+  // return empty for zeros and null
+  if ([null, '0'].indexOf(cleanAttr) > -1) {
+    return '';
   }
 
+  // console.log('cleanDorAttribute cleanAttr result:', cleanAttr);
   return cleanAttr;
 }
 
 // TODO put this in base config transforms
 function concatDorAddress(parcel, includeUnit) {
+  // console.log('concatDorAddress is running with parcel:', parcel, 'includeUnit:', includeUnit);
   includeUnit = typeof includeUnit !== 'undefined' ? includeUnit: true;
   var STREET_FIELDS = ['STDIR', 'STNAM', 'STDES', 'STDESSUF'];
   var props = parcel.properties;
@@ -63,14 +71,15 @@ function concatDorAddress(parcel, includeUnit) {
   // handle house num
   var addressLow = cleanDorAttribute(props.HOUSE);
   var addressHigh = cleanDorAttribute(props.STEX);
-  var addressSuffix = cleanDorAttribute(props.SUFFIX);
+  // maybe should be props.SUF below (it said props.SUFFIX)
+  var addressSuffix = cleanDorAttribute(props.SUF);
   var address = addressLow;
   address = address + (addressHigh ? '-' + addressHigh : '');
   address = address + (addressSuffix || '');
 
   // handle unit
   var unit = cleanDorAttribute(props.UNIT);
-  if (unit) unit += '# ' + unit;
+  if (unit) unit = '# ' + unit;
 
   // clean up attributes
   var comps = STREET_FIELDS.map(function(streetField) {
@@ -94,6 +103,10 @@ function concatDorAddress(parcel, includeUnit) {
   // remove nulls and concat
   address = comps.filter(Boolean).join(' ');
 
+  // console.log('concatDorAddress address result:', address);
+  if (address === '') {
+    address = 'Parcel has no address';
+  }
   return address;
 }
 
@@ -230,9 +243,6 @@ Mapboard.default({
         success: function(data) {
           return data.features;
         },
-        // success: function(data) {
-        //   return data;
-        // }
       },
     },
     liInspections: {
@@ -285,15 +295,12 @@ Mapboard.default({
       url: 'https://phl.carto.com/api/v2/sql',
       options: {
         params: {
-          // q: feature => "select * from zoning_documents_20170420 where address_std = '" + feature.properties.street_address + "' or addrkey = " + feature.properties.li_address_key,
           q: function(feature) {
             var stmt = "select * from zoning_documents_20170420 where address_std = '" + feature.properties.street_address + "'";
             var addressKey = feature.properties.li_address_key;
-
             if (addressKey && addressKey.length > 0) {
               stmt += " or addrkey = " + feature.properties.li_address_key;
             }
-
             return stmt;
           }
         }
@@ -627,7 +634,7 @@ Mapboard.default({
     {
       key: 'opa',
       icon: 'map-marker',
-      label: 'Property Assessments',
+      label: 'Assessments',
       // REVIEW can these be calculated from vue deps?
       dataSources: ['opa'],
       components: [
@@ -1260,6 +1267,73 @@ Mapboard.default({
               return rows;
             },
           },
+        },
+        {
+          type: 'horizontal-table',
+          options: {
+            topicKey: 'permits',
+            id: 'liPermitsAdditional',
+            fields: [
+              {
+                label: 'Date',
+                value: function(state, item){
+                  return item.attributes.PERMITISSUEDATE
+                },
+                nullValue: 'no date available',
+                transforms: [
+                  'date'
+                ]
+              },
+              {
+                label: 'ID',
+                value: function(state, item){
+                  return "<a target='_blank' href='//li.phila.gov/#details?entity=permits&eid="+item.attributes.PERMITNUMBER+"&key="+item.attributes.ADDRESSKEY+"&address="+item.attributes.ADDRESS+"'>"+item.attributes.PERMITNUMBER+" <i class='fa fa-external-link'></i></a>"
+                }
+              },
+              {
+                label: 'Building Area',
+                value: function(state, item){
+                  return item.attributes.BLDGAREA
+                },
+                nullValue: 'no area available',
+                transforms: [
+                  'thousandsPlace'
+                ]
+              },
+              {
+                label: 'Declared Value',
+                value: function(state, item){
+                  return item.attributes.DECLAREDVALUE
+                },
+                nullValue: 'no value available',
+                transforms: [
+                  'currency'
+                ]
+              },
+            ],
+            sort: {
+              // this should return the val to sort on
+              getValue: function(item) {
+                return item.attributes.PERMITISSUEDATE;
+              },
+              // asc or desc
+              order: 'desc'
+            },
+          },
+          slots: {
+            title: 'Building Area and Value',
+            items: function(state) {
+              var data = state.sources['liPermitsAdditional'].data;
+              var rows = data.map(function(row){
+                var itemRow = row;
+                // var itemRow = Object.assign({}, row);
+                //itemRow.DISTANCE = 'TODO';
+                return itemRow;
+              });
+              // console.log('rows', rows);
+              return rows;
+            },
+          },
         }
       ],
       basemap: 'pwd',
@@ -1269,7 +1343,7 @@ Mapboard.default({
       identifyFeature: 'address-marker',
       parcels: 'pwd'
     },
-    {
+/*    {
       key: 'permitsAdditional',
       icon: 'plus',
       label: 'Additional Permit Information',
@@ -1351,7 +1425,7 @@ Mapboard.default({
       ],
       identifyFeature: 'address-marker',
       parcels: 'pwd'
-    },
+    },*/
     {
       key: 'zoning',
       icon: 'building-o',
@@ -1507,7 +1581,20 @@ Mapboard.default({
               {
                 label: 'ID',
                 value: function(state, item){
-                  return item.appid + '-' + item.docid
+                  return "<a target='_blank' href='//www.phila.gov/zoningarchive/Preview.aspx?address="
+                          + item.address
+                          + "&&docType="
+                          + item.doctype
+                          + "&numofPages="
+                          + item.page_numbers
+                          + "&docID="
+                          + item.docid
+                          + "&app="
+                          + item.appid
+                          +"'>"
+                          + item.appid + '-' + item.docid + ' '
+                          + "<i class='fa fa-external-link'></i></a>"
+                  // return item.appid + '-' + item.docid
                 }
               },
               {
@@ -1522,13 +1609,13 @@ Mapboard.default({
                   return item.page_numbers
                 }
               },
-              {
-                label: 'Link',
-                value: function(state, item){
-                  // return "<a href='//www.washingtonpost.com/'>View Scan</a>"
-                  return "<a target='_blank' href='//www.phila.gov/zoningarchive/Preview.aspx?address=" + item.address + "&&docType=" + item.doctype + "&numofPages=" + item.page_numbers + "&docID=" + item.docid + "&app=" + item.appid +"'>View Scan <i class='fa fa-external-link'></i></a>"
-                }
-              },
+              // {
+              //   label: 'Link',
+              //   value: function(state, item){
+              //     // return "<a href='//www.washingtonpost.com/'>View Scan</a>"
+              //     return "<a target='_blank' href='//www.phila.gov/zoningarchive/Preview.aspx?address=" + item.address + "&&docType=" + item.doctype + "&numofPages=" + item.page_numbers + "&docID=" + item.docid + "&app=" + item.appid +"'>View Scan <i class='fa fa-external-link'></i></a>"
+              //   }
+              // },
             ],
             sort: {
               // this should return the val to sort on
@@ -1540,7 +1627,7 @@ Mapboard.default({
             },
           },
           slots: {
-            title: 'Documents',
+            title: 'Archived Documents',
             subtitle: 'aka "Zoning Archive"',
             items: function(state) {
               if (state.sources['zoningDocs'].data) {
@@ -2077,6 +2164,7 @@ Mapboard.default({
             topicKey: '311',
             id: '311',
             sort: {
+              select: true,
               getValue: function(item, method) {
                 var val;
 

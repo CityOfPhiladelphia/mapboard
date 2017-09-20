@@ -19,6 +19,24 @@ class Router {
     }
   }
 
+  activeTopicConfig() {
+    const key = this.store.state.activeTopic;
+    let config;
+
+    // if no active topic, return null
+    if (key) {
+      config = this.config.topics.filter((topic) => {
+        return topic.key === key;
+      })[0];
+    }
+
+    return config || {};
+  }
+
+  activeParcelLayer() {
+    return this.activeTopicConfig().parcels || this.config.map.defaultBasemap;
+  }
+
   makeHash(address, topic) {
     console.log('make hash', address, topic);
 
@@ -79,7 +97,7 @@ class Router {
   }
 
   routeToAddress(nextAddress) {
-    // console.log('Router.routeToAddress', nextAddress);
+    console.log('Router.routeToAddress', nextAddress);
 
     if (nextAddress) {
       // check against current address
@@ -121,6 +139,7 @@ class Router {
 
     if (!prevTopic || prevTopic !== nextTopic) {
       this.store.commit('setActiveTopic', nextTopic);
+      this.store.commit('setActiveParcelLayer', this.activeParcelLayer());
       const prevBasemap = this.store.state.map.basemap || null;
       // if (!this.store.state.map.shouldShowImagery) {
         const nextTopicConfig = this.config.topics.filter(topic => {
@@ -147,20 +166,37 @@ class Router {
     // update url
     // REVIEW this is ais-specific
     const geocodeData = this.store.state.geocode.data;
-    const address = geocodeData.properties.street_address;
-    const topic = this.store.state.activeTopic;
 
-    // REVIEW this is only pushing state when routing is turned on. but maybe we
-    // want this to happen all the time, right?
-    if (!this.silent) {
-      // push state
-      const nextHistoryState = {
-        geocode: geocodeData
-      };
-      const nextHash = this.makeHash(address, topic);
+    // make hash if there is geocode data
+    if (geocodeData) {
+      const address = geocodeData.properties.street_address;
+    // } else if (this.store.state.activeDorMapreg) {
+    //   address = this.store.state.activeDorMapreg;
+      const topic = this.store.state.activeTopic;
 
-      this.history.pushState(nextHistoryState, null, nextHash);
+      // REVIEW this is only pushing state when routing is turned on. but maybe we
+      // want this to happen all the time, right?
+      if (!this.silent) {
+        // push state
+        const nextHistoryState = {
+          geocode: geocodeData
+        };
+        const nextHash = this.makeHash(address, topic);
+        console.log('nextHistoryState', nextHistoryState, 'nextHash', nextHash);
+        this.history.pushState(nextHistoryState, null, nextHash);
+      }
+    } else {
+      // wipe out hash if a geocode fails
+      if (!this.silent) {
+        // push state
+        // const nextHistoryState = {
+        //   geocode: null
+        // };
+        // this.history.pushState(nextHistoryState, null, '#');
+        this.history.pushState(null, null, '#');
+      }
     }
+
   }
 }
 

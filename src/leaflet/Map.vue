@@ -46,7 +46,9 @@
 
         // we used "setView" here because when you refreshed the app with an address in the url,
         // "panTo" was getting stepped on by "setZoom" and it was not happening
-        this.$leafletElement.setView(latLng, this.zoom);
+        this.$nextTick(() => {
+          this.$leafletElement.setView(latLng, this.zoom);
+        })
       },
       zoom(nextZoom) {
         if (!nextZoom) return;

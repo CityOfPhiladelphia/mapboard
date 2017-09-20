@@ -26,6 +26,25 @@ class Controller {
   }
 
 
+  // activeTopicConfig() {
+  //   const key = this.store.state.activeTopic;
+  //   let config;
+  //
+  //   // if no active topic, return null
+  //   if (key) {
+  //     config = this.config.topics.filter((topic) => {
+  //       return topic.key === key;
+  //     })[0];
+  //   }
+  //
+  //   return config || {};
+  // }
+  //
+  // activeParcelLayer() {
+  //   return this.activeTopicConfig().parcels || this.config.map.defaultBasemap;
+  // }
+
+
   /*
   EVENT HANDLERS
   */
@@ -42,8 +61,9 @@ class Controller {
 
     this.store.commit('setLastSearchMethod', 'geocode');
     this.store.commit('setClickCoords', null);
-    this.store.commit('setGeocodeForwardStatus', null);
-    this.store.commit('setGeocodeReverseStatus', null);
+    this.store.commit('setGeocodeStatus', null);
+    // this.store.commit('setGeocodeForwardStatus', null);
+    // this.store.commit('setGeocodeReverseStatus', null);
 
     // clear out state
     this.store.commit('setPwdParcel', null);
@@ -64,15 +84,25 @@ class Controller {
     }
     this.store.commit('setLastSearchMethod', 'reverseGeocode');
     this.store.commit('setClickCoords', null);
-    this.store.commit('setGeocodeForwardStatus', null);
-    this.store.commit('setGeocodeReverseStatus', null);
+    // this.store.commit('setGeocodeStatus', null);
+    // this.store.commit('setGeocodeForwardStatus', null);
+    // this.store.commit('setGeocodeReverseStatus', null);
 
     // get parcels that intersect map click xy
     const latLng = e.latlng;
     this.store.commit('setClickCoords', latLng);
 
-    this.dataManager.getDorParcelsByLatLng(latLng);
-    this.dataManager.getPwdParcelByLatLng(latLng);
+    console.log('activeParcelLayer', this.store.state.activeParcelLayer);
+    // if click is on a topic with pwd parcels, you do not want to find dor parcels unless the
+    // click was actually on a pwd parcel that could be geocoded, because just running
+    // getDorParcelsByLatLng changes the Deeds topic in the UI, and the click could have been
+    // on the road
+    // there is a callback after geocode to get dor parcels
+    if (this.store.state.activeParcelLayer === 'dor') {
+      this.dataManager.getDorParcelsByLatLng(latLng);
+    } else {
+      this.dataManager.getPwdParcelByLatLng(latLng);
+    }
   }
 
   handleTopicHeaderClick(topic) {

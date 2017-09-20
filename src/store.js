@@ -130,6 +130,7 @@ function createStore(config) {
 
   const initialState = {
     activeTopic: defaultTopic.key,
+    activeParcelLayer: defaultTopic.parcels,
     // the ais feature
     clickCoords: null,
     geocode: {
@@ -137,8 +138,8 @@ function createStore(config) {
       data: null,
       input: null,
       related: null,
-      forwardStatus: null,
-      reverseStatus: null,
+      // forwardStatus: null,
+      // reverseStatus: null,
     },
     lastSearchMethod: null,
     // the leaflet map object
@@ -172,6 +173,8 @@ function createStore(config) {
       status: null
     },
     activeDorParcel: null,
+    activeDorAddress: null,
+    activeDorMapreg: null,
     pwdParcel: null,
     sources,
     cyclomedia: {
@@ -264,6 +267,9 @@ function createStore(config) {
       setActiveTopic(state, payload) {
         state.activeTopic = payload;
       },
+      setActiveParcelLayer(state, payload) {
+        state.activeParcelLayer = payload;
+      },
       setSourceStatus(state, payload) {
         const key = payload.key;
         const status = payload.status;
@@ -327,18 +333,24 @@ function createStore(config) {
       setActiveDorParcel(state, payload) {
         state.activeDorParcel = payload;
       },
+      setActiveDorAddress(state, payload) {
+        state.activeDorAddress = payload;
+      },
+      setActiveDorMapreg(state, payload) {
+        state.activeDorMapreg = payload;
+      },
       setPwdParcel(state, payload) {
         state.pwdParcel = payload;
       },
       setGeocodeStatus(state, payload) {
         state.geocode.status = payload;
       },
-      setGeocodeForwardStatus(state, payload) {
-        state.geocode.forwardStatus = payload;
-      },
-      setGeocodeReverseStatus(state, payload) {
-        state.geocode.reverseStatus = payload;
-      },
+      // setGeocodeForwardStatus(state, payload) {
+      //   state.geocode.forwardStatus = payload;
+      // },
+      // setGeocodeReverseStatus(state, payload) {
+      //   state.geocode.reverseStatus = payload;
+      // },
       setGeocodeData(state, payload) {
         state.geocode.data = payload;
       },
