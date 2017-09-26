@@ -549,11 +549,41 @@ Mapboard.default({
     }
   },
   legendControls: {
-    'water':
-      {
-        'Roof': '#FEFF7F',
-        'Other Impervious Surface': '#F2DCFF'
+    'water': {
+      'Roof': {
+        'background-color': '#FEFF7F',
+      },
+      'Other Impervious Surface': {
+        'background-color': '#F2DCFF',
       }
+    },
+    'deeds': {
+      'Easements': {
+        'border-color': 'rgb(255, 0, 197)',
+        'border-style': 'solid',
+        'border-weight': '1px',
+        'width': '12px',
+        'height': '12px',
+        'font-size': '10px',
+      },
+      'Transparcels': {
+        'border-color': 'rgb(0, 168, 132)',
+        'border-style': 'solid',
+        'border-weight': '1px',
+        'width': '12px',
+        'height': '12px',
+        'font-size': '10px',
+      },
+      'Rights of Way': {
+        'border-color': 'rgb(249, 147, 0)',
+        'border-style': 'solid',
+        'border-weight': '1px',
+        'width': '12px',
+        'height': '12px',
+        'font-size': '10px',
+      },
+
+    }
   },
   // overlays: {
   //   '311': {
