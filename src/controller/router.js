@@ -182,7 +182,7 @@ class Router {
           geocode: geocodeData
         };
         const nextHash = this.makeHash(address, topic);
-        console.log('nextHistoryState', nextHistoryState, 'nextHash', nextHash);
+        // console.log('nextHistoryState', nextHistoryState, 'nextHash', nextHash);
         this.history.pushState(nextHistoryState, null, nextHash);
       }
     } else {

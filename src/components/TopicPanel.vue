@@ -62,7 +62,8 @@
         return this.$store.state.geocode.data;
       },
       dorParcels() {
-        return this.$store.state.dorParcels.data.length > 0;
+        // return this.$store.state.dorParcels.data.length > 0;
+        return this.$store.state.parcels.dor.data.length > 0;
       },
       shouldShowGreeting() {
         if (!this.geocode && !this.dorParcels) {
@@ -73,24 +74,19 @@
       },
       address() {
         const geocode = this.geocode;
-        const dorParcels = this.$store.state.dorParcels.data
-        const activeDorParcel = this.$store.state.activeDorParcel;
+        // const dorParcels = this.$store.state.dorParcels.data
+        const dorParcels = this.$store.state.parcels.dor.data;
+        const activeDorParcel = this.$store.state.parcels.dor.activeParcel;
+        const activeDorAddress = this.$store.state.parcels.dor.activeAddress;
         // a DOR address might be found even if there is no geocode
         // if (!geocode) return null;
         // return geocode.properties.street_address;
-
         if (geocode) {
            return geocode.properties.street_address;
         } else {
-          if (activeDorParcel) {
-            for (let dorParcel of dorParcels) {
-              if (dorParcel.properties.OBJECTID === activeDorParcel) {
-                const address = concatDorAddress(dorParcel);
-                this.$store.commit('setActiveDorAddress', address);
-                this.$store.commit('setActiveDorMapreg', dorParcel.properties.MAPREG)
-                return address;
-              }
-            }
+          if (activeDorAddress) {
+            const address = activeDorAddress;
+            return address;
           }
         }
       },
@@ -104,7 +100,15 @@
         return parts.join('-');
       },
     },
+    // watch: {
+    //   address(nextAddress) {
+    //
+    //   }
+    // },
     methods: {
+      // setActiveParcel() {
+      //
+      // },
       shouldShowTopic(topic) {
         const requiredSources = topic.dataSources || [];
 

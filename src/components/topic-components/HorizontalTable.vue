@@ -153,6 +153,7 @@
       HorizontalTableRow
     },
     created() {
+      // console.log('horiz table created props slots items', this.$props.slots.items);
       if (this.filters) {
         for (let [index, filter] of this.filters.entries()) {
           const key = `filter-${index}`;
@@ -171,6 +172,7 @@
       // });
     },
     mounted() {
+      // console.log('horiz table mounted props slots items', this.$props.slots.items);
       this.updateTableFilteredData();
     },
     watch: {
@@ -240,7 +242,9 @@
       },
       items() {
         const itemsSlot = this.slots.items;
-        return this.evaluateSlot(itemsSlot) || [];
+        const items = this.evaluateSlot(itemsSlot) || [];
+        // console.log('horiz table items', items);
+        return items
       },
       filterByTextFields() {
         if (this.options.filterByText) {
@@ -296,7 +300,7 @@
         const items = this.filterItems(itemsAfterSearch,
                                        this.filters,
                                        this.filterSelections);
-
+        console.log('horiz table itemsAfterFilters', items);
         return items;
       },
       itemsAfterSort() {
