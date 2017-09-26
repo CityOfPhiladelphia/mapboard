@@ -1461,6 +1461,9 @@ Mapboard.default({
             title: 'Building Area and Value',
             items: function(state) {
               var data = state.sources['liPermitsAdditional'].data;
+              if (data === null) {
+                return;
+              }
               var rows = data.map(function(row){
                 var itemRow = row;
                 // var itemRow = Object.assign({}, row);
