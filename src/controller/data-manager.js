@@ -651,10 +651,9 @@ class DataManager {
       const props = feature.properties || {};
       const id = props[geocodeField];
       if (id) this.controller.router.routeToAddress(id);
-
     } else {
       console.log('didGetParcels - if shouldGeocode is NOT running');
-      if (lastSearchMethod != 'reverseGeocode-secondAttempt'){
+      if (lastSearchMethod != 'reverseGeocode-secondAttempt') {
         this.fetchData();
       }
     }

@@ -103,7 +103,7 @@ function createTableGroups(config) {
 }
 
 function createStore(config) {
-  const defaultTopic = config.topics[0];
+  const defaultTopic = config.topics[1];
 
   // create initial state for sources. data key => {}
   const sourceKeys = Object.keys(config.dataSources || {});
@@ -325,7 +325,7 @@ function createStore(config) {
         // }
       },
       setSourceData(state, payload) {
-        console.log('store setSourceData payload:', payload);
+        // console.log('store setSourceData payload:', payload);
         const key = payload.key;
         const data = payload.data;
 

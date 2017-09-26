@@ -64,7 +64,7 @@ class Router {
     const location = window.location;
     const hash = location.hash;
 
-    // console.log('hash changed =>', hash);
+    console.log('hash changed =>', hash);
 
     // parse url
     const comps = parseUrl(location.href);
@@ -91,6 +91,8 @@ class Router {
     if (pathComps.length > 1) {
       nextTopic = decodeURIComponent(pathComps[1]);
     }
+
+    this.store.commit('setLastSearchMethod', 'geocode');
 
     this.routeToAddress(nextAddress);
     this.routeToTopic(nextTopic);
