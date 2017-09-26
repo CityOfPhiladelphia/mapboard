@@ -43,6 +43,8 @@
       const items = this.evaluateSlot(this.slots.items);
       return {
         activeItem: this.keyForItem(items[0]),
+        activeMapreg: this.titleForItem(items[0]),
+        activeAddress: this.addressForItem(items[0])
       };
     },
     // mounted() {
@@ -73,13 +75,28 @@
         const nextFirstItem = items[0];
         const nextActiveKey = this.keyForItem(nextFirstItem);
         this.activeItem = nextActiveKey;
+        const nextMapreg = this.titleForItem(nextFirstItem);
+        this.activeMapreg = nextMapreg;
+        const nextAddress = this.addressForItem(nextFirstItem);
+        this.activeAddress = nextAddress;
       }
     },
     methods: {
       clickedItem(item) {
         this.$data.activeItem = this.keyForItem(item)
-        // console.log('clickedItem is firing');
-        this.$store.commit('setActiveDorParcel', this.$data.activeItem);
+        this.$data.activeMapreg = this.titleForItem(item);
+        this.$data.activeAddress = this.addressForItem(item);
+        console.log('clickedItem is firing');
+        // const dorParcel = this.$store.state.parcels.dor;
+
+        const payload = {
+          parcelLayer: 'dor',
+          activeParcel: this.$data.activeItem,
+          activeMapreg: this.$data.activeMapreg,
+          activeAddress: this.$data.activeAddress
+        }
+        this.$store.commit('setActiveParcel', payload);
+        // this.$store.commit('setActiveDorParcel', this.$data.activeItem);
       },
       keyForItem(item) {
         try {
@@ -91,6 +108,13 @@
       titleForItem(item) {
         try {
           return this.options.getTitle(item);
+        } catch (e) {
+          return null;
+        }
+      },
+      addressForItem(item) {
+        try {
+          return this.options.getAddress(item);
         } catch (e) {
           return null;
         }

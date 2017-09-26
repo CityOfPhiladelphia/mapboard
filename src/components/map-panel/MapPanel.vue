@@ -313,7 +313,8 @@
     },
     computed: {
       activeDorParcel() {
-        return this.$store.state.activeDorParcel;
+        // return this.$store.state.activeDorParcel;
+        return this.$store.state.parcels.dor.activeParcel;
       },
       legendControls() {
         return this.$config.legendControls;
@@ -409,10 +410,10 @@
         return this.activeTopicConfig.parcels;
       },
       dorParcels() {
-        return this.$store.state.dorParcels.data;
+        return this.$store.state.parcels.dor.data;
       },
       pwdParcel() {
-        return this.$store.state.pwdParcel;
+        return this.$store.state.parcels.pwd;
       },
       geocodeResult() {
         return this.$store.state.geocode.data || {};

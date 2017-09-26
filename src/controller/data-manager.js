@@ -443,236 +443,245 @@ class DataManager {
   }
 
   didGeocode(feature) {
-    // console.log('DataManager.didGeocode:', feature);
+    console.log('DataManager.didGeocode:', feature);
 
     // emit event to event bus
     this.eventBus.$emit('geocodeResult', feature);
+
+    const activeParcelLayer = this.store.state.activeParcelLayer;
+    const lastSearchMethod = this.store.state.lastSearchMethod;
+    const configForActiveParcelLayer = this.config.parcels[activeParcelLayer];
+    // // const multipleAllowed = configForParcelLayer.multipleAllowed;
+    // const geocodeField = configForParcelLayer.geocodeField;
+    const parcelLayers = Object.keys(this.config.parcels || {});
+    const otherParcelLayers = Object.keys(this.config.parcels || {});
+    otherParcelLayers.splice(otherParcelLayers.indexOf(activeParcelLayer), 1);
+    console.log('didGeocode - activeParcelLayer:', activeParcelLayer, 'parcelLayers:', parcelLayers, 'otherParcelLayers:', otherParcelLayers);
 
     // if it is a dor parcel query, and the geocode fails, coordinates can still be used
     // to get dor parcels which are not in ais
     // set coords to the ais coords OR the click if there is no ais result
     let coords;
+    // if geocode fails
     if (!feature) {
-      console.log('did geocode but no geom', feature);
-
-      if (this.store.state.activeParcelLayer === 'dor') {
-        console.log('ran ais on a dor parcel and got no response');
-        const pwdParcel = this.store.state.pwdParcel;
-        if (pwdParcel) {
-          console.log('running ais again on the pwd parcel', pwdParcel.properties.PARCELID);
-          this.geocode(pwdParcel.properties.PARCELID);
-        }
-      }
-
+      console.log('didGeocode - no geom', feature);
       const clickCoords = this.store.state.clickCoords;
       coords = [clickCoords.lng, clickCoords.lat];
+    // if geocode succeeds
     } else {
+      console.log('didGeocode - GEOM', feature);
       coords = feature.geometry.coordinates;
     }
     const [lng, lat] = coords;
     const latlng = L.latLng(lat, lng);
 
-    const lastSearchMethod = this.store.state.lastSearchMethod;
-    // there is a lastSearchMethod if the map was clicked or the searchbox was used
-    if (lastSearchMethod) {
-      console.log('datamanager didGeocode lastSearchMethod', lastSearchMethod)
-      // if this is the result of a search from the search box, get pwd and dor parcels
-      if (lastSearchMethod === 'geocode') {
-        /* DOR PARCELS */
-        const dorParcelId = feature.properties.dor_parcel_id;
-
-        if (dorParcelId && dorParcelId.length > 0) {
-          this.getDorParcelsById(dorParcelId);
+    // all of this happens whether geocode failed or succeeded
+    // search box or onload - get parcels by id
+    // (unless it fails and you are allowed to get them by LatLng on failure)
+    if (lastSearchMethod === 'geocode') {
+      console.log('didGeocode lastSearchMethod:', lastSearchMethod, '- attempting to get all parcel layers:', parcelLayers, ' by ID');
+      // loop through the parcels, and get them by their ids
+      for (let parcelLayer of parcelLayers) {
+        const configForParcelLayer = this.config.parcels[parcelLayer];
+        const parcelIdInGeocoder = configForParcelLayer.parcelIdInGeocoder
+        const parcelId = feature.properties[parcelIdInGeocoder];
+        if (parcelId && parcelId.length > 0) {
+          this.getParcelsById(parcelId, parcelLayer);
         } else {
-          // if we don't have a parcel id (aka mapreg), it's probably because
-          // the parcel has a data quality issue and isn't in ais. so search by
-          // latlng.
-          this.getDorParcelsByLatLng(latlng);
-        }
-
-        /* PWD PARCELS */
-        const pwdParcelId = feature.properties.pwd_parcel_id;
-        this.getPwdParcelById(pwdParcelId);
-
-      // if this is the result of a map-click, you may need to get dor parcels
-      } else {
-        // if this is the result of a map-click in a pwd-parcel topic
-        // use the click latlng to get intersecting dor parcels.
-        // this is needed because it will not automatically get the dor parcels
-        // in case it does not find a pwd parcel
-        // if (this.activeParcelLayer() === 'pwd') {
-        if (this.store.state.activeParcelLayer === 'pwd') {
-          // console.log('reverseGeocode happened and only got pwd parcel, getting dorParcels now with latlng')
-          this.getDorParcelsByLatLng(latlng);
-        } else {
-          console.log('reverseGeocode happened and only got dor parcel, getting pwdParcels now with latlng')
-          this.getPwdParcelByLatLng(latlng);
+          if (configForParcelLayer.getByLatLngIfIdFails) {
+            console.log(parcelLayer, 'Id failed - had to get by LatLng')
+            this.getParcelsByLatLng(latlng, parcelLayer);
+          }
         }
       }
-    } else {
-      // OLD COMMENT (not sure if it is wrong) - if we're here, then ais did not have a dor parcel id, so we'll use the ais xy to get intersecting dor parcels
 
-      // NEW COMMENT - if we're here, the app routed to an address automatically, so it needs dor parcels and pwd parcel
-      this.getDorParcelsByLatLng(latlng);
-      this.getPwdParcelByLatLng(latlng);
+    // map-click - get pwd and dor parcels (whichever has not already been found) by latlng
+    // this is needed because it will not automatically get the dor parcels in case it does not find a pwd parcel
+    // and vice versa
+    } else if (lastSearchMethod === 'reverseGeocode') {
+      if (feature) {
+        console.log('didGeocode lastSearchMethod:', lastSearchMethod, 'feature', feature, '- getting other parcel layers by id or latlng')
+        for (let otherParcelLayer of otherParcelLayers) {
+          const configForOtherParcelLayer = this.config.parcels[otherParcelLayer];
+          const parcelIdInGeocoder = configForOtherParcelLayer.parcelIdInGeocoder
+          const parcelId = feature.properties[parcelIdInGeocoder];
+          if (parcelId && parcelId.length > 0) {
+            this.getParcelsById(parcelId, otherParcelLayer);
+          } else {
+            if (configForOtherParcelLayer.getByLatLngIfIdFails) {
+              console.log(otherParcelLayer, 'Id failed - had to get by LatLng')
+              this.getParcelsByLatLng(latlng, otherParcelLayer);
+            }
+          }
+        }
+      } else {
+        console.log('didGeocode lastSearchMethod:', lastSearchMethod, 'NO feature', feature)
+        const geocodeFailAttemptParcel = configForActiveParcelLayer.geocodeFailAttemptParcel
+        if (geocodeFailAttemptParcel) {
+          console.log('ran ais on a dor parcel and got no response - should try pwd parcel?', geocodeFailAttemptParcel);
+          const otherParcel = this.store.state.parcels[geocodeFailAttemptParcel];
+          console.log('otherParcel:', otherParcel);
+          if (otherParcel) {
+            const configForOtherParcelLayer = this.config.parcels[geocodeFailAttemptParcel];
+            const geocodeField = configForOtherParcelLayer.geocodeField;
+            console.log('running ais again on the pwd parcel', otherParcel.properties[geocodeField]);
+            this.store.commit('setLastSearchMethod', 'reverseGeocode-secondAttempt')
+            this.geocode(otherParcel.properties[geocodeField]);
+          }
+        }
+      }
     }
 
     // pan and zoom map
     // console.log('coords', coords);
-    this.store.commit('setMapCenter', coords);
-    this.store.commit('setMapZoom', 19);
 
     // reset data
-    this.resetData();
+    if (lastSearchMethod != 'reverseGeocode-secondAttempt') {
+      this.resetData();
+      this.store.commit('setMapCenter', coords);
+      this.store.commit('setMapZoom', 19);
+    }
 
     // fetch new data
     console.log('didGeocode is calling fetchData()');
     this.fetchData();
   } // end didGeocode
 
-  getPwdParcelByLatLng(latlng) {
-    console.log('get pwd parcel by latlng');
+  getParcelsById(id, parcelLayer) {
+    console.log('getParcelsById', parcelLayer);
 
-    const url = this.config.map.featureLayers.pwdParcels.url;
+    const url = this.config.map.featureLayers[parcelLayer+'Parcels'].url;
+    const configForParcelLayer = this.config.parcels[parcelLayer];
+    const geocodeField = configForParcelLayer.geocodeField;
+    const parcelQuery = L.esri.query({ url });
+    parcelQuery.where(geocodeField + " = '" + id + "'")
+    parcelQuery.run((function(error, featureCollection, response) {
+      // console.log('parcelQuery ran, activeParcelLayer:', activeParcelLayer);
+      this.didGetParcels(error, featureCollection, response, parcelLayer);
+    }).bind(this)
+  )
+  }
+
+  getParcelsByLatLng(latlng, parcelLayer) {
+    console.log('getParcelsByLatLng', parcelLayer);
+    const url = this.config.map.featureLayers[parcelLayer+'Parcels'].url;
     const parcelQuery = L.esri.query({ url });
     parcelQuery.contains(latlng);
-    parcelQuery.run(this.didGetPwdParcel.bind(this));
+    parcelQuery.run((function(error, featureCollection, response) {
+        this.didGetParcels(error, featureCollection, response, parcelLayer);
+      }).bind(this)
+    )
   }
 
-  getPwdParcelById(id) {
-    console.log('getPwdParcelById');
-    const url = this.config.map.featureLayers.pwdParcels.url;
-    const parcelQuery = L.esri.query({ url });
-    parcelQuery.where('PARCELID = ' + id);
-    parcelQuery.run(this.didGetPwdParcel.bind(this));
-  }
-
-  didGetPwdParcel(error, featureCollection, response) {
-    console.log('did get pwd parcel', featureCollection);
+  didGetParcels(error, featureCollection, response, parcelLayer) {
+    const configForParcelLayer = this.config.parcels[parcelLayer];
+    const multipleAllowed = configForParcelLayer.multipleAllowed;
+    const geocodeField = configForParcelLayer.geocodeField;
+    const otherParcelLayers = Object.keys(this.config.parcels || {});
+    otherParcelLayers.splice(otherParcelLayers.indexOf(parcelLayer), 1);
+    const lastSearchMethod = this.store.state.lastSearchMethod;
+    const activeParcelLayer = this.store.state.activeParcelLayer;
+    console.log('didGetParcels - parcelLayer:', parcelLayer, 'otherParcelLayers:', otherParcelLayers, 'configForParcelLayer:', configForParcelLayer);
 
     if (error) {
-      console.warn('did get pwd parcel error', error);
+      console.warn('didGetParcels error', parcelLayer, error);
+      // update state
+      if (configForParcelLayer.clearStateOnError) {
+      // this.store.commit('setParcelData', { parcelLayer, [] });
+      // this.store.commit('setParcelStatus', { parcelLayer }, 'error' });
+      }
       return;
     }
 
     if (!featureCollection) {
-      console.warn('did get pwd parcel, but no features');
+      console.warn('didGetParcel', parcelLayer, 'got no featureCollection');
       return;
     }
 
     const features = featureCollection.features;
-    let feature;
 
     if (features.length === 0) {
-      feature = null;
-    } else {
-      feature = features[0]
-      console.log('putting pwd parcel in state');
-      this.store.commit('setPwdParcel', feature);
-
-      if (this.store.state.activeParcelLayer === 'pwd' && this.store.state.lastSearchMethod === 'reverseGeocode'){
-        console.log('didGetPwdParcel is wiping out the dor parcel in the state');
-        this.store.commit('setDorParcelData', []);
-        this.store.commit('setDorParcelStatus', null);
-      }
-
-      // this shouldn't happen
-      if (features.length > 1) {
-        console.debug('got more than one pwd parcel', features);
-      }
-    }
-
-
-    const shouldGeocode = (
-      this.store.state.activeParcelLayer === 'pwd' &&
-      feature &&
-      this.store.state.lastSearchMethod === 'reverseGeocode'
-    );
-
-    if (shouldGeocode) {
-      const id = feature.properties.PARCELID;
-      // const activeTopic = this.store.state.activeTopic;
-      // const nextHash = `/${id}/${activeTopic}`;
-      // window.location.hash = nextHash;
-
-      // this.geocode(id);
-      this.controller.router.routeToAddress(id);
-    } else {
-      console.log('didGetPwdParcel is calling fetchData()');
-      this.fetchData();
-    }
-  }
-
-  getDorParcelsByLatLng(latlng) {
-    console.log('get dor parcels by latlng', latlng);
-
-    const url = this.config.map.featureLayers.dorParcels.url;
-    const parcelQuery = L.esri.query({ url });
-    parcelQuery.contains(latlng);
-    parcelQuery.run(this.didGetDorParcels.bind(this));
-  }
-
-  getDorParcelsById(id) {
-    console.log('get dor parcels by id');
-
-    const url = this.config.map.featureLayers.dorParcels.url;
-    const parcelQuery = L.esri.query({ url });
-    parcelQuery.where("MAPREG = '" + id + "'")
-    parcelQuery.run(this.didGetDorParcels.bind(this));
-  }
-
-  didGetDorParcels(error, featureCollection, response) {
-    console.log('did get dor parcels', featureCollection);
-
-    if (error) {
-      console.warn('did get dor parcels error', error);
-
-      // update state
-      this.store.commit('setDorParcelData', []);
-      this.store.commit('setDorParcelStatus', 'error');
-
+      console.warn('didGetParcels:', parcelLayer,' got a parcel but no features');
       return;
     }
-    if (!featureCollection || featureCollection.features.length === 0) {
-      console.warn('did get dor parcels, but no features');
-      return;
-    } else {
-      if (this.store.state.activeParcelLayer === 'dor') {
-        console.log('didGetDorParcels is wiping out the pwdParcel in state');
-        this.store.commit('setPwdParcel', null);
-      }
-    }
 
-    const features = featureCollection.features;
-
-    // sort
     const featuresSorted = this.sortDorParcelFeatures(features);
+    let feature;
 
-    // update state
-    this.store.commit('setDorParcelData', featuresSorted);
-    this.store.commit('setDorParcelStatus', 'success');
-    this.store.commit('setActiveDorParcel', featuresSorted[0].id)
+    if (!multipleAllowed) {
+      feature = features[0];
+      if (features.length > 1) {
+        console.debug('got more than one', parcelLayer, 'parcel:', features);
+      }
+    // dor
+    } else {
+      feature = featuresSorted[0];
+    }
 
+    // at this point there is definitely a feature or features - put it in state
+    this.setParcelsInState(parcelLayer, multipleAllowed, feature, featuresSorted);
+
+    // geocode
+    console.log('didGetParcels activeParcelLayer:', activeParcelLayer, 'parcelLayer:', parcelLayer);
     const shouldGeocode = (
-      this.store.state.activeParcelLayer === 'dor' &&
-      //features.length < 1 &&
-      // features.length < 1 &&
-      this.store.state.lastSearchMethod === 'reverseGeocode'
+      activeParcelLayer === parcelLayer &&
+      lastSearchMethod === 'reverseGeocode'
     );
 
+    console.log('didGetParcels - shouldGeocode is', shouldGeocode);
     if (shouldGeocode) {
-      console.log('DATAMANAGER if shouldGeocode is running');
-      // TODO sort by mapreg, status
-      // this.geocode(features[0].properties.MAPREG);
-      const feature = features.length > 0 ? features[0] : {};
+      // since we definitely have a new parcel, and will attempt to geocode it:
+      // 1. wipe out state data on other parcels
+      // 2. attempt to replace
+      // if (lastSearchMethod === 'reverseGeocode') { // || !configForParcelLayer.wipeOutOtherParcelsOnReverseGeocodeOnly) {
+      const clickCoords = this.store.state.clickCoords;
+      const coords = [clickCoords.lng, clickCoords.lat];
+      const [lng, lat] = coords;
+      const latlng = L.latLng(lat, lng);
+
+      console.log('didGetParcels is wiping out the', otherParcelLayers, 'parcels in state');
+      for (let otherParcelLayer of otherParcelLayers) {
+        const configForOtherParcelLayer = this.config.parcels[otherParcelLayer];
+        const otherMultipleAllowed = configForOtherParcelLayer.multipleAllowed;
+        this.setParcelsInState(otherParcelLayer, otherMultipleAllowed, null, [])
+        this.getParcelsByLatLng(latlng, otherParcelLayer)
+      }
+
+      console.log('didGetParcels - shouldGeocode is running');
       const props = feature.properties || {};
-      const id = props.MAPREG;
-      // if (id) this.controller.router.route(id);
+      const id = props[geocodeField];
       if (id) this.controller.router.routeToAddress(id);
     } else {
-      console.log('didGetDorParcels is calling fetchData()');
-      this.fetchData();
+      console.log('didGetParcels - if shouldGeocode is NOT running');
+      if (lastSearchMethod != 'reverseGeocode-secondAttempt') {
+        this.fetchData();
+      }
     }
+  }
+
+  setParcelsInState(parcelLayer, multipleAllowed, feature, featuresSorted) {
+    let payload;
+    // pwd
+    if (!multipleAllowed) {
+      payload = {
+        parcelLayer,
+        multipleAllowed,
+        data: feature
+      }
+    // dor
+    } else {
+      payload = {
+        parcelLayer,
+        multipleAllowed,
+        data: featuresSorted,
+        status: 'success',
+        activeParcel: feature ? feature.id : null,
+        activeAddress: feature ? concatDorAddress(feature) : null,
+        activeMapreg: feature ? feature.properties.MAPREG : null
+      }
+    }
+    // update state
+    this.store.commit('setParcelData', payload);
   }
 
   sortDorParcelFeatures(features) {

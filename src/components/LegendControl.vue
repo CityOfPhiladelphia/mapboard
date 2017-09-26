@@ -2,9 +2,21 @@
   <div v-show="this.activeTopic === this.$props.topic">
     <div class='legend'>
       <ul class='legend-list'>
-        <li v-for='key in this.keys'>
-          <i class='legend-box' :style='"background: " + items[key]'></i>
-          {{key}}
+        <li v-for='key in this.keys'
+            class='legend-listitem'
+            :style='"font-size:"+items[key]["font-size"]+";"'
+        >
+          <div class='legend-box'
+             :style='"background-color:"+items[key]["background-color"]+
+             "; border-color:"+items[key]["border-color"]+
+             "; border-style:"+items[key]["border-style"]+
+             "; border-width:"+items[key]["border-weight"]+
+             "; width:"+items[key].width+
+             "; height:"+items[key].height+";"'
+          />
+          <div class='list-text'>
+            {{key}}
+          </div>
         </li>
       </ul>
     </div>
@@ -28,6 +40,12 @@
       activeTopic() {
         return this.$store.state.activeTopic;
       },
+      // style() {
+      //   // const string = "background: " + this.$props.items[key].background + " color: " + this.$props.items[key].color
+      //   const string = this.$props.items[]
+      //   console.log('style string', string);
+      //   return string
+      // }
     },
     methods: Object.assign(methods)
   };
@@ -47,11 +65,17 @@
 }
 
 .legend-box {
+  display: inline-block;
   width: 18px;
   height: 18px;
-  float: left;
-  margin-right: 8px;
   opacity: 1;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+.list-text {
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .legend-list {
