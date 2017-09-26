@@ -129,6 +129,32 @@ function createStore(config) {
     return o;
   }, {});
 
+  const parcelKeys = Object.keys(config.parcels || {});
+  const parcels = parcelKeys.reduce((o, key) => {
+    let val;
+    if (config.parcels[key].multipleAllowed) {
+      val = {
+        data: [],
+        status: null,
+        activeParcel: null,
+        activeAddress: null,
+        activeMapreg: null
+      };
+    } else {
+      val = null;
+      // val = {
+      //   geometry: null,
+      //   id: null,
+      //   properties: null,
+      //   type: null
+      // };
+    }
+
+    o[key] = val;
+
+    return o;
+  }, {});
+
   const initialState = {
     activeTopic: defaultTopic.key,
     activeParcelLayer: defaultTopic.parcels,
@@ -142,7 +168,7 @@ function createStore(config) {
       // forwardStatus: null,
       // reverseStatus: null,
     },
-    lastSearchMethod: null,
+    lastSearchMethod: 'geocode',
     // the leaflet map object
     map: {
       center: config.map.center,
@@ -169,14 +195,15 @@ function createStore(config) {
       //   ]
       // }
     },
-    dorParcels: {
-      data: [],
-      status: null
-    },
-    activeDorParcel: null,
-    activeDorAddress: null,
-    activeDorMapreg: null,
-    pwdParcel: null,
+    parcels,
+    // dorParcels: {
+    //   data: [],
+    //   status: null
+    // },
+    // activeDorParcel: null,
+    // activeDorAddress: null,
+    // activeDorMapreg: null,
+    // pwdParcel: null,
     sources,
     cyclomedia: {
       active: false,
@@ -298,6 +325,7 @@ function createStore(config) {
         // }
       },
       setSourceData(state, payload) {
+        console.log('store setSourceData payload:', payload);
         const key = payload.key;
         const data = payload.data;
 
@@ -356,33 +384,54 @@ function createStore(config) {
       setMapZoom(state, payload) {
         state.map.zoom = payload
       },
-      setDorParcelData(state, payload) {
-        state.dorParcels.data = payload;
+      setParcelData(state, payload) {
+        console.log('store setParcelData payload:', payload);
+        const { parcelLayer, data, multipleAllowed, status, activeParcel, activeAddress, activeMapreg } = payload || {};
+        console.log('store setParcelData parcelLayer:', parcelLayer, 'data:', data, 'multipleAllowed:', multipleAllowed, 'status:', status, 'activeParcel:', activeParcel);
+        if (!multipleAllowed) {
+          state.parcels[parcelLayer] = data;
+        } else {
+          state.parcels[parcelLayer].data = data;
+          state.parcels[parcelLayer].status = status;
+          state.parcels[parcelLayer].activeParcel = activeParcel;
+          state.parcels[parcelLayer].activeAddress = activeAddress;
+          state.parcels[parcelLayer].activeMapreg = activeMapreg;
+        }
       },
-      setDorParcelStatus(state, payload) {
-        state.dorParcels.status = payload;
+      setActiveParcel(state, payload) {
+        console.log('store setActiveParcel:', payload)
+        const { parcelLayer, activeParcel, activeAddress, activeMapreg } = payload || {};
+        state.parcels[parcelLayer].activeParcel = activeParcel;
+        state.parcels[parcelLayer].activeAddress = activeAddress;
+        state.parcels[parcelLayer].activeMapreg = activeMapreg;
       },
-      setActiveDorParcel(state, payload) {
-        state.activeDorParcel = payload;
-      },
-      setActiveDorAddress(state, payload) {
-        state.activeDorAddress = payload;
-      },
-      setActiveDorMapreg(state, payload) {
-        state.activeDorMapreg = payload;
-      },
-      setPwdParcel(state, payload) {
-        state.pwdParcel = payload;
-      },
+      // setDorParcelData(state, payload) {
+      //   state.dorParcels.data = payload;
+      //   // state.parcels.dor.data = payload;
+      // },
+      // setDorParcelStatus(state, payload) {
+      //   state.dorParcels.status = payload;
+      //   // state.parcels.dor.status = payload;
+      // },
+      // setActiveDorParcel(state, payload) {
+      //   state.activeDorParcel = payload;
+      //   // state.parcels.dor.activeParcel = payload;
+      // },
+      // setActiveDorAddress(state, payload) {
+      //   state.activeDorAddress = payload;
+      //   // state.parcels.dor.activeAddress = payload;
+      // },
+      // setActiveDorMapreg(state, payload) {
+      //   state.activeDorMapreg = payload;
+      //   // state.parcels.dor.activeMapreg = payload;
+      // },
+      // setPwdParcel(state, payload) {
+      //   state.pwdParcel = payload;
+      //   // state.parcels.pwd = payload;
+      // },
       setGeocodeStatus(state, payload) {
         state.geocode.status = payload;
       },
-      // setGeocodeForwardStatus(state, payload) {
-      //   state.geocode.forwardStatus = payload;
-      // },
-      // setGeocodeReverseStatus(state, payload) {
-      //   state.geocode.reverseStatus = payload;
-      // },
       setGeocodeData(state, payload) {
         state.geocode.data = payload;
       },

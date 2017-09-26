@@ -67,13 +67,35 @@ class Controller {
     this.store.commit('setLastSearchMethod', 'geocode');
     this.store.commit('setClickCoords', null);
     this.store.commit('setGeocodeStatus', null);
-    // this.store.commit('setGeocodeForwardStatus', null);
-    // this.store.commit('setGeocodeReverseStatus', null);
 
     // clear out state
-    this.store.commit('setPwdParcel', null);
-    this.store.commit('setDorParcelData', []);
-    this.store.commit('setDorParcelStatus', null);
+    const parcelLayers = Object.keys(this.config.parcels || {});
+    for (let parcelLayer of parcelLayers) {
+      const configForParcelLayer = this.config.parcels[parcelLayer];
+      const multipleAllowed = configForParcelLayer.multipleAllowed;
+      let payload;
+      // pwd
+      if (!multipleAllowed) {
+        payload = {
+          parcelLayer: parcelLayer,
+          multipleAllowed,
+          data: null
+        }
+      // dor
+      } else {
+        payload = {
+          parcelLayer: parcelLayer,
+          multipleAllowed,
+          data: [],
+          status: null,
+          activeParcel: null,
+          activeAddress: null,
+          activeMapreg: null
+        }
+      }
+      // update state
+      this.store.commit('setParcelData', payload);
+    }
 
     // tell router
     this.router.routeToAddress(input);
@@ -89,30 +111,23 @@ class Controller {
     }
     this.store.commit('setLastSearchMethod', 'reverseGeocode');
     this.store.commit('setClickCoords', null);
-    // this.store.commit('setGeocodeStatus', null);
-    // this.store.commit('setGeocodeForwardStatus', null);
-    // this.store.commit('setGeocodeReverseStatus', null);
 
     // get parcels that intersect map click xy
     const latLng = e.latlng;
     this.store.commit('setClickCoords', latLng);
 
-    console.log('activeParcelLayer', this.store.state.activeParcelLayer);
     // if click is on a topic with pwd parcels, you do not want to find dor parcels unless the
     // click was actually on a pwd parcel that could be geocoded, because just running
     // getDorParcelsByLatLng changes the Deeds topic in the UI, and the click could have been
     // on the road
     // there is a callback after geocode to get dor parcels
-    if (this.store.state.activeParcelLayer === 'dor') {
-      this.dataManager.getDorParcelsByLatLng(latLng);
-    } else {
-      this.dataManager.getPwdParcelByLatLng(latLng);
-    }
+    const activeParcelLayer = this.store.state.activeParcelLayer;
+    // console.log('activeParcelLayer', activeParcelLayer);
+    this.dataManager.getParcelsByLatLng(latLng, activeParcelLayer);
   }
 
   handleTopicHeaderClick(topic) {
     // console.log('Controller.handleTopicHeaderClick', topic);
-
     this.router.routeToTopic(topic);
   }
 

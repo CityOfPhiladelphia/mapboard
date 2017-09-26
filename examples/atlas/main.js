@@ -151,6 +151,26 @@ Mapboard.default({
     },
   },
   baseConfig: BASE_CONFIG_URL,
+  parcels: {
+    pwd: {
+      multipleAllowed: false,
+      geocodeFailAttemptParcel: null,
+      clearStateOnError: false,
+      wipeOutOtherParcelsOnReverseGeocodeOnly: true,
+      geocodeField: 'PARCELID',
+      parcelIdInGeocoder: 'pwd_parcel_id',
+      getByLatLngIfIdFails: false
+    },
+    dor: {
+      multipleAllowed: true,
+      geocodeFailAttemptParcel: 'pwd',
+      clearStateOnError: true,
+      wipeOutOtherParcelsOnReverseGeocodeOnly: false,
+      geocodeField: 'MAPREG',
+      parcelIdInGeocoder: 'dor_parcel_id',
+      getByLatLngIfIdFails: true
+    }
+  },
   dataSources: {
     // nearby: {
     //   type: 'http-get',
@@ -338,7 +358,8 @@ Mapboard.default({
       type: 'http-get',
       targets: {
         get: function(state) {
-          return state.dorParcels.data;
+          // return state.dorParcels.data;
+          return state.parcels.dor.data;
         },
         getTargetId: function(target) {
           return target.properties.OBJECTID;
@@ -356,7 +377,8 @@ Mapboard.default({
             // WHERE ADDRESS = 'null' (doesn't make sense), so use this for now
             // if (!parcelBaseAddress || parcelBaseAddress === 'null') return '1 = 0';
             if (!parcelBaseAddress || parcelBaseAddress === 'null'){
-              var where = "MATCHED_REGMAP = '" + state.dorParcels.data[0].properties.BASEREG + "'";
+              // var where = "MATCHED_REGMAP = '" + state.dorParcels.data[0].properties.BASEREG + "'";
+              var where = "MATCHED_REGMAP = '" + state.parcels.dor.data[0].properties.BASEREG + "'";
             } else {
               // var where = `ADDRESS = '${parcelBaseAddress}'`;
               var where = "STREET_ADDRESS = '" + parcelBaseAddress + "'";
@@ -470,7 +492,7 @@ Mapboard.default({
       options: {
         params: {
           urlAddition: function(feature) {
-            console.log('testing feature in params:', feature);
+            // console.log('testing feature in params:', feature);
             return feature;
           },
           gatekeeperKey: GATEKEEPER_KEY,
@@ -486,12 +508,14 @@ Mapboard.default({
     regmaps: {
       type: 'esri',
       url: '//gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/0',
-      deps: ['dorParcels'],
+      // deps: ['dorParcels'],
+      deps: ['parcels.dor'],
       options: {
         relationship: 'intersects',
         targetGeometry: function(state, Leaflet) {
           // get combined extent of dor parcels
-          var parcels = state.dorParcels.data;
+          // var parcels = state.dorParcels.data;
+          var parcels = state.parcels.dor.data;
           // console.log('parcels', parcels);
 
           // build up sets of x and y values
@@ -894,7 +918,8 @@ Mapboard.default({
           },
           slots: {
             items: function(state) {
-              return state.dorParcels.data;
+              // return state.dorParcels.data;
+              return state.parcels.dor.data;
             }
           }
         },
@@ -906,6 +931,10 @@ Mapboard.default({
             },
             getTitle: function(item) {
               return item.properties.MAPREG;
+            },
+            getAddress: function(item) {
+              const address = concatDorAddress(item);
+              return address;
             },
             // components for the content pane. this essentially a topic body.
             components: [
@@ -1071,7 +1100,8 @@ Mapboard.default({
           }, // end parcel tab options
           slots: {
             items: function(state) {
-              return state.dorParcels.data;
+              // return state.dorParcels.data;
+              return state.parcels.dor.data;
             }
           }
         }, // end dor parcel tab group comp
@@ -2277,7 +2307,8 @@ Mapboard.default({
             // REVIEW should this go in options? maybe not, since it should be
             // reactive.
             items: function(state) {
-              return state.pwdParcel;
+              // return state.pwdParcel;
+              return state.parcel.pwd
             }
           },
         }
