@@ -70,7 +70,7 @@
                   this.zoom);
 
       this.$nextTick(() => {
-        map.attributionControl.setPrefix('<a target="_blank" href="//www.phila.gov/it/aboutus/units/Pages/GISServicesGroup.aspx">City of Philadelphia | GIS Services Group</a>');
+        map.attributionControl.setPrefix('<a target="_blank" href="//www.phila.gov/it/aboutus/units/Pages/GISServicesGroup.aspx">City of Philadelphia | CityGeo</a>');
       })
 
       // signal children to mount
