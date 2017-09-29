@@ -30,7 +30,8 @@ class HttpClient extends BaseClient {
     const options = dataSource.options;
     const urlAddition = params.urlAddition;
     if (urlAddition) {
-      url += encodeURIComponent(urlAddition.properties.street_address);
+      url += encodeURIComponent(urlAddition);
+      // url += encodeURIComponent(urlAddition.properties.street_address);
     }
     // console.log('url', url);
     // console.log('http-client fetch, feature:', feature, 'dataSource:', dataSource, 'dataSourceKey:', dataSourceKey, 'targetIdFn:', targetIdFn, 'params:', params);

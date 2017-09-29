@@ -63,7 +63,7 @@ function cleanDorAttribute(attr) {
 
 // TODO put this in base config transforms
 function concatDorAddress(parcel, includeUnit) {
-  // console.log('concatDorAddress is running with parcel:', parcel, 'includeUnit:', includeUnit);
+  console.log('concatDorAddress is running with parcel:', parcel, 'includeUnit:', includeUnit);
   includeUnit = typeof includeUnit !== 'undefined' ? includeUnit: true;
   var STREET_FIELDS = ['STDIR', 'STNAM', 'STDES', 'STDESSUF'];
   var props = parcel.properties;
@@ -372,6 +372,7 @@ Mapboard.default({
           where: function(feature, state) {
             // METHOD 1: via address
             var parcelBaseAddress = concatDorAddress(feature);
+            console.log('parcelBaseAddress', parcelBaseAddress)
 
             // REVIEW if the parcel has no address, we don't want to query
             // WHERE ADDRESS = 'null' (doesn't make sense), so use this for now
@@ -379,15 +380,26 @@ Mapboard.default({
             if (!parcelBaseAddress || parcelBaseAddress === 'null'){
               // var where = "MATCHED_REGMAP = '" + state.dorParcels.data[0].properties.BASEREG + "'";
               var where = "MATCHED_REGMAP = '" + state.parcels.dor.data[0].properties.BASEREG + "'";
+              console.log('DOR Parcel BASEREG', state.parcels.dor.data[0].properties.BASEREG);
             } else {
-              // var where = `ADDRESS = '${parcelBaseAddress}'`;
-              var where = "STREET_ADDRESS = '" + parcelBaseAddress + "'";
+              // var where = "STREET_ADDRESS = '" + parcelBaseAddress + "'";
+              var where = "ADDRESS_LOW = " + state.geocode.data.properties.address_low
+                        + " AND STREET_NAME = '" + state.geocode.data.properties.street_name
+                        + "' AND STREET_SUFFIX = '" + state.geocode.data.properties.street_suffix
+                        + "' AND STREET_PREDIR = '" + state.geocode.data.properties.street_predir
+                         + "'"
+              console.log('where', where);
 
               // check for unit num
               var unitNum = cleanDorAttribute(feature.properties.UNIT);
+              console.log('DOR Parcel BASEREG - feature:', feature);
+
+              var unitNum2 = state.geocode.data.properties.unit_num;
 
               if (unitNum) {
                 where += " AND UNIT_NUM = '" + unitNum + "'";
+              } else if (unitNum2 != '') {
+                where += " AND UNIT_NUM = '" + unitNum2 + "'";
               }
             }
 
@@ -492,8 +504,9 @@ Mapboard.default({
       options: {
         params: {
           urlAddition: function(feature) {
-            // console.log('testing feature in params:', feature);
-            return feature;
+            console.log('testing feature in params:', feature);
+            const street_address = feature.properties.street_address;
+            return street_address;
           },
           gatekeeperKey: GATEKEEPER_KEY,
           include_units: true,
@@ -642,10 +655,10 @@ Mapboard.default({
   //   },
   // },
   cyclomedia: {
-    enabled: true
+    enabled: false
   },
   pictometry: {
-    enabled: true
+    enabled: false
   },
   // reusable transforms for topic data. see `topics` section for usage.
   transforms: {
