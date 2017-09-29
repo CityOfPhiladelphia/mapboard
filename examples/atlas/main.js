@@ -380,7 +380,17 @@ Mapboard.default({
               var where = "MATCHED_REGMAP = '" + state.parcels.dor.data[0].properties.BASEREG + "'";
               console.log('DOR Parcel BASEREG', state.parcels.dor.data[0].properties.BASEREG);
             } else {
-              var where = "ADDRESS_LOW = " + state.geocode.data.properties.address_low
+              const address_low = state.geocode.data.properties.address_low
+              roundto100 = function(address) { return Math.floor(address/100, 1)*100}
+              const address_floor = roundto100(address_low);
+              const address_remainder = address_low - address_floor;
+              console.log('address_low:', address_low, 'address_floor:', address_floor);
+              // var where = "ADDRESS_LOW = " + state.geocode.data.properties.address_low
+              //           + " AND STREET_NAME = '" + state.geocode.data.properties.street_name
+              //           + "' AND STREET_SUFFIX = '" + state.geocode.data.properties.street_suffix
+              //           + "'"
+              var where = "(ADDRESS_LOW = " + address_low
+                        + " OR (ADDRESS_LOW >= " + address_floor + " AND ADDRESS_LOW <= " + address_low + " AND ADDRESS_HIGH >= " + address_remainder + " ))"
                         + " AND STREET_NAME = '" + state.geocode.data.properties.street_name
                         + "' AND STREET_SUFFIX = '" + state.geocode.data.properties.street_suffix
                         + "'"
