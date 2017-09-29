@@ -1,5 +1,6 @@
 <template>
-  <div v-if="shouldShowTopic">
+  <!-- <div v-if="shouldShowTopic"> -->
+  <div>
     <a href="#"
        class="topic-header"
        @click.prevent="handleTopicHeaderClick"
@@ -101,13 +102,13 @@
           }
         }
       },
-      shouldShowTopic() {
-        let result = true;
-        if (this.$props.topicKey === 'condos' && !this.condoListExists) {
-          result = false;
-        }
-        return result;
-      },
+      // shouldShowTopic() {
+      //   let result = true;
+      //   if (this.$props.topicKey === 'condos' && !this.condoListExists) {
+      //     result = false;
+      //   }
+      //   return result;
+      // },
       shouldShowError() {
         // console.log('Topic.vue shouldShowError this.hasData', this.topicKey, this.hasData, this.condoListExists);
         return (
@@ -158,13 +159,13 @@
         }
       },
     },
-    watch: {
-      shouldShowTopic(nextShouldShowTopic) {
-        if (nextShouldShowTopic === true) {
-          this.$store.commit('setActiveTopic', 'condos')
-        }
-      }
-    },
+    // watch: {
+    //   shouldShowTopic(nextShouldShowTopic) {
+    //     if (nextShouldShowTopic === true) {
+    //       this.$store.commit('setActiveTopic', 'condos')
+    //     }
+    //   }
+    // },
     methods: {
       configForBasemap(key) {
         return this.$config.map.basemaps[key];

@@ -80,6 +80,9 @@
           this.$store.commit('setTableGroupActiveTable', this.item);
         }
       }
+      if (this.options.showBoth) {
+        console.log('tableGroup showBoth');
+      }
     },
     computed: {
       altMainTable() {

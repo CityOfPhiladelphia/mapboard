@@ -1,121 +1,127 @@
 <template>
-  <div v-if="shouldShowTable">
-    <!-- controls -->
-    <div class="mb-horizontal-table-controls">
-      <div v-if="!!options.filters"
-           class="vertically-centered"
-      >
-        <!-- TODO the ids for filter spans should incorporate some sort of topic comp
-        to make them globally unique -->
-        <div v-for="(filter, index) in filters"
-              :id="'filter-' + index"
-              class="inline-block"
+  <div>
+    <!-- <button v-if="shouldShowButton"
+    >
+      Text
+    </button> -->
+    <div v-if="shouldShowTable">
+      <!-- controls -->
+      <div class="mb-horizontal-table-controls">
+        <div v-if="!!options.filters"
+             class="vertically-centered"
         >
-          <div class="vertically-centered mb-select-text">{{ filter.label }}</div>
-          <select @change="handleFilterValueChange"
+          <!-- TODO the ids for filter spans should incorporate some sort of topic comp
+          to make them globally unique -->
+          <div v-for="(filter, index) in filters"
+                :id="'filter-' + index"
+                class="inline-block"
+          >
+            <div class="vertically-centered mb-select-text">{{ filter.label }}</div>
+            <select @change="handleFilterValueChange"
+                    class="mb-select"
+            >
+              <optgroup>
+                <option v-for="filterValue in filter.values"
+                        :value="slugifyFilterValue(filterValue)"
+                        class="mb-select-option"
+                >
+                  {{ filterValue.label }}
+                </option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+
+        <!-- <div v-if="!!this.$props.options.sort && !!this.$props.options.sort.select" -->
+        <div v-if="!!options.sort && !!options.sort.select"
+             class="vertically-centered"
+        >
+          <div class="vertically-centered mb-select-text">Sort by</div>
+          <select @change="handleSortValueChange"
                   class="mb-select"
           >
             <optgroup>
-              <option v-for="filterValue in filter.values"
-                      :value="slugifyFilterValue(filterValue)"
+              <option v-for="defaultSortMethod in defaultSortMethods"
+                      :value="defaultSortMethod"
                       class="mb-select-option"
               >
-                {{ filterValue.label }}
+                {{ defaultSortMethod }}
               </option>
             </optgroup>
           </select>
+
         </div>
-      </div>
 
-      <!-- <div v-if="!!this.$props.options.sort && !!this.$props.options.sort.select" -->
-      <div v-if="!!options.sort && !!options.sort.select"
-           class="vertically-centered"
-      >
-        <div class="vertically-centered mb-select-text">Sort by</div>
-        <select @change="handleSortValueChange"
-                class="mb-select"
+        <div v-if="filterByTextFields"
+             class="vertically-centered"
         >
-          <optgroup>
-            <option v-for="defaultSortMethod in defaultSortMethods"
-                    :value="defaultSortMethod"
-                    class="mb-select-option"
-            >
-              {{ defaultSortMethod }}
-            </option>
-          </optgroup>
-        </select>
-
-      </div>
-
-      <div v-if="filterByTextFields"
-           class="vertically-centered"
-      >
-        <div class="mb-select-text inline-block">
-          {{ options.filterByText.label }}
-        </div>
-        <form @submit.prevent="handleFilterFormX"
-              class="inline-block"
-        >
-          <input :class="this.inputClass"
-                 placeholder="text"
-                 id="theInput"
-                 @keyup="handleFilterFormKeyup"
-          />
-          <button class="mb-search-control-button"
-          v-if="this.searchText !=''"
+          <div class="mb-select-text inline-block">
+            {{ options.filterByText.label }}
+          </div>
+          <form @submit.prevent="handleFilterFormX"
+                class="inline-block"
           >
-            <i class="fa fa-times fa-lg"></i>
-          </button>
-        </form>
-      </div>
-    </div> <!-- end of mb-horizontal-table-controls block -->
+            <input :class="this.inputClass"
+                   placeholder="text"
+                   id="theInput"
+                   @keyup="handleFilterFormKeyup"
+            />
+            <button class="mb-search-control-button"
+            v-if="this.searchText !=''"
+            >
+              <i class="fa fa-times fa-lg"></i>
+            </button>
+          </form>
+        </div>
+      </div> <!-- end of mb-horizontal-table-controls block -->
 
-    <div class="mb-horizontal-table-body">
-      <div v-if="slots.title">
-        <h4 style="display:inline-block">
-          {{ evaluateSlot(slots.title) }} {{ countText }}
-        </h4>
-        <h5 style="display:inline-block; color: gray">
-          {{ evaluateSlot(slots.subtitle) }}
-        </h5>
-      </div>
-      <table role="grid" class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">
-        <thead>
-          <tr>
-            <th v-for="field in fields">{{ evaluateSlot(field.label) }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <horizontal-table-row v-for="item in itemsLimited"
-                                :item="item"
-                                :fields="fields"
-                                :key="item._featureId"
-                                :hasOverlay="hasOverlay"
-                                :tableId="options.tableId"
-          />
-        </tbody>
-      </table>
+      <div class="mb-horizontal-table-body">
+        <div v-if="slots.title">
+          <h4 style="display:inline-block">
+            {{ evaluateSlot(slots.title) }} {{ countText }}
+          </h4>
+          <h5 style="display:inline-block; color: gray">
+            {{ evaluateSlot(slots.subtitle) }}
+          </h5>
+        </div>
+        <table role="grid" class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">
+          <thead>
+            <tr>
+              <th v-for="field in fields">{{ evaluateSlot(field.label) }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <horizontal-table-row v-for="item in itemsLimited"
+                                  :item="item"
+                                  :fields="fields"
+                                  :key="item._featureId"
+                                  :hasOverlay="hasOverlay"
+                                  :tableId="options.tableId"
+            />
+          </tbody>
+        </table>
 
-      <!-- external link (aka "see more")-->
-      <a v-if="options.externalLink && shouldShowExternalLink"
-         :href="externalLinkHref"
-         class="external"
-         target="_blank"
+        <!-- external link (aka "see more")-->
+        <a v-if="options.externalLink && shouldShowExternalLink"
+           :href="externalLinkHref"
+           class="external"
+           target="_blank"
+        >
+          {{ externalLinkText }}
+        </a>
+      </div>
+
+      <a class="button center-button"
+         @click="this.getMoreRecords"
+         v-if="this.shouldShowRetrieveButton"
       >
-        {{ externalLinkText }}
+        Retrieve 100 More Records
+        <span v-show="secondaryStatus === 'waiting'" class="loading">
+          <i class="fa fa-spinner fa-lg spin"></i>
+        </span>
       </a>
+
     </div>
-
-    <a class="button center-button"
-       @click="this.getMoreRecords"
-       v-if="this.shouldShowRetrieveButton"
-    >
-      Retrieve 100 More Records
-      <span v-show="secondaryStatus === 'waiting'" class="loading">
-        <i class="fa fa-spinner fa-lg spin"></i>
-      </span>
-    </a>
-
   </div>
 </template>
 
@@ -187,6 +193,9 @@
       secondaryStatus() {
         return this.$store.state.sources[this.options.id].secondaryStatus;
       },
+      // shouldShowButton() {
+      //   return this.options.shouldShowButton;
+      // }
       shouldShowTable() {
         if (this.item) {
           if (this.item.activeTable) {
