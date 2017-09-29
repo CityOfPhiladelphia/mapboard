@@ -109,17 +109,17 @@
       },
       geocodeData() {
         return this.$store.state.geocode.data
-      }
+      },
       ak() {
         const host = window.location.hostname;
         if (host === 'atlas.phila.gov') {
           return this.$config.pictometry.apiKey;
         }
         if (host === 'atlas-dev.phila.gov') {
-          return this.$config.pictometry-dev.apiKey;
+          return this.$config.pictometryDev.apiKey;
         }
         if (host === '10.8.101.67') {
-          return this.$config.pictometry-local.apiKey;
+          return this.$config.pictometryLocal.apiKey;
         }
       },
       sk() {
@@ -128,10 +128,10 @@
           return this.$config.pictometry.secretKey;
         }
         if (host === 'atlas-dev.phila.gov') {
-          return this.$config.pictometry-dev.secretKey;
+          return this.$config.pictometryDev.secretKey;
         }
         if (host === '10.8.101.67') {
-          return this.$config.pictometry-local.secretKey;
+          return this.$config.pictometryLocal.secretKey;
         }
       }
     },
