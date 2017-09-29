@@ -1,4 +1,4 @@
-var GATEKEEPER_KEY = '82fe014b6575b8c38b44235580bc8b11';
+var GATEKEEPER_KEY = 'c9e74f28926d3b08888c1077308d124c7d246c24';
 // var BASE_CONFIG_URL = '//raw.githubusercontent.com/rbrtmrtn/mapboard-base-config/develop/config.js';
 var BASE_CONFIG_URL = '//rawgit.com/rbrtmrtn/mapboard-base-config/1eb0310428bd123c8f7fdd2e4b1d40854433091c/config.js';
 
@@ -376,30 +376,21 @@ Mapboard.default({
 
             // REVIEW if the parcel has no address, we don't want to query
             // WHERE ADDRESS = 'null' (doesn't make sense), so use this for now
-            // if (!parcelBaseAddress || parcelBaseAddress === 'null') return '1 = 0';
             if (!parcelBaseAddress || parcelBaseAddress === 'null'){
-              // var where = "MATCHED_REGMAP = '" + state.dorParcels.data[0].properties.BASEREG + "'";
               var where = "MATCHED_REGMAP = '" + state.parcels.dor.data[0].properties.BASEREG + "'";
               console.log('DOR Parcel BASEREG', state.parcels.dor.data[0].properties.BASEREG);
             } else {
-              // var where = "STREET_ADDRESS = '" + parcelBaseAddress + "'";
               var where = "ADDRESS_LOW = " + state.geocode.data.properties.address_low
                         + " AND STREET_NAME = '" + state.geocode.data.properties.street_name
                         + "' AND STREET_SUFFIX = '" + state.geocode.data.properties.street_suffix
-                        // + "' AND STREET_PREDIR = '" + state.geocode.data.properties.street_predir
                         + "'"
-              console.log('where', where);
-
               if (state.geocode.data.properties.street_predir != '') {
                 where += " AND STREET_PREDIR = '" + state.geocode.data.properties.street_predir + "'";
               }
-
               // check for unit num
               var unitNum = cleanDorAttribute(feature.properties.UNIT);
               console.log('DOR Parcel BASEREG - feature:', feature);
-
               var unitNum2 = state.geocode.data.properties.unit_num;
-
               if (unitNum) {
                 where += " AND UNIT_NUM = '" + unitNum + "'";
               } else if (unitNum2 != '') {
@@ -1229,7 +1220,7 @@ Mapboard.default({
                       label: 'Date',
                       value: function(state, item) {
                         // return item.attributes.RECORDING_DATE;
-                        return item.attributes.RECORDING_DATE;
+                        return item.attributes.DISPLAY_DATE;
                       },
                       nullValue: 'no date available',
                       transforms: [
@@ -1259,7 +1250,7 @@ Mapboard.default({
                     // this should return the val to sort on
                     getValue: function(item) {
                       // return item.attributes.RECORDING_DATE;
-                      return item.attributes.DOCUMENT_DATE;
+                      return item.attributes.DISPLAY_DATE;
                     },
                     // asc or desc
                     order: 'desc'
