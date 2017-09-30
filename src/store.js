@@ -341,10 +341,11 @@ function createStore(config) {
       setSourceDataMore(state, payload) {
         const key = payload.key;
         const data = payload.data;
+        const nextPage = payload.page;
         const oldData = state.sources[key].data;
-        console.log('oldData features', oldData.features, 'data features', data.features);
+        // console.log('oldData features', oldData.features, 'data features', data.features);
         const allData = oldData.features.concat(data.features);
-        console.log('allData', allData);
+        // console.log('allData', allData);
         // if a target id was passed in, set the data object for that target
         // const targetId = payload.targetId;
 
@@ -353,7 +354,7 @@ function createStore(config) {
         // } else {
 
         state.sources[key].data.features = allData;
-        state.sources[key].data.page = 2;
+        state.sources[key].data.page = nextPage;
         // }
       },
       setMapFilters(state, payload) {

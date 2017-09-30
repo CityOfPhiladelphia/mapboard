@@ -125,17 +125,20 @@ class DataManager {
     }
 
     // console.log('stateData', stateData);
+    const nextPage = this.store.state.sources[key].data.page + 1;
 
     // put data in state
     const setSourceDataOpts = {
       key,
       data: stateData,
+      page: nextPage
     };
     const setSecondarySourceStatusOpts = {
       key,
       secondaryStatus
     };
 
+    console.log('nextPage', nextPage, 'setSourceDataOpts', setSourceDataOpts);
     // commit
     this.store.commit('setSourceDataMore', setSourceDataOpts);
     this.store.commit('setSecondarySourceStatus', setSecondarySourceStatusOpts);

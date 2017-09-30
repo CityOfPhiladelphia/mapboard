@@ -64,21 +64,14 @@ class HttpClient extends BaseClient {
   fetchMore(feature, dataSource, dataSourceKey, highestPageRetrieved) {
     let params = this.evaluateParams(feature, dataSource);
     params.page = highestPageRetrieved + 1;
-    console.log('INCREMENT params:', params);
-    console.log('INCREMENT - http-client fetchMore feature', feature, 'dataSource', dataSource, 'dataSourceKey', dataSourceKey, 'highestPageRetrieved', highestPageRetrieved, 'params', params);
     let url = dataSource.url;
-    console.log('INCREMENT - ok0');
     const options = dataSource.options;
-    console.log('INCREMENT - ok1');
     const urlAddition = params.urlAddition;
-    console.log('INCREMENT - ok2');
     if (urlAddition) {
       // url += encodeURIComponent(urlAddition.properties.street_address);
       url += encodeURIComponent(urlAddition);
     }
-    console.log('INCREMENT - ok3');
     const successFn = options.success;
-    console.log('INCREMENT - url:', url);
 
     // if the data is not dependent on other data
     axios.get(url, { params }).then(response => {

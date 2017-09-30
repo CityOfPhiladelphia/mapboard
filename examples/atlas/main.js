@@ -1250,8 +1250,6 @@ Mapboard.default({
                   topicKey: 'deeds',
                   id: 'dorDocuments',
                   defaultIncrement: 25,
-                  incrementalCount: true,
-                  // limit: 10,
                   fields: [
                     {
                       label: 'ID',
@@ -1672,6 +1670,7 @@ Mapboard.default({
           options: {
             topicKey: 'permits',
             id: 'liPermitsAdditional',
+            defaultIncrement: 25,
             fields: [
               {
                 label: 'Date',

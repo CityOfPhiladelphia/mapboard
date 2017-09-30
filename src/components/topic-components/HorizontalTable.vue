@@ -195,9 +195,6 @@
       secondaryStatus() {
         return this.$store.state.sources[this.options.id].secondaryStatus;
       },
-      // shouldShowButton() {
-      //   return this.options.shouldShowButton;
-      // }
       shouldShowTable() {
         if (this.item) {
           if (this.item.activeTable) {
@@ -216,13 +213,7 @@
         }
       },
       shouldShowRetrieveButton() {
-        // if (this.options.defaultIncrement && this.highestPageRetrieved < this.pageCount) {
-        if (this.highestRowRetrieved < this.count) {
-          return true;
-        } else {
-          return false;
-        }
-        //return this.pageCount > this.highestPageRetrieved;
+        return this.highestRowRetrieved < this.count;
       },
       leftToRetrieve() {
         return this.count - this.highestRowRetrieved;
@@ -244,8 +235,7 @@
         return this.evaluateSlot(this.slots.totalSize);
       },
       limit() {
-        // try to get from config. if it's not there, set a reasonable default.
-        return this.options.limit// || 1000;
+        return this.options.limit;
       },
       inputClass() {
         if (this.searchText === '') {
@@ -381,7 +371,7 @@
       countText() {
         if (this.$props.options.noCount) {
           return '';
-        } else if (this.$props.options.incrementalCount) {
+        } else if (this.highestRowRetrieved < this.count) {
           return `(1 - ${ this.count < this.highestRowRetrieved ? this.count : this.highestRowRetrieved } of ${this.count})`;
         } else {
           return `(${this.count})`;
@@ -416,26 +406,32 @@
     },
     methods: {
       showMoreRecords() {
+        // if there is only 1 page to return (from AIS);
         if (!this.pageCount) {
-          console.log('INCREMENT - no page count');
-          this.highestRowRetrieved = this.highestRowRetrieved + this.options.defaultIncrement;
+          this.compareAndSetHighestRowRetrieved();
+        // if there are multiple pages to return (from AIS) and there are not enough items in the table state (itemsFiltered) to cover the increment;
         } else if (this.itemsAfterFilters.length < this.highestRowRetrieved + this.options.defaultIncrement) {
-          console.log('INCREMENT - there is a page count and it there are not enough records');
+          // if there is another page to return (from AIS)
           if (this.pageCount > this.highestPageRetrieved) {
-            console.log('INCREMENT - it is using the API to get more pages');
             this.getMoreRecords();
-            this.highestRowRetrieved = this.highestRowRetrieved + this.options.defaultIncrement;
+            this.compareAndSetHighestRowRetrieved();
+          // if there are no more pages to return (from AIS)
           } else {
-            console.log('INCREMENT - there are not more pages');
             this.highestRowRetrieved = this.count;
           }
+        // if there are multiple pages to return (from AIS) but there are already enough items in the table state (itemsFiltered) to cover the increment;
         } else {
-          console.log('INCREMENT - there is a page count, but there are enough records to use without getting more');
+          this.highestRowRetrieved = this.highestRowRetrieved + this.options.defaultIncrement;
+        }
+      },
+      compareAndSetHighestRowRetrieved() {
+        if (this.count < this.highestRowRetrieved + this.options.defaultIncrement) {
+          this.highestRowRetrieved = this.count
+        } else {
           this.highestRowRetrieved = this.highestRowRetrieved + this.options.defaultIncrement;
         }
       },
       getMoreRecords() {
-        console.log('INCREMENT - getMoreRecords is running');
         const dataSource = this.options.id;
         const highestPageRetrieved = this.highestPageRetrieved;
         this.$controller.getMoreRecords(dataSource, highestPageRetrieved);
