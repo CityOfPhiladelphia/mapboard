@@ -13,9 +13,11 @@
       <pictometry-widget v-if="this.$config.pictometry.enabled"
                          slot="pictWidget"
                          v-show="pictometryActive"
-                         :apiKey="this.$config.pictometry.apiKey"
-                         :secretKey="this.$config.pictometry.secretKey"
+                         :apiKey="this.ak"
+                         :secretKey="this.sk"
       >
+      <!-- :apiKey="this.$config.pictometry.apiKey"
+      :secretKey="this.$config.pictometry.secretKey" -->
         <png-marker v-if="this.pictometryShowAddressMarker"
                 :latlng="[this.geocodeData.geometry.coordinates[1], this.geocodeData.geometry.coordinates[0]]"
                 :icon="'markers.png'"
@@ -107,6 +109,30 @@
       },
       geocodeData() {
         return this.$store.state.geocode.data
+      },
+      ak() {
+        const host = window.location.hostname;
+        if (host === 'atlas.phila.gov') {
+          return this.$config.pictometry.apiKey;
+        }
+        if (host === 'atlas-dev.phila.gov') {
+          return this.$config.pictometryDev.apiKey;
+        }
+        if (host === '10.8.101.67') {
+          return this.$config.pictometryLocal.apiKey;
+        }
+      },
+      sk() {
+        const host = window.location.hostname;
+        if (host === 'atlas.phila.gov') {
+          return this.$config.pictometry.secretKey;
+        }
+        if (host === 'atlas-dev.phila.gov') {
+          return this.$config.pictometryDev.secretKey;
+        }
+        if (host === '10.8.101.67') {
+          return this.$config.pictometryLocal.secretKey;
+        }
       }
     },
     watch: {

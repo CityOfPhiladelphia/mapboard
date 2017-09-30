@@ -1,6 +1,6 @@
 <template>
-  <!-- <div v-if="shouldShowTopic"> -->
-  <div>
+  <div v-if="shouldShowTopic">
+  <!-- <div> -->
     <a href="#"
        class="topic-header"
        @click.prevent="handleTopicHeaderClick"
@@ -23,8 +23,11 @@
     </transition>
 
     <!-- error -->
-    <div class="topic-body" v-show="shouldShowError">
-      Could not locate records for that address.
+    <div class="topic-body"
+         v-show="shouldShowError"
+         v-html="this.errorMessage"
+    >
+    <!-- Could not locate records for that address. -->
     </div>
   </div>
 </template>
@@ -67,50 +70,59 @@
         return this.topic.dataSources || [];
       },
       hasData() {
-        if (this.dataSources.includes('condoList') && this.condoListExists) {
-          return true;
-        } else {
-          return this.dataSources.every(dataSource => {
-            const targetsFn = this.$config.dataSources[dataSource].targets
-            if (targetsFn) {
-              const targetsMap = this.$store.state.sources[dataSource].targets;
-              const targets = Object.values(targetsMap);
-              return targets.every(target => target.status !== 'waiting');
-            } else {
-              return this.$store.state.sources[dataSource].data;
-            }
-          });
-        }
+        return this.dataSources.every(dataSource => {
+          const targetsFn = this.$config.dataSources[dataSource].targets
+          if (targetsFn) {
+            const targetsMap = this.$store.state.sources[dataSource].targets;
+            const targets = Object.values(targetsMap);
+            return targets.every(target => target.status !== 'waiting');
+          } else {
+            return this.$store.state.sources[dataSource].data;
+          }
+        });
+        // }
       },
       shouldShowBody() {
         const succeeded = this.status === 'success';
         const hasData = this.hasData;
-        const condoListExists = this.condoListExists;
         const should = succeeded && hasData && this.isActive;
         return should;
       },
-      condoListExists() {
-        const condoList = this.$store.state.sources.condoList.data;
-        // let status;
-        if (!condoList) {
-          return false;
+      shouldShowTopic() {
+        if (!this.topic.onlyShowTopicIfDataExists) {
+          return true;
         } else {
-          if (condoList.features.length === 1) {
-            return false;
-          } else {
-            return true;
+          let result = true;
+          const requiredDataSources = Object.keys(this.topic.onlyShowTopicIfDataExists);
+          // console.log('requiredDataSources', requiredDataSources);
+          for (let requiredDataSource of requiredDataSources) {
+            const dataSource = this.topic.onlyShowTopicIfDataExists[requiredDataSource];
+            const pathToDataArray = dataSource.pathToDataArray;
+            const minDataLength = dataSource.minDataLength;
+            // console.log('requiredDataSource', requiredDataSource, 'dataSource', dataSource);
+            let dataArray;
+            if (!this.$store.state.sources[requiredDataSource].data) {
+              // if there is no data (yet)
+              return false;
+            } else {
+              if (!pathToDataArray) {
+                dataArray = this.$store.state.sources[requiredDataSource].data;
+              } else if (pathToDataArray.length === 1) {
+                dataArray = this.$store.state.sources[requiredDataSource].data[pathToDataArray[0]];
+              }
+              // TODO - implement system if the path to the data is longer than a single step
+              // else {
+                //   dataArray = this.$store.state.sources[requiredDataSource].data[pathToDataArray[0]].[pathToDataArray[1]];
+                // }
+              if (dataArray.length < minDataLength) {
+                result = false
+              }
+            }
           }
+          return result;
         }
       },
-      // shouldShowTopic() {
-      //   let result = true;
-      //   if (this.$props.topicKey === 'condos' && !this.condoListExists) {
-      //     result = false;
-      //   }
-      //   return result;
-      // },
       shouldShowError() {
-        // console.log('Topic.vue shouldShowError this.hasData', this.topicKey, this.hasData, this.condoListExists);
         return (
           // topic must be active and
           this.isActive && (
@@ -120,6 +132,14 @@
             (this.status !== 'waiting' && !this.hasData)
           )
         );
+      },
+      errorMessage() {
+        if (this.topic.errorMessage) {
+          console.log('errorMessage exists', this.topic.errorMessage(this.$store.state));
+          return this.topic.errorMessage(this.$store.state);
+        } else {
+          return 'Could not locate records for that address.';
+        }
       },
       // REVIEW this is getting cached and not updating when the deps update
       status: {
@@ -159,13 +179,6 @@
         }
       },
     },
-    // watch: {
-    //   shouldShowTopic(nextShouldShowTopic) {
-    //     if (nextShouldShowTopic === true) {
-    //       this.$store.commit('setActiveTopic', 'condos')
-    //     }
-    //   }
-    // },
     methods: {
       configForBasemap(key) {
         return this.$config.map.basemaps[key];
