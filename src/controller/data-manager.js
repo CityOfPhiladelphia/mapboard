@@ -87,7 +87,6 @@ class DataManager {
   /* DATA FETCHING METHODS */
 
   fetchMoreData(dataSourceKey, highestPageRetrieved) {
-    // console.log('datamanager get 100 More records was clicked, dataSource', dataSourceKey, 'highestPageRetrieved', highestPageRetrieved);
     const feature = this.store.state.geocode.data;
     const dataSource = this.config.dataSources[dataSourceKey];
 
@@ -100,10 +99,11 @@ class DataManager {
       secondaryStatus: 'waiting'
     };
     this.store.commit('setSecondarySourceStatus', setSecondarySourceStatusOpts);
+    console.log('INCREMENT - datamanager get 100 More was clicked, type', type, 'dataSource', dataSource, 'highestPageRetrieved', highestPageRetrieved);
 
     switch(type) {
       case 'http-get':
-        // console.log('http-get', dataSourceKey, targetIdFn);
+        console.log('INCREMENT - http-get', dataSourceKey);
         this.clients.http.fetchMore(feature,
                                 dataSource,
                                 dataSourceKey,
@@ -114,7 +114,7 @@ class DataManager {
   }
 
   didFetchMoreData(key, secondaryStatus, data) {
-    console.log('DID FETCH More DATA:', key, secondaryStatus, data);
+    console.log('INCREMENT - DID FETCH More DATA:', key, secondaryStatus, data);
 
     const dataOrNull = status === 'error' ? null : data;
     let stateData = dataOrNull;

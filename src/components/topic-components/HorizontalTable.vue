@@ -112,10 +112,10 @@
       </div>
 
       <a class="button center-button"
-         @click="this.getMoreRecords"
+         @click="this.showMoreRecords"
          v-if="this.shouldShowRetrieveButton"
       >
-        Retrieve 100 More Records
+        Retrieve {{ this.nextIncrement }} More {{ this.nextIncrement === 1? 'Record' : 'Records' }}
         <span v-show="secondaryStatus === 'waiting'" class="loading">
           <i class="fa fa-spinner fa-lg spin"></i>
         </span>
@@ -146,11 +146,13 @@
                                       }, {});
 
       const defaultSortMethods = this.defaultSortMethods;
+      const highestRowRetrieved = this.options.defaultIncrement;
 
       const initialData = {
         filterSelections: defaultFilterSelections,
         searchText: '',
         sortMethod: DEFAULT_SORT_METHODS[0],
+        highestRowRetrieved
       };
 
       return initialData;
@@ -214,7 +216,23 @@
         }
       },
       shouldShowRetrieveButton() {
-        return this.pageCount > this.highestPageRetrieved;
+        // if (this.options.defaultIncrement && this.highestPageRetrieved < this.pageCount) {
+        if (this.highestRowRetrieved < this.count) {
+          return true;
+        } else {
+          return false;
+        }
+        //return this.pageCount > this.highestPageRetrieved;
+      },
+      leftToRetrieve() {
+        return this.count - this.highestRowRetrieved;
+      },
+      nextIncrement() {
+        if (this.leftToRetrieve < this.options.defaultIncrement) {
+          return this.leftToRetrieve;
+        } else {
+          return this.options.defaultIncrement;
+        }
       },
       highestPageRetrieved() {
         return this.evaluateSlot(this.slots.highestPageRetrieved);
@@ -309,7 +327,7 @@
         const items = this.filterItems(itemsAfterSearch,
                                        this.filters,
                                        this.filterSelections);
-        console.log('horiz table itemsAfterFilters', items);
+        // console.log('horiz table itemsAfterFilters', items);
         return items;
       },
       itemsAfterSort() {
@@ -345,7 +363,13 @@
       // this takes filtered items and applies the max number of rows
       itemsLimited() {
         // console.log('items limited', this.itemsAfterSort.slice(0, this.limit));
-        return this.itemsAfterSort.slice(0, this.limit);
+        if (this.options.limit) {
+          return this.itemsAfterSort.slice(0, this.options.limit);
+        } else if (this.options.defaultIncrement) {
+          return this.itemsAfterSort.slice(0, this.highestRowRetrieved);
+        } else {
+          return this.itemsAfterSort;
+        }
       },
       count() {
         if (this.$props.options.useApiCount) {
@@ -357,6 +381,8 @@
       countText() {
         if (this.$props.options.noCount) {
           return '';
+        } else if (this.$props.options.incrementalCount) {
+          return `(1 - ${ this.count < this.highestRowRetrieved ? this.count : this.highestRowRetrieved } of ${this.count})`;
         } else {
           return `(${this.count})`;
         }
@@ -389,7 +415,27 @@
       },
     },
     methods: {
+      showMoreRecords() {
+        if (!this.pageCount) {
+          console.log('INCREMENT - no page count');
+          this.highestRowRetrieved = this.highestRowRetrieved + this.options.defaultIncrement;
+        } else if (this.itemsAfterFilters.length < this.highestRowRetrieved + this.options.defaultIncrement) {
+          console.log('INCREMENT - there is a page count and it there are not enough records');
+          if (this.pageCount > this.highestPageRetrieved) {
+            console.log('INCREMENT - it is using the API to get more pages');
+            this.getMoreRecords();
+            this.highestRowRetrieved = this.highestRowRetrieved + this.options.defaultIncrement;
+          } else {
+            console.log('INCREMENT - there are not more pages');
+            this.highestRowRetrieved = this.count;
+          }
+        } else {
+          console.log('INCREMENT - there is a page count, but there are enough records to use without getting more');
+          this.highestRowRetrieved = this.highestRowRetrieved + this.options.defaultIncrement;
+        }
+      },
       getMoreRecords() {
+        console.log('INCREMENT - getMoreRecords is running');
         const dataSource = this.options.id;
         const highestPageRetrieved = this.highestPageRetrieved;
         this.$controller.getMoreRecords(dataSource, highestPageRetrieved);

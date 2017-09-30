@@ -759,6 +759,7 @@ Mapboard.default({
             topicKey: 'condos',
             id: 'condoList',
             useApiCount: true,
+            defaultIncrement: 25,
             fields: [
               {
                 label: 'OPA Account',
@@ -1248,7 +1249,9 @@ Mapboard.default({
                 options: {
                   topicKey: 'deeds',
                   id: 'dorDocuments',
-                  // limit: 100,
+                  defaultIncrement: 25,
+                  incrementalCount: true,
+                  // limit: 10,
                   fields: [
                     {
                       label: 'ID',
@@ -1298,6 +1301,7 @@ Mapboard.default({
                 },
                 slots: {
                   title: 'Documents',
+                  // defaultIncrement: 25,
                   items: function(state, item) {
                     var id = item.properties.OBJECTID;
                     if (state.sources.dorDocuments.targets[id]) {
@@ -1307,6 +1311,22 @@ Mapboard.default({
                     }
                   },
                 } // end slots
+
+                // slots: {
+                //   title: 'Condominiums',
+                //   highestPageRetrieved: function(state) { return state.sources['condoList'].data.page },
+                //   pageCount: function(state) { return state.sources['condoList'].data.page_count },
+                //   totalSize: function(state) { return state.sources['condoList'].data.total_size },
+                //   items: function(state) {
+                //     var data = state.sources['condoList'].data.features;
+                //     var rows = data.map(function(row){
+                //       var itemRow = row;
+                //       return itemRow;
+                //     });
+                //     return rows;
+                //   },
+                // } // end slots
+
               }, // end docs table
             ] // end parcel tab content comps
           }, // end parcel tab options
