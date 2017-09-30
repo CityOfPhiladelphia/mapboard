@@ -1,5 +1,5 @@
 <template>
-  <div v-show="this.activeTopic === this.$props.topic">
+  <div v-show="this.shouldShowLegend">
     <div class='legend'>
       <ul class='legend-list'>
         <li v-for='key in this.keys'
@@ -30,7 +30,7 @@
   export default {
     props: [
       'position',
-      'topic',
+      'options',
       'items'
     ],
     computed: {
@@ -40,6 +40,21 @@
       activeTopic() {
         return this.$store.state.activeTopic;
       },
+      shouldShowImagery() {
+        return this.$store.state.map.shouldShowImagery;
+      },
+      shouldShowLegend() {
+        let result = true;
+        if (!this.$props.options.topics.includes(this.activeTopic)) {
+          result = false;
+        }
+        if (this.$props.options.showWithBaseMapOnly) {
+          if (this.shouldShowImagery) {
+            result = false;
+          }
+        }
+        return result;
+      }
       // style() {
       //   // const string = "background: " + this.$props.items[key].background + " color: " + this.$props.items[key].color
       //   const string = this.$props.items[]

@@ -186,8 +186,8 @@
         <legend-control v-for="legendControl in Object.keys(legendControls)"
                         :key="legendControl"
                         :position="'bottomleft'"
-                        :topic="legendControl"
-                        :items="legendControls[legendControl]"
+                        :options="legendControls[legendControl].options"
+                        :items="legendControls[legendControl].data"
         />
       </div>
 
