@@ -416,7 +416,9 @@ Mapboard.default({
 
             return where;
           },
-          outFields: '*',
+          outFields: "R_NUM, DISPLAY_DATE, DOCUMENT_TYPE, GRANTORS, GRANTEES",
+          returnDistinctValues: 'true',
+          returnGeometry: 'false',
           f: 'json'
         },
         success: function(data) {
@@ -722,80 +724,85 @@ Mapboard.default({
     }
   },
   topics: [
-    // {
-    //   key: 'condos',
-    //   icon: 'map-marker',
-    //   label: 'Condominiums',
-    //   dataSources: ['condoList'],
-    //   // shouldShowTopic:
-    //   components: [
-    //     {
-    //       type: 'callout',
-    //       slots: {
-    //         text: 'Click any individual condominium unit below to see information on that unit.  Use the back button to get back to this list.'
-    //       }
-    //     },
-    //     {
-    //       type: 'horizontal-table',
-    //       options: {
-    //         topicKey: 'condos',
-    //         id: 'condoList',
-    //         useApiCount: true,
-    //         fields: [
-    //           {
-    //             label: 'OPA Account',
-    //             value: function(state, item) {
-    //               var url = window.location.origin + window.location.pathname + '#/' + item.properties.opa_account_num + '/opa'
-    //               return "<a href="+url+">"+item.properties.opa_account_num+" <i class='fa fa-external-link'></i></a>";
-    //               // console.log('value function item:', item, 'controller:', controller);
-    //               // return "<a onclick='" + controller + "'>"+item.properties.opa_account_num+"</a>"
-    //             },
-    //           },
-    //           {
-    //             label: 'Address',
-    //             value: function(state, item) {
-    //               var url = window.location.origin + window.location.pathname + '#/' + item.properties.opa_account_num + '/opa'
-    //               return "<a href="+url+">"+item.properties.street_address+" <i class='fa fa-external-link'></i></a>";
-    //             },
-    //           },
-    //         ], // end fields
-    //         // sort: {
-    //         //   // this should return the val to sort on
-    //         //   getValue: function(item) {
-    //         //     // return item.attributes.RECORDING_DATE;
-    //         //     return item.attributes.DOCUMENT_DATE;
-    //         //   },
-    //         //   // asc or desc
-    //         //   order: 'desc'
-    //         // }
-    //       },
-    //       slots: {
-    //         title: 'Condominiums',
-    //         highestPageRetrieved: function(state) { return state.sources['condoList'].data.page },
-    //         pageCount: function(state) { return state.sources['condoList'].data.page_count },
-    //         totalSize: function(state) { return state.sources['condoList'].data.total_size },
-    //         items: function(state) {
-    //           var data = state.sources['condoList'].data.features;
-    //           var rows = data.map(function(row){
-    //             var itemRow = row;
-    //             return itemRow;
-    //           });
-    //           return rows;
-    //         },
-    //       } // end slots
-    //     },
-    //   ],
-    //   basemap: 'pwd',
-    //   identifyFeature: 'address-marker',
-    //   // we might not need this anymore, now that we have identifyFeature
-    //   parcels: 'pwd'
-    // },
+    {
+      key: 'condos',
+      icon: 'map-marker',
+      label: 'Condominiums',
+      dataSources: ['condoList'],
+      onlyShowTopicIfDataExists: {
+        'condoList': {
+          pathToDataArray: ['features'],
+          minDataLength: 2,
+        }
+      },
+      components: [
+        {
+          type: 'callout',
+          slots: {
+            text: 'Click any individual condominium unit below to see information on that unit.  Use the back button to get back to this list.'
+          }
+        },
+        {
+          type: 'horizontal-table',
+          options: {
+            topicKey: 'condos',
+            id: 'condoList',
+            useApiCount: true,
+            fields: [
+              {
+                label: 'OPA Account',
+                value: function(state, item) {
+                  var url = window.location.origin + window.location.pathname + '#/' + item.properties.opa_account_num + '/opa'
+                  return "<a href="+url+">"+item.properties.opa_account_num+" <i class='fa fa-external-link'></i></a>";
+                  // console.log('value function item:', item, 'controller:', controller);
+                  // return "<a onclick='" + controller + "'>"+item.properties.opa_account_num+"</a>"
+                },
+              },
+              {
+                label: 'Address',
+                value: function(state, item) {
+                  var url = window.location.origin + window.location.pathname + '#/' + item.properties.opa_account_num + '/opa'
+                  return "<a href="+url+">"+item.properties.street_address+" <i class='fa fa-external-link'></i></a>";
+                },
+              },
+            ], // end fields
+            // sort: {
+            //   // this should return the val to sort on
+            //   getValue: function(item) {
+            //     // return item.attributes.RECORDING_DATE;
+            //     return item.attributes.DOCUMENT_DATE;
+            //   },
+            //   // asc or desc
+            //   order: 'desc'
+            // }
+          },
+          slots: {
+            title: 'Condominiums',
+            highestPageRetrieved: function(state) { return state.sources['condoList'].data.page },
+            pageCount: function(state) { return state.sources['condoList'].data.page_count },
+            totalSize: function(state) { return state.sources['condoList'].data.total_size },
+            items: function(state) {
+              var data = state.sources['condoList'].data.features;
+              var rows = data.map(function(row){
+                var itemRow = row;
+                return itemRow;
+              });
+              return rows;
+            },
+          } // end slots
+        },
+      ],
+      basemap: 'pwd',
+      identifyFeature: 'address-marker',
+      // we might not need this anymore, now that we have identifyFeature
+      parcels: 'pwd'
+    },
     {
       key: 'opa',
       icon: 'map-marker',
       label: 'Assessments',
       // REVIEW can these be calculated from vue deps?
-      dataSources: ['opa', 'condoList'],
+      dataSources: ['opa'],
       components: [
         {
           type: 'callout',
@@ -803,179 +810,191 @@ Mapboard.default({
             text: 'This information is provided by the Office of Property Assessments (OPA), the agency responsible for estimating property values in the City of Philadelphia. OPA was formerly a part of the Bureau of Revision of Taxes (BRT) and some City websites may still use that name.'
           }
         },
+
+        // TODO - remove all of this code eventually, now that we are not using a table-group
+        // {
+        //   type: 'table-group',
+        //   options: {
+        //     alternate: {
+        //       mainTable: {
+        //         dataSource: 'opa',
+        //         id:'opaData',
+        //       },
+        //       dependentTable: {
+        //         dataSource: 'condoList',
+        //         id: 'condoList',
+        //       }
+        //     },
+        //     components: [
+
+              // {
+              //   type: 'horizontal-table',
+              //   options: {
+              //     topicKey: 'opa',
+              //     id: 'condoList',
+              //     useApiCount: true,
+              //     // limit: 100,
+              //     fields: [
+              //       {
+              //         label: 'OPA Account',
+              //         value: function(state, item) {
+              //           var url = window.location.origin + window.location.pathname + '#/' + item.properties.opa_account_num + '/opa'
+              //           return "<a href="+url+">"+item.properties.opa_account_num+" <i class='fa fa-external-link'></i></a>";
+              //         },
+              //       },
+              //       {
+              //         label: 'Address',
+              //         value: function(state, item) {
+              //           var url = window.location.origin + window.location.pathname + '#/' + item.properties.opa_account_num + '/opa'
+              //           return "<a href="+url+">"+item.properties.street_address+" <i class='fa fa-external-link'></i></a>";
+              //         },
+              //       },
+              //       {
+              //         label: 'Owners',
+              //         value: function(state, item) {
+              //           var owners = item.properties.opa_owners;
+              //           var ownersJoined = owners.join(', ');
+              //           return ownersJoined;
+              //         }
+              //       }
+              //     ], // end fields
+              //     // sort: {
+              //     //   // this should return the val to sort on
+              //     //   getValue: function(item) {
+              //     //     // return item.attributes.RECORDING_DATE;
+              //     //     return item.attributes.DOCUMENT_DATE;
+              //     //   },
+              //     //   // asc or desc
+              //     //   order: 'desc'
+              //     // }
+              //   },
+              //   slots: {
+              //     title: 'Condominiums',
+              //     highestPageRetrieved: function(state) { return state.sources['condoList'].data.page },
+              //     pageCount: function(state) { return state.sources['condoList'].data.page_count },
+              //     totalSize: function(state) { return state.sources['condoList'].data.total_size },
+              //     items: function(state) {
+              //       var data = state.sources['condoList'].data.features;
+              //       var rows = data.map(function(row){
+              //         var itemRow = row;
+              //         return itemRow;
+              //       });
+              //       return rows;
+              //     },
+              //   } // end slots
+              // },
+
         {
-          type: 'table-group',
-          options: {
-            alternate: {
-              mainTable: {
-                dataSource: 'opa',
-                id:'opaData',
-              },
-              dependentTable: {
-                dataSource: 'condoList',
-                id: 'condoList',
-              }
-            },
-            components: [
-
+          type: 'vertical-table',
+          slots: {
+            fields: [
               {
-                type: 'horizontal-table',
-                options: {
-                  topicKey: 'opa',
-                  id: 'condoList',
-                  useApiCount: true,
-                  // limit: 100,
-                  fields: [
-                    {
-                      label: 'OPA Account',
-                      value: function(state, item) {
-                        var url = window.location.origin + window.location.pathname + '#/' + item.properties.opa_account_num + '/opa'
-                        return "<a href="+url+">"+item.properties.opa_account_num+" <i class='fa fa-external-link'></i></a>";
-                      },
-                    },
-                    {
-                      label: 'Address',
-                      value: function(state, item) {
-                        var url = window.location.origin + window.location.pathname + '#/' + item.properties.opa_account_num + '/opa'
-                        return "<a href="+url+">"+item.properties.street_address+" <i class='fa fa-external-link'></i></a>";
-                      },
-                    },
-                    {
-                      label: 'Owners',
-                      value: function(state, item) {
-                        var owners = item.properties.opa_owners;
-                        var ownersJoined = owners.join(', ');
-                        return ownersJoined;
-                      }
-                    }
-                  ], // end fields
-                  // sort: {
-                  //   // this should return the val to sort on
-                  //   getValue: function(item) {
-                  //     // return item.attributes.RECORDING_DATE;
-                  //     return item.attributes.DOCUMENT_DATE;
-                  //   },
-                  //   // asc or desc
-                  //   order: 'desc'
-                  // }
-                },
-                slots: {
-                  title: 'Condominiums',
-                  highestPageRetrieved: function(state) { return state.sources['condoList'].data.page },
-                  pageCount: function(state) { return state.sources['condoList'].data.page_count },
-                  totalSize: function(state) { return state.sources['condoList'].data.total_size },
-                  items: function(state) {
-                    var data = state.sources['condoList'].data.features;
-                    var rows = data.map(function(row){
-                      var itemRow = row;
-                      return itemRow;
-                    });
-                    return rows;
-                  },
-                } // end slots
-              },
-
-              {
-                type: 'vertical-table',
-                slots: {
-                  fields: [
-                    {
-                      label: 'OPA Account #',
-                      value: function(state) {
-                        return state.geocode.data.properties.opa_account_num;
-                      }
-                    },
-                    {
-                      label: 'OPA Address',
-                      value: function(state) {
-                        return state.geocode.data.properties.opa_address;
-                      }
-                    },
-                    {
-                      label: 'Owners',
-                      value: function(state) {
-                        var owners = state.geocode.data.properties.opa_owners;
-                        var ownersJoined = owners.join(', ');
-                        return ownersJoined;
-                      }
-                    },
-                    {
-                      label: 'Assessed Value ' + new Date().getFullYear(),
-                      value: function(state) {
-                        var data = state.sources.opa.data;
-                        // return data.market_value;
-                        var result;
-                        if (data) {
-                          result = data.market_value;
-                        } else {
-                          result = 'no data';
-                        }
-                        return result;
-                      },
-                      transforms: [
-                        'currency'
-                      ]
-                    },
-                    {
-                      label: 'Sale Date',
-                      value: function(state) {
-                        var data = state.sources.opa.data;
-                        // return data.sale_date;
-                        var result;
-                        if (data) {
-                          result = data.sale_date;
-                        } else {
-                          result = 'no data';
-                        }
-                        return result;
-                      },
-                      transforms: [
-                        'date'
-                      ]
-                    },
-                    {
-                      label: 'Sale Price',
-                      value: function(state) {
-                        var data = state.sources.opa.data;
-                        // return data.sale_price;
-                        var result;
-                        if (data) {
-                          result = data.sale_price;
-                        } else {
-                          result = 'no data';
-                        }
-                        return result;
-                      },
-                      transforms: [
-                        'currency'
-                      ]
-                    },
-                  ],
-                },
-                options: {
-                  id: 'opaData',
-                  // requiredSources: ['opa'],
-                  externalLink: {
-                    action: function(count) {
-                      return 'See more';
-                    },
-                    name: 'Property Search',
-                    href: function(state) {
-                      var id = state.geocode.data.properties.opa_account_num;
-                      return '//property.phila.gov/?p=' + id;
-                    }
-                  }
+                label: 'OPA Account #',
+                value: function(state) {
+                  return state.geocode.data.properties.opa_account_num;
                 }
+              },
+              {
+                label: 'OPA Address',
+                value: function(state) {
+                  return state.geocode.data.properties.opa_address;
+                }
+              },
+              {
+                label: 'Owners',
+                value: function(state) {
+                  var owners = state.geocode.data.properties.opa_owners;
+                  var ownersJoined = owners.join(', ');
+                  return ownersJoined;
+                }
+              },
+              {
+                label: 'Assessed Value ' + new Date().getFullYear(),
+                value: function(state) {
+                  var data = state.sources.opa.data;
+                  // return data.market_value;
+                  var result;
+                  if (data) {
+                    result = data.market_value;
+                  } else {
+                    result = 'no data';
+                  }
+                  return result;
+                },
+                transforms: [
+                  'currency'
+                ]
+              },
+              {
+                label: 'Sale Date',
+                value: function(state) {
+                  var data = state.sources.opa.data;
+                  // return data.sale_date;
+                  var result;
+                  if (data) {
+                    result = data.sale_date;
+                  } else {
+                    result = 'no data';
+                  }
+                  return result;
+                },
+                transforms: [
+                  'date'
+                ]
+              },
+              {
+                label: 'Sale Price',
+                value: function(state) {
+                  var data = state.sources.opa.data;
+                  // return data.sale_price;
+                  var result;
+                  if (data) {
+                    result = data.sale_price;
+                  } else {
+                    result = 'no data';
+                  }
+                  return result;
+                },
+                transforms: [
+                  'currency'
+                ]
+              },
+            ],
+          },
+          options: {
+            id: 'opaData',
+            // requiredSources: ['opa'],
+            externalLink: {
+              action: function(count) {
+                return 'See more';
+              },
+              name: 'Property Search',
+              href: function(state) {
+                var id = state.geocode.data.properties.opa_account_num;
+                return '//property.phila.gov/?p=' + id;
               }
-
-            ]
+            }
           }
         }
+
+        //     ]
+        //   }
+        // }
       ],
       basemap: 'pwd',
       identifyFeature: 'address-marker',
       // we might not need this anymore, now that we have identifyFeature
-      parcels: 'pwd'
+      parcels: 'pwd',
+      errorMessage(state) {
+        if (state.sources.condoList.data){
+          if (state.sources.condoList.data.features.length > 1) {
+            return 'There is no OPA record for this address. Please select a condominum unit address above to see the record for that unit.';
+          }
+        }
+        else {
+          return 'There is no OPA record for this address.';
+        }
+      },
     },
     {
       key: 'deeds',
