@@ -64,12 +64,12 @@ class HttpClient extends BaseClient {
   fetchMore(feature, dataSource, dataSourceKey, highestPageRetrieved) {
     let params = this.evaluateParams(feature, dataSource);
     params.page = highestPageRetrieved + 1;
-    // console.log('http-client fetchMore feature', feature, 'dataSource', dataSource, 'dataSourceKey', dataSourceKey, 'highestPageRetrieved', highestPageRetrieved, 'params', params);
     let url = dataSource.url;
     const options = dataSource.options;
     const urlAddition = params.urlAddition;
     if (urlAddition) {
-      url += encodeURIComponent(urlAddition.properties.street_address);
+      // url += encodeURIComponent(urlAddition.properties.street_address);
+      url += encodeURIComponent(urlAddition);
     }
     const successFn = options.success;
 

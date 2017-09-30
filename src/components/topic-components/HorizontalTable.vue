@@ -112,10 +112,10 @@
       </div>
 
       <a class="button center-button"
-         @click="this.getMoreRecords"
+         @click="this.showMoreRecords"
          v-if="this.shouldShowRetrieveButton"
       >
-        Retrieve 100 More Records
+        Retrieve {{ this.nextIncrement }} More {{ this.nextIncrement === 1? 'Record' : 'Records' }}
         <span v-show="secondaryStatus === 'waiting'" class="loading">
           <i class="fa fa-spinner fa-lg spin"></i>
         </span>
@@ -146,11 +146,13 @@
                                       }, {});
 
       const defaultSortMethods = this.defaultSortMethods;
+      const highestRowRetrieved = this.options.defaultIncrement;
 
       const initialData = {
         filterSelections: defaultFilterSelections,
         searchText: '',
         sortMethod: DEFAULT_SORT_METHODS[0],
+        highestRowRetrieved
       };
 
       return initialData;
@@ -193,9 +195,6 @@
       secondaryStatus() {
         return this.$store.state.sources[this.options.id].secondaryStatus;
       },
-      // shouldShowButton() {
-      //   return this.options.shouldShowButton;
-      // }
       shouldShowTable() {
         if (this.item) {
           if (this.item.activeTable) {
@@ -214,7 +213,17 @@
         }
       },
       shouldShowRetrieveButton() {
-        return this.pageCount > this.highestPageRetrieved;
+        return this.highestRowRetrieved < this.count;
+      },
+      leftToRetrieve() {
+        return this.count - this.highestRowRetrieved;
+      },
+      nextIncrement() {
+        if (this.leftToRetrieve < this.options.defaultIncrement) {
+          return this.leftToRetrieve;
+        } else {
+          return this.options.defaultIncrement;
+        }
       },
       highestPageRetrieved() {
         return this.evaluateSlot(this.slots.highestPageRetrieved);
@@ -226,8 +235,7 @@
         return this.evaluateSlot(this.slots.totalSize);
       },
       limit() {
-        // try to get from config. if it's not there, set a reasonable default.
-        return this.options.limit// || 1000;
+        return this.options.limit;
       },
       inputClass() {
         if (this.searchText === '') {
@@ -309,7 +317,7 @@
         const items = this.filterItems(itemsAfterSearch,
                                        this.filters,
                                        this.filterSelections);
-        console.log('horiz table itemsAfterFilters', items);
+        // console.log('horiz table itemsAfterFilters', items);
         return items;
       },
       itemsAfterSort() {
@@ -345,7 +353,13 @@
       // this takes filtered items and applies the max number of rows
       itemsLimited() {
         // console.log('items limited', this.itemsAfterSort.slice(0, this.limit));
-        return this.itemsAfterSort.slice(0, this.limit);
+        if (this.options.limit) {
+          return this.itemsAfterSort.slice(0, this.options.limit);
+        } else if (this.options.defaultIncrement) {
+          return this.itemsAfterSort.slice(0, this.highestRowRetrieved);
+        } else {
+          return this.itemsAfterSort;
+        }
       },
       count() {
         if (this.$props.options.useApiCount) {
@@ -357,6 +371,8 @@
       countText() {
         if (this.$props.options.noCount) {
           return '';
+        } else if (this.highestRowRetrieved < this.count) {
+          return `(1 - ${ this.count < this.highestRowRetrieved ? this.count : this.highestRowRetrieved } of ${this.count})`;
         } else {
           return `(${this.count})`;
         }
@@ -389,6 +405,32 @@
       },
     },
     methods: {
+      showMoreRecords() {
+        // if there is only 1 page to return (from AIS);
+        if (!this.pageCount) {
+          this.compareAndSetHighestRowRetrieved();
+        // if there are multiple pages to return (from AIS) and there are not enough items in the table state (itemsFiltered) to cover the increment;
+        } else if (this.itemsAfterFilters.length < this.highestRowRetrieved + this.options.defaultIncrement) {
+          // if there is another page to return (from AIS)
+          if (this.pageCount > this.highestPageRetrieved) {
+            this.getMoreRecords();
+            this.compareAndSetHighestRowRetrieved();
+          // if there are no more pages to return (from AIS)
+          } else {
+            this.highestRowRetrieved = this.count;
+          }
+        // if there are multiple pages to return (from AIS) but there are already enough items in the table state (itemsFiltered) to cover the increment;
+        } else {
+          this.highestRowRetrieved = this.highestRowRetrieved + this.options.defaultIncrement;
+        }
+      },
+      compareAndSetHighestRowRetrieved() {
+        if (this.count < this.highestRowRetrieved + this.options.defaultIncrement) {
+          this.highestRowRetrieved = this.count
+        } else {
+          this.highestRowRetrieved = this.highestRowRetrieved + this.options.defaultIncrement;
+        }
+      },
       getMoreRecords() {
         const dataSource = this.options.id;
         const highestPageRetrieved = this.highestPageRetrieved;
