@@ -41,6 +41,13 @@
       },
       placeMarker(nextLatlng) {
         // console.log('starting placeMarker', nextLatlng, this.$props.icon);
+        const port = window.location.port;
+        let host;
+        if (port != '') {
+          host = window.location.hostname + ':' + port;
+        } else {
+          host = window.location.hostname;
+        }
         const pngMarker = {
           type : this.ipa.SHAPE_TYPE.MARKER,
           center: { y: nextLatlng[0], x: nextLatlng[1]},
@@ -48,7 +55,7 @@
           markerImageWidth: this.$props.width,
           markerOffsetX: this.$props.offsetX,
           markerOffsetY: this.$props.offsetY,
-          markerImage: this.constructLocalUrl(window.location.hostname, ':8080/src/assets/', this.$props.icon),
+          markerImage: this.constructLocalUrl(host, '/src/assets/', this.$props.icon),
           onShapeClick: 'true'
         };
         this.ipa.addShapes([pngMarker], this.didAddShapes)
