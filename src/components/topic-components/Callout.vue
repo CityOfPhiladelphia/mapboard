@@ -1,6 +1,7 @@
 <template>
-  <div class="callout">
-    <p>{{ evaluateSlot(slots.text) }}</p>
+  <div class="callout"> <!--v-html="this.message">-->
+    <p v-html="this.message" />
+    <!-- <p>{{ evaluateSlot(slots.text) }}</p> -->
   </div>
 </template>
 
@@ -8,7 +9,12 @@
   import TopicComponent from './TopicComponent.vue';
 
   export default {
-    mixins: [TopicComponent]
+    mixins: [TopicComponent],
+    computed: {
+      message() {
+        return this.evaluateSlot(this.$props.slots.text)
+      }
+    }
   };
 </script>
 

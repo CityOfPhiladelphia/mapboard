@@ -468,32 +468,39 @@ class DataManager {
     // if geocode fails
     if (!feature) {
       console.log('didGeocode - no geom', feature);
-      const clickCoords = this.store.state.clickCoords;
-      coords = [clickCoords.lng, clickCoords.lat];
+      if (lastSearchMethod === 'reverseGeocode') {
+        const clickCoords = this.store.state.clickCoords;
+        coords = [clickCoords.lng, clickCoords.lat];
+      }
     // if geocode succeeds
     } else {
       console.log('didGeocode - GEOM', feature);
       coords = feature.geometry.coordinates;
     }
-    const [lng, lat] = coords;
-    const latlng = L.latLng(lat, lng);
+
+    if (coords) {
+      const [lng, lat] = coords;
+      const latlng = L.latLng(lat, lng);
+    }
 
     // all of this happens whether geocode failed or succeeded
     // search box or onload - get parcels by id
     // (unless it fails and you are allowed to get them by LatLng on failure)
     if (lastSearchMethod === 'geocode') {
-      console.log('didGeocode lastSearchMethod:', lastSearchMethod, '- attempting to get all parcel layers:', parcelLayers, ' by ID');
-      // loop through the parcels, and get them by their ids
-      for (let parcelLayer of parcelLayers) {
-        const configForParcelLayer = this.config.parcels[parcelLayer];
-        const parcelIdInGeocoder = configForParcelLayer.parcelIdInGeocoder
-        const parcelId = feature.properties[parcelIdInGeocoder];
-        if (parcelId && parcelId.length > 0) {
-          this.getParcelsById(parcelId, parcelLayer);
-        } else {
-          if (configForParcelLayer.getByLatLngIfIdFails) {
-            console.log(parcelLayer, 'Id failed - had to get by LatLng')
-            this.getParcelsByLatLng(latlng, parcelLayer);
+      if (feature) {
+        console.log('didGeocode lastSearchMethod:', lastSearchMethod, '- attempting to get all parcel layers:', parcelLayers, ' by ID');
+        // loop through the parcels, and get them by their ids
+        for (let parcelLayer of parcelLayers) {
+          const configForParcelLayer = this.config.parcels[parcelLayer];
+          const parcelIdInGeocoder = configForParcelLayer.parcelIdInGeocoder
+          const parcelId = feature.properties[parcelIdInGeocoder];
+          if (parcelId && parcelId.length > 0) {
+            this.getParcelsById(parcelId, parcelLayer);
+          } else {
+            if (configForParcelLayer.getByLatLngIfIdFails) {
+              console.log(parcelLayer, 'Id failed - had to get by LatLng')
+              this.getParcelsByLatLng(latlng, parcelLayer);
+            }
           }
         }
       }
