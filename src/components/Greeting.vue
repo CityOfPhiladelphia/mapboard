@@ -1,13 +1,10 @@
 <template>
   <div class="mb-panel-topics-greeting">
     <div class="columns medium-18 medium-centered">
-      <div v-if="!components && !hasError">
-        <p class="greeting">To start your search, type an address into the search box or click anywhere on the map.</p>
-        <!-- <p v-if="hasError" v-html="message"></p> -->
+      <div v-if="!components && !hasError" class="greeting" v-html="initialMessage">
       </div>
 
       <div v-if="!components && hasError" class="greeting greeting-error" v-html="errorMessage">
-
       </div>
 
       <component v-if="components"
@@ -40,6 +37,10 @@
       },
       hasError() {
         return this.$store.state.geocode.status === 'error';
+      },
+      initialMessage() {
+        const greetingConfig = this.$config.greeting || {};
+        return greetingConfig.initialMessage;
       },
       errorMessage() {
         const input = this.$store.state.geocode.input;

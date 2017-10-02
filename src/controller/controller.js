@@ -67,6 +67,7 @@ class Controller {
     this.store.commit('setLastSearchMethod', 'geocode');
     this.store.commit('setClickCoords', null);
     this.store.commit('setGeocodeStatus', null);
+    this.store.commit('setGeocodeInput', input);
 
     // clear out state
     const parcelLayers = Object.keys(this.config.parcels || {});
@@ -115,6 +116,7 @@ class Controller {
     // get parcels that intersect map click xy
     const latLng = e.latlng;
     this.store.commit('setClickCoords', latLng);
+    this.store.commit('setGeocodeInput', null);
 
     // if click is on a topic with pwd parcels, you do not want to find dor parcels unless the
     // click was actually on a pwd parcel that could be geocoded, because just running
