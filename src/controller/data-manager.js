@@ -464,24 +464,28 @@ class DataManager {
     // if it is a dor parcel query, and the geocode fails, coordinates can still be used
     // to get dor parcels which are not in ais
     // set coords to the ais coords OR the click if there is no ais result
-    let coords;
+    let coords, lat, lng, latlng;
     // if geocode fails
     if (!feature) {
       console.log('didGeocode - no geom', feature);
       if (lastSearchMethod === 'reverseGeocode') {
         const clickCoords = this.store.state.clickCoords;
         coords = [clickCoords.lng, clickCoords.lat];
+        [lng, lat] = coords;
+        latlng = L.latLng(lat, lng);
       }
     // if geocode succeeds
     } else {
       console.log('didGeocode - GEOM', feature);
       coords = feature.geometry.coordinates;
+      [lng, lat] = coords;
+      latlng = L.latLng(lat, lng);
     }
 
-    if (coords) {
-      const [lng, lat] = coords;
-      const latlng = L.latLng(lat, lng);
-    }
+    // if (coords) {
+    //   const [lng, lat] = coords;
+    //   const latlng = L.latLng(lat, lng);
+    // }
 
     // all of this happens whether geocode failed or succeeded
     // search box or onload - get parcels by id
