@@ -38,7 +38,7 @@ class Router {
   }
 
   makeHash(address, topic) {
-    console.log('make hash', address, topic);
+    // console.log('make hash', address, topic);
 
     // must have an address
     if (!address || address.length === 0) {
@@ -57,14 +57,18 @@ class Router {
     // TODO add an address getter fn to config so this isn't ais-specific
     const geocodeData = this.store.state.geocode.data || {};
     const props = geocodeData.properties || {};
-    return props.street_address;
+    if (geocodeData.street_address) {
+      return geocodeData.street_address;
+    } else if (props.street_address) {
+      return props.street_address;
+    }
   }
 
   hashChanged() {
     const location = window.location;
     const hash = location.hash;
 
-    console.log('hash changed =>', hash);
+    // console.log('hash changed =>', hash);
 
     // parse url
     const comps = parseUrl(location.href);
@@ -171,7 +175,14 @@ class Router {
 
     // make hash if there is geocode data
     if (geocodeData) {
-      const address = geocodeData.properties.street_address;
+      // const address = geocodeData.properties.street_address;
+      let address;
+
+      if (geocodeData.street_address) {
+        address = geocodeData.street_address;
+      } else if (geocodeData.properties.street_address) {
+        address = geocodeData.properties.street_address;
+      }
     // } else if (this.store.state.activeDorMapreg) {
     //   address = this.store.state.activeDorMapreg;
       const topic = this.store.state.activeTopic;

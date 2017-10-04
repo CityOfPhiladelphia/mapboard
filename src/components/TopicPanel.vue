@@ -82,7 +82,11 @@
         // if (!geocode) return null;
         // return geocode.properties.street_address;
         if (geocode) {
-           return geocode.properties.street_address;
+          if (geocode.properties.street_address) {
+            return geocode.properties.street_address;
+          } else if (geocode.street_address) {
+            return geocode.street_address;
+          }
         } else {
           if (activeDorAddress) {
             const address = activeDorAddress;

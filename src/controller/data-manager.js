@@ -556,9 +556,14 @@ class DataManager {
       this.store.commit('setMapZoom', 19);
     }
 
-    // fetch new data
-    console.log('didGeocode is calling fetchData()');
-    this.fetchData();
+    // if it is not an intersection, fetch new data
+    if (feature.street_address) {
+      console.log('didGeocode returned an intersection, no data to fetch');
+      return;
+    } else if (feature.properties.street_address) {
+      console.log('didGeocode is calling fetchData()');
+      this.fetchData();
+    }
   } // end didGeocode
 
   getParcelsById(id, parcelLayer) {
