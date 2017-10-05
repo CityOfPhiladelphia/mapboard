@@ -712,10 +712,10 @@ Mapboard.default({
   //   },
   // },
   cyclomedia: {
-    enabled: false
+    enabled: true
   },
   pictometry: {
-    enabled: false
+    enabled: true
   },
   // reusable transforms for topic data. see `topics` section for usage.
   transforms: {
@@ -780,80 +780,6 @@ Mapboard.default({
 
   },
   topics: [
-    {
-      key: 'condos',
-      icon: 'map-marker',
-      label: 'Condominiums',
-      dataSources: ['condoList'],
-      onlyShowTopicIfDataExists: {
-        'condoList': {
-          pathToDataArray: ['features'],
-          minDataLength: 2,
-        }
-      },
-      components: [
-        {
-          type: 'callout',
-          slots: {
-            text: 'Click any individual condominium unit below to see information on that unit.  Use the back button to get back to this list.'
-          }
-        },
-        {
-          type: 'horizontal-table',
-          options: {
-            topicKey: 'condos',
-            id: 'condoList',
-            useApiCount: true,
-            defaultIncrement: 25,
-            fields: [
-              {
-                label: 'OPA Account',
-                value: function(state, item) {
-                  var url = window.location.origin + window.location.pathname + '#/' + item.properties.opa_account_num + '/opa'
-                  return "<a href="+url+">"+item.properties.opa_account_num+" <i class='fa fa-external-link'></i></a>";
-                  // console.log('value function item:', item, 'controller:', controller);
-                  // return "<a onclick='" + controller + "'>"+item.properties.opa_account_num+"</a>"
-                },
-              },
-              {
-                label: 'Address',
-                value: function(state, item) {
-                  var url = window.location.origin + window.location.pathname + '#/' + item.properties.opa_account_num + '/opa'
-                  return "<a href="+url+">"+item.properties.street_address+" <i class='fa fa-external-link'></i></a>";
-                },
-              },
-            ], // end fields
-            // sort: {
-            //   // this should return the val to sort on
-            //   getValue: function(item) {
-            //     // return item.attributes.RECORDING_DATE;
-            //     return item.attributes.DOCUMENT_DATE;
-            //   },
-            //   // asc or desc
-            //   order: 'desc'
-            // }
-          },
-          slots: {
-            title: 'Condominiums',
-            highestPageRetrieved: function(state) { return state.sources['condoList'].data.page },
-            pageCount: function(state) { return state.sources['condoList'].data.page_count },
-            totalSize: function(state) { return state.sources['condoList'].data.total_size },
-            items: function(state) {
-              var data = state.sources['condoList'].data.features;
-              var rows = data.map(function(row){
-                var itemRow = row;
-                return itemRow;
-              });
-              return rows;
-            },
-          } // end slots
-        },
-      ],
-      basemap: 'pwd',
-      identifyFeature: 'address-marker',
-      // we might not need this anymore, now that we have identifyFeature
-      parcels: 'pwd'
-    },
     {
       key: 'opa',
       icon: 'map-marker',
@@ -1046,7 +972,7 @@ Mapboard.default({
       errorMessage: function(state) {
         if (state.sources.condoList.data){
           if (state.sources.condoList.data.features.length > 1) {
-            return 'There is no OPA record for this address. Please select a condominum unit address above to see the record for that unit.';
+            return 'There is no OPA record for this address. Please select a condominum unit address below to see the record for that unit.';
           }
         }
         else {
@@ -1055,11 +981,85 @@ Mapboard.default({
       },
     },
     {
+      key: 'condos',
+      icon: 'map-marker',
+      label: 'Condominiums',
+      dataSources: ['condoList'],
+      onlyShowTopicIfDataExists: {
+        'condoList': {
+          pathToDataArray: ['features'],
+          minDataLength: 2,
+        }
+      },
+      components: [
+        {
+          type: 'callout',
+          slots: {
+            text: 'Click any individual condominium unit below to see information on that unit.  Use the back button to get back to this list.'
+          }
+        },
+        {
+          type: 'horizontal-table',
+          options: {
+            topicKey: 'condos',
+            id: 'condoList',
+            useApiCount: true,
+            defaultIncrement: 25,
+            fields: [
+              {
+                label: 'OPA Account',
+                value: function(state, item) {
+                  var url = window.location.origin + window.location.pathname + '#/' + item.properties.opa_account_num + '/opa'
+                  return "<a href="+url+">"+item.properties.opa_account_num+" <i class='fa fa-external-link'></i></a>";
+                  // console.log('value function item:', item, 'controller:', controller);
+                  // return "<a onclick='" + controller + "'>"+item.properties.opa_account_num+"</a>"
+                },
+              },
+              {
+                label: 'Address',
+                value: function(state, item) {
+                  var url = window.location.origin + window.location.pathname + '#/' + item.properties.opa_account_num + '/opa'
+                  return "<a href="+url+">"+item.properties.street_address+" <i class='fa fa-external-link'></i></a>";
+                },
+              },
+            ], // end fields
+            // sort: {
+            //   // this should return the val to sort on
+            //   getValue: function(item) {
+            //     // return item.attributes.RECORDING_DATE;
+            //     return item.attributes.DOCUMENT_DATE;
+            //   },
+            //   // asc or desc
+            //   order: 'desc'
+            // }
+          },
+          slots: {
+            title: 'Condominiums',
+            highestPageRetrieved: function(state) { return state.sources['condoList'].data.page },
+            pageCount: function(state) { return state.sources['condoList'].data.page_count },
+            totalSize: function(state) { return state.sources['condoList'].data.total_size },
+            items: function(state) {
+              var data = state.sources['condoList'].data.features;
+              var rows = data.map(function(row){
+                var itemRow = row;
+                return itemRow;
+              });
+              return rows;
+            },
+          } // end slots
+        },
+      ],
+      basemap: 'pwd',
+      identifyFeature: 'address-marker',
+      // we might not need this anymore, now that we have identifyFeature
+      parcels: 'pwd'
+    },
+    {
       key: 'deeds',
       icon: 'book',
       label: 'Deeds',
       // TODO uncommenting this causes the no-content view to show up.
-      dataSources: ['dorDocuments'],
+      // dataSources: ['dorDocuments'],
       components: [
         {
           type: 'callout',

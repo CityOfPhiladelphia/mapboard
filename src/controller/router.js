@@ -45,7 +45,7 @@ class Router {
       return null;
     }
 
-    let hash = `#/${address}`;
+    let hash = `#/${encodeURIComponent(address)}`;
     if (topic) {
       hash += `/${topic}`;
     }
