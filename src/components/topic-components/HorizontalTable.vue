@@ -196,21 +196,24 @@
         return this.$store.state.sources[this.options.id].secondaryStatus;
       },
       shouldShowTable() {
+        let result = true;
+
+        // if the table is in a tab group or table group, it will have an "item" in props
         if (this.item) {
+          // if it is in a table group, the item will contain an "activeTable" for the group
           if (this.item.activeTable) {
-            const filterValue = this.item.activeTable;
             const id = this.options.id;
-            if (filterValue === id) {
-              return true
-            } else {
-              return false;
+            if (this.item.activeTable != id) {
+              result = false
             }
-          } else {
-            return true;
           }
-        } else {
-          return true;
         }
+        // if there is no data, and the table should not show at all if it is empty
+        if (this.$props.options.showOnlyIfData && this.items.length === 0) {
+          result = false;
+        }
+
+        return result;
       },
       shouldShowRetrieveButton() {
         return this.highestRowRetrieved < this.count;

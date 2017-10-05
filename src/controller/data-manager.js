@@ -447,6 +447,7 @@ class DataManager {
 
   didGeocode(feature) {
     console.log('DataManager.didGeocode:', feature);
+    this.controller.router.didGeocode();
 
     // emit event to event bus
     this.eventBus.$emit('geocodeResult', feature);
@@ -557,11 +558,16 @@ class DataManager {
     }
 
     // if it is not an intersection, fetch new data
-    if (feature.street_address) {
-      console.log('didGeocode returned an intersection, no data to fetch');
-      return;
-    } else if (feature.properties.street_address) {
-      console.log('didGeocode is calling fetchData()');
+    console.log('feature', feature);
+    if (feature) {
+      if (feature.street_address) {
+        console.log('feature:', feature, 'didGeocode returned an intersection, no data to fetch');
+        return;
+      } else if (feature.properties.street_address) {
+        console.log('feature', feature, 'didGeocode is calling fetchData');
+        this.fetchData();
+      }
+    } else {
       this.fetchData();
     }
   } // end didGeocode

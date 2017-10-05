@@ -38,7 +38,7 @@ class Router {
   }
 
   makeHash(address, topic) {
-    // console.log('make hash', address, topic);
+    console.log('make hash', address, topic);
 
     // must have an address
     if (!address || address.length === 0) {
@@ -112,7 +112,7 @@ class Router {
       // if the hash address is different, geocode
       if (!prevAddress || nextAddress !== prevAddress) {
         this.dataManager.geocode(nextAddress)
-                        .then(this.didGeocode.bind(this));
+                        // .then(this.didGeocode.bind(this));
       }
     }
 
@@ -167,13 +167,14 @@ class Router {
   }
 
   didGeocode() {
-    console.log('Router.didGeocode');
+    // console.log('Router.didGeocode');
 
     // update url
     // REVIEW this is ais-specific
     const geocodeData = this.store.state.geocode.data;
 
     // make hash if there is geocode data
+    console.log('Router.didGeocode running - geocodeData:', geocodeData);
     if (geocodeData) {
       // const address = geocodeData.properties.street_address;
       let address;

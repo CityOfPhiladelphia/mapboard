@@ -365,6 +365,26 @@ Mapboard.default({
       //   return data;
       // }
     },
+    dorCondoList: {
+      type: 'http-get',
+      targets: {
+        get: function(state) {
+          return state.parcels.dor.data;
+        },
+        getTargetId: function(target) {
+          return target.properties.OBJECTID;
+        },
+      },
+      url: 'https://phl.carto.com/api/v2/sql',
+      options: {
+        params: {
+          q: function(feature, state){
+            console.log(state.parcels.dor.data[0].properties, 'mapreg', state.parcels.dor.data[0].properties.MAPREG);
+            return "select * from condominium where mapref = '" + state.parcels.dor.data[0].properties.MAPREG + "'"
+          },// + "' or addresskey = '" + feature.properties.li_address_key.toString() + "'",
+        }
+      }
+    },
     dorDocuments: {
       type: 'http-get',
       targets: {
@@ -692,10 +712,10 @@ Mapboard.default({
   //   },
   // },
   cyclomedia: {
-    enabled: true
+    enabled: false
   },
   pictometry: {
-    enabled: true
+    enabled: false
   },
   // reusable transforms for topic data. see `topics` section for usage.
   transforms: {
@@ -1276,6 +1296,71 @@ Mapboard.default({
               //     ]
               //   }
               // },
+              {
+                type: 'horizontal-table',
+                options: {
+                  topicKey: 'deeds',
+                  id: 'dorCondoList',
+                  defaultIncrement: 25,
+                  showOnlyIfData: true,
+                  fields: [
+                    {
+                      label: 'Condo Parcel',
+                      value: function(state, item) {
+                        return item.recmap + '-' + item.condoparcel;
+                      },
+                    },
+                    {
+                      label: 'Condo Name',
+                      value: function(state, item) {
+                        // return item.attributes.RECORDING_DATE;
+                        return item.condo_name;
+                      },
+                    },
+                    {
+                      label: 'Unit #',
+                      value: function(state, item) {
+                        return 'Unit #' + item.condounit;
+                      },
+                    },
+                    // {
+                    //   label: 'Grantor',
+                    //   value: function(state, item) {
+                    //     return item.attributes.GRANTORS;
+                    //   },
+                    // },
+                    // {
+                    //   label: 'Grantee',
+                    //   value: function(state, item) {
+                    //     return item.attributes.GRANTEES;
+                    //   },
+                    // },
+                  ], // end fields
+                  sort: {
+                    // this should return the val to sort on
+                    getValue: function(item) {
+                      // return item.attributes.RECORDING_DATE;
+                      return item.condounit;
+                    },
+                    // asc or desc
+                    order: 'asc'
+                  }
+                },
+                slots: {
+                  title: 'DOR Condominium Records',
+                  items: function(state, item) {
+                    console.log('dorcondo item', item);
+                    var id = item.properties.OBJECTID;
+                    if (state.sources.dorCondoList.targets[id]) {
+                      if (state.sources.dorCondoList.targets[id].data) {
+                        return state.sources.dorCondoList.targets[id].data.rows;
+                      }
+                    } else {
+                      return [];
+                    }
+                  },
+                } // end slots
+              }, // end condos table
 
               {
                 type: 'horizontal-table',

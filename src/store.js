@@ -333,7 +333,9 @@ function createStore(config) {
         const targetId = payload.targetId;
 
         if (targetId) {
-          state.sources[key].targets[targetId].data = data;
+          if (state.sources[key].targets[targetId]) {
+            state.sources[key].targets[targetId].data = data;
+          }
         } else {
           state.sources[key].data = data;
         }
