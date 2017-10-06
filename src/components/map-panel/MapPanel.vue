@@ -102,6 +102,18 @@
        />
        <!-- :overlay="geojsonFeature.overlayFeature" -->
 
+       <!-- location marker -->
+       <circle-marker v-if="this.$store.state.map.location.lat != null"
+                      :latlng="this.locationMarker.latlng"
+                      :radius="this.locationMarker.radius"
+                      :fillColor="this.locationMarker.fillColor"
+                      :color="this.locationMarker.color"
+                      :weight="this.locationMarker.weight"
+                      :opacity="this.locationMarker.opacity"
+                      :fillOpacity="this.locationMarker.fillOpacity"
+                      :key="Math.random()"
+       />
+
        <!-- TODO give these a real key -->
       <circle-marker v-for="circleMarker in circleMarkers"
                      @l-mouseover="handleCircleMarkerMouseover"
@@ -191,6 +203,15 @@
         />
       </div>
 
+      <div v-once>
+        <location-control v-once
+                          v-if="this.geolocationEnabled"
+                          :position="'bottomright'"
+        />
+      </div>
+
+
+
       <!-- <basemap-tooltip :position="'bottomalmostleft'"
       /> -->
 
@@ -256,6 +277,7 @@
   import SvgMarker from '../SvgMarker.vue';
   import BasemapToggleControl from '../BasemapToggleControl.vue';
   import BasemapSelectControl from '../BasemapSelectControl.vue';
+  import LocationControl from '../LocationControl.vue';
   import CyclomediaButton from '../../cyclomedia/Button.vue';
   import PictometryButton from '../../pictometry/Button.vue';
   import CyclomediaRecordingCircle from '../../cyclomedia/RecordingCircle.vue';
@@ -285,6 +307,7 @@
       SvgMarker,
       BasemapToggleControl,
       BasemapSelectControl,
+      LocationControl,
       PictometryButton,
       CyclomediaButton,
       CyclomediaRecordingCircle,
@@ -309,9 +332,13 @@
       );
     },
     mounted() {
+      // this.geofind();
       this.$controller.appDidLoad();
     },
     computed: {
+      geolocationEnabled() {
+        return this.$config.geolocation.enabled;
+      },
       activeDorParcel() {
         // return this.$store.state.activeDorParcel;
         return this.$store.state.parcels.dor.activeParcel;

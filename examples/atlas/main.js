@@ -131,6 +131,9 @@ Mapboard.default({
   router: {
     enabled: true
   },
+  geolocation: {
+    enabled: true
+  },
   rootStyle: {
     position: 'absolute',
     bottom: 0,

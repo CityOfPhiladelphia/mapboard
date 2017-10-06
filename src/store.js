@@ -171,6 +171,10 @@ function createStore(config) {
     lastSearchMethod: 'geocode',
     // the leaflet map object
     map: {
+      location: {
+        lat: null,
+        lng: null
+      },
       center: config.map.center,
       zoom: config.map.zoom,
       map: null,
@@ -182,6 +186,7 @@ function createStore(config) {
       imageOverlay: null,
       imageOverlayOpacity: null,
       filters: [],
+      watchPositionOn: false,
       // features: {
       //   markers: [
       //     // {
@@ -274,6 +279,13 @@ function createStore(config) {
       }
     },
     mutations: {
+      setLocation(state, payload) {
+        state.map.location.lat = payload.lat;
+        state.map.location.lng = payload.lng;
+      },
+      setWatchPositionOn(state, payload) {
+        state.map.watchPositionOn = payload;
+      },
       setClickCoords(state, payload) {
         state.clickCoords = payload;
       },
