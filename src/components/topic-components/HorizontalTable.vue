@@ -222,10 +222,14 @@
         return this.count - this.highestRowRetrieved;
       },
       nextIncrement() {
-        if (this.leftToRetrieve < this.options.defaultIncrement) {
-          return this.leftToRetrieve;
+        if (!this.options.showAllRowsOnFirstClick) {
+          if (this.leftToRetrieve < this.options.defaultIncrement) {
+            return this.leftToRetrieve;
+          } else {
+            return this.options.defaultIncrement;
+          }
         } else {
-          return this.options.defaultIncrement;
+          return this.leftToRetrieve;
         }
       },
       highestPageRetrieved() {
@@ -424,14 +428,22 @@
           }
         // if there are multiple pages to return (from AIS) but there are already enough items in the table state (itemsFiltered) to cover the increment;
         } else {
-          this.highestRowRetrieved = this.highestRowRetrieved + this.options.defaultIncrement;
+          if (!this.options.showAllRowsOnFirstClick) {
+            this.highestRowRetrieved = this.highestRowRetrieved + this.options.defaultIncrement;
+          } else {
+            this.highestRowRetrieved = this.count;
+          }
         }
       },
       compareAndSetHighestRowRetrieved() {
-        if (this.count < this.highestRowRetrieved + this.options.defaultIncrement) {
-          this.highestRowRetrieved = this.count
+        if (!this.options.showAllRowsOnFirstClick) {
+          if (this.count < this.highestRowRetrieved + this.options.defaultIncrement) {
+            this.highestRowRetrieved = this.count;
+          } else {
+            this.highestRowRetrieved = this.highestRowRetrieved + this.options.defaultIncrement;
+          }
         } else {
-          this.highestRowRetrieved = this.highestRowRetrieved + this.options.defaultIncrement;
+          this.highestRowRetrieved = this.count;
         }
       },
       getMoreRecords() {

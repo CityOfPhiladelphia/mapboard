@@ -1301,7 +1301,8 @@ Mapboard.default({
                 options: {
                   topicKey: 'deeds',
                   id: 'dorCondoList',
-                  defaultIncrement: 25,
+                  defaultIncrement: 10,
+                  showAllRowsOnFirstClick: true,
                   showOnlyIfData: true,
                   fields: [
                     {
