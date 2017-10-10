@@ -136,6 +136,12 @@
         if (host === 'atlas-dev.phila.gov') {
           return this.$config.pictometryDev.secretKey;
         }
+        if (host === 'cityatlas.phila.gov') {
+          return this.$config.pictometryCity.secretKey;
+        }
+        if (host === 'cityatlas-dev.phila.gov') {
+          return this.$config.pictometryCityDev.secretKey;
+        }
         if (host === '10.8.101.67') {
           return this.$config.pictometryLocal.secretKey;
         }
