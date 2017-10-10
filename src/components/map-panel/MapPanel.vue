@@ -323,13 +323,16 @@
         this.$controller.goToDefaultAddress(defaultAddress);
       }
 
+      const cyclomediaConfig = this.$config.cyclomedia || {};
+      if (cyclomediaConfig.enabled) {
       // create cyclomedia recordings client
-      this.$cyclomediaRecordingsClient = new CyclomediaRecordingsClient(
-        this.$config.cyclomedia.recordingsUrl,
-        this.$config.cyclomedia.username,
-        this.$config.cyclomedia.password,
-        4326
-      );
+        this.$cyclomediaRecordingsClient = new CyclomediaRecordingsClient(
+          this.$config.cyclomedia.recordingsUrl,
+          this.$config.cyclomedia.username,
+          this.$config.cyclomedia.password,
+          4326
+        );
+      }
     },
     mounted() {
       // this.geofind();

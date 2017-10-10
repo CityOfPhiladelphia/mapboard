@@ -1,4 +1,6 @@
 import $ from 'jQuery';
+import axios from 'axios';
+
 
 class RecordingsClient {
 	constructor(baseUrl, username, password, srid = 3857, proxy) {
@@ -38,6 +40,21 @@ class RecordingsClient {
 		// const url = ((this.proxy || '') + this.baseUrl).replace('//', 'https://');
 		const self = this;
 
+		// const params = {
+		// 	data,
+		// 	// type: 'POST',
+		// 	contentType: 'text/xml'
+		// }
+		// const headers = {
+		// 	'Content-Type': 'text/xml',
+		// 	'Authorization': 'Basic ' + window.btoa(this.username + ':' + this.password)
+		// }
+		// console.log('headers', headers);
+		//
+		// axios.get(url, { params, headers }).then(response => {
+
+		// })
+
 		$.ajax({
 	    url,
 	    data,
@@ -49,7 +66,9 @@ class RecordingsClient {
 				'Authorization': 'Basic ' + window.btoa(this.username + ':' + this.password)
 			},
 	    success(data) {
-				// console.log('got recordings', data);
+				console.log('got recordings', data);
+
+				// const data = response.data
 
 				// this is a list of xml elements representing recordings
 				const recordingElsCollection = data.getElementsByTagNameNS('*', 'Recording');
@@ -83,6 +102,8 @@ class RecordingsClient {
 				});
 
 				callback(recordings);
+			// }, response => {
+				// console.log('AXIOS ERROR recordings-client.js')
 			},
 	    error(xhr, ajaxOptions, thrownError) {
         console.log(xhr.status);
