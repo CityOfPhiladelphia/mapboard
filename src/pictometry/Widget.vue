@@ -2,11 +2,11 @@
   <div id="pict-container"
        :class="this.pictContainerClass"
   >
-    <div id="in-pict-div"
+    <!-- <div id="in-pict-div"
       @click="this.popoutClicked"
       >
       <i class="fa fa-external-link fa popout-icon"></i>
-    </div>
+    </div> -->
     <!-- <div id="iframe-div"> -->
     <iframe
       id="pictometry-ipa"
