@@ -132,7 +132,7 @@ Mapboard.default({
     enabled: true
   },
   geolocation: {
-    enabled: true
+    enabled: false
   },
   rootStyle: {
     position: 'absolute',
@@ -537,6 +537,16 @@ Mapboard.default({
         return data;
       }
     },
+    vacantIndicatorsPoints: {
+      type: 'esri-nearby',
+      url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Points/FeatureServer/0',
+      options: {
+        geometryServerUrl: 'http://192.168.103.143:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer/',
+        // radius: 500,
+        // units: 'feet',
+        calculateDistance: true,
+      },
+    },
     zoningOverlay: {
       type: 'esri',
       url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/1/',
@@ -715,7 +725,7 @@ Mapboard.default({
   //   },
   // },
   cyclomedia: {
-    enabled: true
+    enabled: false
   },
   pictometry: {
     enabled: true
@@ -785,7 +795,7 @@ Mapboard.default({
   topics: [
     {
       key: 'opa',
-      icon: 'map-marker',
+      icon: 'home',
       label: 'Assessments',
       // REVIEW can these be calculated from vue deps?
       dataSources: ['opa'],
@@ -1376,7 +1386,8 @@ Mapboard.default({
                     {
                       label: 'ID',
                       value: function(state, item) {
-                        return "<a target='_blank' href='//pdx-app01/recorder/eagleweb/viewDoc.jsp?node=DOCC"+item.attributes.R_NUM+"'>"+item.attributes.R_NUM+"<i class='fa fa-external-link'></i></a>"
+                        // return "<a target='_blank' href='//pdx-app01/recorder/eagleweb/viewDoc.jsp?node=DOCC"+item.attributes.R_NUM+"'>"+item.attributes.R_NUM+"<i class='fa fa-external-link'></i></a>"
+                        return item.attributes.R_NUM;
                       },
                     },
                     {
@@ -1793,77 +1804,78 @@ Mapboard.default({
             },
           },
         },
-        {
-          type: 'horizontal-table',
-          options: {
-            topicKey: 'permits',
-            id: 'liPermitsAdditional',
-            defaultIncrement: 25,
-            fields: [
-              {
-                label: 'Date',
-                value: function(state, item){
-                  return item.attributes.PERMITISSUEDATE
-                },
-                nullValue: 'no date available',
-                transforms: [
-                  'date'
-                ]
-              },
-              {
-                label: 'ID',
-                value: function(state, item){
-                  return "<a target='_blank' href='//li.phila.gov/#details?entity=permits&eid="+item.attributes.PERMITNUMBER+"&key="+item.attributes.ADDRESSKEY+"&address="+item.attributes.ADDRESS+"'>"+item.attributes.PERMITNUMBER+" <i class='fa fa-external-link'></i></a>"
-                }
-              },
-              {
-                label: 'Building Area',
-                value: function(state, item){
-                  return item.attributes.BLDGAREA
-                },
-                nullValue: 'no area available',
-                transforms: [
-                  'thousandsPlace'
-                ]
-              },
-              {
-                label: 'Declared Value',
-                value: function(state, item){
-                  return item.attributes.DECLAREDVALUE
-                },
-                nullValue: 'no value available',
-                transforms: [
-                  'currency'
-                ]
-              },
-            ],
-            sort: {
-              // this should return the val to sort on
-              getValue: function(item) {
-                return item.attributes.PERMITISSUEDATE;
-              },
-              // asc or desc
-              order: 'desc'
-            },
-          },
-          slots: {
-            title: 'Building Area and Value',
-            items: function(state) {
-              var data = state.sources['liPermitsAdditional'].data;
-              if (data === null || data === undefined) {
-                return;
-              }
-              var rows = data.map(function(row){
-                var itemRow = row;
-                // var itemRow = Object.assign({}, row);
-                //itemRow.DISTANCE = 'TODO';
-                return itemRow;
-              });
-              // console.log('rows', rows);
-              return rows;
-            },
-          },
-        }
+        // {
+        //   type: 'horizontal-table',
+        //   options: {
+        //     topicKey: 'permits',
+        //     id: 'liPermitsAdditional',
+        //     defaultIncrement: 25,
+        //     fields: [
+        //       {
+        //         label: 'Date',
+        //         value: function(state, item){
+        //           return item.attributes.PERMITISSUEDATE
+        //         },
+        //         nullValue: 'no date available',
+        //         transforms: [
+        //           'date'
+        //         ]
+        //       },
+        //       {
+        //         label: 'ID',
+        //         value: function(state, item){
+        //           return "<a target='_blank' href='//li.phila.gov/#details?entity=permits&eid="+item.attributes.PERMITNUMBER+"&key="+item.attributes.ADDRESSKEY+"&address="+item.attributes.ADDRESS+"'>"+item.attributes.PERMITNUMBER+" <i class='fa fa-external-link'></i></a>"
+        //         }
+        //       },
+        //       {
+        //         label: 'Building Area',
+        //         value: function(state, item){
+        //           return item.attributes.BLDGAREA
+        //         },
+        //         nullValue: 'no area available',
+        //         transforms: [
+        //           'thousandsPlace'
+        //         ]
+        //       },
+        //       {
+        //         label: 'Declared Value',
+        //         value: function(state, item){
+        //           return item.attributes.DECLAREDVALUE
+        //         },
+        //         nullValue: 'no value available',
+        //         transforms: [
+        //           'currency'
+        //         ]
+        //       },
+        //     ],
+        //     sort: {
+        //       // this should return the val to sort on
+        //       getValue: function(item) {
+        //         return item.attributes.PERMITISSUEDATE;
+        //       },
+        //       // asc or desc
+        //       order: 'desc'
+        //     },
+        //   },
+        //   slots: {
+        //     title: 'Building Area and Value',
+        //     items: function(state) {
+        //       var data = state.sources['liPermitsAdditional'].data;
+        //       if (data === null || data === undefined) {
+        //         return;
+        //       }
+        //       var rows = data.map(function(row){
+        //         var itemRow = row;
+        //         // var itemRow = Object.assign({}, row);
+        //         //itemRow.DISTANCE = 'TODO';
+        //         return itemRow;
+        //       });
+        //       // console.log('rows', rows);
+        //       return rows;
+        //     },
+        //   },
+        // }
+
         // {
         //   type: 'horizontal-table',
         //   options: {
@@ -2246,15 +2258,16 @@ Mapboard.default({
       parcels: 'dor'
     },
     {
-      key: 'vacancy',
+      key: 'nearby',
       icon: 'map-marker',
-      label: 'Vacancy',
-      dataSources: ['vacantLand', 'vacantBuilding', '311Carto', 'crimeIncidents', 'nearbyZoningAppeals'],
+      label: 'Nearby',
+      dataSources: ['311Carto', 'crimeIncidents', 'nearbyZoningAppeals', 'vacantIndicatorsPoints'],
+      // dataSources: ['vacantLand', 'vacantBuilding', '311Carto', 'crimeIncidents', 'nearbyZoningAppeals'],
       basemap: 'pwd',
-      featureLayers: [
-        'vacantLand',
-        'vacantBuilding'
-      ],
+      // featureLayers: [
+      //   'vacantLand',
+      //   'vacantBuilding'
+      // ],
       identifyFeature: 'address-marker',
       parcels: 'pwd',
       // TODO implement this
@@ -2278,31 +2291,31 @@ Mapboard.default({
             text: 'See 311 requests, neighborhood services, vacant property and more in the last 30 or 90 days near your search address. Filter or sort by records.'
           }
         },
-        {
-          type: 'badge',
-          options: {
-            titleBackground: function(state) {
-              var text = getVacancyText(state);
-              if (text.includes('Land')) {
-                return 'orange';
-              } else if (text.includes('Building')) {
-                return 'purple';
-              } else {
-                return '#58c04d';
-              }
-            }
-          },
-          slots: {
-            title: 'Vacancy',
-            value: function(state) {
-              return getVacancyText(state);
-            },
-            // description: function(state) {
-            //   var code = state.geocode.data.properties.zoning;
-            //   return ZONING_CODE_MAP[code];
-            // },
-          }
-        },
+        // {
+        //   type: 'badge',
+        //   options: {
+        //     titleBackground: function(state) {
+        //       var text = getVacancyText(state);
+        //       if (text.includes('Land')) {
+        //         return 'orange';
+        //       } else if (text.includes('Building')) {
+        //         return 'purple';
+        //       } else {
+        //         return '#58c04d';
+        //       }
+        //     }
+        //   },
+        //   slots: {
+        //     title: 'Vacancy',
+        //     value: function(state) {
+        //       return getVacancyText(state);
+        //     },
+        //     // description: function(state) {
+        //     //   var code = state.geocode.data.properties.zoning;
+        //     //   return ZONING_CODE_MAP[code];
+        //     // },
+        //   }
+        // },
         {
           type: 'table-group',
           options: {
@@ -2325,6 +2338,10 @@ Mapboard.default({
                   {
                     label: 'Zoning Appeals',
                     value: 'nearbyZoningAppeals',
+                  },
+                  {
+                    label: 'Vacant Properties',
+                    value: 'vacantIndicatorsPoints',
                   }
                 ]
               },
@@ -2334,7 +2351,7 @@ Mapboard.default({
               {
                 type: 'horizontal-table',
                 options: {
-                  topicKey: 'vacancy',
+                  topicKey: 'nearby',
                   id: '311',
                   sort: {
                     select: true,
@@ -2457,7 +2474,7 @@ Mapboard.default({
               {
                 type: 'horizontal-table',
                 options: {
-                  topicKey: 'vacancy',
+                  topicKey: 'nearby',
                   id: 'crimeIncidents',
                   sort: {
                     select: true,
@@ -2569,7 +2586,7 @@ Mapboard.default({
               {
                 type: 'horizontal-table',
                 options: {
-                  topicKey: 'vacancy',
+                  topicKey: 'nearby',
                   id: 'nearbyZoningAppeals',
                   sort: {
                     select: true,
@@ -2655,6 +2672,95 @@ Mapboard.default({
                   },
                 } // end of slots
               }, // end of horizontal-table
+              {
+                type: 'horizontal-table',
+                options: {
+                  topicKey: 'nearby',
+                  id: 'vacantIndicatorsPoints',
+                  sort: {
+                    select: true,
+                    getValue: function(item, method) {
+                      var val;
+
+                      if (method === 'date') {
+                        val = item.decisiondate;
+                      } else if (method === 'distance') {
+                        val = item.distance;
+                      }
+
+                      return val;
+                    }
+                  },
+                  filterByText: {
+                    label: 'Filter by',
+                    fields: [
+                      'appealgrounds'
+                    ]
+                  },
+                  mapOverlay: {
+                    marker: 'circle',
+                    style: {
+                      radius: 6,
+                      fillColor: '#a953f6',
+                    	color: '#a953f6',
+                    	weight: 1,
+                    	opacity: 1,
+                    	fillOpacity: 1.0
+                    },
+                    hoverStyle: {
+                      radius: 6,
+                      fillColor: 'yellow',
+                    	color: '#009900',
+                    	weight: 1,
+                    	opacity: 1,
+                    	fillOpacity: 1.0
+                    }
+                  },
+                  fields: [
+                    // {
+                    //   label: 'Date',
+                    //   value: function(state, item) {
+                    //     return item.decisiondate;
+                    //   },
+                    //   nullValue: 'no date available',
+                    //   transforms: [
+                    //     'date'
+                    //   ]
+                    // },
+                    {
+                      label: 'Address',
+                      value: function(state, item) {
+                        return item.properties.ADDRESS;
+                      }
+                    },
+                    {
+                      label: 'Vacancy Rank',
+                      value: function(state, item) {
+                        return item.properties.VACANT_RANK;
+                      }
+                    },
+                    // {
+                    //   label: 'Distance',
+                    //   value: function(state, item) {
+                    //     return parseInt(item.distance) + ' ft';
+                    //   }
+                    // }
+                  ]
+                },
+                slots: {
+                  title: 'Vacant Properties',
+                  data: 'vacantIndicatorsPoints',
+                  items: function(state) {
+                    var data = state.sources['vacantIndicatorsPoints'].data || [];
+                    var rows = data.map(function(row){
+                      var itemRow = row;
+                      // var itemRow = Object.assign({}, row);
+                      return itemRow;
+                    });
+                    return rows;
+                  },
+                } // end of slots
+              }, // end of horizontal-table
             ], // end comps
           }, // end options
           slots: {
@@ -2668,171 +2774,171 @@ Mapboard.default({
         }
       ]
     },
-    {
-      key: '311',
-      icon: 'phone',
-      label: '311',
-      dataSources: ['311'],
-      basemap: 'pwd',
-      identifyFeature: 'address-marker',
-      parcels: 'pwd',
-      components: [
-        {
-          type: 'callout',
-          slots: {
-            text: 'A more detailed look at 311 requests near the search address that includes records marked private by the public and Description field content that cannot be shared with the public.'
-          }
-        },
-        {
-          type: 'horizontal-table',
-          options: {
-            topicKey: '311',
-            id: '311',
-            sort: {
-              select: true,
-              getValue: function(item, method) {
-                var val;
-
-                if (method === 'date') {
-                  val = item.properties.REQUESTED_DATETIME;
-                } else if (method === 'distance') {
-                  val = item._distance;
-                }
-
-                return val;
-              }
-            },
-            filters: [
-              {
-                type: 'time',
-                getValue: function(item) {
-                  return item.properties.REQUESTED_DATETIME;
-                },
-                label: 'From the last',
-                values: [
-                  {
-                    label: '30 days',
-                    value: '30',
-                    unit: 'days',
-                    direction: 'subtract',
-                  },
-                  {
-                    label: '90 days',
-                    value: '90',
-                    unit: 'days',
-                    direction: 'subtract',
-                  },
-                  {
-                    label: 'year',
-                    value: '1',
-                    unit: 'years',
-                    direction: 'subtract',
-                  }
-                ]
-              }
-            ],
-            filterByText: {
-              label: 'Filter by',
-              fields: [
-                'DESCRIPTION',
-                'SUBJECT',
-                'ADDRESS'
-              ]
-            },
-            mapOverlay: {
-              marker: 'circle',
-              style: {
-                radius: 6,
-                fillColor: '#ff3f3f',
-              	color: '#ff0000',
-              	weight: 1,
-              	opacity: 1,
-              	fillOpacity: 1.0
-              },
-              hoverStyle: {
-                radius: 6,
-                fillColor: 'yellow',
-              	color: '#ff0000',
-              	weight: 1,
-              	opacity: 1,
-              	fillOpacity: 1.0
-              }
-            },
-            fields: [
-              {
-                label: 'Date',
-                value: function(state, item) {
-                  return item.properties.REQUESTED_DATETIME;
-                },
-                nullValue: 'no date available',
-                transforms: [
-                  'date'
-                ]
-              },
-              {
-                label: 'Address',
-                value: function(state, item) {
-                  return item.properties.ADDRESS;
-                }
-              },
-              {
-                label: 'Subject',
-                value: function(state, item) {
-                  if (item.properties.MEDIA_URL) {
-                    return '<a target="_blank" href='+item.properties.MEDIA_URL+'>'+item.properties.SUBJECT+'</a>';
-                  } else {
-                    return item.properties.SUBJECT;
-                  }
-                }
-              },
-              {
-                label: 'Description (not shared with the public)',
-                value: function(state, item) {
-                  return item.properties.DESCRIPTION;
-                }
-              },
-              {
-                label: 'Distance',
-                value: function(state, item) {
-                  // return `${item._distance} ft`;
-                  return item._distance + ' ft';
-                }
-              }
-            ]
-          },
-          slots: {
-            title: 'Nearby Service Requests',
-            items: function(state) {
-              var data = state.sources['311'].data;
-              var rows = data.map(function(row){
-                var itemRow = row;
-                // var itemRow = Object.assign({}, row);
-                // itemRow.DISTANCE = 'TODO';
-                return itemRow;
-              });
-              return rows;
-            },
-            // filterText() {
-            //   return 'from the last';
-            // },
-            // filterValues: {
-            //   value1: {
-            //     text: '30 days',
-            //     value: '30'
-            //   },
-            //   value2: {
-            //     text: '90 days',
-            //     value: '90'
-            //   },
-            //   value3: {
-            //     text: 'year',
-            //     value: '365'
-            //   }
-            // },
-          }
-        }
-      ]
-    },
+    // {
+    //   key: '311',
+    //   icon: 'phone',
+    //   label: '311',
+    //   dataSources: ['311'],
+    //   basemap: 'pwd',
+    //   identifyFeature: 'address-marker',
+    //   parcels: 'pwd',
+    //   components: [
+    //     {
+    //       type: 'callout',
+    //       slots: {
+    //         text: 'A more detailed look at 311 requests near the search address that includes records marked private by the public and Description field content that cannot be shared with the public.'
+    //       }
+    //     },
+    //     {
+    //       type: 'horizontal-table',
+    //       options: {
+    //         topicKey: '311',
+    //         id: '311',
+    //         sort: {
+    //           select: true,
+    //           getValue: function(item, method) {
+    //             var val;
+    //
+    //             if (method === 'date') {
+    //               val = item.properties.REQUESTED_DATETIME;
+    //             } else if (method === 'distance') {
+    //               val = item._distance;
+    //             }
+    //
+    //             return val;
+    //           }
+    //         },
+    //         filters: [
+    //           {
+    //             type: 'time',
+    //             getValue: function(item) {
+    //               return item.properties.REQUESTED_DATETIME;
+    //             },
+    //             label: 'From the last',
+    //             values: [
+    //               {
+    //                 label: '30 days',
+    //                 value: '30',
+    //                 unit: 'days',
+    //                 direction: 'subtract',
+    //               },
+    //               {
+    //                 label: '90 days',
+    //                 value: '90',
+    //                 unit: 'days',
+    //                 direction: 'subtract',
+    //               },
+    //               {
+    //                 label: 'year',
+    //                 value: '1',
+    //                 unit: 'years',
+    //                 direction: 'subtract',
+    //               }
+    //             ]
+    //           }
+    //         ],
+    //         filterByText: {
+    //           label: 'Filter by',
+    //           fields: [
+    //             'DESCRIPTION',
+    //             'SUBJECT',
+    //             'ADDRESS'
+    //           ]
+    //         },
+    //         mapOverlay: {
+    //           marker: 'circle',
+    //           style: {
+    //             radius: 6,
+    //             fillColor: '#ff3f3f',
+    //           	color: '#ff0000',
+    //           	weight: 1,
+    //           	opacity: 1,
+    //           	fillOpacity: 1.0
+    //           },
+    //           hoverStyle: {
+    //             radius: 6,
+    //             fillColor: 'yellow',
+    //           	color: '#ff0000',
+    //           	weight: 1,
+    //           	opacity: 1,
+    //           	fillOpacity: 1.0
+    //           }
+    //         },
+    //         fields: [
+    //           {
+    //             label: 'Date',
+    //             value: function(state, item) {
+    //               return item.properties.REQUESTED_DATETIME;
+    //             },
+    //             nullValue: 'no date available',
+    //             transforms: [
+    //               'date'
+    //             ]
+    //           },
+    //           {
+    //             label: 'Address',
+    //             value: function(state, item) {
+    //               return item.properties.ADDRESS;
+    //             }
+    //           },
+    //           {
+    //             label: 'Subject',
+    //             value: function(state, item) {
+    //               if (item.properties.MEDIA_URL) {
+    //                 return '<a target="_blank" href='+item.properties.MEDIA_URL+'>'+item.properties.SUBJECT+'</a>';
+    //               } else {
+    //                 return item.properties.SUBJECT;
+    //               }
+    //             }
+    //           },
+    //           {
+    //             label: 'Description (not shared with the public)',
+    //             value: function(state, item) {
+    //               return item.properties.DESCRIPTION;
+    //             }
+    //           },
+    //           {
+    //             label: 'Distance',
+    //             value: function(state, item) {
+    //               // return `${item._distance} ft`;
+    //               return item._distance + ' ft';
+    //             }
+    //           }
+    //         ]
+    //       },
+    //       slots: {
+    //         title: 'Nearby Service Requests',
+    //         items: function(state) {
+    //           var data = state.sources['311'].data;
+    //           var rows = data.map(function(row){
+    //             var itemRow = row;
+    //             // var itemRow = Object.assign({}, row);
+    //             // itemRow.DISTANCE = 'TODO';
+    //             return itemRow;
+    //           });
+    //           return rows;
+    //         },
+    //         // filterText() {
+    //         //   return 'from the last';
+    //         // },
+    //         // filterValues: {
+    //         //   value1: {
+    //         //     text: '30 days',
+    //         //     value: '30'
+    //         //   },
+    //         //   value2: {
+    //         //     text: '90 days',
+    //         //     value: '90'
+    //         //   },
+    //         //   value3: {
+    //         //     text: 'year',
+    //         //     value: '365'
+    //         //   }
+    //         // },
+    //       }
+    //     }
+    //   ]
+    // },
     {
       key: 'water',
       icon: 'tint',

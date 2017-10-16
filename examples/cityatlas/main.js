@@ -132,7 +132,7 @@ Mapboard.default({
     enabled: true
   },
   geolocation: {
-    enabled: true
+    enabled: false
   },
   rootStyle: {
     position: 'absolute',
@@ -785,7 +785,7 @@ Mapboard.default({
   topics: [
     {
       key: 'opa',
-      icon: 'map-marker',
+      icon: 'home',
       label: 'Assessments',
       // REVIEW can these be calculated from vue deps?
       dataSources: ['opa'],
