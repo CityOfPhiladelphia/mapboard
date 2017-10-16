@@ -79,7 +79,7 @@ class EsriClient extends BaseClient {
   }
 
   fetchSpatialQuery(dataSourceKey, url, relationship, targetGeom, calculateDistancePt) {
-    console.log('fetch esri spatial query', dataSourceKey, url, relationship, targetGeom);
+    // console.log('fetch esri spatial query', dataSourceKey, url, relationship, targetGeom);
 
     const query = L.esri.query({ url })[relationship](targetGeom);
 

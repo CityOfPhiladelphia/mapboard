@@ -75,6 +75,11 @@
           if (targetsFn) {
             const targetsMap = this.$store.state.sources[dataSource].targets;
             const targets = Object.values(targetsMap);
+            // console.log('topic has data targets:', targets);
+            if (targets.length === 0) {
+              // console.log('targets doesnt exist');
+              return false;
+            }
             return targets.every(target => target.status !== 'waiting');
           } else {
             return this.$store.state.sources[dataSource].data;

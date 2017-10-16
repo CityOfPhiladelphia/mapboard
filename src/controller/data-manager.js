@@ -447,6 +447,7 @@ class DataManager {
 
   didGeocode(feature) {
     console.log('DataManager.didGeocode:', feature);
+    this.controller.router.didGeocode();
 
     // emit event to event bus
     this.eventBus.$emit('geocodeResult', feature);
@@ -464,24 +465,28 @@ class DataManager {
     // if it is a dor parcel query, and the geocode fails, coordinates can still be used
     // to get dor parcels which are not in ais
     // set coords to the ais coords OR the click if there is no ais result
-    let coords;
+    let coords, lat, lng, latlng;
     // if geocode fails
     if (!feature) {
       console.log('didGeocode - no geom', feature);
       if (lastSearchMethod === 'reverseGeocode') {
         const clickCoords = this.store.state.clickCoords;
         coords = [clickCoords.lng, clickCoords.lat];
+        [lng, lat] = coords;
+        latlng = L.latLng(lat, lng);
       }
     // if geocode succeeds
     } else {
       console.log('didGeocode - GEOM', feature);
       coords = feature.geometry.coordinates;
+      [lng, lat] = coords;
+      latlng = L.latLng(lat, lng);
     }
 
-    if (coords) {
-      const [lng, lat] = coords;
-      const latlng = L.latLng(lat, lng);
-    }
+    // if (coords) {
+    //   const [lng, lat] = coords;
+    //   const latlng = L.latLng(lat, lng);
+    // }
 
     // all of this happens whether geocode failed or succeeded
     // search box or onload - get parcels by id
@@ -552,9 +557,19 @@ class DataManager {
       this.store.commit('setMapZoom', 19);
     }
 
-    // fetch new data
-    console.log('didGeocode is calling fetchData()');
-    this.fetchData();
+    // if it is not an intersection, fetch new data
+    console.log('feature', feature);
+    if (feature) {
+      if (feature.street_address) {
+        console.log('feature:', feature, 'didGeocode returned an intersection, no data to fetch');
+        return;
+      } else if (feature.properties.street_address) {
+        console.log('feature', feature, 'didGeocode is calling fetchData');
+        this.fetchData();
+      }
+    } else {
+      this.fetchData();
+    }
   } // end didGeocode
 
   getParcelsById(id, parcelLayer) {

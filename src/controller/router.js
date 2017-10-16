@@ -45,7 +45,7 @@ class Router {
       return null;
     }
 
-    let hash = `#/${address}`;
+    let hash = `#/${encodeURIComponent(address)}`;
     if (topic) {
       hash += `/${topic}`;
     }
@@ -57,14 +57,18 @@ class Router {
     // TODO add an address getter fn to config so this isn't ais-specific
     const geocodeData = this.store.state.geocode.data || {};
     const props = geocodeData.properties || {};
-    return props.street_address;
+    if (geocodeData.street_address) {
+      return geocodeData.street_address;
+    } else if (props.street_address) {
+      return props.street_address;
+    }
   }
 
   hashChanged() {
     const location = window.location;
     const hash = location.hash;
 
-    console.log('hash changed =>', hash);
+    // console.log('hash changed =>', hash);
 
     // parse url
     const comps = parseUrl(location.href);
@@ -108,7 +112,7 @@ class Router {
       // if the hash address is different, geocode
       if (!prevAddress || nextAddress !== prevAddress) {
         this.dataManager.geocode(nextAddress)
-                        .then(this.didGeocode.bind(this));
+                        // .then(this.didGeocode.bind(this));
       }
     }
 
@@ -163,15 +167,23 @@ class Router {
   }
 
   didGeocode() {
-    console.log('Router.didGeocode');
+    // console.log('Router.didGeocode');
 
     // update url
     // REVIEW this is ais-specific
     const geocodeData = this.store.state.geocode.data;
 
     // make hash if there is geocode data
+    console.log('Router.didGeocode running - geocodeData:', geocodeData);
     if (geocodeData) {
-      const address = geocodeData.properties.street_address;
+      // const address = geocodeData.properties.street_address;
+      let address;
+
+      if (geocodeData.street_address) {
+        address = geocodeData.street_address;
+      } else if (geocodeData.properties.street_address) {
+        address = geocodeData.properties.street_address;
+      }
     // } else if (this.store.state.activeDorMapreg) {
     //   address = this.store.state.activeDorMapreg;
       const topic = this.store.state.activeTopic;

@@ -40,6 +40,19 @@ export default {
     },
   },
   computed: {
+    locationMarker() {
+      const latlngArray = [this.$store.state.map.location.lat, this.$store.state.map.location.lng]
+      const marker = {
+        latlng: latlngArray,
+        radius: 6,
+        fillColor: '#ff3f3f',
+        color: '#ff0000',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 1.0
+      }
+      return marker;
+    },
     // returns map markers as simple object with a geometry property, key,
     // and optional properties for symbology
     markers() {

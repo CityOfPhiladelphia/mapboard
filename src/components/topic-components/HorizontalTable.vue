@@ -196,21 +196,24 @@
         return this.$store.state.sources[this.options.id].secondaryStatus;
       },
       shouldShowTable() {
+        let result = true;
+
+        // if the table is in a tab group or table group, it will have an "item" in props
         if (this.item) {
+          // if it is in a table group, the item will contain an "activeTable" for the group
           if (this.item.activeTable) {
-            const filterValue = this.item.activeTable;
             const id = this.options.id;
-            if (filterValue === id) {
-              return true
-            } else {
-              return false;
+            if (this.item.activeTable != id) {
+              result = false
             }
-          } else {
-            return true;
           }
-        } else {
-          return true;
         }
+        // if there is no data, and the table should not show at all if it is empty
+        if (this.$props.options.showOnlyIfData && this.items.length === 0) {
+          result = false;
+        }
+
+        return result;
       },
       shouldShowRetrieveButton() {
         return this.highestRowRetrieved < this.count;
@@ -219,10 +222,14 @@
         return this.count - this.highestRowRetrieved;
       },
       nextIncrement() {
-        if (this.leftToRetrieve < this.options.defaultIncrement) {
-          return this.leftToRetrieve;
+        if (!this.options.showAllRowsOnFirstClick) {
+          if (this.leftToRetrieve < this.options.defaultIncrement) {
+            return this.leftToRetrieve;
+          } else {
+            return this.options.defaultIncrement;
+          }
         } else {
-          return this.options.defaultIncrement;
+          return this.leftToRetrieve;
         }
       },
       highestPageRetrieved() {
@@ -421,14 +428,22 @@
           }
         // if there are multiple pages to return (from AIS) but there are already enough items in the table state (itemsFiltered) to cover the increment;
         } else {
-          this.highestRowRetrieved = this.highestRowRetrieved + this.options.defaultIncrement;
+          if (!this.options.showAllRowsOnFirstClick) {
+            this.highestRowRetrieved = this.highestRowRetrieved + this.options.defaultIncrement;
+          } else {
+            this.highestRowRetrieved = this.count;
+          }
         }
       },
       compareAndSetHighestRowRetrieved() {
-        if (this.count < this.highestRowRetrieved + this.options.defaultIncrement) {
-          this.highestRowRetrieved = this.count
+        if (!this.options.showAllRowsOnFirstClick) {
+          if (this.count < this.highestRowRetrieved + this.options.defaultIncrement) {
+            this.highestRowRetrieved = this.count;
+          } else {
+            this.highestRowRetrieved = this.highestRowRetrieved + this.options.defaultIncrement;
+          }
         } else {
-          this.highestRowRetrieved = this.highestRowRetrieved + this.options.defaultIncrement;
+          this.highestRowRetrieved = this.count;
         }
       },
       getMoreRecords() {

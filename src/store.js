@@ -103,7 +103,7 @@ function createTableGroups(config) {
 }
 
 function createStore(config) {
-  const defaultTopic = config.topics[1];
+  const defaultTopic = config.topics[0];
 
   // create initial state for sources. data key => {}
   const sourceKeys = Object.keys(config.dataSources || {});
@@ -171,6 +171,10 @@ function createStore(config) {
     lastSearchMethod: 'geocode',
     // the leaflet map object
     map: {
+      location: {
+        lat: null,
+        lng: null
+      },
       center: config.map.center,
       zoom: config.map.zoom,
       map: null,
@@ -182,6 +186,7 @@ function createStore(config) {
       imageOverlay: null,
       imageOverlayOpacity: null,
       filters: [],
+      watchPositionOn: false,
       // features: {
       //   markers: [
       //     // {
@@ -274,6 +279,13 @@ function createStore(config) {
       }
     },
     mutations: {
+      setLocation(state, payload) {
+        state.map.location.lat = payload.lat;
+        state.map.location.lng = payload.lng;
+      },
+      setWatchPositionOn(state, payload) {
+        state.map.watchPositionOn = payload;
+      },
       setClickCoords(state, payload) {
         state.clickCoords = payload;
       },
@@ -333,7 +345,9 @@ function createStore(config) {
         const targetId = payload.targetId;
 
         if (targetId) {
-          state.sources[key].targets[targetId].data = data;
+          if (state.sources[key].targets[targetId]) {
+            state.sources[key].targets[targetId].data = data;
+          }
         } else {
           state.sources[key].data = data;
         }

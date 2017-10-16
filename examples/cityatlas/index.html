@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Atlas | phila.gov</title>
+    <link rel='icon' type='image/x-icon' href="//cityofphiladelphia.github.io/patterns/images/favicon.ico">
+    <meta name="description" content="">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.css">
+
+    <link rel="stylesheet" href="//unpkg.com/leaflet-easybutton@2.0.0/src/easy-button.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <!--pattern stylesheet includes foundation css -->
+    <link rel="stylesheet" href="//cityofphiladelphia.github.io/patterns/dist/1.4.1/css/patterns.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css">
+    <link rel="stylesheet" href="//unpkg.com/Leaflet.vector-markers@0.0.6/dist/leaflet-vector-markers.css">
+    <!-- <link rel="stylesheet" href="//unpkg.com/leaflet-measure@2.1.7/dist/leaflet-measure.css"> -->
+    <link rel="stylesheet" href="../../src/util/measure/leaflet-measure.css">
+    <link rel="canonical" href="">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+
+  <body>
+    <div class="full" id="application">
+      <!-- demo alert -->
+      <div id="alpha-alert">
+          <div class="row">
+              <div class="large-16 columns">
+                  <p>
+                      We value your
+                      <a class="external" href="//philagsg.typeform.com/to/v0xlIR" target="_blank">feedback<span class="accessible">Opens in new window</span></a>.
+                      Please let us know how we can improve this application.
+                  </p>
+              </div>
+          </div>
+      </div>
+
+      <!-- Begin header -->
+      <header data-swiftype-index='false' class="site-header app">
+        <div class="row">
+          <div class="small-24 columns">
+            <a href="http://alpha.phila.gov/" class="logo">
+              <img data-interchange="[//cityofphiladelphia.github.io/patterns/images/city-of-philadelphia-mobile.png, small], [//cityofphiladelphia.github.io/patterns/images/city-of-philadelphia-white.png, medium]" src="//cityofphiladelphia.github.io/patterns/images/city-of-philadelphia-white.png" alt="City of Philadelphia">
+            </a>
+            <div class="page-title-container">
+              <a href="#/">
+                <h1 class="page-title">Atlas</h1>
+                <!-- <h2 class="page-subtitle">Mapboard example</h2> -->
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Mapboard -->
+      <div id="mapboard"></div>
+
+    </div><!-- end of application div -->
+
+    <!-- JS: Patterns -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/foundation/6.1.2/foundation.min.js"></script>
+    <script src="//cityofphiladelphia.github.io/patterns/dist/1.4.1/js/patterns.min.js"></script>
+
+    <!-- JS: Mapboard -->
+    <script src="//unpkg.com/vue@2.3.3"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="//unpkg.com/axios@0.16.2/dist/axios.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
+    <script src="//unpkg.com/esri-leaflet@2.0.7"></script>
+    <script src="//unpkg.com/turf@3.0.14/turf.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/proj4js/2.4.4/proj4.js"></script>
+    <script src="//unpkg.com/leaflet-easybutton@2.0.0/src/easy-button.js"></script>
+    <script src="//unpkg.com/Leaflet.vector-markers@0.0.6"></script>
+    <script src="//unpkg.com/leaflet-rotatedmarker@0.2.0"></script>
+    <!-- <script src="//unpkg.com/leaflet-measure@2.1.7/dist/leaflet-measure.min.js"></script> -->
+    <script src="../../src/util/measure/leaflet-measure.js"></script>
+
+    <!-- JS: Cyclomedia (optional) -->
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/react/15.3.0/react.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/react/15.3.0/react-dom.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/ol3/3.17.1/ol.js"></script>
+    <script type="text/javascript" src="//streetsmart.cyclomedia.com/api/v16.1/Aperture.js"></script>
+    <script type="text/javascript" src="//streetsmart.cyclomedia.com/api/v16.1/StreetSmartApi.js"></script>
+
+    <!-- JS: Pictometry (optional) -->
+    <script src="//unpkg.com/blueimp-md5@2.10.0/js/md5.min.js"></script>
+
+    <!-- JS: Local -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/accounting.js/0.4.1/accounting.min.js"></script>
+    <script src="../../dist/build.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>
