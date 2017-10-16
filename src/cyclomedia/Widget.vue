@@ -3,11 +3,11 @@
        :class="this.cycloContainerClass"
   >
   <!-- v-once -->
-    <a id="inCycloDiv"
+    <!-- <a id="inCycloDiv"
          @click="this.popoutClicked"
     >
       <i class="fa fa-external-link fa popout-icon"></i>
-    </a>
+    </a> -->
     <div id="cycloviewer" ref="cycloviewer" class="panoramaViewerWindow" />
   </div>
 </template>

@@ -41,7 +41,7 @@ class EsriClient extends BaseClient {
       inSR: 4326,
       outSR: 4326,
       bufferSR: 4326,
-      distances: .0015,
+      distances: .0028,
       unionResults: true,
       geodesic: false,
       f: 'json',
