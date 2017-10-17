@@ -145,14 +145,19 @@
                                         return acc;
                                       }, {});
 
-      const sortMethods = this.sortMethods;
+      const methods = this.options.sort.methods;
+      let sortMethod;
+      if (methods) {
+        sortMethod = methods[0]
+      } else {
+        sortMethod = DEFAULT_SORT_METHODS[0]
+      }
       const highestRowRetrieved = this.options.defaultIncrement;
 
       const initialData = {
         filterSelections: defaultFilterSelections,
         searchText: '',
-        sortMethod: DEFAULT_SORT_METHODS[0],
-        // sortMethod: sortMethods[0],
+        sortMethod,
         highestRowRetrieved
       };
 
@@ -558,7 +563,7 @@
       },
       // sortItems(items, sortOpts) {
       sortItems(items, sortOpts) {
-        // console.log('sortItems sortOpts');
+        // console.log('sortItems, sortOpts:', sortOpts);
         // TODO finish this
         // if (Object.keys(this.filterData).length) {
         //   console.log('there is filterData', this.filterData);
@@ -574,6 +579,7 @@
 
         // if there's no no sort config, just return the items.
         if (!sortOpts) {
+          // console.log('noSortOpts');
           return items;
         }
 
@@ -582,6 +588,7 @@
 
         // get sort fn or use this basic one
         const sortFn = sortOpts.compare || this.defaultSortFn;
+        // console.log('sortFn', sortFn);
         // console.log('sortFn', sortFn)
         return items.sort(sortFn);
       },
