@@ -41,11 +41,11 @@
                   class="mb-select"
           >
             <optgroup>
-              <option v-for="defaultSortMethod in defaultSortMethods"
-                      :value="defaultSortMethod"
+              <option v-for="sortMethod in sortMethods"
+                      :value="sortMethod"
                       class="mb-select-option"
               >
-                {{ defaultSortMethod }}
+                {{ sortMethod }}
               </option>
             </optgroup>
           </select>
@@ -145,13 +145,14 @@
                                         return acc;
                                       }, {});
 
-      const defaultSortMethods = this.defaultSortMethods;
+      const sortMethods = this.sortMethods;
       const highestRowRetrieved = this.options.defaultIncrement;
 
       const initialData = {
         filterSelections: defaultFilterSelections,
         searchText: '',
         sortMethod: DEFAULT_SORT_METHODS[0],
+        // sortMethod: sortMethods[0],
         highestRowRetrieved
       };
 
@@ -354,8 +355,12 @@
 
         return this.sortItems(itemsAfterFilters, sortOpts);
       },
-      defaultSortMethods() {
-        return DEFAULT_SORT_METHODS;
+      sortMethods() {
+        if (this.options.sort.methods) {
+          return this.options.sort.methods;
+        } else {
+          return DEFAULT_SORT_METHODS;
+        }
       },
       // this takes filtered items and applies the max number of rows
       itemsLimited() {
