@@ -145,7 +145,10 @@
                                         return acc;
                                       }, {});
 
-      const methods = this.options.sort.methods;
+      let methods;
+      if (this.options.sort){
+        methods = this.options.sort.methods || [];
+      }
       let sortMethod;
       if (methods) {
         sortMethod = methods[0]

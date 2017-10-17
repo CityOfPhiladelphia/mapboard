@@ -139,7 +139,7 @@ class Router {
   }
 
   // this gets called when you click a topic header.
-  routeToTopic(nextTopic) {
+  routeToTopic(nextTopic, target) {
     // check against active topic
     const prevTopic = this.store.state.activeTopic;
 
@@ -148,13 +148,17 @@ class Router {
       this.store.commit('setActiveParcelLayer', this.activeParcelLayer());
       const prevBasemap = this.store.state.map.basemap || null;
       // if (!this.store.state.map.shouldShowImagery) {
-        const nextTopicConfig = this.config.topics.filter(topic => {
-          return topic.key === nextTopic;
-        })[0] || {};
-        const nextBasemap = nextTopicConfig.parcels;
-        if (prevBasemap !== nextBasemap) {
-          this.store.commit('setBasemap', nextTopicConfig.parcels);
-        }
+      const nextTopicConfig = this.config.topics.filter(topic => {
+        return topic.key === nextTopic;
+      })[0] || {};
+      const nextBasemap = nextTopicConfig.parcels;
+      if (prevBasemap !== nextBasemap) {
+        this.store.commit('setBasemap', nextTopicConfig.parcels);
+      }
+      // console.log('in routeToTopic, nextTopic', nextTopic, 'target', target);
+      // if (target) {
+      //   target.scrollIntoView();
+      // }
       // }
     }
 
