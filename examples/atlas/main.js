@@ -2672,6 +2672,7 @@ Mapboard.default({
                   },
                 } // end of slots
               }, // end of horizontal-table
+              
               {
                 type: 'horizontal-table',
                 options: {
