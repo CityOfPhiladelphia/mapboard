@@ -1,10 +1,8 @@
 <template>
-  <div class="mb-root row collapse"
+  <div class="cell medium-auto grid-x"
        id="mb-root"
-       :style="this.$config.rootStyle"
   >
-    <topic-panel>
-    </topic-panel>
+    <topic-panel />
     <map-panel>
       <cyclomedia-widget v-if="this.$config.cyclomedia.enabled"
                          slot="cycloWidget"
@@ -26,8 +24,7 @@
                 :offsetX="0"
                 :offsetY="0"
         />
-        <layer v-if="this.pictometryActive"
-        />
+        <layer v-if="this.pictometryActive" />
         <png-marker v-if="this.cyclomediaActive && this.pictometryActive"
                 :latlng="[this.$store.state.cyclomedia.viewer.props.orientation.xyz[1], this.$store.state.cyclomedia.viewer.props.orientation.xyz[0]]"
                 :icon="'camera2.png'"
@@ -174,11 +171,13 @@
     }
   }
 
-  .mb-panel {
-    height: 100%;
-  }
-
   .mb-panel-topics-with-widget {
     height: 50%;
+  }
+
+  /* standards applies padding to buttons, which causes some weirdness with 
+  buttons on the map panel. override here. */
+  button {
+    padding: inherit;
   }
 </style>

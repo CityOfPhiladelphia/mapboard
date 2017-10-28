@@ -134,14 +134,6 @@ Mapboard.default({
   geolocation: {
     enabled: false
   },
-  rootStyle: {
-    position: 'absolute',
-    bottom: 0,
-    // top: '78px',
-    top: '118px',
-    left: 0,
-    right: 0,
-  },
   map: {
     // possibly should move to base config
     defaultBasemap: 'pwd',

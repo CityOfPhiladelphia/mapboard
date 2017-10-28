@@ -1,5 +1,5 @@
 <template>
-  <div id="map-container" class="large-12 columns mb-panel mb-panel-map">
+  <div class="medium-12 mb-panel mb-panel-map small-cell-block-container">
     <map_ :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }"
           :center="this.$store.state.map.center"
           :zoom="this.$store.state.map.zoom"
@@ -552,11 +552,11 @@
     position: relative;
   }
 
-  @media (max-width: 1024px) {
+  /*@media (max-width: 749px) {
     .mb-panel-map {
       height: 600px;
     }
-  }
+  }*/
 
   .mb-search-control-container {
     height: 48px;

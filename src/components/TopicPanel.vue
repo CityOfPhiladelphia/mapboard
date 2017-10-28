@@ -1,6 +1,5 @@
 <template>
-  <div class="large-12 columns mb-panel mb-panel-topics" id="topic-panel">
-    <div class="row">
+  <div class="medium-12 cell mb-panel mb-panel-topics" id="topic-panel">
     <!-- <div class="row" :class="{ 'row-with-widget': this.$store.state.pictometry.active }"> -->
       <!-- before search -->
       <!-- <greeting v-show="!geocode" /> -->
@@ -27,7 +26,6 @@
       </div>
     </div>
     <!-- <slot name="pictWidget" /> -->
-  </div>
 </template>
 
 <script>
