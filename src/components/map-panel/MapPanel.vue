@@ -1,5 +1,5 @@
 <template>
-  <div class="medium-12 mb-panel mb-panel-map small-cell-block-container">
+  <div class="medium-12 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map">
     <map_ :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }"
           :center="this.$store.state.map.center"
           :zoom="this.$store.state.map.zoom"

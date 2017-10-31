@@ -1,5 +1,5 @@
 <template>
-  <div class="medium-12 cell mb-panel mb-panel-topics" id="topic-panel">
+  <div class="medium-12 cell small-order-2 medium-order-1 mb-panel mb-panel-topics" id="topic-panel">
     <!-- <div class="row" :class="{ 'row-with-widget': this.$store.state.pictometry.active }"> -->
       <!-- before search -->
       <!-- <greeting v-show="!geocode" /> -->
