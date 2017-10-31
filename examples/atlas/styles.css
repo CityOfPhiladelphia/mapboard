@@ -1,3 +1,14 @@
 #application .site-header .page-title-container h1 {
 	font-size: 2.14286rem;
 }
+
+/*small*/
+@media screen and (max-width: 39.9375em) {
+	.logo {
+		float: left;
+	}
+
+	.page-title-container {
+		float: right;
+	}
+}
