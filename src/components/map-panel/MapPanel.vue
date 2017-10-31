@@ -572,14 +572,14 @@
 
   .mb-search-control-input {
     border: 0;
-    height: 48px !important;
-    line-height: 48px;
-    padding: 10px;
-    padding-left: 15px;
-    padding-right: 15px;
+    /*height: 48px !important;*/
+    /*line-height: 48px;*/
+    padding: 15px;
+    /*padding-left: 15px;
+    padding-right: 15px;*/
     font-family: 'Montserrat', 'Tahoma', sans-serif;
     font-size: 16px;
-    width: 400px;
+    width: 275px;
   }
 
   .mb-map-with-widget {
@@ -608,4 +608,21 @@
     top: 40%;
     left: 40%;
   }
+
+  /*small*/
+  @media screen and (max-width: 39.9375em) {
+    .mb-search-control-input {
+      width: 200px;
+    }
+  }
+
+  /*small retina*/
+  /*@media
+  (-webkit-min-device-pixel-ratio: 2),
+  (min-resolution: 192dpi),
+  (max-width: 39.9375em) {
+    .mb-search-control-input {
+      max-width: 250px;
+    }
+  }*/
 </style>
