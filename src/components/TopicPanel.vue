@@ -63,11 +63,7 @@
         return this.$store.state.parcels.dor.data.length > 0;
       },
       shouldShowGreeting() {
-        if (!this.geocode && !this.dorParcels) {
-          return true;
-        } else {
-          return false;
-        }
+        return !(this.geocode || this.dorParcels);
       },
       // this returns the address shown in the address header
       address() {
