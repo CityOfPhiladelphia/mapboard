@@ -134,6 +134,7 @@
   }
 
   .address-spacer {
+    background: #daedfe;
     position: absolute;
     left: -5px;
     height: 100px;
@@ -142,8 +143,7 @@
 
   .address-header {
     position: absolute;
-    color: #666;
-    border-left: 5px solid #58c04d;
+    color: #444;
     margin-left: 15px;
     padding-left: 15px;
     margin-bottom: 25px;
