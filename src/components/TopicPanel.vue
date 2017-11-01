@@ -6,14 +6,14 @@
       <greeting v-show="shouldShowGreeting" />
 
       <!-- after search -->
-      <div v-if="!shouldShowGreeting" class="address-found-div">
+      <div v-if="!shouldShowGreeting">
         <div class="address-spacer" v-if="address">
           <div class="address-header">
             <h1 class="address-header-line-1">{{ address }}</h1>
             <div class="address-header-line-2 small-text">PHILADELPHIA, PA {{ zipCode }}</div>
           </div>
         </div>
-        <!-- <div class="spacer-div"></div> -->
+
         <div class="topics-container"
              id="topics-container"
              :style="styleObject"
@@ -136,19 +136,10 @@
 </script>
 
 <style>
-  /*.row {
-    height: 100%;
-  }
-
-  .address-found-div {
-    height: 100%;
-  }*/
-
   .mb-panel-topics {
     background: #fff;
     padding-left: 20px !important;
     padding-right: 20px !important;
-    /*overflow-y: auto;*/
   }
 
   .address-spacer {
@@ -156,7 +147,6 @@
     left: -5px;
     height: 100px;
     width: 49%;
-    background-color: white;
   }
 
   .address-header {
@@ -173,14 +163,4 @@
     margin-bottom: 0;
     margin-top: 0;
   }
-
-  /*.spacer-div {
-    height: 100px;
-  }*/
-
-  /*.topics-container {
-    position: relative;
-    top: 100px;
-    overflow-y: auto;
-  }*/
 </style>
