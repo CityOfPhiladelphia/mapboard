@@ -161,21 +161,11 @@
     outline: none;
   }
 
-  @media (min-width: 1024px) {
-    .mb-root {
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .mb-root {
-    }
-  }
-
   .mb-panel-topics-with-widget {
     height: 50%;
   }
 
-  /* standards applies padding to buttons, which causes some weirdness with 
+  /* standards applies padding to buttons, which causes some weirdness with
   buttons on the map panel. override here. */
   button {
     padding: inherit;
