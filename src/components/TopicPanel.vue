@@ -66,27 +66,27 @@
           return false;
         }
       },
+      // this returns the address shown in the address header
       address() {
         const geocode = this.geocode;
-        // const dorParcels = this.$store.state.dorParcels.data
         const dorParcels = this.$store.state.parcels.dor.data;
-        const activeDorParcel = this.$store.state.parcels.dor.activeParcel;
         const activeDorAddress = this.$store.state.parcels.dor.activeAddress;
-        // a DOR address might be found even if there is no geocode
-        // if (!geocode) return null;
-        // return geocode.properties.street_address;
+        let address;
+
         if (geocode) {
-          if (geocode.properties.street_address) {
-            return geocode.properties.street_address;
-          } else if (geocode.street_address) {
-            return geocode.street_address;
-          }
-        } else {
-          if (activeDorAddress) {
-            const address = activeDorAddress;
-            return address;
-          }
+          // TODO make this not ais-specific
+          // REVIEW what's the difference between these two?
+          const addressA = geocode.properties.street_address;
+          const addressB = geocode.street_address;
+
+          address = addressA || addressB;
+
+        // a DOR address might be found even if there is no geocode
+        } else if (activeDorAddress) {
+          address = activeDorAddress;
         }
+
+        return address;
       },
       zipCode() {
         const geocode = this.geocode;
