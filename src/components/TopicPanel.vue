@@ -1,23 +1,22 @@
 <template>
-  <div class="medium-12 cell small-order-2 medium-order-1 mb-panel mb-panel-topics" id="topic-panel">
+  <div class="cell medium-12 small-order-2 medium-order-1"
+  >
       <!-- before search -->
       <greeting v-show="shouldShowGreeting" />
 
       <!-- after search -->
-      <div v-if="!shouldShowGreeting">
-        <div class="address-spacer" v-if="address">
-          <div class="address-header">
-            <h1 class="address-header-line-1">
-              <i class="fa fa-map-marker"></i>
-              {{ address }}
-            </h1>
-            <div class="address-header-line-2 small-text">PHILADELPHIA, PA {{ zipCode }}</div>
-          </div>
+      <div v-if="!shouldShowGreeting" class="cell">
+        <!-- address header -->
+        <div class="address-header">
+          <h1 class="address-header-line-1">
+            <i class="fa fa-map-marker"></i>
+            {{ address }}
+          </h1>
+          <div class="address-header-line-2 small-text">PHILADELPHIA, PA {{ zipCode }}</div>
         </div>
 
-        <div class="topics-container"
-             id="topics-container"
-             :style="styleObject"
+        <!-- topics container -->
+        <div class="topics-container cell medium-cell-block-y"
         >
           <topic v-for="topic in this.$config.topics"
                  :topicKey="topic.key"
@@ -37,24 +36,24 @@
       Greeting,
       Topic
     },
-    data() {
-      const data = {
-        styleObject: {
-          'position': 'relative',
-          'top': '100px',
-          'overflow-y': 'auto',
-          'height': '100px'
-        }
-      };
-      return data;
-    },
-    mounted() {
-      window.addEventListener('resize', this.handleWindowResize);
-      this.handleWindowResize();
-    },
-    beforeDestroy() {
-      window.removeEventListener('resize', this.handleWindowResize);
-    },
+    // data() {
+    //   const data = {
+    //     styleObject: {
+    //       'position': 'relative',
+    //       'top': '100px',
+    //       'overflow-y': 'auto',
+    //       'height': '100px'
+    //     }
+    //   };
+    //   return data;
+    // },
+    // mounted() {
+    //   window.addEventListener('resize', this.handleWindowResize);
+    //   this.handleWindowResize();
+    // },
+    // beforeDestroy() {
+    //   window.removeEventListener('resize', this.handleWindowResize);
+    // },
     computed: {
       geocode() {
         return this.$store.state.geocode.data;
@@ -109,45 +108,32 @@
         const sources = this.$store.state.sources;
         return requiredSources.every(key => sources[key].data)
       },
-      handleWindowResize() {
-        // console.log('handleWindowResize is running');
-        const rootElement = document.getElementById('mb-root');
-        const rootStyle = window.getComputedStyle(rootElement);
-        const rootHeight = rootStyle.getPropertyValue('height');
-        const rootHeightNum = parseInt(rootHeight.replace('px', ''));
-        const topicsHeight = rootHeightNum - 100;
-        this.styleObject.height = topicsHeight.toString() + 'px';
-      }
+      // handleWindowResize() {
+      //   // console.log('handleWindowResize is running');
+      //   const rootElement = document.getElementById('mb-root');
+      //   const rootStyle = window.getComputedStyle(rootElement);
+      //   const rootHeight = rootStyle.getPropertyValue('height');
+      //   const rootHeightNum = parseInt(rootHeight.replace('px', ''));
+      //   const topicsHeight = rootHeightNum - 100;
+      //   this.styleObject.height = topicsHeight.toString() + 'px';
+      // }
     }
   };
 </script>
 
-<style>
-  .mb-panel-topics {
-    background: #fff;
-    padding-left: 20px !important;
-    padding-right: 20px !important;
-  }
-
-  .address-spacer {
-    background: #daedfe;
-    position: absolute;
-    left: -5px;
-    height: 100px;
-    width: 49%;
-  }
-
+<style scoped>
   .address-header {
-    position: absolute;
+    background: #daedfe;
     color: #444;
-    margin-left: 15px;
-    padding-left: 15px;
-    margin-bottom: 25px;
-    margin-top: 20px;
+    padding: 20px;
   }
 
   .address-header-line-1 {
     margin-bottom: 0;
     margin-top: 0;
+  }
+
+  .topics-container {
+    padding: 20px;
   }
 </style>

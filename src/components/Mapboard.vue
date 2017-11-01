@@ -1,45 +1,45 @@
 <template>
-  <div class="cell medium-auto grid-x"
-       id="mb-root"
-  >
-    <topic-panel />
-    <map-panel>
-      <cyclomedia-widget v-if="this.$config.cyclomedia.enabled"
-                         slot="cycloWidget"
-                         v-show="cyclomediaActive"
-      />
-      <pictometry-widget v-if="this.$config.pictometry.enabled"
-                         slot="pictWidget"
-                         v-show="pictometryActive"
-                         :apiKey="this.ak"
-                         :secretKey="this.sk"
-      >
-      <!-- :apiKey="this.$config.pictometry.apiKey"
-      :secretKey="this.$config.pictometry.secretKey" -->
-        <png-marker v-if="this.pictometryShowAddressMarker"
-                :latlng="[this.geocodeData.geometry.coordinates[1], this.geocodeData.geometry.coordinates[0]]"
-                :icon="'markers.png'"
-                :height="60"
-                :width="40"
-                :offsetX="0"
-                :offsetY="0"
+  <div class="medium-cell-block-container" id="mb-root">
+    <div class="grid-x">
+      <topic-panel />
+      <map-panel>
+        <cyclomedia-widget v-if="this.$config.cyclomedia.enabled"
+                           slot="cycloWidget"
+                           v-show="cyclomediaActive"
         />
-        <layer v-if="this.pictometryActive" />
-        <png-marker v-if="this.cyclomediaActive && this.pictometryActive"
-                :latlng="[this.$store.state.cyclomedia.viewer.props.orientation.xyz[1], this.$store.state.cyclomedia.viewer.props.orientation.xyz[0]]"
-                :icon="'camera2.png'"
-                :height="20"
-                :width="30"
-                :offsetX="-2"
-                :offsetY="-2"
-        />
-        <!-- :icon="'../assets/camera.png'" -->
-        <view-cone v-if="this.cyclomediaActive && this.pictometryActive"
-                   :orientation="this.$store.state.cyclomedia.viewer.props.orientation"
-        />
-      </pictometry-widget>
-      <!-- :center="this.$store.state.map.map.center" -->
-    </map-panel>
+        <pictometry-widget v-if="this.$config.pictometry.enabled"
+                           slot="pictWidget"
+                           v-show="pictometryActive"
+                           :apiKey="this.ak"
+                           :secretKey="this.sk"
+        >
+        <!-- :apiKey="this.$config.pictometry.apiKey"
+        :secretKey="this.$config.pictometry.secretKey" -->
+          <png-marker v-if="this.pictometryShowAddressMarker"
+                  :latlng="[this.geocodeData.geometry.coordinates[1], this.geocodeData.geometry.coordinates[0]]"
+                  :icon="'markers.png'"
+                  :height="60"
+                  :width="40"
+                  :offsetX="0"
+                  :offsetY="0"
+          />
+          <layer v-if="this.pictometryActive" />
+          <png-marker v-if="this.cyclomediaActive && this.pictometryActive"
+                  :latlng="[this.$store.state.cyclomedia.viewer.props.orientation.xyz[1], this.$store.state.cyclomedia.viewer.props.orientation.xyz[0]]"
+                  :icon="'camera2.png'"
+                  :height="20"
+                  :width="30"
+                  :offsetX="-2"
+                  :offsetY="-2"
+          />
+          <!-- :icon="'../assets/camera.png'" -->
+          <view-cone v-if="this.cyclomediaActive && this.pictometryActive"
+                     :orientation="this.$store.state.cyclomedia.viewer.props.orientation"
+          />
+        </pictometry-widget>
+        <!-- :center="this.$store.state.map.map.center" -->
+      </map-panel>
+    </div>
   </div>
 </template>
 
