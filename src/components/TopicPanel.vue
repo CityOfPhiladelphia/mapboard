@@ -1,8 +1,6 @@
 <template>
   <div class="medium-12 cell small-order-2 medium-order-1 mb-panel mb-panel-topics" id="topic-panel">
-    <!-- <div class="row" :class="{ 'row-with-widget': this.$store.state.pictometry.active }"> -->
       <!-- before search -->
-      <!-- <greeting v-show="!geocode" /> -->
       <greeting v-show="shouldShowGreeting" />
 
       <!-- after search -->
@@ -25,7 +23,6 @@
         </div>
       </div>
     </div>
-    <!-- <slot name="pictWidget" /> -->
 </template>
 
 <script>
@@ -60,7 +57,6 @@
         return this.$store.state.geocode.data;
       },
       dorParcels() {
-        // return this.$store.state.dorParcels.data.length > 0;
         return this.$store.state.parcels.dor.data.length > 0;
       },
       shouldShowGreeting() {
@@ -102,15 +98,7 @@
         return parts.join('-');
       },
     },
-    // watch: {
-    //   address(nextAddress) {
-    //
-    //   }
-    // },
     methods: {
-      // setActiveParcel() {
-      //
-      // },
       shouldShowTopic(topic) {
         const requiredSources = topic.dataSources || [];
 
