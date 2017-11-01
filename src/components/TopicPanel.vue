@@ -7,7 +7,10 @@
       <div v-if="!shouldShowGreeting">
         <div class="address-spacer" v-if="address">
           <div class="address-header">
-            <h1 class="address-header-line-1">{{ address }}</h1>
+            <h1 class="address-header-line-1">
+              <i class="fa fa-map-marker"></i>
+              {{ address }}
+            </h1>
             <div class="address-header-line-2 small-text">PHILADELPHIA, PA {{ zipCode }}</div>
           </div>
         </div>
