@@ -136,4 +136,10 @@
   .topics-container {
     padding: 20px;
   }
+  
+  @media screen and (min-width: 40em) {
+    .topics-container {
+      height: calc(100vh - 210px);
+    }
+  }
 </style>
