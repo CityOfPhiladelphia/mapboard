@@ -37,7 +37,7 @@
     },
     methods: {
       constructLocalUrl(host, path1, path2) {
-        return 'http://' + host + path1 + path2;
+        return '//' + host + path1 + path2;
       },
       placeMarker(nextLatlng) {
         // console.log('starting placeMarker', nextLatlng, this.$props.icon);
