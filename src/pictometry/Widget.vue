@@ -143,7 +143,7 @@
         // construct signed url
         const d = new Date();
         const t = Math.floor(d.getTime() / 1000);
-        const unsignedUrl = 'http://pol.pictometry.com/ipa/v1/load.php' + "?apikey=" + this.apiKey + "&ts=" + t;
+        const unsignedUrl = '//pol.pictometry.com/ipa/v1/load.php' + "?apikey=" + this.apiKey + "&ts=" + t;
         const hash = md5(unsignedUrl, this.secretKey);
         const iframeId = this.$IFRAME_ID;
         const signedUrl = unsignedUrl + "&ds=" + hash + "&app_id=" + iframeId;
@@ -154,7 +154,7 @@
         iframe.setAttribute('src', signedUrl);
 
         // create pictometry host
-        const ipa = this.$ipa = new PictometryHost(iframeId, 'http://pol.pictometry.com/ipa/v1/load.php');
+        const ipa = this.$ipa = new PictometryHost(iframeId, '//pol.pictometry.com/ipa/v1/load.php');
         this.$store.commit('setPictometryIpa', ipa);
         ipa.ready = this.ipaReady;
       },
