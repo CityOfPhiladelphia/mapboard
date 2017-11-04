@@ -84,7 +84,8 @@
             {{ evaluateSlot(slots.subtitle) }}
           </h5>
         </div>
-        <table role="grid" class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">
+
+        <table role="grid" class="stack">
           <thead>
             <tr>
               <th v-for="field in fields">{{ evaluateSlot(field.label) }}</th>
