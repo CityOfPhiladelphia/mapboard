@@ -1,5 +1,5 @@
 <template>
-  <div id="map-container" class="large-12 columns mb-panel mb-panel-map">
+  <div class="medium-12 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map">
     <map_ :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }"
           :center="this.$store.state.map.center"
           :zoom="this.$store.state.map.zoom"
@@ -552,11 +552,11 @@
     position: relative;
   }
 
-  @media (max-width: 1024px) {
+  /*@media (max-width: 749px) {
     .mb-panel-map {
       height: 600px;
     }
-  }
+  }*/
 
   .mb-search-control-container {
     height: 48px;
@@ -572,14 +572,14 @@
 
   .mb-search-control-input {
     border: 0;
-    height: 48px !important;
-    line-height: 48px;
-    padding: 10px;
-    padding-left: 15px;
-    padding-right: 15px;
+    /*height: 48px !important;*/
+    /*line-height: 48px;*/
+    padding: 15px;
+    /*padding-left: 15px;
+    padding-right: 15px;*/
     font-family: 'Montserrat', 'Tahoma', sans-serif;
     font-size: 16px;
-    width: 400px;
+    width: 275px;
   }
 
   .mb-map-with-widget {
@@ -608,4 +608,21 @@
     top: 40%;
     left: 40%;
   }
+
+  /*small*/
+  @media screen and (max-width: 39.9375em) {
+    .mb-search-control-input {
+      width: 200px;
+    }
+  }
+
+  /*small retina*/
+  /*@media
+  (-webkit-min-device-pixel-ratio: 2),
+  (min-resolution: 192dpi),
+  (max-width: 39.9375em) {
+    .mb-search-control-input {
+      max-width: 250px;
+    }
+  }*/
 </style>

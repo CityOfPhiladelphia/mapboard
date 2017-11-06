@@ -6556,10 +6556,13 @@ module.exports = {
   'areaMeasurement': 'Area measurement',
   'linearMeasurement': 'Linear measurement',
   'pathDistance': 'Path distance',
+  'totalDistance': 'Total distance',
+  'lengths': 'Lengths',
   'centerOnArea': 'Center on this area',
   'centerOnLine': 'Center on this line',
   'centerOnLocation': 'Center on this location',
   'cancel': 'Cancel',
+  'undo': 'Undo',
   'delete': 'Delete',
   'acres': 'Acres',
   'feet': 'Feet',
@@ -7033,7 +7036,7 @@ module.exports = {
 },{}],44:[function(require,module,exports){
 (function (global){
 // leaflet-measure.js
-console.log('testing grunt');
+// console.log('testing grunt');
 
 var _ = require('underscore');
 var L = (typeof window !== "undefined" ? window['L'] : typeof global !== "undefined" ? global['L'] : null);
@@ -7047,11 +7050,11 @@ var $ = dom.$;
 var Symbology = require('./mapsymbology');
 
 
-var controlTemplate = _.template("<a class=\"<%= model.className %>-toggle js-toggle\" href=\"#\" title=\"<%= i18n.__('measureDistancesAndAreas') %>\"><%= i18n.__('measure') %></a>\r\n<div class=\"<%= model.className %>-interaction js-interaction\">\r\n  <div class=\"js-startprompt startprompt\">\r\n    <h3><%= i18n.__('measureDistancesAndAreas') %></h3>\r\n    <ul class=\"tasks\">\r\n      <a href=\"#\" class=\"js-start start\"><%= i18n.__('createNewMeasurement') %></a>\r\n    </ul>\r\n  </div>\r\n  <div class=\"js-measuringprompt\">\r\n    <h3><%= i18n.__('measureDistancesAndAreas') %></h3>\r\n    <p class=\"js-starthelp\"><%= i18n.__('startCreating') %></p>\r\n    <div class=\"js-results results\"></div>\r\n    <ul class=\"js-measuretasks tasks\">\r\n      <li><a href=\"#\" class=\"js-cancel cancel\"><%= i18n.__('cancel') %></a></li>\r\n      <li><a href=\"#\" class=\"js-finish finish\"><%= i18n.__('finishMeasurement') %></a></li>\r\n    </ul>\r\n  </div>\r\n</div>");
-var resultsTemplate = _.template("<div class=\"group\">\r\n<p class=\"lastpoint heading\"><%= i18n.__('lastPoint') %></p>\r\n<p><%= model.lastCoord.dms.y %> <span class=\"coorddivider\">/</span> <%= model.lastCoord.dms.x %></p>\r\n<p><%= humanize.numberFormat(model.lastCoord.dd.y, 6) %> <span class=\"coorddivider\">/</span> <%= humanize.numberFormat(model.lastCoord.dd.x, 6) %></p>\r\n</div>\r\n<% if (model.pointCount > 1) { %>\r\n<div class=\"group\">\r\n<p><span class=\"heading\"><%= i18n.__('pathDistance') %></span> <%= model.lengthDisplay %></p>\r\n</div>\r\n<% } %>\r\n<% if (model.pointCount > 2) { %>\r\n<div class=\"group\">\r\n<p><span class=\"heading\"><%= i18n.__('area') %></span> <%= model.areaDisplay %></p>\r\n</div>\r\n<% } %>");
+var controlTemplate = _.template("<a class=\"<%= model.className %>-toggle js-toggle\" href=\"#\" title=\"<%= i18n.__('measureDistancesAndAreas') %>\"><%= i18n.__('measure') %></a>\r\n<div class=\"<%= model.className %>-interaction js-interaction\">\r\n  <div class=\"js-startprompt startprompt\">\r\n    <h3><%= i18n.__('measureDistancesAndAreas') %></h3>\r\n    <ul class=\"tasks\">\r\n      <a href=\"#\" class=\"js-start start\"><%= i18n.__('createNewMeasurement') %></a>\r\n    </ul>\r\n  </div>\r\n  <div class=\"js-measuringprompt\">\r\n    <h3><%= i18n.__('measureDistancesAndAreas') %></h3>\r\n    <p class=\"js-starthelp\"><%= i18n.__('startCreating') %></p>\r\n    <div class=\"js-results results\"></div>\r\n    <ul class=\"js-measuretasks tasks\">\r\n      <li><a href=\"#\" class=\"js-cancel cancel\"><%= i18n.__('cancel') %></a></li>\r\n      <li><a href=\"#\" class=\"js-undo undo\"><%= i18n.__('undo') %></a></li>\r\n      <li><a href=\"#\" class=\"js-finish finish\"><%= i18n.__('finishMeasurement') %></a></li>\r\n    </ul>\r\n  </div>\r\n</div>\r\n");
+var resultsTemplate = _.template("<!-- <div class=\"group\">\r\n<p class=\"lastpoint heading\"><%= i18n.__('lastPoint') %></p>\r\n<p><%= model.lastCoord.dms.y %> <span class=\"coorddivider\">/</span> <%= model.lastCoord.dms.x %></p>\r\n<p><%= humanize.numberFormat(model.lastCoord.dd.y, 6) %> <span class=\"coorddivider\">/</span> <%= humanize.numberFormat(model.lastCoord.dd.x, 6) %></p>\r\n</div> -->\r\n<% if (model.pointCount > 1) { %>\r\n<div class=\"group\">\r\n<p>\r\n  <span class=\"heading\"><%= i18n.__('lengths') %></span><br>\r\n  <% for (i=0; i < model.lengths.length; i++) { %>\r\n    <div>\r\n      <%= model.lengths[i] %>\r\n    </div>\r\n  <% } %>\r\n</p>\r\n</div>\r\n<% } %>\r\n<% if (model.pointCount > 1) { %>\r\n<div class=\"group\">\r\n<p><span class=\"heading\"><%= i18n.__('totalDistance') %></span> <%= model.lengthDisplay %></p>\r\n</div>\r\n<% } %>\r\n<% if (model.pointCount > 2) { %>\r\n<div class=\"group\">\r\n<p><span class=\"heading\"><%= i18n.__('area') %></span> <%= model.areaDisplay %></p>\r\n</div>\r\n<% } %>\r\n");
 var pointPopupTemplate = _.template("<h3><%= i18n.__('pointLocation') %></h3>\r\n<p><%= model.lastCoord.dms.y %> <span class=\"coorddivider\">/</span> <%= model.lastCoord.dms.x %></p>\r\n<p><%= humanize.numberFormat(model.lastCoord.dd.y, 6) %> <span class=\"coorddivider\">/</span> <%= humanize.numberFormat(model.lastCoord.dd.x, 6) %></p>\r\n<ul class=\"tasks\">\r\n  <li><a href=\"#\" class=\"js-zoomto zoomto\"><%= i18n.__('centerOnLocation') %></a></li>\r\n  <li><a href=\"#\" class=\"js-deletemarkup deletemarkup\"><%= i18n.__('delete') %></a></li>\r\n</ul>");
 var linePopupTemplate = _.template("<h3><%= i18n.__('linearMeasurement') %></h3>\r\n<p><%= model.lengthDisplay %></p>\r\n<ul class=\"tasks\">\r\n  <li><a href=\"#\" class=\"js-zoomto zoomto\"><%= i18n.__('centerOnLine') %></a></li>\r\n  <li><a href=\"#\" class=\"js-deletemarkup deletemarkup\"><%= i18n.__('delete') %></a></li>\r\n</ul>");
-var areaPopupTemplate = _.template("<h3><%= i18n.__('areaMeasurement') %></h3>\r\n<p><%= model.areaDisplay %></p>\r\n<p><%= model.lengthDisplay %> <%= i18n.__('perimeter') %></p>\r\n<ul class=\"tasks\">\r\n  <li><a href=\"#\" class=\"js-zoomto zoomto\"><%= i18n.__('centerOnArea') %></a></li>\r\n  <li><a href=\"#\" class=\"js-deletemarkup deletemarkup\"><%= i18n.__('delete') %></a></li>\r\n</ul>");
+var areaPopupTemplate = _.template("<h3><%= i18n.__('areaMeasurement') %></h3>\r\n<!-- <p><%= model.areaDisplay %></p>\r\n<p><%= model.lengthDisplay %> <%= i18n.__('perimeter') %></p>\r\n<% if (model.pointCount > 1) { %>\r\n<div class=\"group\">\r\n<p>\r\n  <span class=\"heading\"><%= i18n.__('lengths') %></span><br>\r\n  <% for (i=0; i < model.lengths.length; i++) { %>\r\n    <div>\r\n      <%= model.lengths[i] %>\r\n    </div>\r\n  <% } %>\r\n</p>\r\n</div>\r\n<% } %> -->\r\n\r\n<% if (model.pointCount > 1) { %>\r\n<div class=\"group\">\r\n<p>\r\n  <span class=\"heading\"><%= i18n.__('lengths') %>:</span><br>\r\n  <% for (i=0; i < model.lengths.length; i++) { %>\r\n    <div>\r\n      <%= model.lengths[i] %>\r\n    </div>\r\n  <% } %>\r\n</p>\r\n</div>\r\n<% } %>\r\n<% if (model.pointCount > 1) { %>\r\n<div class=\"group\">\r\n<p><span class=\"heading\"><%= i18n.__('totalDistance') %>: </span> <%= model.lengthDisplay %></p>\r\n</div>\r\n<% } %>\r\n<% if (model.pointCount > 2) { %>\r\n<br>\r\n<div class=\"group\">\r\n<p><span class=\"heading\"><%= i18n.__('area') %>: </span> <%= model.areaDisplay %></p>\r\n</div>\r\n<% } %>\r\n\r\n<ul class=\"tasks\">\r\n  <li><a href=\"#\" class=\"js-zoomto zoomto\"><%= i18n.__('centerOnArea') %></a></li>\r\n  <li><a href=\"#\" class=\"js-deletemarkup deletemarkup\"><%= i18n.__('delete') %></a></li>\r\n</ul>\r\n");
 
 var i18n = new (require('i18n-2'))({
   devMode: false,
@@ -7085,7 +7088,7 @@ L.Control.Measure = L.Control.extend({
     position: 'topright',
     primaryLengthUnit: 'feet',
     // secondaryLengthUnit: 'miles',
-    primaryAreaUnit: 'acres',
+    primaryAreaUnit: 'sqfeet',
     activeColor: '#ABE67E',     // base color for map features while actively measuring
     completedColor: '#74acbd',//'#C8F2BE',  // base color for permenant features generated from completed measure
     captureZIndex: 10000,       // z-index of the marker used to capture measure events
@@ -7103,11 +7106,14 @@ L.Control.Measure = L.Control.extend({
   onAdd: function (map) {
     this._map = map;
     this._latlngs = [];
+    this._lengths = [];
+    this._lengthNotations = [];
+    this._measureFeatures = [];
+    this._vertexCircleMarkers = [];
+    // this._vertexPoints = [];
     this._initLayout();
     map.on('click', this._collapse, this);
-    console.log('onAdd running');
     this._layer = L.layerGroup().addTo(map);
-    console.log('onAdd still running');
     return this._container;
   },
   onRemove: function (map) {
@@ -7116,7 +7122,7 @@ L.Control.Measure = L.Control.extend({
   },
   _initLayout: function () {
     var className = this._className, container = this._container = L.DomUtil.create('div', className);
-    var $toggle, $start, $cancel, $finish;
+    var $toggle, $start, $cancel, $undo, $finish;
 
     container.innerHTML = controlTemplate({
       model: {
@@ -7139,6 +7145,7 @@ L.Control.Measure = L.Control.extend({
     this.$interaction = $('.js-interaction', container);         // expanded content
     $start = $('.js-start', container);                          // start button
     $cancel = $('.js-cancel', container);                        // cancel button
+    $undo = $('.js-undo', container);
     $finish = $('.js-finish', container);                        // finish button
     this.$startPrompt = $('.js-startprompt', container);         // full area with button to start measurment
     this.$measuringPrompt = $('.js-measuringprompt', container); // full area with all stuff for active measurement
@@ -7163,6 +7170,8 @@ L.Control.Measure = L.Control.extend({
     L.DomEvent.on($start, 'click', this._startMeasure, this);
     L.DomEvent.on($cancel, 'click', L.DomEvent.stop);
     L.DomEvent.on($cancel, 'click', this._finishMeasure, this);
+    L.DomEvent.on($undo, 'click', L.DomEvent.stop);
+    L.DomEvent.on($undo, 'click', this._undoMeasure, this);
     L.DomEvent.on($finish, 'click', L.DomEvent.stop);
     L.DomEvent.on($finish, 'click', this._handleMeasureDoubleClick, this);
   },
@@ -7199,6 +7208,7 @@ L.Control.Measure = L.Control.extend({
     dom.hide(this.$startPrompt);
     dom.show(this.$measuringPrompt);
   },
+
   // get state vars and interface ready for measure
   _startMeasure: function () {
     this._locked = true;
@@ -7228,8 +7238,33 @@ L.Control.Measure = L.Control.extend({
 
     this._map.fire('measurestart', null, false);
   },
+
+  // remove the last clicked point
+  _undoMeasure: function () {
+    this._latlngs = this._latlngs.slice(0, -1);
+    // console.log('this._measureLengths', this._measureLengths, 'this._measureVertexes', this._measureVertexes);
+    var i = this._lengthNotations.length;
+    // console.log('i', i, 'this._lengthNotations[i]', this._lengthNotations[i-1]);
+    if (this._lengthNotations.length > 0) {
+      this._lengthNotations[i-1].removeFrom(this._measureLengths);
+    }
+    this._lengthNotations = this._lengthNotations.slice(0, -1);
+    this._lengths = this._lengths.slice(0, -1);
+    console.log('!!!! _undoMeasure this._measureVertexes', this._measureVertexes);
+    this._removeLastVertex();
+    this._addMeasureArea(this._latlngs);
+    this._addMeasureBoundary(this._latlngs);
+  },
+
   // return to state with no measure in progress, undo `this._startMeasure`
-  _finishMeasure: function () {
+  _finishMeasure: function (isComplete) {
+    // console.log('isComplete', isComplete);
+    var shouldDeleteLengths;
+    if (isComplete === true) {
+      shouldDeleteLengths = false;
+    } else {
+      shouldDeleteLengths = true;
+    }
     var model = _.extend({}, this._resultsModel, {
       points: this._latlngs
     });
@@ -7238,7 +7273,7 @@ L.Control.Measure = L.Control.extend({
 
     L.DomEvent.off(this._container, 'mouseover', this._handleMapMouseOut, this);
 
-    this._clearMeasure();
+    this._clearMeasure(shouldDeleteLengths);
 
     this._captureMarker
       .off('mouseout', this._handleMapMouseOut, this)
@@ -7252,11 +7287,9 @@ L.Control.Measure = L.Control.extend({
       .off('resize', this._setCaptureMarkerIcon, this);
 
     this._layer
-      // .removeLayer(this._measureLengths)
       .removeLayer(this._measureVertexes)
       .removeLayer(this._captureMarker);
     this._measureVertexes = null;
-    // this._measureLengths = null;
 
     this._updateMeasureNotStarted();
     this._collapse();
@@ -7264,11 +7297,13 @@ L.Control.Measure = L.Control.extend({
     this._map.fire('measurefinish', model, false);
   },
   // clear all running measure data
-  _clearMeasure: function () {
+  _clearMeasure: function (shouldDeleteLengths) {
     this._latlngs = [];
     this._resultsModel = null;
+    if (shouldDeleteLengths) {
+      this._measureLengths.clearLayers();
+    }
     this._measureVertexes.clearLayers();
-    // this._measureLengths.clearLayers();
     if (this._measureDrag) {
       this._layer.removeLayer(this._measureDrag);
     }
@@ -7332,21 +7367,21 @@ L.Control.Measure = L.Control.extend({
     };
 
     function buildDisplay (val, primaryUnit, secondaryUnit, decPoint, thousandsSep) {
-      console.log('val', val);
-      console.log('primaryUnit', primaryUnit);
-      console.log('secondaryUnit', secondaryUnit);
-      console.log('decPoint', decPoint);
-      console.log('thousandsSep', thousandsSep);
+      // console.log('val', val);
+      // console.log('primaryUnit', primaryUnit);
+      // console.log('secondaryUnit', secondaryUnit);
+      // console.log('decPoint', decPoint);
+      // console.log('thousandsSep', thousandsSep);
       var display;
       if (primaryUnit && unitDefinitions[primaryUnit]) {
-        console.log('choosing first path, unitDefinitions[primaryUnit]:', unitDefinitions[primaryUnit]);
+        // console.log('choosing first path, unitDefinitions[primaryUnit]:', unitDefinitions[primaryUnit]);
         display = formatMeasure(val, unitDefinitions[primaryUnit], decPoint, thousandsSep);
         if (secondaryUnit && unitDefinitions[secondaryUnit]) {
-          console.log('choosing second path');
+          // console.log('choosing second path');
           display = display + ' (' +  formatMeasure(val, unitDefinitions[secondaryUnit], decPoint, thousandsSep) + ')';
         }
       } else {
-        console.log('choosing third path');
+        // console.log('choosing third path');
         display = formatMeasure(val, null, decPoint, thousandsSep);
       }
       return display;
@@ -7355,7 +7390,7 @@ L.Control.Measure = L.Control.extend({
     function formatMeasure (val, unit, decPoint, thousandsSep) {
       unit.decimals = 2;
       unit.display = 'ft';
-      console.log('unit', unit);
+      // console.log('unit', unit);
       var finalAnswer;
       finalAnswer = unit && unit.factor && unit.display ?
         humanize.numberFormat(val * unit.factor, unit.decimals || 0, decPoint || i18n.__('decPoint'), thousandsSep || i18n.__('thousandsSep')) + ' ' + i18n.__([unit.display]) || unit.display :
@@ -7367,8 +7402,11 @@ L.Control.Measure = L.Control.extend({
   _updateResults: function () {
     var calced = calc.measure(this._latlngs);
     var resultsModel = this._resultsModel = _.extend({}, calced, this._getMeasurementDisplayStrings(calced), {
-      pointCount: this._latlngs.length
+      pointCount: this._latlngs.length,
+      // points: this._latlngs,
+      lengths: this._lengths
     });
+    // console.log('!!!!!!!!!!!! calced:', calced, 'resultsModel:', resultsModel);
     this.$results.innerHTML = resultsTemplate({
       model: resultsModel,
       humanize: humanize,
@@ -7385,12 +7423,25 @@ L.Control.Measure = L.Control.extend({
     }
     this._measureDrag.bringToFront();
   },
+
   // handler for both double click and clicking finish button
   // do final calc and finish out current measure, clear dom and internal state, add permanent map features
   _handleMeasureDoubleClick: function () {
     var latlngs = this._latlngs, calced, resultFeature, popupContainer, popupContent, zoomLink, deleteLink;
 
-    this._finishMeasure();
+    var measureFeature = L.layerGroup();
+    measureFeature.addTo(this._layer);
+    this._measureFeatures.push(measureFeature);
+    this._measureLengths.removeFrom(this._layer);
+    this._measureLengths.addTo(measureFeature);
+    this._finishMeasure(true);
+
+    var lengths = [];
+    for (var i=0; i<this._lengths.length; i++) {
+      lengths[i] = this._lengths[i];
+    }
+    console.log('_handleMeasureDoubleClick is running, lengths:', lengths);
+    // console.log('!!!!!!!!! this._lengths:', this._lengths, 'lengths1:', lengths);
 
     if (!latlngs.length) {
       return;
@@ -7401,12 +7452,15 @@ L.Control.Measure = L.Control.extend({
       var count = latlngs.length;
       var previousLatLng = latlngs[count-2];
       var lastLatLng = latlngs[count-1];
-      console.log(previousLatLng, lastLatLng);
+      console.log('previousLatLng:', previousLatLng, 'lastLatLng:', lastLatLng);
       var bounds = L.latLngBounds(previousLatLng, lastLatLng);
       var center = bounds.getCenter();
       var pair = [previousLatLng, lastLatLng];
       var calced2 = calc.measure(pair);
-      this._addNewLengthNotation(center, calced2);
+      var newNotation = this._addNewLengthNotation(center, calced2);
+      newNotation.addTo(this._measureLengths);
+      var j = this._lengths.length;
+      lengths[j-1] = this._lengths[j-1];
     }
 
     calced = calc.measure(latlngs);
@@ -7427,12 +7481,19 @@ L.Control.Measure = L.Control.extend({
       });
     } else {
       resultFeature = L.polygon(latlngs, this._symbols.getSymbol('resultArea'));
+      var resultsModel = _.extend({}, calced, this._getMeasurementDisplayStrings(calced), {
+        pointCount: latlngs.length,
+        lengths: this._lengths
+      });
+      console.log('areaPopup model:', resultsModel);
       popupContent = areaPopupTemplate({
-        model: _.extend({}, calced, this._getMeasurementDisplayStrings(calced)),
+        model: resultsModel,
         humanize: humanize,
         i18n: i18n
       });
     }
+
+    this._lengths = [];
 
     popupContainer = L.DomUtil.create('div', '');
     popupContainer.innerHTML = popupContent;
@@ -7456,13 +7517,13 @@ L.Control.Measure = L.Control.extend({
     if (deleteLink) {
       L.DomEvent.on(deleteLink, 'click', L.DomEvent.stop);
       L.DomEvent.on(deleteLink, 'click', function () {
-        // TODO. maybe remove any event handlers on zoom and delete buttons?
-        this._layer.removeLayer(resultFeature);
-        this._measureLengths.clearLayers();
+        var i = this._measureFeatures.indexOf(measureFeature);
+        var selectedMeasureFeature = this._measureFeatures[i];
+        selectedMeasureFeature.removeFrom(this._layer);
       }, this);
     }
 
-    resultFeature.addTo(this._layer);
+    resultFeature.addTo(measureFeature);
     resultFeature.bindPopup(popupContainer, this.options.popupOptions);
     if (resultFeature.getBounds) {
       resultFeature.openPopup(resultFeature.getBounds().getCenter());
@@ -7473,12 +7534,16 @@ L.Control.Measure = L.Control.extend({
   // handle map click during ongoing measurement
   // add new clicked point, update measure layers and results ui
   _handleMeasureClick: function (evt) {
+    console.log('_handleMeasureClick is running, this._lengths:', this._lengths);
     var latlng = this._map.mouseEventToLatLng(evt.originalEvent), // get actual latlng instead of the marker's latlng from originalEvent
       lastClick = _.last(this._latlngs),
       firstClick = _.first(this._latlngs),
       vertexSymbol = this._symbols.getSymbol('measureVertex');
 
-    if (!lastClick || !latlng.equals(lastClick)) { // skip if same point as last click, happens on `dblclick`
+    // console.log('lastClick', lastClick, 'latlng', latlng);
+    if (!lastClick || !latlng.equals(lastClick)) {
+      // skip if same point as last click, happens on `dblclick
+      // console.log('INSIDE IF!!!!!!!!!!!!!!!!!!!!!!!!!');
       this._latlngs.push(latlng);
       this._addMeasureArea(this._latlngs);
       this._addMeasureBoundary(this._latlngs);
@@ -7493,21 +7558,19 @@ L.Control.Measure = L.Control.extend({
 
       this._addNewVertex(latlng);
 
-      // if (this._measureBoundary) {
-      //   this._measureBoundary.bringToFront();
-      // }
-      // this._measureVertexes.bringToFront();
-    }
-
-    if (firstClick) {
-      var count = this._latlngs.length;
-      var previousLatLng = this._latlngs[count-2];
-      // console.log('previousLatLng:', previousLatLng);
-      var bounds = L.latLngBounds(previousLatLng, latlng);
-      var center = bounds.getCenter();
-      var pair = [previousLatLng, latlng];
-      var calced = calc.measure(pair);
-      this._addNewLengthNotation(center, calced);
+      // if there is a first click
+      if (firstClick) {
+        console.log('_handleMeasureClick is running, firstClick section');
+        var count = this._latlngs.length;
+        var previousLatLng = this._latlngs[count-2];
+        // console.log('previousLatLng:', previousLatLng);
+        var bounds = L.latLngBounds(previousLatLng, latlng);
+        var center = bounds.getCenter();
+        var pair = [previousLatLng, latlng];
+        var calced = calc.measure(pair);
+        this._addNewLengthNotation(center, calced).addTo(this._measureLengths);
+        // this._addNewLengthNotation(center, calced).addTo(this._measureLengths2);
+      }
     }
 
     this._updateResults();
@@ -7516,16 +7579,17 @@ L.Control.Measure = L.Control.extend({
 
   _addNewLengthNotation: function (latlng, calced) {
     var answer = this._getShorterMeasurementDisplayStrings(calced);
-    console.log('answer', answer);
     var myIcon = L.divIcon({
       className: 'my-div-icon',
-      html: '<span>'+answer.lengthDisplay+'</span>'
+      html: answer.lengthDisplay
     });
     // you can set .my-div-icon styles in CSS
-    L.marker(latlng, {
+    var marker = L.marker(latlng, {
       icon: myIcon
-    }).addTo(this._measureLengths);
-    // }).addTo(this._map);
+    });
+    this._lengths.push(answer.lengthDisplay);
+    this._lengthNotations.push(marker);
+    return marker;
   },
 
   // handle map mouse out during ongoing measure
@@ -7538,7 +7602,18 @@ L.Control.Measure = L.Control.extend({
   },
   // add various measure graphics to map - vertex, area, boundary
   _addNewVertex: function (latlng) {
-    L.circleMarker(latlng, this._symbols.getSymbol('measureVertexActive')).addTo(this._measureVertexes);
+    var marker = L.circleMarker(latlng, this._symbols.getSymbol('measureVertexActive'));
+    this._vertexCircleMarkers.push(marker);
+    marker.addTo(this._measureVertexes);
+  },
+  // remove
+  _removeLastVertex: function () {
+    var i = this._vertexCircleMarkers.length;
+    console.log('i', i, 'this._vertexCircleMarkers[i-1]', this._vertexCircleMarkers[i-1], this._vertexCircleMarkers);
+    if (this._vertexCircleMarkers.length > 0) {
+      this._vertexCircleMarkers[i-1].removeFrom(this._measureVertexes);
+    }
+    this._vertexCircleMarkers = this._vertexCircleMarkers.slice(0, -1);
   },
   _addMeasureArea: function (latlngs) {
     if (latlngs.length < 3) {

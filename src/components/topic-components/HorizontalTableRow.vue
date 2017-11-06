@@ -29,6 +29,7 @@
       isActive(value) {
         if (value === true) {
           const el = this.$el
+          // console.log('horiz table row WATCH isActive, el:', el);
           const inVp = this.inViewport(el);
           if (!inVp) {
             el.scrollIntoView();

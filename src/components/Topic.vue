@@ -190,6 +190,8 @@
       },
 
       handleTopicHeaderClick(e) {
+        console.log('handleTopicHeaderClick e:', e);
+        const target = e.target;
         const topic = this.$props.topicKey;
 
         let nextTopic;
@@ -201,7 +203,7 @@
         }
 
         // notify controller (which will handle routing)
-        this.$controller.handleTopicHeaderClick(nextTopic);
+        this.$controller.handleTopicHeaderClick(nextTopic, target);
       },
     }
   };

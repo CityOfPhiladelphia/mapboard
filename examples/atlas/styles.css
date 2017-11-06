@@ -1,7 +1,14 @@
-header.site-header > .row:last-of-type {
-    background: #2176d2;
+#application .site-header .page-title-container h1 {
+	font-size: 2.14286rem;
 }
 
-html {
-  overflow-y: hidden;
+/*small*/
+@media screen and (max-width: 39.9375em) {
+	.logo {
+		float: left;
+	}
+
+	.page-title-container {
+		float: right;
+	}
 }

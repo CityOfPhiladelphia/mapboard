@@ -1,23 +1,22 @@
 <template>
-  <div class="large-12 columns mb-panel mb-panel-topics" id="topic-panel">
-    <div class="row">
-    <!-- <div class="row" :class="{ 'row-with-widget': this.$store.state.pictometry.active }"> -->
+  <div class="cell medium-12 small-order-2 medium-order-1"
+  >
       <!-- before search -->
-      <!-- <greeting v-show="!geocode" /> -->
       <greeting v-show="shouldShowGreeting" />
 
       <!-- after search -->
-      <div v-if="!shouldShowGreeting" class="address-found-div">
-        <div class="address-spacer" v-if="address">
-          <div class="address-header">
-            <h1 class="address-header-line-1">{{ address }}</h1>
-            <div class="address-header-line-2 small-text">PHILADELPHIA, PA {{ zipCode }}</div>
-          </div>
+      <div v-if="!shouldShowGreeting" class="cell">
+        <!-- address header -->
+        <div class="address-header">
+          <h1 class="address-header-line-1">
+            <i class="fa fa-map-marker"></i>
+            {{ address }}
+          </h1>
+          <div class="address-header-line-2 small-text">PHILADELPHIA, PA {{ zipCode }}</div>
         </div>
-        <!-- <div class="spacer-div"></div> -->
-        <div class="topics-container"
-             id="topics-container"
-             :style="styleObject"
+
+        <!-- topics container -->
+        <div class="topics-container cell medium-cell-block-y"
         >
           <topic v-for="topic in this.$config.topics"
                  :topicKey="topic.key"
@@ -26,8 +25,6 @@
         </div>
       </div>
     </div>
-    <!-- <slot name="pictWidget" /> -->
-  </div>
 </template>
 
 <script>
@@ -39,60 +36,55 @@
       Greeting,
       Topic
     },
-    data() {
-      const data = {
-        styleObject: {
-          'position': 'relative',
-          'top': '100px',
-          'overflow-y': 'auto',
-          'height': '100px'
-        }
-      };
-      return data;
-    },
-    mounted() {
-      window.addEventListener('resize', this.handleWindowResize);
-      this.handleWindowResize();
-    },
-    beforeDestroy() {
-      window.removeEventListener('resize', this.handleWindowResize);
-    },
+    // data() {
+    //   const data = {
+    //     styleObject: {
+    //       'position': 'relative',
+    //       'top': '100px',
+    //       'overflow-y': 'auto',
+    //       'height': '100px'
+    //     }
+    //   };
+    //   return data;
+    // },
+    // mounted() {
+    //   window.addEventListener('resize', this.handleWindowResize);
+    //   this.handleWindowResize();
+    // },
+    // beforeDestroy() {
+    //   window.removeEventListener('resize', this.handleWindowResize);
+    // },
     computed: {
       geocode() {
         return this.$store.state.geocode.data;
       },
       dorParcels() {
-        // return this.$store.state.dorParcels.data.length > 0;
         return this.$store.state.parcels.dor.data.length > 0;
       },
       shouldShowGreeting() {
-        if (!this.geocode && !this.dorParcels) {
-          return true;
-        } else {
-          return false;
-        }
+        return !(this.geocode || this.dorParcels);
       },
+      // this returns the address shown in the address header
       address() {
         const geocode = this.geocode;
-        // const dorParcels = this.$store.state.dorParcels.data
         const dorParcels = this.$store.state.parcels.dor.data;
-        const activeDorParcel = this.$store.state.parcels.dor.activeParcel;
         const activeDorAddress = this.$store.state.parcels.dor.activeAddress;
-        // a DOR address might be found even if there is no geocode
-        // if (!geocode) return null;
-        // return geocode.properties.street_address;
+        let address;
+
         if (geocode) {
-          if (geocode.properties.street_address) {
-            return geocode.properties.street_address;
-          } else if (geocode.street_address) {
-            return geocode.street_address;
-          }
-        } else {
-          if (activeDorAddress) {
-            const address = activeDorAddress;
-            return address;
-          }
+          // TODO make this not ais-specific
+          // REVIEW what's the difference between these two?
+          const addressA = geocode.properties.street_address;
+          const addressB = geocode.street_address;
+
+          address = addressA || addressB;
+
+        // a DOR address might be found even if there is no geocode
+        } else if (activeDorAddress) {
+          address = activeDorAddress;
         }
+
+        return address;
       },
       zipCode() {
         const geocode = this.geocode;
@@ -104,15 +96,7 @@
         return parts.join('-');
       },
     },
-    // watch: {
-    //   address(nextAddress) {
-    //
-    //   }
-    // },
     methods: {
-      // setActiveParcel() {
-      //
-      // },
       shouldShowTopic(topic) {
         const requiredSources = topic.dataSources || [];
 
@@ -124,51 +108,24 @@
         const sources = this.$store.state.sources;
         return requiredSources.every(key => sources[key].data)
       },
-      handleWindowResize() {
-        // console.log('handleWindowResize is running');
-        const rootElement = document.getElementById('mb-root');
-        const rootStyle = window.getComputedStyle(rootElement);
-        const rootHeight = rootStyle.getPropertyValue('height');
-        const rootHeightNum = parseInt(rootHeight.replace('px', ''));
-        const topicsHeight = rootHeightNum - 100;
-        this.styleObject.height = topicsHeight.toString() + 'px';
-      }
+      // handleWindowResize() {
+      //   // console.log('handleWindowResize is running');
+      //   const rootElement = document.getElementById('mb-root');
+      //   const rootStyle = window.getComputedStyle(rootElement);
+      //   const rootHeight = rootStyle.getPropertyValue('height');
+      //   const rootHeightNum = parseInt(rootHeight.replace('px', ''));
+      //   const topicsHeight = rootHeightNum - 100;
+      //   this.styleObject.height = topicsHeight.toString() + 'px';
+      // }
     }
   };
 </script>
 
-<style>
-  /*.row {
-    height: 100%;
-  }
-
-  .address-found-div {
-    height: 100%;
-  }*/
-
-  .mb-panel-topics {
-    background: #fff;
-    padding-left: 20px !important;
-    padding-right: 20px !important;
-    /*overflow-y: auto;*/
-  }
-
-  .address-spacer {
-    position: absolute;
-    left: -5px;
-    height: 100px;
-    width: 49%;
-    background-color: white;
-  }
-
+<style scoped>
   .address-header {
-    position: absolute;
-    color: #666;
-    border-left: 5px solid #58c04d;
-    margin-left: 15px;
-    padding-left: 15px;
-    margin-bottom: 25px;
-    margin-top: 20px;
+    background: #daedfe;
+    color: #444;
+    padding: 20px;
   }
 
   .address-header-line-1 {
@@ -176,13 +133,13 @@
     margin-top: 0;
   }
 
-  /*.spacer-div {
-    height: 100px;
-  }*/
-
-  /*.topics-container {
-    position: relative;
-    top: 100px;
-    overflow-y: auto;
-  }*/
+  .topics-container {
+    padding: 20px;
+  }
+  
+  @media screen and (min-width: 40em) {
+    .topics-container {
+      height: calc(100vh - 210px);
+    }
+  }
 </style>

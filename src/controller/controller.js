@@ -128,9 +128,40 @@ class Controller {
     this.dataManager.getParcelsByLatLng(latLng, activeParcelLayer);
   }
 
-  handleTopicHeaderClick(topic) {
+  inViewport(el, config) {
+    var rect = el.getBoundingClientRect();
+    return (
+     rect.top >= parseInt(config.rootStyle.top.replace('px', '')) + 100 &&
+     rect.left >= 0 &&
+     rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
+     rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
+    );
+  }
+
+  handleTopicHeaderClick(topic, target) {
     // console.log('Controller.handleTopicHeaderClick', topic);
-    this.router.routeToTopic(topic);
+    let targetExists
+    if (target) {
+      targetExists = target
+    } else {
+      targetExists = null
+    }
+    this.router.routeToTopic(topic);//.then(function(targetExists) {
+    if (targetExists) {
+      // targetExists.scrollTop = 0;
+      const vp = this.inViewport;
+      const config = this.config
+      setTimeout(function() {
+        // const inVp = this.inViewport(targetExists);
+        const inVp = vp(targetExists, config);
+        console.log('handleTopicHeaderClick, inVp:', inVp);
+        if (!inVp) {
+          // $('#topics-container').animate({ scrollTop: 0}, "fast");
+          targetExists.scrollIntoView();
+        }
+      }, 500);
+    }
+    // });
   }
 
   goToDefaultAddress(address) {

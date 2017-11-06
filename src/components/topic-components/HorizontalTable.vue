@@ -41,11 +41,11 @@
                   class="mb-select"
           >
             <optgroup>
-              <option v-for="defaultSortMethod in defaultSortMethods"
-                      :value="defaultSortMethod"
+              <option v-for="sortMethod in sortMethods"
+                      :value="sortMethod"
                       class="mb-select-option"
               >
-                {{ defaultSortMethod }}
+                {{ sortMethod }}
               </option>
             </optgroup>
           </select>
@@ -84,7 +84,8 @@
             {{ evaluateSlot(slots.subtitle) }}
           </h5>
         </div>
-        <table role="grid" class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">
+
+        <table role="grid" class="stack">
           <thead>
             <tr>
               <th v-for="field in fields">{{ evaluateSlot(field.label) }}</th>
@@ -145,13 +146,22 @@
                                         return acc;
                                       }, {});
 
-      const defaultSortMethods = this.defaultSortMethods;
+      let methods;
+      if (this.options.sort){
+        methods = this.options.sort.methods || [];
+      }
+      let sortMethod;
+      if (methods) {
+        sortMethod = methods[0]
+      } else {
+        sortMethod = DEFAULT_SORT_METHODS[0]
+      }
       const highestRowRetrieved = this.options.defaultIncrement;
 
       const initialData = {
         filterSelections: defaultFilterSelections,
         searchText: '',
-        sortMethod: DEFAULT_SORT_METHODS[0],
+        sortMethod,
         highestRowRetrieved
       };
 
@@ -354,8 +364,12 @@
 
         return this.sortItems(itemsAfterFilters, sortOpts);
       },
-      defaultSortMethods() {
-        return DEFAULT_SORT_METHODS;
+      sortMethods() {
+        if (this.options.sort.methods) {
+          return this.options.sort.methods;
+        } else {
+          return DEFAULT_SORT_METHODS;
+        }
       },
       // this takes filtered items and applies the max number of rows
       itemsLimited() {
@@ -553,7 +567,7 @@
       },
       // sortItems(items, sortOpts) {
       sortItems(items, sortOpts) {
-        // console.log('sortItems sortOpts');
+        // console.log('sortItems, sortOpts:', sortOpts);
         // TODO finish this
         // if (Object.keys(this.filterData).length) {
         //   console.log('there is filterData', this.filterData);
@@ -569,6 +583,7 @@
 
         // if there's no no sort config, just return the items.
         if (!sortOpts) {
+          // console.log('noSortOpts');
           return items;
         }
 
@@ -577,6 +592,7 @@
 
         // get sort fn or use this basic one
         const sortFn = sortOpts.compare || this.defaultSortFn;
+        // console.log('sortFn', sortFn);
         // console.log('sortFn', sortFn)
         return items.sort(sortFn);
       },
