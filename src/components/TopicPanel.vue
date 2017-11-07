@@ -1,6 +1,5 @@
 <template>
-  <div class="cell medium-12 small-order-2 medium-order-1"
-  >
+  <div class="cell medium-12 small-order-2 medium-order-1">
       <!-- before search -->
       <greeting v-show="shouldShowGreeting" />
 
@@ -136,7 +135,7 @@
   .topics-container {
     padding: 20px;
   }
-  
+
   @media screen and (min-width: 40em) {
     .topics-container {
       height: calc(100vh - 210px);
