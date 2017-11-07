@@ -2,11 +2,11 @@
   <div id="pict-container"
        :class="this.pictContainerClass"
   >
-    <!-- <div id="in-pict-div"
+    <div id="in-pict-div"
       @click="this.popoutClicked"
       >
       <i class="fa fa-external-link fa popout-icon"></i>
-    </div> -->
+    </div>
     <!-- <div id="iframe-div"> -->
     <iframe
       id="pictometry-ipa"
@@ -138,6 +138,9 @@
     methods: {
       popoutClicked() {
         // console.log('popout clicked');
+        // window.open('//pictometry.phila.gov', '_blank');
+        window.open('//pictometry.phila.gov/?' + this.mapCenter[1] + '&' + this.mapCenter[0], '_blank');
+        this.$store.commit('setPictometryActive', false);
       },
       init() {
         // construct signed url
@@ -289,6 +292,12 @@ header.site-header > .row:last-of-type {
   /*position: relative;
   top: 0px;
   right: 0px;*/
+}
+
+.popout-icon {
+  margin-top: 8.5px;
+  font-size: 15px;
+  margin-left: 8.5px;
 }
 
 #pict-container {

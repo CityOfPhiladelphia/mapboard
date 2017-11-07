@@ -3,11 +3,11 @@
        :class="this.cycloContainerClass"
   >
   <!-- v-once -->
-    <!-- <a id="inCycloDiv"
+    <a id="inCycloDiv"
          @click="this.popoutClicked"
     >
       <i class="fa fa-external-link fa popout-icon"></i>
-    </a> -->
+    </a>
     <div id="cycloviewer" ref="cycloviewer" class="panoramaViewerWindow" />
   </div>
 </template>
@@ -32,6 +32,9 @@
         if (geocodeData) {
           return geocodeData.geometry.coordinates;
         }
+      },
+      mapCenter() {
+        return this.$store.state.map.center;
       }
     },
     watch: {
@@ -92,7 +95,9 @@
       },
       popoutClicked() {
         // console.log('popoutClicked');
-        window.open('http://localhost:8082/examples/cyclomedia/', '_blank');
+        // window.open('http://localhost:8082/examples/cyclomedia/', '_blank');
+        window.open('//cyclomedia.phila.gov/?' + this.mapCenter[1] + '&' + this.mapCenter[0], '_blank');
+        this.$store.commit('setCyclomediaActive', false);
       }
     }
   };
