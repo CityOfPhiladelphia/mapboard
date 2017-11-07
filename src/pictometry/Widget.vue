@@ -137,9 +137,9 @@
     },
     methods: {
       popoutClicked() {
-        // console.log('popout clicked');
-        // window.open('//pictometry.phila.gov', '_blank');
-        window.open('//pictometry.phila.gov/?' + this.mapCenter[1] + '&' + this.mapCenter[0], '_blank');
+        const map = this.$store.state.map.map;
+        const center = map.getCenter();
+        window.open('//pictometry.phila.gov/?' + center.lat + '&' + center.lng, '_blank');
         this.$store.commit('setPictometryActive', false);
       },
       init() {
