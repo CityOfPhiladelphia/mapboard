@@ -1,6 +1,5 @@
 <template>
-  <div class="medium-cell-block-container" id="mb-root">
-    <div class="grid-x">
+  <div class="cell medium-auto grid-x" id="mb-root">
       <topic-panel />
       <map-panel>
         <cyclomedia-widget v-if="this.$config.cyclomedia.enabled"
@@ -39,7 +38,6 @@
         </pictometry-widget>
         <!-- :center="this.$store.state.map.map.center" -->
       </map-panel>
-    </div>
   </div>
 </template>
 
