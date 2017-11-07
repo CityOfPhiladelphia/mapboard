@@ -1963,9 +1963,6 @@ Mapboard.default({
         },
         {
           type: 'badge',
-          options: {
-            titleBackground: '#58c04d'
-          },
           slots: {
             title: 'Base District',
             value: function(state) {
