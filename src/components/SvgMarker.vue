@@ -18,7 +18,7 @@
     },
     mounted() {
       const leafletElement = this.$leafletElement = this.createLeafletElement();
-      console.log('WHO IT IS', leafletElement);
+      // console.log('WHO IT IS', leafletElement);
       const map = this.$store.state.map.map;
 
       // REVIEW kind of hacky/not reactive?
