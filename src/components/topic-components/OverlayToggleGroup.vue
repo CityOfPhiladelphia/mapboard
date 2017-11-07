@@ -4,9 +4,9 @@
       <h4 v-if="slots.title">
         {{ evaluateSlot(slots.title) }}
       </h4>
-      <a class="button" href="#" v-for="item in items" :data-key="keyForItem(item)"
+      <a class="button overlay-toggle" href="#" v-for="item in items" :data-key="keyForItem(item)"
                 @click="handleClick"
-                :class="{'hollow': !isActive(item)}">
+                :class="{'active': isActive(item)}">
         {{ keyForItem(item) }}
       </a>
     </div>
@@ -48,8 +48,7 @@
   };
 </script>
 
-<style>
-
+<style scoped>
 .container {
   margin-bottom: 30px;
 }
@@ -59,6 +58,17 @@
   margin-right: 5px;
   margin-top: 0px;
   margin-bottom: 0px;
+}
+
+.overlay-toggle {
+  border: 1px solid #f99300;
+  color: #f99300;
+  background: #fff;
+}
+
+.overlay-toggle.active {
+  background: #f99300;
+  color: #fff;
 }
 
 </style>
