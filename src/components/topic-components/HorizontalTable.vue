@@ -658,11 +658,6 @@
 </script>
 
 <style scoped>
-  th {
-    font-size: 15px;
-    text-align: left;
-  }
-
   .inline-block {
     display: inline-block;
   }
