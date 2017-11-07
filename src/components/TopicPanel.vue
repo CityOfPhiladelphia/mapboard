@@ -125,6 +125,10 @@
     background: #daedfe;
     color: #0f4d90;
     padding: 20px;
+
+    -webkit-box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.2);
+    -moz-box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.2);
+    box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.2);
   }
 
   .address-header-line-1 {
