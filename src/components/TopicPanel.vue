@@ -11,7 +11,7 @@
             <i class="fa fa-map-marker"></i>
             {{ address }}
           </h1>
-          <div class="address-header-line-2 small-text">PHILADELPHIA, PA {{ zipCode }}</div>
+          <div class="address-header-line-2">PHILADELPHIA, PA {{ zipCode }}</div>
         </div>
 
         <!-- topics container -->
@@ -123,7 +123,7 @@
 <style scoped>
   .address-header {
     background: #daedfe;
-    color: #444;
+    color: #0f4d90;
     padding: 20px;
   }
 
