@@ -565,8 +565,9 @@
   }
 
   .mb-search-control-button {
+    color: #fff;
     width: 50px;
-    background: #ccc;
+    background: #2176d2;
     line-height: 48px;
   }
 
