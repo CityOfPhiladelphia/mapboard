@@ -156,18 +156,13 @@
 
       <div v-once>
         <basemap-toggle-control v-if="shouldShowImageryToggle"
-                         v-once
-                         :position="'topright'"
+                                v-once
+                                :position="'topright'"
         />
       </div>
 
       <div v-once>
-        <!-- v-once -->
-        <basemap-select-control
-                       :position="'topalmostright'"
-        />
-        <!-- :imagery-years="imageryYears"
-        :historic-years="historicYears" -->
+        <basemap-select-control :position="'topalmostright'" />
       </div>
 
       <div v-once>
@@ -190,8 +185,7 @@
       </div>
 
       <div v-once>
-        <measure-control :position="'bottomleft'"
-        />
+        <measure-control :position="'bottomleft'" />
       </div>
 
       <div v-once>
