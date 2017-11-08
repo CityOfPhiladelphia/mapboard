@@ -126,9 +126,10 @@
     color: #0f4d90;
     padding: 20px;
 
-    -webkit-box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.2);
-    -moz-box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.2);
-    box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.2);
+    /*this keeps the box shadow over the scrollable part of the panel*/
+    position: relative;
+    z-index: 1;
+
     -webkit-box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.18);
     -moz-box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.18);
     box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.18);
