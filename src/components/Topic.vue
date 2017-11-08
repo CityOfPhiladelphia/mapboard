@@ -5,6 +5,7 @@
        class="topic-header"
        @click.prevent="handleTopicHeaderClick"
        v-if="shouldShowHeader"
+       :data-topic-key="topicKey"
     >
       <span v-show="status === 'waiting'" class="loading">
         <i class="fa fa-spinner fa-lg spin"></i>
