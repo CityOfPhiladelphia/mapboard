@@ -743,4 +743,7 @@
     border: 2px solid #0f4d90;
   }
 
+  table {
+    margin: 0;
+  }
 </style>
