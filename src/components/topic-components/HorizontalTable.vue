@@ -59,7 +59,7 @@
             {{ options.filterByText.label }}
           </div>
           <form @submit.prevent="handleFilterFormX"
-                class="inline-block"
+                class="inline-block filter-by-text-form"
           >
             <input :class="this.inputClass"
                    id="theInput"
@@ -253,6 +253,7 @@
       limit() {
         return this.options.limit;
       },
+      // REVIEW what does this do? can this be simplified?
       inputClass() {
         if (this.searchText === '') {
           return 'mb-search-control-input';
@@ -694,7 +695,6 @@
 
   /* input filters using text */
   .mb-search-control-input {
-    border: 1px solid #f2c612;
     height: 40px !important;
     line-height: 48px;
     padding: 8px;
@@ -703,8 +703,8 @@
     /*margin-left: 10px;*/
   }
 
+  /*REVIEW this repeats a lot of .mb-search-control-input. can it be refactored?*/
   .mb-search-control-input-full {
-    border: 1px solid #f2c612;
     height: 40px !important;
     line-height: 48px;
     padding: 8px;
@@ -737,6 +737,10 @@
 
   .loading {
     float: right;
+  }
+
+  .filter-by-text-form {
+    border: 2px solid #0f4d90;
   }
 
 </style>
