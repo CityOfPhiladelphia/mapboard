@@ -2,11 +2,11 @@
   <div id="pict-container"
        :class="this.pictContainerClass"
   >
-    <!-- <div id="in-pict-div"
+    <div id="in-pict-div"
       @click="this.popoutClicked"
       >
       <i class="fa fa-external-link fa popout-icon"></i>
-    </div> -->
+    </div>
     <!-- <div id="iframe-div"> -->
     <iframe
       id="pictometry-ipa"
@@ -32,7 +32,7 @@
     },
     mounted() {
       // fetch pictometry ipa script
-      const scriptUrl = '//pol.pictometry.com/ipa/v1/embed/host.php' + '?apikey=' + this.apiKey;
+      const scriptUrl = 'https://pol.pictometry.com/ipa/v1/embed/host.php' + '?apikey=' + this.apiKey;
       const self = this;
       $.getScript(scriptUrl, self.init);
     },
@@ -137,13 +137,16 @@
     },
     methods: {
       popoutClicked() {
-        // console.log('popout clicked');
+        const map = this.$store.state.map.map;
+        const center = map.getCenter();
+        window.open('//pictometry.phila.gov/?' + center.lat + '&' + center.lng, '_blank');
+        this.$store.commit('setPictometryActive', false);
       },
       init() {
         // construct signed url
         const d = new Date();
         const t = Math.floor(d.getTime() / 1000);
-        const unsignedUrl = 'http://pol.pictometry.com/ipa/v1/load.php' + "?apikey=" + this.apiKey + "&ts=" + t;
+        const unsignedUrl = 'https://pol.pictometry.com/ipa/v1/load.php' + "?apikey=" + this.apiKey + "&ts=" + t;
         const hash = md5(unsignedUrl, this.secretKey);
         const iframeId = this.$IFRAME_ID;
         const signedUrl = unsignedUrl + "&ds=" + hash + "&app_id=" + iframeId;
@@ -154,7 +157,7 @@
         iframe.setAttribute('src', signedUrl);
 
         // create pictometry host
-        const ipa = this.$ipa = new PictometryHost(iframeId, 'http://pol.pictometry.com/ipa/v1/load.php');
+        const ipa = this.$ipa = new PictometryHost(iframeId, 'https://pol.pictometry.com/ipa/v1/load.php');
         this.$store.commit('setPictometryIpa', ipa);
         ipa.ready = this.ipaReady;
       },
@@ -289,6 +292,12 @@ header.site-header > .row:last-of-type {
   /*position: relative;
   top: 0px;
   right: 0px;*/
+}
+
+.popout-icon {
+  margin-top: 8.5px;
+  font-size: 15px;
+  margin-left: 8.5px;
 }
 
 #pict-container {

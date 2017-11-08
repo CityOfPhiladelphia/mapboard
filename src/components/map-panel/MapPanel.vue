@@ -151,8 +151,8 @@
       >
       </control-corner> -->
 
-      <basemap-tooltip :position="'topright'"
-      />
+      <!-- <basemap-tooltip :position="'topright'"
+      /> -->
 
       <div v-once>
         <basemap-toggle-control v-if="shouldShowImageryToggle"

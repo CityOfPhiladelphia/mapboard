@@ -37,7 +37,14 @@
     },
     methods: {
       constructLocalUrl(host, path1, path2) {
-        return 'http://' + host + path1 + path2;
+        let url;
+        if (window.location.protocol === 'https:') {
+          url = 'https://' + host + path1 + path2;
+        } else {
+          url = 'http://' + host + path1 + path2;
+        }
+        // console.log('constructing url:', url);
+        return url
       },
       placeMarker(nextLatlng) {
         // console.log('starting placeMarker', nextLatlng, this.$props.icon);
