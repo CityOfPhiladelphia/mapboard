@@ -6,6 +6,11 @@
 	font-size: 2.14286rem;
 }
 
+/*this fixes an issue with the topic panel scrolling over the footer padding*/
+#application .app-footer {
+	position: relative;
+}
+
 /*small*/
 @media screen and (max-width: 39.9375em) {
 	.logo {
