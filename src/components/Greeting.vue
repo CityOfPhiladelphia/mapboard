@@ -1,6 +1,6 @@
 <template>
   <div class="mb-panel-topics-greeting">
-    <div class="columns medium-18 medium-centered">
+    <div class="columns medium-20 medium-centered">
       <div v-if="!components && !hasError" class="greeting" v-html="initialMessage">
       </div>
 
@@ -71,7 +71,6 @@
   .greeting {
     font-size: 20px;
     color: #444;
-    border-left: 5px solid #58c04d;
     padding: 14px;
   }
   .greeting-error {
