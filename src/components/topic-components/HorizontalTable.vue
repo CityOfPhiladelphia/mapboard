@@ -62,7 +62,6 @@
                 class="inline-block"
           >
             <input :class="this.inputClass"
-                   placeholder="text"
                    id="theInput"
                    @keyup="handleFilterFormKeyup"
             />

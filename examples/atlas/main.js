@@ -2386,7 +2386,7 @@ Mapboard.default({
                     }
                   ],
                   filterByText: {
-                    label: 'Filter by',
+                    label: 'Filter by text',
                     fields: [
                       'service_name',
                       'address'
