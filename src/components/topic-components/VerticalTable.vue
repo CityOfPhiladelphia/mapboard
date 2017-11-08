@@ -65,4 +65,8 @@
     font-size: 15px;
     text-align: left;
   }
+
+  th {
+    width: 30%;
+  }
 </style>

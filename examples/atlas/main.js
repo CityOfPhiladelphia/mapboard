@@ -134,14 +134,6 @@ Mapboard.default({
   geolocation: {
     enabled: false
   },
-  rootStyle: {
-    position: 'absolute',
-    bottom: 0,
-    // top: '78px',
-    top: '118px',
-    left: 0,
-    right: 0,
-  },
   map: {
     // possibly should move to base config
     defaultBasemap: 'pwd',
@@ -1971,9 +1963,6 @@ Mapboard.default({
         },
         {
           type: 'badge',
-          options: {
-            titleBackground: '#58c04d'
-          },
           slots: {
             title: 'Base District',
             value: function(state) {
@@ -2397,7 +2386,7 @@ Mapboard.default({
                     }
                   ],
                   filterByText: {
-                    label: 'Filter by',
+                    label: 'Filter by text',
                     fields: [
                       'service_name',
                       'address'

@@ -1,6 +1,6 @@
 import axios from 'axios';
-import BaseClient from './base-client';
 import proj4 from 'proj4';
+import BaseClient from './base-client';
 
 class HttpClient extends BaseClient {
   evaluateParams(feature, dataSource) {

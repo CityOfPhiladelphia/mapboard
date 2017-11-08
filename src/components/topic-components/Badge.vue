@@ -2,7 +2,7 @@
   <!-- REVIEW this uses patterns -->
   <div class="mb-badge panel center">
     <div class="mb-badge-header" :style="style">
-      <h4 class="alternate">{{ evaluateSlot(slots.title) }}</h4>
+      {{ evaluateSlot(slots.title) }}
     </div>
     <div class="mb-badge-body">
       <h1>{{ evaluateSlot(slots.value) }}</h1>
@@ -27,7 +27,7 @@
             titleBackground = titleBackgroundValOrFn;
           }
         } else {
-          titleBackground = '#58c04d';
+          titleBackground = '#444';
         }
 
         return { background: titleBackground };
@@ -51,26 +51,23 @@
     }
   }
 
+  /*REVIEW this should use foundation classes*/
   @media (min-width: 640px) {
     .mb-badge {
-      width: 300px;
+      width: 325px;
     }
   }
 
   .mb-badge-header {
-    /*REVIEW*/
-    /*background: #58c04d;*/
-    color: #eee;
-    /*margin: 0;*/
+    color: #fff;
+    font-weight: bold;
     text-align: center;
-  }
-
-  .mb-badge-header h4 {
-    margin: 0;
+    padding-top: 2px;
+    padding-bottom: 2px;
   }
 
   .mb-badge-body {
-    padding: 10px;
+    padding: 12px;
   }
 
   .mb-badge-body > h1 {

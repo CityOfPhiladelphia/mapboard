@@ -98,5 +98,7 @@
   padding-top: 2px;
   padding-left: 2px;
   margin-left: 0px;
+  /*override standards*/
+  margin-bottom: 0;
 }
 </style>

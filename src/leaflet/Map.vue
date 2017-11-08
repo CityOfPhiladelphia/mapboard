@@ -1,10 +1,12 @@
 <template>
+  <!-- we need a container because this component can only contain one root div 
+  -->
   <div class="map-container">
     <!-- the leaflet map -->
     <div class="map" ref="map" />
-    <!-- container for vue elements wrapping leaflet elements. these aren't
-         actually rendered, they just allow us to make the map reactive.
-    -->
+      <!-- container for vue elements wrapping leaflet elements. these aren't
+           actually rendered, they just allow us to make the map reactive.
+      -->
       <div>
         <slot />
       </div>
@@ -171,5 +173,10 @@
   }
   .map {
     height: 100%;
+  }
+  @media (max-width: 749px) {
+    .map {
+      height: 300px;
+    }
   }
 </style>

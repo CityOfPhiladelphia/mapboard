@@ -1,7 +1,23 @@
-header.site-header > .row:last-of-type {
-    background: #2176d2;
+#application .site-header, #application .app-footer {
+	background: #2176d2;
 }
 
-html {
-  overflow-y: hidden;
+#application .site-header .page-title-container h1 {
+	font-size: 2.14286rem;
+}
+
+/*this fixes an issue with the topic panel scrolling over the footer padding*/
+#application .app-footer {
+	position: relative;
+}
+
+/*small*/
+@media screen and (max-width: 39.9375em) {
+	.logo {
+		float: left;
+	}
+
+	.page-title-container {
+		float: right;
+	}
 }

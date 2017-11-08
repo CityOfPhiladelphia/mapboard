@@ -59,10 +59,9 @@
             {{ options.filterByText.label }}
           </div>
           <form @submit.prevent="handleFilterFormX"
-                class="inline-block"
+                class="inline-block filter-by-text-form"
           >
             <input :class="this.inputClass"
-                   placeholder="text"
                    id="theInput"
                    @keyup="handleFilterFormKeyup"
             />
@@ -84,7 +83,8 @@
             {{ evaluateSlot(slots.subtitle) }}
           </h5>
         </div>
-        <table role="grid" class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">
+
+        <table role="grid" class="stack">
           <thead>
             <tr>
               <th v-for="field in fields">{{ evaluateSlot(field.label) }}</th>
@@ -253,6 +253,7 @@
       limit() {
         return this.options.limit;
       },
+      // REVIEW what does this do? can this be simplified?
       inputClass() {
         if (this.searchText === '') {
           return 'mb-search-control-input';
@@ -657,11 +658,6 @@
 </script>
 
 <style scoped>
-  th {
-    font-size: 15px;
-    text-align: left;
-  }
-
   .inline-block {
     display: inline-block;
   }
@@ -699,7 +695,6 @@
 
   /* input filters using text */
   .mb-search-control-input {
-    border: 1px solid #f2c612;
     height: 40px !important;
     line-height: 48px;
     padding: 8px;
@@ -708,8 +703,8 @@
     /*margin-left: 10px;*/
   }
 
+  /*REVIEW this repeats a lot of .mb-search-control-input. can it be refactored?*/
   .mb-search-control-input-full {
-    border: 1px solid #f2c612;
     height: 40px !important;
     line-height: 48px;
     padding: 8px;
@@ -744,4 +739,11 @@
     float: right;
   }
 
+  .filter-by-text-form {
+    border: 2px solid #0f4d90;
+  }
+
+  table {
+    margin: 0;
+  }
 </style>
