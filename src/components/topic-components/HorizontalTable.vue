@@ -66,7 +66,7 @@
                    @keyup="handleFilterFormKeyup"
             />
             <button class="mb-search-control-button"
-            v-if="this.searchText !=''"
+                    v-if="this.searchText != ''"
             >
               <i class="fa fa-times fa-lg"></i>
             </button>
@@ -102,13 +102,15 @@
         </table>
 
         <!-- external link (aka "see more")-->
-        <a v-if="options.externalLink && shouldShowExternalLink"
-           :href="externalLinkHref"
-           class="external"
-           target="_blank"
-        >
-          {{ externalLinkText }}
-        </a>
+        <div class="external-link">
+          <a v-if="options.externalLink && shouldShowExternalLink"
+             :href="externalLinkHref"
+             class="external"
+             target="_blank"
+          >
+            {{ externalLinkText }}
+          </a>
+        </div>
       </div>
 
       <a class="button center-button"
@@ -726,7 +728,7 @@
   }
 
   .mb-horizontal-table-body {
-    padding-bottom: 10px;
+    padding-top: 1rem;
   }
 
   .center-button {
@@ -745,5 +747,9 @@
 
   table {
     margin: 0;
+  }
+
+  .external-link {
+    padding-top: 5px;
   }
 </style>

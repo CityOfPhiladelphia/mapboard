@@ -1,6 +1,10 @@
 <template>
-  <div v-if="shouldShowTable">
-    <h4 v-if="slots.title">{{ evaluateSlot(slots.title) }}</h4>
+  <div v-if="shouldShowTable" class="table-container">
+    <h4 v-if="slots.title"
+        class="table-title"
+    >
+      {{ evaluateSlot(slots.title) }}
+    </h4>
     <table>
       <tbody>
         <tr v-for="field in slots.fields">
@@ -9,13 +13,15 @@
         </tr>
       </tbody>
     </table>
-    <a v-if="options && options.externalLink"
-       :href="externalLinkHref"
-       class="external"
-       target="_blank"
-    >
-      {{ externalLinkText }}
-    </a>
+    <div class="external-link">
+      <a v-if="options && options.externalLink"
+         :href="externalLinkHref"
+         class="external external-link"
+         target="_blank"
+      >
+        {{ externalLinkText }}
+      </a>
+    </div>
   </div>
 </template>
 
@@ -61,6 +67,10 @@
 </script>
 
 <style scoped>
+  table {
+    margin: 0;
+  }
+
   th, td {
     font-size: 15px;
     text-align: left;
@@ -68,5 +78,17 @@
 
   th {
     width: 30%;
+  }
+
+  .external-link {
+    padding-top: 5px;
+  }
+
+  .table-title {
+    margin-top: 1rem;
+  }
+
+  .table-container {
+    padding-top: 1rem;
   }
 </style>

@@ -131,7 +131,7 @@ class Controller {
   // }
 
   handleTopicHeaderClick(topic) {
-    console.log('Controller.handleTopicHeaderClick', topic);
+    // console.log('Controller.handleTopicHeaderClick', topic);
 
     this.router.routeToTopic(topic);//.then(function(targetExists) {
 
@@ -140,9 +140,8 @@ class Controller {
     */
 
     // get element
-    const els = document.querySelectorAll(`[data-topic-key=${topic}]`);
+    const els = document.querySelectorAll(`[data-topic-key='${topic}']`);
     const el = els.length === 1 && els[0];
-    console.log('topic header el', el);
 
     // handle null el - this shouldn't happen, but just in case
     if (!el) return;
