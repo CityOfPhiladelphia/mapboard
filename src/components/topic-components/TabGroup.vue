@@ -140,6 +140,9 @@
 
   .tabs-title.is-active a {
     border-left: 5px solid #f99300;
+    /*when you first load the page, the active tab doesn't turn gray for some
+    reason. forcing it here.*/
+    background: #f0f0f0;
   }
 
   .tabs-title a:hover {
