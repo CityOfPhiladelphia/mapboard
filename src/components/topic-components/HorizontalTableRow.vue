@@ -28,12 +28,13 @@
     watch: {
       isActive(value) {
         if (value === true) {
-          const el = this.$el
-          // console.log('horiz table row WATCH isActive, el:', el);
-          const inVp = this.inViewport(el);
-          if (!inVp) {
+          const el = this.$el;
+          const visible = this.isElementInViewport(el);
+
+          console.log('visible?', visible ? 'YES' : 'NO');
+
+          if (!visible) {
             el.scrollIntoView();
-            // el.scrollIntoView({block: "end", inline: "nearest"});
           }
         }
       }
@@ -50,20 +51,31 @@
         if (!this.hasOverlay) return;
         this.$store.commit('setActiveFeature', null);
       },
-      inViewport(el) {
-        var rect = el.getBoundingClientRect();
-        return (
-         rect.top >= parseInt(this.$config.rootStyle.top.replace('px', '')) + 100 &&
-         rect.left >= 0 &&
-         rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
-         rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
-        );
-        // return (
-        //     elRect.top >= parRect.top &&
-        //     elRect.left >= parRect.left &&
-        //     elRect.bottom <= parRect.bottom &&
-        //     elRect.right <= parRect.right
-        // );
+      // REVIEW there's very similar code in the controller. if these can be
+      // the same thing, make it into a util.
+      isElementInViewport(el) {
+        const rect = el.getBoundingClientRect();
+
+        console.log('bounding box', rect);
+
+        const visibility = {
+          // TODO the 108 below is account for the combined height of the
+          // app header and address header. this is not a good long-term
+          // solution - instead, use the `bottom` value of the address header's
+          // bounding rect. however, this should only fire on small devices,
+          // which would require again hard-coding screen breakpoints from
+          // standards or some other magic, which might not a huge
+          // improvement in terms of decoupling logic and presentation. hmm.
+          top: rect.top >= 108,
+          left: rect.left >= 0,
+          bottom: rect.bottom <= (window.innerHeight || document.documentElement.clientHeight),
+          right: rect.right <= (window.innerWidth || document.documentElement.clientWidth),
+        };
+
+        console.log('visibility', visibility);
+
+        // return if all sides are visible
+        return Object.values(visibility).every(val => val);
       },
       featuresMatch(a, b) {
         return a.featureId === b.featureId && a.tableId === b.tableId;
