@@ -4,6 +4,7 @@ data fetching. It is a "thin" class that mostly proxies events to the router and
 data manager, and facilitates communication between them.
 */
 
+import Vue from 'vue';
 import Router from './router';
 import DataManager from './data-manager';
 
@@ -25,26 +26,6 @@ class Controller {
     this.router = new Router(opts);
   }
 
-
-  // activeTopicConfig() {
-  //   const key = this.store.state.activeTopic;
-  //   let config;
-  //
-  //   // if no active topic, return null
-  //   if (key) {
-  //     config = this.config.topics.filter((topic) => {
-  //       return topic.key === key;
-  //     })[0];
-  //   }
-  //
-  //   return config || {};
-  // }
-  //
-  // activeParcelLayer() {
-  //   return this.activeTopicConfig().parcels || this.config.map.defaultBasemap;
-  // }
-
-
   /*
   EVENT HANDLERS
   */
@@ -55,7 +36,6 @@ class Controller {
   }
 
   getMoreRecords(dataSource, highestPageRetrieved) {
-    // console.log('controller get 100 More records was clicked, dataSource', dataSource, 'highestPageRetrieved', highestPageRetrieved);
     this.dataManager.fetchMoreData(dataSource, highestPageRetrieved);
   }
 
@@ -71,6 +51,7 @@ class Controller {
 
     // clear out state
     const parcelLayers = Object.keys(this.config.parcels || {});
+
     for (let parcelLayer of parcelLayers) {
       const configForParcelLayer = this.config.parcels[parcelLayer];
       const multipleAllowed = configForParcelLayer.multipleAllowed;
@@ -128,40 +109,54 @@ class Controller {
     this.dataManager.getParcelsByLatLng(latLng, activeParcelLayer);
   }
 
-  inViewport(el, config) {
-    var rect = el.getBoundingClientRect();
-    return (
-     rect.top >= parseInt(config.rootStyle.top.replace('px', '')) + 100 &&
-     rect.left >= 0 &&
-     rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
-     rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
-    );
-  }
+  // util for making sure topic headers are visible after clicking on one
+  // adapted from: https://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport/7557433#7557433
+  // REVIEW this is returning true even when the topic header isn't visible,
+  // probably because of a timing issue. it's good enough without this check for
+  // now. commenting out.
+  // isElementInViewport(el) {
+  //   const rect = el.getBoundingClientRect();
+  //
+  //   // check visibility of each side of bounding rect
+  //   const topVisible = rect.top >= 0;
+  //   const leftVisible = rect.left >= 0;
+  //   const bottomVisible = rect.bottom <= (
+  //     window.innerHeight || document.documentElement.clientHeight
+  //   );
+  //   const rightVisible = rect.right <= (
+  //     window.innerWidth || document.documentElement.clientWidth
+  //   );
+  //
+  //   return (topVisible && leftVisible && bottomVisible && rightVisible);
+  // }
 
-  handleTopicHeaderClick(topic, target) {
-    // console.log('Controller.handleTopicHeaderClick', topic);
-    let targetExists
-    if (target) {
-      targetExists = target
-    } else {
-      targetExists = null
-    }
+  handleTopicHeaderClick(topic) {
+    console.log('Controller.handleTopicHeaderClick', topic);
+
     this.router.routeToTopic(topic);//.then(function(targetExists) {
-    if (targetExists) {
-      // targetExists.scrollTop = 0;
-      const vp = this.inViewport;
-      const config = this.config
-      setTimeout(function() {
-        // const inVp = this.inViewport(targetExists);
-        const inVp = vp(targetExists, config);
-        console.log('handleTopicHeaderClick, inVp:', inVp);
-        if (!inVp) {
-          // $('#topics-container').animate({ scrollTop: 0}, "fast");
-          targetExists.scrollIntoView();
-        }
-      }, 500);
-    }
-    // });
+
+    /*
+    scroll to top of topic header
+    */
+
+    // get element
+    const els = document.querySelectorAll(`[data-topic-key=${topic}]`);
+    const el = els.length === 1 && els[0];
+    console.log('topic header el', el);
+
+    // handle null el - this shouldn't happen, but just in case
+    if (!el) return;
+
+    Vue.nextTick(() => {
+      // REVIEW this check is returning true even when the header el isn't
+      // really visible, probbaly because of a timing issue. it works well
+      // enough without it. commenting out for now.
+      // const visible = this.isElementInViewport(el);
+
+      // if (!visible) {
+        el.scrollIntoView();
+      // }
+    });
   }
 
   goToDefaultAddress(address) {
