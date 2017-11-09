@@ -49,25 +49,24 @@
 </script>
 
 <style scoped>
-.container {
-  margin-bottom: 30px;
-}
+  .container {
+    margin-bottom: 30px;
+  }
 
-.button {
-  margin-right: 10px;
-  margin-top: 0px;
-  margin-bottom: 0px;
-}
+  .button {
+    margin-right: 10px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
 
-.overlay-toggle {
-  border: 1px solid #f99300;
-  color: #f99300;
-  background: #fff;
-}
+  .overlay-toggle {
+    border: 1px solid #f99300;
+    color: #f99300;
+    background: #fff;
+  }
 
-.overlay-toggle.active {
-  background: #f99300;
-  color: #fff;
-}
-
+  .overlay-toggle.active {
+    background: #f99300;
+    color: #fff;
+  }
 </style>
