@@ -132,4 +132,18 @@
     padding: 20px;
     padding-bottom: 0px;
   }
+
+  /*recreate phila patterns tab styles*/
+  .tabs-title a {
+    border-left: 5px solid #fff;
+  }
+
+  .tabs-title.is-active a {
+    border-left: 5px solid #f99300;
+  }
+
+  .tabs-title a:hover {
+    border-left: 5px solid #f99300;
+    background: #f0f0f0;
+  }
 </style>
