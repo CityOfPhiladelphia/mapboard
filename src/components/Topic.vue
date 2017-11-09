@@ -191,20 +191,15 @@
       },
 
       handleTopicHeaderClick(e) {
-        console.log('handleTopicHeaderClick e:', e);
-        const target = e.target;
         const topic = this.$props.topicKey;
-
         let nextTopic;
 
-        if (topic === this.$store.state.activeTopic) {
-          nextTopic = null;
-        } else {
+        if (topic !== this.$store.state.activeTopic) {
           nextTopic = topic;
         }
-
+        
         // notify controller (which will handle routing)
-        this.$controller.handleTopicHeaderClick(nextTopic, target);
+        this.$controller.handleTopicHeaderClick(nextTopic);
       },
     }
   };
