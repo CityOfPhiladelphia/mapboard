@@ -1,6 +1,6 @@
 var GATEKEEPER_KEY = '82fe014b6575b8c38b44235580bc8b11';
 // var BASE_CONFIG_URL = '//raw.githubusercontent.com/rbrtmrtn/mapboard-base-config/develop/config.js';
-var BASE_CONFIG_URL = '//rawgit.com/rbrtmrtn/mapboard-base-config/d03dacecf5cc4a2d62561428538a2e8593598e6f/config.js';
+var BASE_CONFIG_URL = '//rawgit.com/rbrtmrtn/mapboard-base-config/d9892943dc4df94ba2b1e51dbe2aeb0b0bcd4aab/config.js';
 
 var ZONING_CODE_MAP = {
   'RSD-1': 'Residential Single Family Detached-1',
@@ -779,10 +779,20 @@ Mapboard.default({
     }
   },
   greeting:{
-    initialMessage: "Explore permits, zoning, deeds and other related City data by searching on an address.<br><br> \
-    See results mapped against present and past aerial and street-view imagery or using historical maps of Philadelphia.<br><br> \
-    To start your search, type an address, street intersection, tax account number, or deed Map Registry number into the search box – or – click anywhere on the map.",
-
+    initialMessage: '\
+      <h2>Atlas is your front door to the City of Philadelphia.</h2>\
+      <p>Here are some things you can do with Atlas:</p>\
+      <div class="callout">\
+        <ul>\
+          <li>Get the history of permits, licenses, and inspections at any address</li>\
+          <li>Research real estate information including property values, zoning, and document archives</li>\
+          <li>Get easy access to a variety of hard-to-find City resources</li>\
+          <li>View recent activity around your address, such as crimes, 311 service requests, and more</li>\
+          <li>Explore historical imagery and maps</li>\
+        </ul>\
+      </div>\
+      <p>To get started, click anywhere on the map, or type an address, intersection, property assessment account number, or Department of Records Map Registry number into the search box.</p>\
+    ',
   },
   topics: [
     {

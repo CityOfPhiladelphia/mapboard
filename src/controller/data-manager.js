@@ -551,7 +551,7 @@ class DataManager {
     // console.log('coords', coords);
 
     // reset data
-    if (lastSearchMethod != 'reverseGeocode-secondAttempt') {
+    if (lastSearchMethod != 'reverseGeocode-secondAttempt' && lastSearchMethod != 'reverseGeocode') {
       this.resetData();
       this.store.commit('setMapCenter', coords);
       this.store.commit('setMapZoom', 19);

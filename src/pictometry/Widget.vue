@@ -67,15 +67,19 @@
       mapCenter(nextCenter) {
         const [x, y] = nextCenter;
         const zoom = this.mapZoom;
-        this.$ipa.setLocation({ x, y, zoom });
+        if (this.$ipa) {
+          this.$ipa.setLocation({ x, y, zoom });
+        }
       },
       mapZoom(nextZoom) {
         // console.log('watch zoomSentToPict', nextZoom);
-        this.$ipa.setLocation({
-          y: this.mapCenter.lat,
-          x: this.mapCenter.lng,
-          zoom: nextZoom
-        });
+        if (this.$ipa) {
+          this.$ipa.setLocation({
+            y: this.mapCenter.lat,
+            x: this.mapCenter.lng,
+            zoom: nextZoom
+          });
+        }
       },
       cyclomediaActive(nextStatus) {
         if (nextStatus === true) {

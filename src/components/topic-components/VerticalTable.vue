@@ -85,10 +85,12 @@
   }
 
   .table-title {
-    margin-top: 1rem;
+    /*too much*/
+    /*margin-top: 1rem;*/
   }
 
   .table-container {
-    padding-top: 1rem;
+    /*this was too much padding for the parcel table, taking out for now*/
+    /*padding-top: 1rem;*/
   }
 </style>
