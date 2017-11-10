@@ -547,24 +547,22 @@ class DataManager {
       }
     }
 
-    // pan and zoom map
-    // console.log('coords', coords);
-
-    // reset data
-    if (lastSearchMethod != 'reverseGeocode-secondAttempt' && lastSearchMethod != 'reverseGeocode') {
-      this.resetData();
+    // only recenter the map on geocode
+    if (lastSearchMethod === 'geocode') {
       this.store.commit('setMapCenter', coords);
       this.store.commit('setMapZoom', 19);
     }
 
+    // reset data only when not a rev geocode second attempt
+    if (lastSearchMethod !== 'reverseGeocode-secondAttempt') {
+      this.resetData();
+    }
+
     // if it is not an intersection, fetch new data
-    console.log('feature', feature);
     if (feature) {
       if (feature.street_address) {
-        console.log('feature:', feature, 'didGeocode returned an intersection, no data to fetch');
         return;
       } else if (feature.properties.street_address) {
-        console.log('feature', feature, 'didGeocode is calling fetchData');
         this.fetchData();
       }
     } else {
