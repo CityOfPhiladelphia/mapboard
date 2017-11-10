@@ -547,24 +547,22 @@ class DataManager {
       }
     }
 
-    // pan and zoom map
-    // console.log('coords', coords);
-
-    // reset data
-    if (lastSearchMethod != 'reverseGeocode-secondAttempt' && lastSearchMethod != 'reverseGeocode') {
-      this.resetData();
+    // only recenter the map on geocode
+    if (lastSearchMethod === 'geocode') {
       this.store.commit('setMapCenter', coords);
       this.store.commit('setMapZoom', 19);
     }
 
+    // reset data only when not a rev geocode second attempt
+    if (lastSearchMethod !== 'reverseGeocode-secondAttempt') {
+      this.resetData();
+    }
+
     // if it is not an intersection, fetch new data
-    console.log('feature', feature);
     if (feature) {
       if (feature.street_address) {
-        console.log('feature:', feature, 'didGeocode returned an intersection, no data to fetch');
         return;
       } else if (feature.properties.street_address) {
-        console.log('feature', feature, 'didGeocode is calling fetchData');
         this.fetchData();
       }
     } else {
@@ -573,7 +571,7 @@ class DataManager {
   } // end didGeocode
 
   getParcelsById(id, parcelLayer) {
-    console.log('getParcelsById', parcelLayer);
+    // console.log('getParcelsById', parcelLayer);
 
     const url = this.config.map.featureLayers[parcelLayer+'Parcels'].url;
     const configForParcelLayer = this.config.parcels[parcelLayer];
@@ -588,7 +586,8 @@ class DataManager {
   }
 
   getParcelsByLatLng(latlng, parcelLayer) {
-    console.log('getParcelsByLatLng', parcelLayer);
+    // console.log('getParcelsByLatLng', parcelLayer);
+
     const url = this.config.map.featureLayers[parcelLayer+'Parcels'].url;
     const parcelQuery = L.esri.query({ url });
     parcelQuery.contains(latlng);
@@ -606,7 +605,7 @@ class DataManager {
     otherParcelLayers.splice(otherParcelLayers.indexOf(parcelLayer), 1);
     const lastSearchMethod = this.store.state.lastSearchMethod;
     const activeParcelLayer = this.store.state.activeParcelLayer;
-    console.log('didGetParcels - parcelLayer:', parcelLayer, 'otherParcelLayers:', otherParcelLayers, 'configForParcelLayer:', configForParcelLayer);
+    // console.log('didGetParcels - parcelLayer:', parcelLayer, 'otherParcelLayers:', otherParcelLayers, 'configForParcelLayer:', configForParcelLayer);
 
     if (error) {
       console.warn('didGetParcels error', parcelLayer, error);
@@ -647,13 +646,13 @@ class DataManager {
     this.setParcelsInState(parcelLayer, multipleAllowed, feature, featuresSorted);
 
     // geocode
-    console.log('didGetParcels activeParcelLayer:', activeParcelLayer, 'parcelLayer:', parcelLayer);
+    // console.log('didGetParcels activeParcelLayer:', activeParcelLayer, 'parcelLayer:', parcelLayer);
     const shouldGeocode = (
       activeParcelLayer === parcelLayer &&
       lastSearchMethod === 'reverseGeocode'
     );
 
-    console.log('didGetParcels - shouldGeocode is', shouldGeocode);
+    // console.log('didGetParcels - shouldGeocode is', shouldGeocode);
     if (shouldGeocode) {
       // since we definitely have a new parcel, and will attempt to geocode it:
       // 1. wipe out state data on other parcels
@@ -664,7 +663,7 @@ class DataManager {
       const [lng, lat] = coords;
       const latlng = L.latLng(lat, lng);
 
-      console.log('didGetParcels is wiping out the', otherParcelLayers, 'parcels in state');
+      // console.log('didGetParcels is wiping out the', otherParcelLayers, 'parcels in state');
       for (let otherParcelLayer of otherParcelLayers) {
         const configForOtherParcelLayer = this.config.parcels[otherParcelLayer];
         const otherMultipleAllowed = configForOtherParcelLayer.multipleAllowed;
@@ -672,12 +671,12 @@ class DataManager {
         this.getParcelsByLatLng(latlng, otherParcelLayer)
       }
 
-      console.log('didGetParcels - shouldGeocode is running');
+      // console.log('didGetParcels - shouldGeocode is running');
       const props = feature.properties || {};
       const id = props[geocodeField];
       if (id) this.controller.router.routeToAddress(id);
     } else {
-      console.log('didGetParcels - if shouldGeocode is NOT running');
+      // console.log('didGetParcels - if shouldGeocode is NOT running');
       if (lastSearchMethod != 'reverseGeocode-secondAttempt') {
         this.fetchData();
       }
