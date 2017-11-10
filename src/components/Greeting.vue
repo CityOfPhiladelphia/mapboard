@@ -68,12 +68,24 @@
   .mb-panel-topics-greeting {
     padding-top: 20px;
   }
+
   .greeting {
     font-size: 20px;
     color: #444;
     padding: 14px;
   }
+
   .greeting-error {
     border-left-color: #ff0000;
+  }
+
+  /*medium*/
+  @media screen and (min-width: 750px) {
+    .mb-panel-topics-greeting {
+      /*make this scroll on medium screens*/
+      /*REVIEW this is a little hacky. the 120px shouldn't be hard-coded.*/
+      height: calc(100vh - 120px);
+      overflow: auto;
+    }
   }
 </style>
