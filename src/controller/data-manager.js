@@ -162,6 +162,9 @@ class DataManager {
 
     // get "ready" data sources (ones whose deps have been met)
     for (let [dataSourceKey, dataSource] of Object.entries(dataSources)) {
+      if (dataSourceKey === 'dorDocuments') {
+        console.log('171111 FETCH DATA, dataSourceKey:', dataSourceKey, 'geocode:', this.store.state.geocode.data.properties.street_address);
+      }
       const state = this.store.state;
       const type = dataSource.type;
       const targetsDef = dataSource.targets;
@@ -312,6 +315,7 @@ class DataManager {
     this.store.commit('setSourceStatus', setSourceStatusOpts);
 
     // try fetching more data
+    console.log('171111 data-manager.js line 319 - didFetchData - is calling fetchData on targetId', targetId, 'key', key);
     this.fetchData();
   }
 
@@ -563,9 +567,11 @@ class DataManager {
       if (feature.street_address) {
         return;
       } else if (feature.properties.street_address) {
+        console.log('171111 data-manager.js line 571 - didGeocode - is calling fetchData on feature w address', feature.properties.street_address);
         this.fetchData();
       }
     } else {
+      console.log('171111 data-manager.js line 575 - didGeocode - is calling fetchData, no feature');
       this.fetchData();
     }
   } // end didGeocode
@@ -586,7 +592,7 @@ class DataManager {
   }
 
   getParcelsByLatLng(latlng, parcelLayer) {
-    // console.log('getParcelsByLatLng', parcelLayer);
+    console.log('171111 getParcelsByLatLng', parcelLayer);
 
     const url = this.config.map.featureLayers[parcelLayer+'Parcels'].url;
     const parcelQuery = L.esri.query({ url });
@@ -598,6 +604,7 @@ class DataManager {
   }
 
   didGetParcels(error, featureCollection, response, parcelLayer) {
+    console.log('171111 didGetParcels is running parcelLayer', parcelLayer);
     const configForParcelLayer = this.config.parcels[parcelLayer];
     const multipleAllowed = configForParcelLayer.multipleAllowed;
     const geocodeField = configForParcelLayer.geocodeField;
