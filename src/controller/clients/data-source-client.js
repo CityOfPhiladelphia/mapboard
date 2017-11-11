@@ -249,6 +249,7 @@ class DataSourceClient extends BaseClient {
     this.store.commit('setSourceStatus', setSourceStatusOpts);
 
     // try fetching more data
+    console.log('171111 data-source-client.js is calling fetchData');
     this.fetchData();
   }
 
