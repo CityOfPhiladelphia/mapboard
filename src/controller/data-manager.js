@@ -675,12 +675,13 @@ class DataManager {
       const props = feature.properties || {};
       const id = props[geocodeField];
       if (id) this.controller.router.routeToAddress(id);
-    } else {
-      // console.log('didGetParcels - if shouldGeocode is NOT running');
-      if (lastSearchMethod != 'reverseGeocode-secondAttempt') {
-        this.fetchData();
-      }
-    }
+    } //else {
+    //   console.log('didGetParcels - if shouldGeocode is NOT running');
+    //   if (lastSearchMethod != 'reverseGeocode-secondAttempt') {
+    //     console.log('171111 data-manager.js line 688 - didGetParcels - is calling fetchData() on feature w address', feature.properties.street_address);
+    //     this.fetchData();
+    //   }
+    // }
   }
 
   setParcelsInState(parcelLayer, multipleAllowed, feature, featuresSorted) {
