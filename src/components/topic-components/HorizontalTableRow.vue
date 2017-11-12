@@ -3,6 +3,7 @@
                         tableId === activeFeature.tableId
              }"
       @mouseover="handleRowMouseover"
+      @click="handleRowClick"
       @mouseout="handleRowMouseout"
   >
     <td v-for="field in fields"
@@ -19,10 +20,13 @@
     props: ['fields', 'hasOverlay', 'tableId'],
     computed: {
       activeFeature() {
-        return this.$store.state.activeFeature
+        return this.$store.state.activeFeature;
       },
       isActive() {
-        return this.activeFeature.featureId === this.$props.item._featureId
+        return this.activeFeature.featureId === this.$props.item._featureId;
+      },
+      isMobileOrTablet() {
+        return this.$store.state.is_mobile_or_tablet;
       },
     },
     watch: {
@@ -41,15 +45,34 @@
     },
     methods: {
       handleRowMouseover(e) {
-        if (!this.hasOverlay) return;
+        console.log('handleRowMouseover is starting');
+        if(!this.isMobileOrTablet) {
+          console.log('handleRowMouseover actions are running');
+          if (!this.hasOverlay) return;
 
-        const featureId = this.item._featureId;
-        const tableId = this.tableId;
-        this.$store.commit('setActiveFeature', { featureId, tableId });
+          const featureId = this.item._featureId;
+          const tableId = this.tableId;
+          this.$store.commit('setActiveFeature', { featureId, tableId });
+        }
+      },
+      handleRowClick(e) {
+        console.log('handleRowClick is starting');
+        if(this.isMobileOrTablet) {
+          console.log('handleRowClick actions are running');
+          if (!this.hasOverlay) return;
+
+          const featureId = this.item._featureId;
+          const tableId = this.tableId;
+          this.$store.commit('setActiveFeature', { featureId, tableId });
+        }
       },
       handleRowMouseout(e) {
-        if (!this.hasOverlay) return;
-        this.$store.commit('setActiveFeature', null);
+        console.log('handleRowMouseout is starting');
+        // if(!this.isMobileOrTablet) {
+          console.log('handleRowMouseout actions are running');
+          if (!this.hasOverlay) return;
+          this.$store.commit('setActiveFeature', null);
+        // }
       },
       // REVIEW there's very similar code in the controller. if these can be
       // the same thing, make it into a util.

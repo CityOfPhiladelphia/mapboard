@@ -156,6 +156,7 @@ function createStore(config) {
   }, {});
 
   const initialState = {
+    is_mobile_or_tablet: false,
     activeTopic: defaultTopic.key,
     activeParcelLayer: defaultTopic.parcels,
     // the ais feature
@@ -279,6 +280,9 @@ function createStore(config) {
       }
     },
     mutations: {
+      setIsMobileOrTablet(state, payload) {
+        state.is_mobile_or_tablet = payload;
+      },
       setLocation(state, payload) {
         state.map.location.lat = payload.lat;
         state.map.location.lng = payload.lng;

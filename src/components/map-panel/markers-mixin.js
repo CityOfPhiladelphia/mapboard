@@ -222,13 +222,32 @@ export default {
       group.appendChild(el);
     },
     handleCircleMarkerMouseover(e) {
-      const { target } = e;
-      const { featureId, tableId } = target.options.data;
-      this.$store.commit('setActiveFeature', { featureId, tableId });
+      console.log('handleCircleMarkerMouseover is starting');
+      if (!this.isMobileOrTablet) {
+        console.log('handleCircleMarkerMouseover actions are running');
+        const { target } = e;
+        const { featureId, tableId } = target.options.data;
+        console.log('target:', target, 'featureId:', featureId, 'tableId:', tableId);
+        this.$store.commit('setActiveFeature', { featureId, tableId });
+      }
+    },
+    handleCircleMarkerClick(e) {
+      console.log('handleCircleMarkerClick is starting');
+      if (this.isMobileOrTablet) {
+        console.log('handleCircleMarkerClick actions are running');
+        const { target } = e;
+        const { featureId, tableId } = target.options.data;
+        console.log('target:', target, 'featureId:', featureId, 'tableId:', tableId);
+        this.$store.commit('setActiveFeature', { featureId, tableId });
+      }
     },
     handleCircleMarkerMouseout(e) {
-      const { target } = e;
-      this.$store.commit('setActiveFeature', null);
+      console.log('handleCircleMarkerMouseout is starting');
+      // if (!this.isMobileOrTablet) {
+        console.log('handleCircleMarkerMouseout actions are running');
+        const { target } = e;
+        this.$store.commit('setActiveFeature', null);
+      // }
     },
     updateCircleMarkerFillColor(marker) {
       // get next fill color
