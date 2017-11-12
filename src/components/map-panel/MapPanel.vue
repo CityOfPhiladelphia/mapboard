@@ -117,6 +117,7 @@
        <!-- TODO give these a real key -->
       <circle-marker v-for="circleMarker in circleMarkers"
                      @l-mouseover="handleCircleMarkerMouseover"
+                     @l-click="handleCircleMarkerClick"
                      @l-mouseout="handleCircleMarkerMouseout"
                      :latlng="circleMarker.latlng"
                      :radius="circleMarker.radius"
@@ -333,6 +334,9 @@
       this.$controller.appDidLoad();
     },
     computed: {
+      isMobileOrTablet() {
+        return this.$store.state.is_mobile_or_tablet;
+      },
       geolocationEnabled() {
         return this.$config.geolocation.enabled;
       },
