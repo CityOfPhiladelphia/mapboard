@@ -404,9 +404,9 @@ function createStore(config) {
         state.map.zoom = payload
       },
       setParcelData(state, payload) {
-        console.log('store setParcelData payload:', payload);
+        // console.log('store setParcelData payload:', payload);
         const { parcelLayer, data, multipleAllowed, status, activeParcel, activeAddress, activeMapreg } = payload || {};
-        console.log('store setParcelData parcelLayer:', parcelLayer, 'data:', data, 'multipleAllowed:', multipleAllowed, 'status:', status, 'activeParcel:', activeParcel);
+        // console.log('store setParcelData parcelLayer:', parcelLayer, 'data:', data, 'multipleAllowed:', multipleAllowed, 'status:', status, 'activeParcel:', activeParcel);
         if (!multipleAllowed) {
           state.parcels[parcelLayer] = data;
         } else {

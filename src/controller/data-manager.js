@@ -315,7 +315,7 @@ class DataManager {
     this.store.commit('setSourceStatus', setSourceStatusOpts);
 
     // try fetching more data
-    console.log('171111 data-manager.js line 319 - didFetchData - is calling fetchData on targetId', targetId, 'key', key);
+    // console.log('171111 data-manager.js line 319 - didFetchData - is calling fetchData on targetId', targetId, 'key', key);
     this.fetchData();
   }
 
@@ -591,20 +591,22 @@ class DataManager {
   )
   }
 
-  getParcelsByLatLng(latlng, parcelLayer) {
-    console.log('171111 getParcelsByLatLng', parcelLayer);
+  getParcelsByLatLng(latlng, parcelLayer, fetch) {
+    console.log('171111 getParcelsByLatLng', parcelLayer, 'fetch', fetch);
 
     const url = this.config.map.featureLayers[parcelLayer+'Parcels'].url;
     const parcelQuery = L.esri.query({ url });
     parcelQuery.contains(latlng);
+    const test = 5;
     parcelQuery.run((function(error, featureCollection, response) {
-        this.didGetParcels(error, featureCollection, response, parcelLayer);
+        console.log('171111 test', test, 'fetch', fetch);
+        this.didGetParcels(error, featureCollection, response, parcelLayer, fetch);
       }).bind(this)
     )
   }
 
-  didGetParcels(error, featureCollection, response, parcelLayer) {
-    console.log('171111 didGetParcels is running parcelLayer', parcelLayer);
+  didGetParcels(error, featureCollection, response, parcelLayer, fetch) {
+    console.log('171111 didGetParcels is running parcelLayer', parcelLayer, 'fetch', fetch);
     const configForParcelLayer = this.config.parcels[parcelLayer];
     const multipleAllowed = configForParcelLayer.multipleAllowed;
     const geocodeField = configForParcelLayer.geocodeField;
@@ -675,20 +677,23 @@ class DataManager {
         const configForOtherParcelLayer = this.config.parcels[otherParcelLayer];
         const otherMultipleAllowed = configForOtherParcelLayer.multipleAllowed;
         this.setParcelsInState(otherParcelLayer, otherMultipleAllowed, null, [])
-        this.getParcelsByLatLng(latlng, otherParcelLayer)
+        console.log('171111 - line 680 running getParcelsByLatLng');
+        this.getParcelsByLatLng(latlng, otherParcelLayer, 'noFetch')
       }
 
       // console.log('didGetParcels - shouldGeocode is running');
       const props = feature.properties || {};
       const id = props[geocodeField];
       if (id) this.controller.router.routeToAddress(id);
-    } //else {
-    //   console.log('didGetParcels - if shouldGeocode is NOT running');
-    //   if (lastSearchMethod != 'reverseGeocode-secondAttempt') {
-    //     console.log('171111 data-manager.js line 688 - didGetParcels - is calling fetchData() on feature w address', feature.properties.street_address);
-    //     this.fetchData();
-    //   }
-    // }
+    } else {
+      console.log('171111 data-manager.js line 688 - didGetParcels - if shouldGeocode is NOT running');
+      // if (lastSearchMethod != 'reverseGeocode-secondAttempt') {
+      // if (fetch !== 'noFetch') {
+      if (fetch !== 'noFetch' && lastSearchMethod != 'reverseGeocode-secondAttempt') {
+        console.log('171111 data-manager.js line 688 - didGetParcels - is calling fetchData() on feature w address', feature.properties.street_address);
+        this.fetchData();
+      }
+    }
   }
 
   setParcelsInState(parcelLayer, multipleAllowed, feature, featuresSorted) {
