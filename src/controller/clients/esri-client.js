@@ -86,19 +86,19 @@ class EsriClient extends BaseClient {
       // DEBUG
       // buffer.addTo(map);
 
-      this.fetchSpatialQuery(dataSourceKey,
-                             dataSourceUrl,
-                             'within',
-                             buffer,
-                             calculateDistance ? coords : null
-                            );
+      this.fetchBySpatialQuery(dataSourceKey,
+                               dataSourceUrl,
+                               'within',
+                               buffer,
+                               calculateDistance ? coords : null
+                              );
     }, response => {
-      // console.log('did fetch esri nearby error', response);
-      this.didFetchData(dataSource, 'error');
+      console.log('did fetch esri nearby error', response);
+      this.dataManager.didFetchData(dataSourceKey, 'error');
     });
   }
 
-  fetchSpatialQuery(dataSourceKey, url, relationship, targetGeom, calculateDistancePt) {
+  fetchBySpatialQuery(dataSourceKey, url, relationship, targetGeom, calculateDistancePt) {
     // console.log('fetch esri spatial query', dataSourceKey, url, relationship, targetGeom);
 
     const query = L.esri.query({ url })[relationship](targetGeom);
