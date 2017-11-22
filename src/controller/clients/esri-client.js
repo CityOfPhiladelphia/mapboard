@@ -15,12 +15,21 @@ class EsriClient extends BaseClient {
 
     if (targetGeomFn) {
       const state = this.store.state;
+      // pass leaflet to the targetgeom function so it can construct a custom
+      // geometry (such as the lat lng bounds of a set of parcels) if it needs
+      // to. use case: fetching regmaps.
       geom = targetGeomFn(state, Leaflet);
     } else {
       geom = feature.geometry;
     }
 
-    this.fetchSpatialQuery(dataSourceKey, url, relationship, geom);
+    // handle null geom
+    if (!geom) {
+      this.dataManager.didFetchData(dataSourceKey, 'error');
+      return;
+    }
+
+    this.fetchBySpatialQuery(dataSourceKey, url, relationship, geom);
   }
 
   fetchNearby(feature, dataSource, dataSourceKey) {
