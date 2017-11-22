@@ -162,9 +162,6 @@ class DataManager {
 
     // get "ready" data sources (ones whose deps have been met)
     for (let [dataSourceKey, dataSource] of Object.entries(dataSources)) {
-      if (dataSourceKey === 'dorDocuments') {
-        console.log('171111 FETCH DATA, dataSourceKey:', dataSourceKey, 'geocode:', this.store.state.geocode.data.properties.street_address);
-      }
       const state = this.store.state;
       const type = dataSource.type;
       const targetsDef = dataSource.targets;
