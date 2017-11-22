@@ -50,7 +50,7 @@ class EsriClient extends BaseClient {
       inSR: 4326,
       outSR: 4326,
       bufferSR: 4326,
-      distances: .0028,
+      distances: 0.0028,
       unionResults: true,
       geodesic: false,
       f: 'json',
@@ -64,6 +64,7 @@ class EsriClient extends BaseClient {
       const data = response.data;
 
       // console.log('did get esri nearby buffer', data);
+
       const geoms = data.geometries || [];
       const geom = geoms[0] || {};
       const rings = geom.rings || [];
@@ -80,7 +81,7 @@ class EsriClient extends BaseClient {
 
       // get nearby features using buffer
       const buffer = L.polygon(latLngCoords);
-      const map = this.dataManager.store.state.map.map
+      const map = this.dataManager.store.state.map.map;
 
       // DEBUG
       // buffer.addTo(map);
