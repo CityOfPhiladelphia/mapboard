@@ -55,8 +55,18 @@ class EsriClient extends BaseClient {
       const data = response.data;
 
       // console.log('did get esri nearby buffer', data);
+      const geoms = data.geometries || [];
+      const geom = geoms[0] || {};
+      const rings = geom.rings || [];
+      const xyCoords = rings[0];
 
-      const xyCoords = data['geometries'][0]['rings'][0];
+      // check for xy coords
+      if (!xyCoords) {
+        // we can't do anything without coords, so bail out
+        this.dataManager.didFetchData(dataSourceKey, 'error');
+        return;
+      }
+
       const latLngCoords = xyCoords.map(xyCoord => [...xyCoord].reverse());
 
       // get nearby features using buffer
