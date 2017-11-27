@@ -84,7 +84,10 @@
           </h5>
         </div>
 
-        <table role="grid" class="stack">
+        <table role="grid"
+               class="stack"
+               :id="this.$props.options.id"
+        >
           <thead>
             <tr>
               <th v-for="field in fields">{{ evaluateSlot(field.label) }}</th>
