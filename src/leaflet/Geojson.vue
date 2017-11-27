@@ -8,7 +8,18 @@
       'geojson',
       'color',
       'weight',
+      'delay'
     ],
+    watch: {
+      color(nextColor) {
+        // console.log('nextColor:', nextColor);
+        if (this.$props.delay) {
+          setTimeout(this.refresh, 50);
+        } else {
+          this.refresh();
+        }
+      }
+    },
     mounted() {
       const leafletElement = this.$leafletElement = this.createLeafletElement();
       const map = this.$store.state.map.map;
@@ -41,6 +52,15 @@
       parentMounted(parent) {
         const map = parent.$leafletElement;
         this.$leafletElement.addTo(map);
+      },
+      refresh() {
+        this.$leafletElement._map.removeLayer(this.$leafletElement);
+        const leafletElement = this.$leafletElement = this.createLeafletElement();
+        const map = this.$store.state.map.map;
+        // REVIEW kind of hacky/not reactive?
+        if (map) {
+          leafletElement.addTo(map);
+        }
       }
     }
   };

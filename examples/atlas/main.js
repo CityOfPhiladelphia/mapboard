@@ -803,6 +803,7 @@ Mapboard.default({
   pictometry: {
     enabled: true
   },
+  overlapParcelsEnabled: true,
   // reusable transforms for topic data. see `topics` section for usage.
   transforms: {
     currency: {
