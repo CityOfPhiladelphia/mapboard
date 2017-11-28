@@ -981,6 +981,7 @@ Mapboard.default({
         {
           type: 'vertical-table',
           slots: {
+            title: 'Property Data',
             fields: [
               {
                 label: 'OPA Account #',
