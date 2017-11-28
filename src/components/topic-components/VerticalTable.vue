@@ -1,11 +1,12 @@
 <template>
   <div v-if="shouldShowTable" class="table-container">
+    <div id="testDiv"></div>
     <h4 v-if="slots.title"
         class="table-title"
     >
       {{ evaluateSlot(slots.title) }}
     </h4>
-    <table :id="this.$props.slots.title.replace(/\s+/g, '').toLowerCase()"
+    <table :id="this.tableId"
            class="check"
     >
       <tbody>
@@ -33,6 +34,13 @@
   export default {
     mixins: [TopicComponent],
     computed: {
+      tableId() {
+        if (this.$props.slots.title) {
+          return this.$props.slots.title.replace(/\s+/g, '').toLowerCase();
+        } else {
+          return 'noId'
+        }
+      },
       shouldShowTable() {
         if (this.item) {
           if (this.item.activeTable) {
