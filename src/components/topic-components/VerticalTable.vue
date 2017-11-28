@@ -5,7 +5,7 @@
     >
       {{ evaluateSlot(slots.title) }}
     </h4>
-    <table :id="this.$props.slots.title.replace(/\s+/g, '-').toLowerCase()"
+    <table :id="this.$props.slots.title.replace(/\s+/g, '').toLowerCase()"
            class="check"
     >
       <tbody>
