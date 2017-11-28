@@ -1,6 +1,6 @@
 <template>
   <div v-if="shouldShowTable" class="table-container">
-    <div id="testDiv"></div>
+    <div id="testDivId" class="testDivClass"></div>
     <h4 v-if="slots.title"
         class="table-title"
     >
