@@ -5,7 +5,9 @@
     >
       {{ evaluateSlot(slots.title) }}
     </h4>
-    <table>
+    <table :id="this.$props.slots.title.replace(/\s+/g, '-').toLowerCase()"
+           class="check"
+    >
       <tbody>
         <tr v-for="field in slots.fields">
           <th v-html="evaluateSlot(field.label)" />
