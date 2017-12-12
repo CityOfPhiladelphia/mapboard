@@ -15,12 +15,21 @@ class EsriClient extends BaseClient {
 
     if (targetGeomFn) {
       const state = this.store.state;
+      // pass leaflet to the targetgeom function so it can construct a custom
+      // geometry (such as the lat lng bounds of a set of parcels) if it needs
+      // to. use case: fetching regmaps.
       geom = targetGeomFn(state, Leaflet);
     } else {
       geom = feature.geometry;
     }
 
-    this.fetchSpatialQuery(dataSourceKey, url, relationship, geom);
+    // handle null geom
+    if (!geom) {
+      this.dataManager.didFetchData(dataSourceKey, 'error');
+      return;
+    }
+
+    this.fetchBySpatialQuery(dataSourceKey, url, relationship, geom);
   }
 
   fetchNearby(feature, dataSource, dataSourceKey) {
@@ -41,7 +50,7 @@ class EsriClient extends BaseClient {
       inSR: 4326,
       outSR: 4326,
       bufferSR: 4326,
-      distances: .0028,
+      distances: 0.0028,
       unionResults: true,
       geodesic: false,
       f: 'json',
@@ -56,29 +65,40 @@ class EsriClient extends BaseClient {
 
       // console.log('did get esri nearby buffer', data);
 
-      const xyCoords = data['geometries'][0]['rings'][0];
+      const geoms = data.geometries || [];
+      const geom = geoms[0] || {};
+      const rings = geom.rings || [];
+      const xyCoords = rings[0];
+
+      // check for xy coords
+      if (!xyCoords) {
+        // we can't do anything without coords, so bail out
+        this.dataManager.didFetchData(dataSourceKey, 'error');
+        return;
+      }
+
       const latLngCoords = xyCoords.map(xyCoord => [...xyCoord].reverse());
 
       // get nearby features using buffer
       const buffer = L.polygon(latLngCoords);
-      const map = this.dataManager.store.state.map.map
+      const map = this.dataManager.store.state.map.map;
 
       // DEBUG
       // buffer.addTo(map);
 
-      this.fetchSpatialQuery(dataSourceKey,
-                             dataSourceUrl,
-                             'within',
-                             buffer,
-                             calculateDistance ? coords : null
-                            );
+      this.fetchBySpatialQuery(dataSourceKey,
+                               dataSourceUrl,
+                               'within',
+                               buffer,
+                               calculateDistance ? coords : null
+                              );
     }, response => {
-      // console.log('did fetch esri nearby error', response);
-      this.didFetchData(dataSource, 'error');
+      console.log('did fetch esri nearby error', response);
+      this.dataManager.didFetchData(dataSourceKey, 'error');
     });
   }
 
-  fetchSpatialQuery(dataSourceKey, url, relationship, targetGeom, calculateDistancePt) {
+  fetchBySpatialQuery(dataSourceKey, url, relationship, targetGeom, calculateDistancePt) {
     // console.log('fetch esri spatial query', dataSourceKey, url, relationship, targetGeom);
 
     const query = L.esri.query({ url })[relationship](targetGeom);

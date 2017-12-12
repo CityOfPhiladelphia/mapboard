@@ -97,8 +97,17 @@
                v-if="shouldShowGeojson(geojsonFeature.key)"
                :geojson="geojsonFeature.geojson"
                :color="geojsonFeature.color"
-               :weight="2"
+               :weight="geojsonFeature.weight"
                :key="geojsonFeature.key"
+       />
+
+       <geojson v-for="geojsonFeature in geojsonFeatures"
+                v-if="shouldShowGeojsonSelected(geojsonFeature.key)"
+                :geojson="geojsonFeature.geojson"
+                :color="geojsonFeature.color"
+                :weight="geojsonFeature.weight"
+                :key="geojsonFeature.key"
+                :delay="true"
        />
        <!-- :overlay="geojsonFeature.overlayFeature" -->
 
@@ -464,6 +473,9 @@
       },
       isGeocoding() {
         return this.$store.state.geocode.status === 'waiting';
+      },
+      overlapParcelsActivated() {
+        return this.$store.state.map.overlapParcelsActivated;
       }
     },
     watch: {
@@ -478,11 +490,15 @@
         return this.$config.map.basemaps[basemap] || {};
       },
       shouldShowGeojson(key) {
-        if (this.activeTopicConfig.basemap === 'pwd') {
+        if (this.activeTopicConfig.basemap === 'pwd' || (this.overlapParcelsActivated === true && key !== this.activeDorParcel)) {
           return true;
-        } else {
-          return key === this.activeDorParcel;
-        }
+        } // else {
+        //   return key === this.activeDorParcel;
+        // }
+      },
+      shouldShowGeojsonSelected(key) {
+        // setTimeout('', 1000);
+        return key === this.activeDorParcel;
       },
       shouldShowImageOverlay(key) {
         return key === this.imageOverlay;

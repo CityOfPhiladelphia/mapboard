@@ -132,16 +132,26 @@ export default {
       if (identifyFeature === 'pwd-parcel' && activeParcelLayer === 'pwd' && this.pwdParcel) {
         const geojson = this.pwdParcel;
         const color = 'blue';
+        const weight = 2;
         const key = geojson.properties.PARCELID;
 
-        features.push({geojson, color, key});
+        features.push({geojson, color, weight, key});
       // dor parcel
       } else if (identifyFeature === 'dor-parcel' && activeParcelLayer === 'dor') {
-        const color = 'blue';
+        // let color = 'blue';
         const dorParcelFeatures = this.dorParcels.map(dorParcel => {
           const geojson = dorParcel;
           const key = geojson.properties.OBJECTID;
-          return {geojson, color, key};
+          let color;
+          let weight;
+          if(this.overlapParcelsActivated === true && key === this.activeDorParcel) {
+            color = '#25cef7';
+            weight = 4;
+          } else {
+            color = 'blue'
+            weight = 2;
+          }
+          return {geojson, color, weight, key};
         });
         features.push.apply(features, dorParcelFeatures);
       }
