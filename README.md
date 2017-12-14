@@ -10,7 +10,7 @@ To publish a new version of Mapboard to NPM:
 
 1. Commit your changes to `master`.
 2. Bump the NPM version with `npm version major|minor|patch`.
-3. Push with tags: `git push --tags`.
+3. Push with tags: `git push && git push --tags`.
 4. Update wiki docs to reflect new version and/or dependency changes.
 
 Travis will now run a build and publish to NPM.
