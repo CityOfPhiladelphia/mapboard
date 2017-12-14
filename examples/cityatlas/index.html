@@ -1,56 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html class="no-js" lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Atlas | phila.gov</title>
-    <link rel='icon' type='image/x-icon' href="//cityofphiladelphia.github.io/patterns/images/favicon.ico">
+    <meta charset="UTF-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CityAtlas | phila.gov</title>
+    <link rel="canonical" href="">
     <meta name="description" content="">
+    <link rel="shortcut icon" type="image/x-icon" href="http://standards.phila.gov/img/favicon.png">
 
     <!-- CSS -->
+    <link rel="stylesheet" href="//unpkg.com/phila-standards@0.12.0/dist/css/phila-app.min.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.css">
-
-    <link rel="stylesheet" href="//unpkg.com/leaflet-easybutton@2.0.0/src/easy-button.css">
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    <!--pattern stylesheet includes foundation css -->
-    <link rel="stylesheet" href="//cityofphiladelphia.github.io/patterns/dist/1.4.1/css/patterns.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//unpkg.com/leaflet-easybutton@2.0.0/src/easy-button.css">
     <link rel="stylesheet" href="//unpkg.com/Leaflet.vector-markers@0.0.6/dist/leaflet-vector-markers.css">
-    <!-- <link rel="stylesheet" href="//unpkg.com/leaflet-measure@2.1.7/dist/leaflet-measure.css"> -->
     <link rel="stylesheet" href="../../src/util/measure/leaflet-measure.css">
-    <link rel="canonical" href="">
     <link rel="stylesheet" href="styles.css">
   </head>
 
   <body>
-    <div class="full" id="application">
-      <!-- demo alert -->
-      <div id="alpha-alert">
-          <div class="row">
-              <div class="large-16 columns">
-                  <p>
-                      Please bookmark the new URL (<i class="fa fa-arrow-up" aria-hidden="true"></i>) for this site: https://cityatlas.phila.gov.
-                      We value your
-                      <a class="external" href="//philagsg.typeform.com/to/v0xlIR" target="_blank">feedback<span class="accessible">Opens in new window</span></a>.
-                      Please let us know how we can improve this application.
-                  </p>
-              </div>
-          </div>
-      </div>
-
+    <div class="grid-y medium-grid-frame" id="application">
       <!-- Begin header -->
-      <header data-swiftype-index='false' class="site-header app">
-        <div class="row">
-          <div class="small-24 columns">
-            <a href="http://alpha.phila.gov/" class="logo">
-              <img data-interchange="[//cityofphiladelphia.github.io/patterns/images/city-of-philadelphia-mobile.png, small], [//cityofphiladelphia.github.io/patterns/images/city-of-philadelphia-white.png, medium]" src="//cityofphiladelphia.github.io/patterns/images/city-of-philadelphia-white.png" alt="City of Philadelphia">
+      <header class="site-header app group">
+        <div class="row expanded">
+          <div class="columns">
+            <a href="//beta.phila.gov" class="logo">
+              <img src="http://standards.phila.gov/img/logo/city-of-philadelphia-yellow-white.png" alt="City of Philadelphia">
             </a>
+            <div class="app-divide"></div>
             <div class="page-title-container">
               <a href="#/">
                 <h1 class="page-title">CityAtlas</h1>
-                <!-- <h2 class="page-subtitle">Mapboard example</h2> -->
               </a>
             </div>
           </div>
@@ -60,14 +42,31 @@
       <!-- Mapboard -->
       <div id="mapboard"></div>
 
+      <!-- Footer -->
+      <div class="app-footer">
+        <!-- remove the anchor class if you want to handle footer placement yourself, otherwise it will be postion: fixed -->
+        <footer>
+          <div class="row expanded">
+            <div class="columns">
+              <nav>
+                <ul class="inline-list">
+                  <li>
+                    <a href="//bit.ly/phl-atlas-feedback">Feedback</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </footer>
+      </div>
+
     </div><!-- end of application div -->
 
-    <!-- JS: Patterns -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/foundation/6.1.2/foundation.min.js"></script>
-    <script src="//cityofphiladelphia.github.io/patterns/dist/1.4.1/js/patterns.min.js"></script>
+    <!-- JS: Foundation -->
+    <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/js/foundation.js"></script>
 
-    <!-- JS: Mapboard -->
+    <!-- JS: Mapboard dependencies -->
     <script src="//unpkg.com/vue@2.3.3"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="//unpkg.com/axios@0.16.2/dist/axios.min.js"></script>
@@ -79,7 +78,6 @@
     <script src="//unpkg.com/leaflet-easybutton@2.0.0/src/easy-button.js"></script>
     <script src="//unpkg.com/Leaflet.vector-markers@0.0.6"></script>
     <script src="//unpkg.com/leaflet-rotatedmarker@0.2.0"></script>
-    <!-- <script src="//unpkg.com/leaflet-measure@2.1.7/dist/leaflet-measure.min.js"></script> -->
     <script src="../../src/util/measure/leaflet-measure.js"></script>
 
     <!-- JS: Cyclomedia (optional) -->
