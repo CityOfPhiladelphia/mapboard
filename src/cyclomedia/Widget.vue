@@ -8,7 +8,8 @@
     >
       <i class="fa fa-external-link fa popout-icon"></i>
     </div>
-    <div id="cycloviewer" ref="cycloviewer" class="panoramaViewerWindow" />
+    <div id="cycloviewer" ref="cycloviewer" class="panoramaViewerWindow">
+    </div>
   </div>
 </template>
 
@@ -45,6 +46,7 @@
     },
     mounted() {
       StreetSmartApi.init({
+        targetElement: this.$refs.cycloviewer,
         username: this.$config.cyclomedia.username,
         password: this.$config.cyclomedia.password,
         apiKey: this.$config.cyclomedia.apiKey,
@@ -115,11 +117,10 @@
   border: 0px solid;
   width: 30px;
   height: 30px;
-  /*display:none;*/
   cursor:pointer;
   z-index: 10;
-  position:relative;
-  float: right;
+  position: absolute;
+  right: 0px;
 }
 
 .popout-icon {
@@ -129,9 +130,9 @@
 }
 
 .panoramaViewerWindow {
-  /*display: inline-block;*/
   display: block;
   width: 100%;
   height:100%;
 }
+
 </style>

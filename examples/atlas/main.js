@@ -799,7 +799,7 @@ Mapboard.default({
   //   },
   // },
   cyclomedia: {
-    enabled: false
+    enabled: true
   },
   pictometry: {
     enabled: true
