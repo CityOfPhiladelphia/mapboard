@@ -104,7 +104,15 @@ class EsriClient extends BaseClient {
     const optionsKeys = Object.keys(options) || [];
     query = optionsKeys.reduce((acc, optionsKey) => {
       const optionsVal = options[optionsKey];
-      acc = acc[optionsKey](optionsVal);
+      let optionsMethod;
+
+      try {
+        acc = acc[optionsKey](optionsVal);
+      } catch (e) {
+        throw new Error(`esri-leaflet query task does not support option:
+                         ${optionsKey}`);
+      }
+
       return acc;
     }, query);
 
