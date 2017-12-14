@@ -101,10 +101,18 @@ class EsriClient extends BaseClient {
     let query = L.esri.query({ url })[relationship](targetGeom);
 
     // apply options by chaining esri leaflet option methods
-    const optionsKeys = Object.keys(options);
+    const optionsKeys = Object.keys(options) || [];
     query = optionsKeys.reduce((acc, optionsKey) => {
       const optionsVal = options[optionsKey];
-      acc = acc[optionsKey](optionsVal);
+      let optionsMethod;
+
+      try {
+        acc = acc[optionsKey](optionsVal);
+      } catch (e) {
+        throw new Error(`esri-leaflet query task does not support option:
+                         ${optionsKey}`);
+      }
+
       return acc;
     }, query);
 
