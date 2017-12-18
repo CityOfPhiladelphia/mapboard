@@ -5,6 +5,7 @@
         <cyclomedia-widget v-if="this.$config.cyclomedia.enabled"
                            slot="cycloWidget"
                            v-show="cyclomediaActive"
+                           @orientation-changed="handleCyclomediaOrientationChange"
         />
         <pictometry-widget v-if="this.$config.pictometry.enabled"
                            slot="pictWidget"
@@ -23,18 +24,18 @@
                       :offsetY="0"
           />
           <layer v-if="this.pictometryActive" />
-          <png-marker v-if="this.cyclomediaActive && this.pictometryActive"
+          <!-- <png-marker v-if="this.cyclomediaActive && this.pictometryActive"
                       :latlng="[this.$store.state.cyclomedia.viewer.props.orientation.xyz[1], this.$store.state.cyclomedia.viewer.props.orientation.xyz[0]]"
                       :icon="'camera2.png'"
                       :height="20"
                       :width="30"
                       :offsetX="-2"
                       :offsetY="-2"
-          />
+          /> -->
           <!-- :icon="'../assets/camera.png'" -->
-          <view-cone v-if="this.cyclomediaActive && this.pictometryActive"
+          <!-- <view-cone v-if="this.cyclomediaActive && this.pictometryActive"
                      :orientation="this.$store.state.cyclomedia.viewer.props.orientation"
-          />
+          /> -->
         </pictometry-widget>
         <!-- :center="this.$store.state.map.map.center" -->
       </map-panel>
@@ -146,6 +147,11 @@
         if (host === '10.8.101.67') {
           return this.$config.pictometryLocal.secretKey;
         }
+      }
+    },
+    methods: {
+      handleCyclomediaOrientationChange() {
+        console.log('handleCyclomediaOrientationChange is running');
       }
     },
     watch: {

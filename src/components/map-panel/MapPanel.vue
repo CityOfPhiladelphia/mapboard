@@ -85,12 +85,12 @@
       />
 
       <!-- marker using a png and ablility to rotate it -->
-      <png-marker v-if="this.cyclomediaActive"
+      <!-- <png-marker v-if="this.cyclomediaActive"
                   :icon="'../../src/assets/camera.png'"
-      />
+      /> -->
 
       <!-- marker using custom code extending icons - https://github.com/iatkin/leaflet-svgicon -->
-      <svg-marker v-if="this.cyclomediaActive" />
+      <!-- <svg-marker v-if="this.cyclomediaActive" /> -->
 
       <!-- geojson features -->
       <geojson v-for="geojsonFeature in geojsonFeatures"

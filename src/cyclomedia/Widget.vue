@@ -8,14 +8,27 @@
     >
       <i class="fa fa-external-link fa popout-icon"></i>
     </div>
-    <div id="cycloviewer" ref="cycloviewer" class="panoramaViewerWindow">
+    <div id="cycloviewer"
+         ref="cycloviewer"
+         class="panoramaViewerWindow"
+         @mousedown="console.log('mouseup')"
+    >
     </div>
   </div>
 </template>
 
 <script>
   export default {
+    data() {
+      return {
+        'orientation': {},
+        // 'viewer': {},
+      }
+    },
     computed: {
+      orientation2() {
+        return this.$viewer.props.orientation;
+      },
       pictometryActive() {
         return this.$store.state.pictometry.active
       },
@@ -39,6 +52,9 @@
       }
     },
     watch: {
+      orientation(nextOrientation) {
+        this.$emit('orientationChanged', nextOrientation);
+      },
       locForCyclo(coords){
         // console.log(coords);
         this.setNewLocation(coords);
@@ -60,12 +76,29 @@
         () => {
           const cycloDiv = this.$refs.cycloviewer;
           const viewer = StreetSmartApi.addPanoramaViewer(cycloDiv, {recordingsVisible: true, timeTravelVisible: true});
-          this.$store.commit('setCyclomediaViewer', viewer);
+          // this.$store.commit('setCyclomediaViewer', viewer);
 
           // get map center and set location
           const map = this.$store.state.map.map;
           const center = map.getCenter();
-          this.setNewLocation([center.lng, center.lat]);
+          viewer.openByCoordinate([center.lng, center.lat]);
+          this.orientation = viewer.props.orientation;
+          // this.viewer = viewer;
+          this.$viewer = viewer;
+          console.log('viewer:', viewer);
+          console.log('viewer.props.orientation:', viewer.props.orientation);
+          // viewer.on('VIEW_LOAD_END', function() {
+          //   console.log('on VIEW_LOAD_END fired');
+          // })
+
+          // viewer.on('VIEW_LOAD_START', function() {
+          //   console.log('on VIEW_LOAD_START fired');
+          // })
+          // viewer.on('VIEW_CHANGE', function() {
+          //   console.log('on VIEW_CHANGE fired');
+          // })
+
+          // this.setNewLocation([center.lng, center.lat]);
 
           // TODO bind CN events to vue
           // viewer.on(StreetSmartApi.Events.panoramaViewer.VIEW_CHANGE, e => {
@@ -86,14 +119,14 @@
     },
     updated() {
       // TODO find a better way to get the image to update and not be stretched
-      const viewer = this.$store.state.cyclomedia.viewer;
-      viewer.rotateRight(0.0000001);
+      // const viewer = this.$store.state.cyclomedia.viewer;
+      // viewer.rotateRight(0.0000001);
     },
     methods: {
       setNewLocation(coords) {
-        // console.log('setNewLocation is running using', coords);
-        const viewer = this.$store.state.cyclomedia.viewer;
-        viewer.openByCoordinate(coords);
+        console.log('setNewLocation is running using', coords);
+        // const viewer = this.$store.state.cyclomedia.viewer;
+        // viewer.openByCoordinate(coords);
       },
       popoutClicked() {
         const map = this.$store.state.map.map;
