@@ -549,7 +549,7 @@ class DataManager {
     }
 
     // only recenter the map on geocode
-    if (lastSearchMethod === 'geocode') {
+    if (lastSearchMethod === 'geocode' && this.store.state.geocode.status !== 'error') {
       this.store.commit('setMapCenter', coords);
       this.store.commit('setMapZoom', 19);
     }
