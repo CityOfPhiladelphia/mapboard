@@ -86,6 +86,11 @@ class Router {
     // if there's no address, don't do anything
     if (!addressComp) {
       // console.log('no address, returning');
+      this.store.commit('setActiveTopic', null);
+      this.store.commit('setActiveParcelLayer', 'pwd');
+      this.store.commit('setBasemap', 'pwd');
+      this.dataManager.resetParcels();
+      this.dataManager.resetData();
       return;
     }
 

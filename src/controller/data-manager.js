@@ -341,6 +341,27 @@ class DataManager {
       }
     }
 
+    resetParcels() {
+      this.store.commit('setGeocodeStatus', null);
+      this.store.commit('setGeocodeData', null);
+      this.store.commit('setGeocodeRelated', null);
+      this.store.commit('setGeocodeInput', null);
+      this.store.commit('setParcelData', {
+        parcelLayer: 'dor',
+        multipleAllowed: true,
+        data: [],
+        status: null,
+        activeParcel: null,
+        activeAddress: null,
+        activeMapreg: null
+      });
+      this.store.commit('setParcelData', {
+        parcelLayer: 'pwd',
+        multipleAllowed: false,
+        data: null
+      });
+    }
+
   checkDataSourcesFetched(paths = []) {
     // console.log('check data sources fetched', paths);
 
