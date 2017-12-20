@@ -411,12 +411,15 @@
         return this.hasImageryBasemaps && this.$config.map.imagery.enabled;
       },
       identifyFeature() {
-        const configFeature = this.activeTopicConfig.identifyFeature;
-        if (configFeature) {
-          return configFeature;
+        let configFeature;
+        if (this.geocodeType === 'intersection') {
+          configFeature = "address-marker";
+        } else if (this.activeTopicConfig.identifyFeature) {
+          configFeature = this.activeTopicConfig.identifyFeature;
         } else {
-          return this.$config.map.defaultIdentifyFeature;
+          configFeature = this.$config.map.defaultIdentifyFeature;
         }
+        return configFeature;
       },
       activeTopic() {
         return this.$store.state.activeTopic;
@@ -448,6 +451,9 @@
       },
       geocodeGeom() {
         return this.geocodeResult.geometry;
+      },
+      geocodeType() {
+        return this.geocodeResult.ais_feature_type;
       },
       streetAddress() {
         return this.geocodeResult.properties.street_address;
