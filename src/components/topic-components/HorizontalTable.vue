@@ -41,11 +41,11 @@
                   class="mb-select"
           >
             <optgroup>
-              <option v-for="sortMethod in sortMethods"
-                      :value="sortMethod"
+              <option v-for="sortField in sortFields"
+                      :value="sortField"
                       class="mb-select-option"
               >
-                {{ sortMethod }}
+                {{ sortField }}
               </option>
             </optgroup>
           </select>
@@ -131,7 +131,7 @@
   import TopicComponent from './TopicComponent.vue';
   import HorizontalTableRow from './HorizontalTableRow.vue';
 
-  const DEFAULT_SORT_METHODS = [
+  const DEFAULT_SORT_FIELDS = [
     'date',
     'distance'
   ];
@@ -147,22 +147,22 @@
                                         return acc;
                                       }, {});
 
-      let methods;
+      let sortFields;
       if (this.options.sort){
-        methods = this.options.sort.methods || [];
+        sortFields = this.options.sort.sortFields || [];
       }
-      let sortMethod;
-      if (methods) {
-        sortMethod = methods[0]
+      let sortField;
+      if (sortFields) {
+        sortField = sortFields[0]
       } else {
-        sortMethod = DEFAULT_SORT_METHODS[0]
+        sortField = DEFAULT_SORT_FIELDS[0]
       }
       const highestRowRetrieved = this.options.defaultIncrement;
 
       const initialData = {
         filterSelections: defaultFilterSelections,
         searchText: '',
-        sortMethod,
+        sortField,
         highestRowRetrieved
       };
 
@@ -342,35 +342,13 @@
       itemsAfterSort() {
         const itemsAfterFilters = this.itemsAfterFilters;
         const sortOpts = this.options.sort;
-
-        // determine if the user selected a sort method
-        // let sortMethod;
-        // if (this.sortMethod && this.sortMethod.length > 0) {
-        //   sortMethod = this.sortMethod;
-        // }
-
-        // let itemsAfterSort = itemsAfterFilters;
-
-        // if (sortMethod) {
-        //   // get field to sort on
-        //   // and then sort
-        //   console.log('we got a sort method', sortMethod);
-        //
-        //   itemsAfterSort
-        // // otherwise, if there are sort opts, use those and this.sortItems
-        // } else if (sortOpts) {
-        //   itemsAfterSort = this.sortItems(itemsAfterFilters, sortOpts);
-        // }
-
-        // itemsAfterSort = ;
-
         return this.sortItems(itemsAfterFilters, sortOpts);
       },
-      sortMethods() {
-        if (this.options.sort.methods) {
-          return this.options.sort.methods;
+      sortFields() {
+        if (this.options.sort.sortFields) {
+          return this.options.sort.sortFields;
         } else {
-          return DEFAULT_SORT_METHODS;
+          return DEFAULT_SORT_FIELDS;
         }
       },
       // this takes filtered items and applies the max number of rows
@@ -480,7 +458,7 @@
         // console.log('handleSortValueChange running', e);
 
         const value = e.target.value;
-        this.sortMethod = value;
+        this.sortField = value;
       },
       handleFilterValueChange(e) {
         // console.log('handle filter value change', e);
@@ -602,11 +580,18 @@
         // console.log('defaultSortFn is running, a:', a, 'b:', b);
         const sortOpts = this.options.sort;
         const getValueFn = sortOpts.getValue;
-        const sortMethod = this.sortMethod;
-        const order = sortOpts.order;
+        const sortField = this.sortField;
+        let order;
+        if (typeof sortOpts.order === 'function') {
+          const orderFn = sortOpts.order;
+          order = orderFn(sortField);
+        } else {
+          order = sortOpts.order;
+        }
+        console.log('sortField', sortField, 'order', order);
 
-        const valA = getValueFn(a, sortMethod);
-        const valB = getValueFn(b, sortMethod);
+        const valA = getValueFn(a, sortField);
+        const valB = getValueFn(b, sortField);
         let result;
 
         if (valA === null) {
