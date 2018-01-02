@@ -9,7 +9,9 @@
 
 // turn off console logging in production
 // TODO come up with better way of doing this with webpack + env vars
-// console.log = console.info = console.debug = console.error = function () {};
+if (location.hostname !== 'localhost') {
+  // console.log = console.info = console.debug = console.error = function () {};
+}
 
 var GATEKEEPER_KEY = '82fe014b6575b8c38b44235580bc8b11';
 // var BASE_CONFIG_URL = '//raw.githubusercontent.com/rbrtmrtn/mapboard-base-config/develop/config.js';
@@ -246,18 +248,18 @@ Mapboard.default({
     //     return data;
     //   }
     // },
-    stormwater: {
-      type: 'http-get',
-      url: 'https://api.phila.gov/stormwater',
-      options: {
-        params: {
-          search: function(feature){ return feature.properties.street_address; }
-        },
-        success: function(data) {
-          return data[0];
-        }
-      }
-    },
+    // stormwater: {
+    //   type: 'http-get',
+    //   url: 'https://api.phila.gov/stormwater',
+    //   options: {
+    //     params: {
+    //       search: function(feature){ return feature.properties.street_address; }
+    //     },
+    //     success: function(data) {
+    //       return data[0];
+    //     }
+    //   }
+    // },
     liPermits: {
       type: 'http-get',
       url: 'https://phl.carto.com/api/v2/sql',
@@ -429,104 +431,49 @@ Mapboard.default({
               var where = "MATCHED_REGMAP = '" + state.parcels.dor.data[0].properties.BASEREG + "'";
               console.log('DOR Parcel BASEREG', state.parcels.dor.data[0].properties.BASEREG);
             } else {
-              const address_low = state.geocode.data.properties.address_low
-              roundto100 = function(address) { return Math.floor(address/100, 1)*100}
-              const address_floor = roundto100(address_low);
-              const address_remainder = address_low - address_floor;
-              console.log('address_low:', address_low, 'address_floor:', address_floor);
-              var where = "((ADDRESS_LOW = " + address_low
-                        + " OR (ADDRESS_LOW >= " + address_floor + " AND ADDRESS_LOW <= " + address_low + " AND ADDRESS_HIGH >= " + address_remainder + " ))"
+              // TODO make these all camel case
+              var props = state.geocode.data.properties,
+                  address_low = props.address_low,
+                  address_floor = Math.floor(address_low / 100, 1) * 100,
+                  address_remainder = address_low - address_floor,
+                  addressHigh = props.address_high,
+                  addressCeil = addressHigh || address_low;
+
+              // form where clause
+              var where = "(((ADDRESS_LOW >= " + address_low + " AND ADDRESS_LOW <= " + addressCeil + ")"
+                        + " OR (ADDRESS_LOW >= " + address_floor + " AND ADDRESS_LOW <= " + addressCeil + " AND ADDRESS_HIGH >= " + address_remainder + " ))"
                         + " AND STREET_NAME = '" + geocode.street_name
                         + "' AND STREET_SUFFIX = '" + geocode.street_suffix
-                        + "'"
+                        + "' AND (MOD(ADDRESS_LOW,2) = MOD( " + address_low + ",2))";
+
+
+
               if (geocode.street_predir != '') {
                 where += " AND STREET_PREDIR = '" + geocode.street_predir + "'";
               }
+
               if (geocode.address_low_suffix != '') {
                 where += " AND ADDRESS_LOW_SUFFIX = '" + geocode.address_low_suffix + "'";
               }
+
               if (geocode.street_postdir != '') {
                 where += " AND STREET_POSTDIR = '" + geocode.street_postdir + "'";
               }
+
               // check for unit num
-              var unitNum = cleanDorAttribute(feature.properties.UNIT);
-              console.log('DOR Parcel BASEREG - feature:', feature);
-              var unitNum2 = geocode.unit_num;
+              var unitNum = cleanDorAttribute(feature.properties.UNIT),
+                  unitNum2 = geocode.unit_num;
+
               if (unitNum) {
                 where += " AND UNIT_NUM = '" + unitNum + "'";
-              } else if (unitNum2 != '') {
+              } else if (unitNum2 !== '') {
                 where += " AND UNIT_NUM = '" + unitNum2 + "'";
               }
 
               where += ") or MATCHED_REGMAP = '" + state.parcels.dor.data[0].properties.BASEREG + "'";
-              // where += ") OR (STREET_ADDRESS='" + parcelBaseAddress + "'";
-              // if (unitNum) {
-              //   where +="AND UNIT_NUM = '" + unitNum + "'";
-              // }
-              // where += ")"
             }
 
-            // METHOD 2: via parcel id - the layer doesn't have mapreg yet, though
-            // var mapreg = feature.properties.MAPREG;
-            // var where = `MAPREG = '${mapreg}'`;
-
-            // console.log('dor docs where', where);
-
             return where;
-
-          // q: function(feature, state) {
-          //   // METHOD 1: via address
-          //   var parcelBaseAddress = concatDorAddress(feature);
-          //   var geocode = state.geocode.data.properties;
-          //   // console.log('parcelBaseAddress', parcelBaseAddress)
-          //
-          //   // REVIEW if the parcel has no address, we don't want to query
-          //   // WHERE ADDRESS = 'null' (doesn't make sense), so use this for now
-          //   if (!parcelBaseAddress || parcelBaseAddress === 'null'){
-          //     var where = "select * from vw_rtt_summary where matched_regmap = '" + state.parcels.dor.data[0].properties.BASEREG + "'";
-          //     // console.log('DOR Parcel BASEREG', state.parcels.dor.data[0].properties.BASEREG);
-          //   } else {
-          //     var address_low = state.geocode.data.properties.address_low
-          //     roundto100 = function(address) { return Math.floor(address/100, 1)*100}
-          //     var address_floor = roundto100(address_low);
-          //     var address_remainder = address_low - address_floor;
-          //     // console.log('address_low:', address_low, 'address_floor:', address_floor, 'address_remainder', address_remainder);//, 'address_high', address_high);
-          //       var where = "select * from vw_rtt_summary where ((address_low = " + address_low
-          //                 + " or (address_low >= " + address_floor + " and address_low <= " + address_low
-          //                 + " and (CASE WHEN address_high ~ '^\d+$' THEN address_high::numeric END) >= " + address_remainder + " ))"
-          //                 // + " and (CASE WHEN address_high <> '' and address_high <> 'N' THEN address_high::numeric END) >= " + address_remainder + " ))"
-          //                 + " and street_name = '" + geocode.street_name
-          //                 + "' and street_suffix = '" + geocode.street_suffix
-          //                 + "'"
-          //     if (geocode.street_predir != '') {
-          //       where += " and street_predir = '" + geocode.street_predir + "'";
-          //     }
-          //     if (geocode.address_low_suffix != '') {
-          //       where += " and address_low_suffix = '" + geocode.address_low_suffix + "'";
-          //     }
-          //     if (geocode.street_postdir != '') {
-          //       where += " and street_postdir = '" + geocode.street_postdir + "'";
-          //     }
-          //     // check for unit num
-          //     var unitNum = cleanDorAttribute(feature.properties.UNIT);
-          //     // console.log('DOR Parcel BASEREG - feature:', feature);
-          //     var unitNum2 = geocode.unit_num;
-          //     if (unitNum) {
-          //       where += " and unit_num::int = '" + unitNum + "'";
-          //     } else if (unitNum2 != '') {
-          //       where += " and unit_num = '" + unitNum2 + "'";
-          //     }
-          //     where += ") or matched_regmap = '" + state.parcels.dor.data[0].properties.BASEREG + "'";
-          //     // console.log('where', where);
-          //   }
-          //
-          //   // METHOD 2: via parcel id - the layer doesn't have mapreg yet, though
-          //   // var mapreg = feature.properties.MAPREG;
-          //   // var where = `MAPREG = '${mapreg}'`;
-          //
-          //   // console.log('dor docs where', where);
-          //
-          //   return where;
           },
           outFields: "R_NUM, DISPLAY_DATE, DOCUMENT_TYPE, GRANTORS, GRANTEES",
           returnDistinctValues: 'true',
@@ -625,7 +572,7 @@ Mapboard.default({
       url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/1/',
       options: {
         relationship: 'contains',
-        returnGeometry: false
+        returnGeometry: false,
       },
       success: function(data) {
         return data;
@@ -658,34 +605,50 @@ Mapboard.default({
       deps: ['parcels.dor'],
       options: {
         relationship: 'intersects',
-        targetGeometry: function(state, Leaflet) {
+        targetGeometry: function (state, Leaflet) {
           // get combined extent of dor parcels
           // var parcels = state.dorParcels.data;
           var parcels = state.parcels.dor.data;
-          // console.log('parcels', parcels);
 
           // build up sets of x and y values
-          var xVals = [];
-          var yVals = [];
+          var xVals = [],
+              yVals = [];
 
           // loop over parcels
-          for (var i=0; i < parcels.length; i++) {
-            // console.log('parcels[i]', parcels[i])
-            var coordSets = parcels[i].geometry.coordinates;
-            // loop over coordinate sets
-            for (var j=0; j < coordSets.length; j++) {
-              // console.log('coordSets[j]', coordSets[j]);
-              // loop over coordinates
-              for (var k=0; k < coordSets[j].length; k++) {
-                // console.log('coordSets[j][k]', coordSets[j][k]);
-                var x = coordSets[j][k][0];
-                var y = coordSets[j][k][1];
+          parcels.forEach(function (parcel) {
+            var geom = parcel.geometry,
+                parts = geom.coordinates;
 
-                xVals.push(x);
-                yVals.push(y);
-              }
-            }
-          }
+            // loop over parts (whether it's simple or multipart)
+            parts.forEach(function (coordPairs) {
+              coordPairs.forEach(function (coordPair) {
+                console.log('coordPair', coordPair);
+
+                // if the polygon has a hole, it has another level of coord
+                // pairs, presumably one for the outer coords and another for
+                // inner. for simplicity, add them all.
+                var hasHole = Array.isArray(coordPair[0]);
+
+                if (hasHole) {
+                  // loop through inner pairs
+                  coordPair.forEach(function (innerCoordPair) {
+                    var x = innerCoordPair[0],
+                        y = innerCoordPair[1];
+
+                    xVals.push(x);
+                    yVals.push(y)
+                  });
+                // for all other polys
+                } else {
+                  var x = coordPair[0],
+                      y = coordPair[1];
+
+                  xVals.push(x);
+                  yVals.push(y)
+                }
+              });
+            });
+          });
 
           // take max/min
           var xMin = Math.min.apply(null, xVals);
@@ -693,10 +656,19 @@ Mapboard.default({
           var yMin = Math.min.apply(null, yVals);
           var yMax = Math.max.apply(null, yVals);
 
-          // console.log('xVals', xVals, 'xMin', xMin, 'xMax', xMax);
-          // console.log('yVals', yVals, 'yMin', yMin, 'yMax', yMax);
+          // make sure all coords are defined. no NaNs allowed.
+          var coordsAreDefined = [xMin, xMax, yMin, yMax].every(
+            function (coord) { return coord; }
+          );
 
-          // varruct geometry
+          // if they aren't
+          if (!coordsAreDefined) {
+            //  exit with null to avoid an error calling lat lng bounds
+            // constructor
+            return null;
+          }
+
+          // construct geometry
           var bounds = L.latLngBounds([
             [yMin, xMin],
             [yMax, xMax]
@@ -724,6 +696,7 @@ Mapboard.default({
         topics: ['water'],
         showWithBaseMapOnly: false
       },
+      // TODO give these an id instead of using the label as a key
       data: {
         'Roof': {
           'background-color': '#FEFF7F',
@@ -739,6 +712,7 @@ Mapboard.default({
         showWithBaseMapOnly: true
       },
       data: {
+        // TODO give these an id instead of using the label as a key
         'Easements': {
           'border-color': 'rgb(255, 0, 197)',
           'border-style': 'solid',
@@ -747,7 +721,7 @@ Mapboard.default({
           'height': '12px',
           'font-size': '10px',
         },
-        'Transparcels': {
+        'Trans Parcels': {
           'border-color': 'rgb(0, 168, 132)',
           'border-style': 'solid',
           'border-weight': '1px',
@@ -1135,25 +1109,22 @@ Mapboard.default({
         {
           type: 'horizontal-table',
           options: {
-            topicKey: 'condos',
+            topicKey: 'condominiums',
             id: 'condoList',
             useApiCount: true,
             defaultIncrement: 25,
             fields: [
               {
-                label: 'OPA Account',
-                value: function(state, item) {
-                  var url = window.location.origin + window.location.pathname + '#/' + item.properties.opa_account_num + '/opa'
-                  return "<a href="+url+">"+item.properties.opa_account_num+" <i class='fa fa-external-link'></i></a>";
-                  // console.log('value function item:', item, 'controller:', controller);
-                  // return "<a onclick='" + controller + "'>"+item.properties.opa_account_num+"</a>"
+                label: 'Address',
+                value: function (state, item) {
+                  var address = item.properties.street_address;
+                  return '<a href="#/' + address + '/property">' + address + '</a>';
                 },
               },
               {
-                label: 'Address',
-                value: function(state, item) {
-                  var url = window.location.origin + window.location.pathname + '#/' + item.properties.opa_account_num + '/opa'
-                  return "<a href="+url+">"+item.properties.street_address+" <i class='fa fa-external-link'></i></a>";
+                label: 'OPA Account #',
+                value: function (state, item) {
+                  return item.properties.opa_account_num;
                 },
               },
             ], // end fields
@@ -2749,7 +2720,7 @@ Mapboard.default({
                         val = item._distance;
                       }
                       return val;
-                    },
+                    }
                   },
                   filterByText: {
                     label: 'Filter by',
