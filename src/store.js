@@ -103,8 +103,6 @@ function createTableGroups(config) {
 }
 
 function createStore(config) {
-  const defaultTopic = config.topics[0];
-
   // create initial state for sources. data key => {}
   const sourceKeys = Object.keys(config.dataSources || {});
   const sources = sourceKeys.reduce((o, key) => {
@@ -156,9 +154,14 @@ function createStore(config) {
   }, {});
 
   const initialState = {
-    is_mobile_or_tablet: false,
-    activeTopic: defaultTopic.key,
-    activeParcelLayer: defaultTopic.parcels,
+    isMobileOrTablet: false,
+
+    // this gets set to the parcel layer for the default (aka first) topic in
+    // DataManager.resetGeocode, which is called by Router.hashChanged on app
+    // load.
+    activeTopic: '',
+    activeParcelLayer: '',
+
     // the ais feature
     clickCoords: null,
     geocode: {
@@ -179,7 +182,10 @@ function createStore(config) {
       center: config.map.center,
       zoom: config.map.zoom,
       map: null,
-      basemap: defaultTopic.basemap,
+      // this gets set to the parcel layer for the default topic by
+      // DataManager.resetGeocode; see note above for activeTopic and
+      // activeParcelLayer.
+      basemap: '',
       imagery: 'imagery2017',
       shouldShowImagery: false,
       // circleMarkers: [],
@@ -281,7 +287,7 @@ function createStore(config) {
     },
     mutations: {
       setIsMobileOrTablet(state, payload) {
-        state.is_mobile_or_tablet = payload;
+        state.isMobileOrTablet = payload;
       },
       setLocation(state, payload) {
         state.map.location.lat = payload.lat;

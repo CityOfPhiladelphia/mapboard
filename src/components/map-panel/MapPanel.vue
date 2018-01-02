@@ -335,7 +335,7 @@
     },
     computed: {
       isMobileOrTablet() {
-        return this.$store.state.is_mobile_or_tablet;
+        return this.$store.state.isMobileOrTablet;
       },
       geolocationEnabled() {
         return this.$config.geolocation.enabled;

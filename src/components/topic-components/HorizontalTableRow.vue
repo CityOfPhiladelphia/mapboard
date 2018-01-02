@@ -26,7 +26,7 @@
         return this.activeFeature.featureId === this.$props.item._featureId;
       },
       isMobileOrTablet() {
-        return this.$store.state.is_mobile_or_tablet;
+        return this.$store.state.isMobileOrTablet;
       },
     },
     watch: {

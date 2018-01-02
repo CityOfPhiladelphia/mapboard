@@ -341,11 +341,16 @@ class DataManager {
       }
     }
 
-    resetParcels() {
+    // this gets called when the current geocoded address is wiped out, such as
+    // when you click on the "Atlas" title and it navigates to an empty hash
+    resetGeocode() {
+      // reset geocode
       this.store.commit('setGeocodeStatus', null);
       this.store.commit('setGeocodeData', null);
       this.store.commit('setGeocodeRelated', null);
       this.store.commit('setGeocodeInput', null);
+
+      // reset parcels
       this.store.commit('setParcelData', {
         parcelLayer: 'dor',
         multipleAllowed: true,
@@ -360,6 +365,14 @@ class DataManager {
         multipleAllowed: false,
         data: null
       });
+
+      // reset other topic and map state
+      this.store.commit('setActiveTopic', 'property');
+      this.store.commit('setActiveParcelLayer', 'pwd');
+      this.store.commit('setBasemap', 'pwd');
+
+      // reset data sources
+      this.resetData();
     }
 
   checkDataSourcesFetched(paths = []) {

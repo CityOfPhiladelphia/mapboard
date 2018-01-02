@@ -65,32 +65,26 @@ class Router {
   }
 
   hashChanged() {
+    // console.log('hash changed =>', window.location.hash);
+
     const location = window.location;
     const hash = location.hash;
-
-    // console.log('hash changed =>', hash);
 
     // parse url
     const comps = parseUrl(location.href);
     const query = comps.query;
 
-    // handle ?search entry point
-    if (query && query.search) {
-      // TODO
-    }
+    // TODO handle ?search entry point
+    // if (query && query.search) {
+    // }
 
     // parse path
     const pathComps = hash.split('/').splice(1);
     const addressComp = pathComps[0];
 
-    // if there's no address, don't do anything
+    // if there's no address, erase it
     if (!addressComp) {
-      // console.log('no address, returning');
-      this.store.commit('setActiveTopic', null);
-      this.store.commit('setActiveParcelLayer', 'pwd');
-      this.store.commit('setBasemap', 'pwd');
-      this.dataManager.resetParcels();
-      this.dataManager.resetData();
+      this.dataManager.resetGeocode();
       return;
     }
 
