@@ -85,12 +85,18 @@
       />
 
       <!-- marker using a png and ablility to rotate it -->
-      <!-- <png-marker v-if="this.cyclomediaActive"
+      <png-marker v-if="this.cyclomediaActive"
                   :icon="'../../src/assets/camera.png'"
-      /> -->
+                  :latlng="cycloLatlng"
+                  :rotationAngle="cycloRotationAngle"
+      />
 
       <!-- marker using custom code extending icons - https://github.com/iatkin/leaflet-svgicon -->
-      <!-- <svg-marker v-if="this.cyclomediaActive" /> -->
+      <svg-view-cone-marker v-if="this.cyclomediaActive"
+                            :latlng="cycloLatlng"
+                            :rotationAngle="cycloRotationAngle"
+                            :hFov="cycloHFov"
+      />
 
       <!-- geojson features -->
       <geojson v-for="geojsonFeature in geojsonFeatures"
@@ -269,7 +275,6 @@
   import OpacitySlider from '../OpacitySlider.vue';
   import VectorMarker from '../VectorMarker.vue';
   import PngMarker from '../PngMarker.vue';
-  import SvgMarker from '../SvgMarker.vue';
   import BasemapToggleControl from '../BasemapToggleControl.vue';
   import BasemapSelectControl from '../BasemapSelectControl.vue';
   import LocationControl from '../LocationControl.vue';
@@ -277,6 +282,7 @@
   import PictometryButton from '../../pictometry/Button.vue';
   import CyclomediaRecordingCircle from '../../cyclomedia/RecordingCircle.vue';
   import CyclomediaRecordingsClient from '../../cyclomedia/recordings-client';
+  import SvgViewConeMarker from '../../cyclomedia/SvgViewConeMarker.vue';
   import MeasureControl from '../MeasureControl.vue';
   import LegendControl from '../LegendControl.vue';
   import BasemapTooltip from '../BasemapTooltip.vue';
@@ -299,13 +305,13 @@
       OpacitySlider,
       VectorMarker,
       PngMarker,
-      SvgMarker,
       BasemapToggleControl,
       BasemapSelectControl,
       LocationControl,
       PictometryButton,
       CyclomediaButton,
       CyclomediaRecordingCircle,
+      SvgViewConeMarker,
       MeasureControl,
       LegendControl,
       BasemapTooltip,
@@ -334,6 +340,21 @@
       this.$controller.appDidLoad();
     },
     computed: {
+      cycloLatlng() {
+        if (this.$store.state.cyclomedia.orientation.xyz !== null) {
+          const xyz = this.$store.state.cyclomedia.orientation.xyz;
+          return [xyz[1], xyz[0]];
+        } else {
+          const center = this.$config.map.center;
+          return center;
+        }
+      },
+      cycloRotationAngle() {
+        return this.$store.state.cyclomedia.orientation.yaw * (180/3.14159265359);
+      },
+      cycloHFov() {
+        return this.$store.state.cyclomedia.orientation.hFov;
+      },
       isMobileOrTablet() {
         return this.$store.state.is_mobile_or_tablet;
       },

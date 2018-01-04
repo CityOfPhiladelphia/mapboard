@@ -11,24 +11,15 @@
     <div id="cycloviewer"
          ref="cycloviewer"
          class="panoramaViewerWindow"
-         @mousedown="console.log('mouseup')"
     >
+    <!-- @mousedown="console.log('mouseup')" -->
     </div>
   </div>
 </template>
 
 <script>
   export default {
-    data() {
-      return {
-        'orientation': {},
-        // 'viewer': {},
-      }
-    },
     computed: {
-      orientation2() {
-        return this.$viewer.props.orientation;
-      },
       pictometryActive() {
         return this.$store.state.pictometry.active
       },
@@ -44,20 +35,24 @@
         const geocodeData = this.$store.state.geocode.data;
         const map = this.$store.state.map.map;
         if (geocodeData) {
-          return geocodeData.geometry.coordinates;
+          return [geocodeData.geometry.coordinates[1], geocodeData.geometry.coordinates[0]];
         }
+      },
+      latLngFromMap() {
+        return this.$store.state.cyclomedia.latLngFromMap;
       },
       mapCenter() {
         return this.$store.state.map.center;
       }
     },
     watch: {
-      orientation(nextOrientation) {
-        this.$emit('orientationChanged', nextOrientation);
+      locForCyclo(newCoords) {
+        // console.log('watch locForCyclo is firing, newCoords:', newCoords);
+        this.setNewLocation(newCoords);
       },
-      locForCyclo(coords){
-        // console.log(coords);
-        this.setNewLocation(coords);
+      latLngFromMap(newCoords) {
+        // console.log('watch latLngFromMap is firing, newCoords:', newCoords);
+        this.setNewLocation([newCoords.lat, newCoords.lng]);
       }
     },
     mounted() {
@@ -72,61 +67,62 @@
           locale: 'en-us',
           database: 'CMDatabase'
         }
-      }).then(
+      }).then (
         () => {
-          const cycloDiv = this.$refs.cycloviewer;
-          const viewer = StreetSmartApi.addPanoramaViewer(cycloDiv, {recordingsVisible: true, timeTravelVisible: true});
-          // this.$store.commit('setCyclomediaViewer', viewer);
-
           // get map center and set location
-          const map = this.$store.state.map.map;
-          const center = map.getCenter();
-          viewer.openByCoordinate([center.lng, center.lat]);
-          this.orientation = viewer.props.orientation;
-          // this.viewer = viewer;
-          this.$viewer = viewer;
-          console.log('viewer:', viewer);
-          console.log('viewer.props.orientation:', viewer.props.orientation);
-          // viewer.on('VIEW_LOAD_END', function() {
-          //   console.log('on VIEW_LOAD_END fired');
-          // })
-
-          // viewer.on('VIEW_LOAD_START', function() {
-          //   console.log('on VIEW_LOAD_START fired');
-          // })
-          // viewer.on('VIEW_CHANGE', function() {
-          //   console.log('on VIEW_CHANGE fired');
-          // })
-
-          // this.setNewLocation([center.lng, center.lat]);
-
-          // TODO bind CN events to vue
-          // viewer.on(StreetSmartApi.Events.panoramaViewer.VIEW_CHANGE, e => {
-          //
-          // });
-          // viewer.on(StreetSmartApi.Events.panoramaViewer.VIEW_LOAD_END, e => {
-          //   const recording = viewer.getRecording();
-          //   const xyz = recording.xyz;
-          //   const xy = xyz.slice(0, 2);
-          //   const xyFloat = xy.map(parseFloat);
-          //   const xyArray = [].slice.call(xyFloat);
-          // });
+          const map = this.$store.state.map;
+          this.setNewLocation(map.center);
         },
         err => {
-          console.log('Api: init: failed. Error: ', err);
+          // console.log('Api: init: failed. Error: ', err);
         }
       );
     },
-    updated() {
-      // TODO find a better way to get the image to update and not be stretched
-      // const viewer = this.$store.state.cyclomedia.viewer;
-      // viewer.rotateRight(0.0000001);
-    },
     methods: {
       setNewLocation(coords) {
-        console.log('setNewLocation is running using', coords);
+        // console.log('setNewLocation is running using', coords);
+        const viewerType = StreetSmartApi.ViewerType.PANORAMA;
+        // StreetSmartApi.open(center.lng + ',' + center.lat, {
+        StreetSmartApi.open(coords[1] + ',' + coords[0], {
+          viewerType: viewerType,
+          srs: 'EPSG:4326',
+          closable: false,
+          maximizable: false,
+        }).then (
+          function(result) {
+            // console.log('StreetSmartApi2, result:', result);
+            const widget = this;
+            // console.log('Created component through API:', result);
+            if (result) {
+              for (let i =0; i < result.length; i++) {
+                if(result[i].getType() === StreetSmartApi.ViewerType.PANORAMA) window.panoramaViewer = result[i];
+              }
+              widget.sendOrientationToStore();
+              window.panoramaViewer.on('VIEW_CHANGE', function() {
+
+                if (window.panoramaViewer.props.orientation.yaw !== widget.$store.state.cyclomedia.orientation.yaw ||
+                    window.panoramaViewer.props.orientation.xyz !== widget.$store.state.cyclomedia.orientation.xyz
+                ) {
+                  // console.log('on VIEW_CHANGE fired with yaw change', window.panoramaViewer.props.orientation);
+                  widget.sendOrientationToStore();
+                }
+              })
+            }
+          }.bind(this)
+        ).catch(
+          function(reason) {
+            // console.log('Failed to create component(s) through API: ' + reason);
+          }
+        );
+
         // const viewer = this.$store.state.cyclomedia.viewer;
         // viewer.openByCoordinate(coords);
+      },
+      sendOrientationToStore() {
+        // console.log('sendOrientationToStore, yaw:', window.panoramaViewer.props.orientation.yaw);
+        this.$store.commit('setCyclomediaYaw', window.panoramaViewer.props.orientation.yaw)
+        this.$store.commit('setCyclomediaHFov', window.panoramaViewer.props.orientation.hFov)
+        this.$store.commit('setCyclomediaXyz', window.panoramaViewer.props.orientation.xyz)
       },
       popoutClicked() {
         const map = this.$store.state.map.map;
