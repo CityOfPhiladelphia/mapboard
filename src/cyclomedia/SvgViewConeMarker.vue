@@ -9,11 +9,13 @@
   import TriangleIcon from '../util/triangle-icon';
 
   export default {
-    // props: [
-    //   'orientation'
-    // ],
+    props: [
+      'latlng',
+      'rotationAngle',
+      'hFov'
+    ],
     render(h) {
-      this.orientation;
+      // this.orientation;
       return;
     },
     mounted() {
@@ -26,42 +28,44 @@
         leafletElement.addTo(map);
       }
     },
-    updated() {
-      // console.log('svgMarker updated fired, latlng is', this.latlng);
-
-      this.$leafletElement._map.removeLayer(this.$leafletElement);
-      const leafletElement = this.$leafletElement = this.createLeafletElement();
-      const map = this.$store.state.map.map;
-
-      // REVIEW kind of hacky/not reactive?
-      if (map) {
-        leafletElement.addTo(map);
-      }
-    },
     destroyed() {
       // console.log('svgMarker destroyed fired, latlng is', this.latlng);
       this.$leafletElement._map.removeLayer(this.$leafletElement);
     },
+    watch: {
+      rotationAngle(nextRotationAngle) {
+        // console.log('pngMarker orientation changed', nextRotationAngle);
+        this.$leafletElement._map.removeLayer(this.$leafletElement);
+        const leafletElement = this.$leafletElement = this.createLeafletElement();
+        const map = this.$store.state.map.map;
+
+        // REVIEW kind of hacky/not reactive?
+        if (map) {
+          leafletElement.addTo(map);
+        }
+      },
+      latlng(nextLatLng) {
+        // console.log('pngMarker orientation changed', nextRotationAngle);
+        this.$leafletElement._map.removeLayer(this.$leafletElement);
+        const leafletElement = this.$leafletElement = this.createLeafletElement();
+        const map = this.$store.state.map.map;
+
+        // REVIEW kind of hacky/not reactive?
+        if (map) {
+          leafletElement.addTo(map);
+        }
+      }
+    },
     computed: {
-      latlng() {
-        const xyz = this.orientation.xyz;
-        return [xyz[1], xyz[0]];
-      },
-      rotationAngle() {
-        return this.orientation.yaw * (180/3.14159265359);
-      },
       coneCoords() {
-        const hFov = this.orientation.hFov * (180/3.14159265359);
+        const hFovDegrees = this.hFov * (180/3.14159265359);
         const scale = 50//options.scale;
-        const angle = hFov / 2.0;
+        const angle = hFovDegrees / 2.0;
         const width = Math.sin(angle * Math.PI / 180);
         const length = Math.sqrt(1.0 - width * width);
         const coneCoords = [width * scale, length * scale];
 
         return coneCoords;
-      },
-      orientation() {
-        return this.$store.state.cyclomedia.viewer.props.orientation;
       },
     },
     methods: {

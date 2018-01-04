@@ -5,20 +5,17 @@ import Leaflet from 'leaflet';
 
 class EsriClient extends BaseClient {
   fetch(feature, dataSource, dataSourceKey) {
-    const options = dataSource.options;
     const url = dataSource.url;
-    const relationship = options.relationship;
+    const { relationship, targetGeometry, ...options } = dataSource.options;
 
     // check if a target geometry fn was specified. otherwise, use geocode feat
-    const targetGeomFn = options.targetGeometry;
     let geom;
-
-    if (targetGeomFn) {
+    if (targetGeometry) {
       const state = this.store.state;
       // pass leaflet to the targetgeom function so it can construct a custom
       // geometry (such as the lat lng bounds of a set of parcels) if it needs
       // to. use case: fetching regmaps.
-      geom = targetGeomFn(state, Leaflet);
+      geom = targetGeometry(state, Leaflet);
     } else {
       geom = feature.geometry;
     }
@@ -29,17 +26,16 @@ class EsriClient extends BaseClient {
       return;
     }
 
-    this.fetchBySpatialQuery(dataSourceKey, url, relationship, geom);
+    this.fetchBySpatialQuery(dataSourceKey, url, relationship, geom, options);
   }
 
   fetchNearby(feature, dataSource, dataSourceKey) {
-    // console.log('fetch esri nearby', feature);
-
-    // const url = dataSource.url;
-    const { options } = dataSource;
     const dataSourceUrl = dataSource.url;
-    const { geometryServerUrl } = options;
-    const calculateDistance = options.calculateDistance;
+    const {
+      calculateDistance,
+      geometryServerUrl,
+      ...options
+    } = dataSource.options;
 
     // params.geometries = `[${feature.geometry.coordinates.join(', ')}]`
     // TODO get some of these values from map, etc.
@@ -90,6 +86,7 @@ class EsriClient extends BaseClient {
                                dataSourceUrl,
                                'within',
                                buffer,
+                               options,
                                calculateDistance ? coords : null
                               );
     }, response => {
@@ -98,10 +95,26 @@ class EsriClient extends BaseClient {
     });
   }
 
-  fetchBySpatialQuery(dataSourceKey, url, relationship, targetGeom, calculateDistancePt) {
+  fetchBySpatialQuery(dataSourceKey, url, relationship, targetGeom, options = {}, calculateDistancePt) {
     // console.log('fetch esri spatial query', dataSourceKey, url, relationship, targetGeom);
 
-    const query = L.esri.query({ url })[relationship](targetGeom);
+    let query = L.esri.query({ url })[relationship](targetGeom);
+
+    // apply options by chaining esri leaflet option methods
+    const optionsKeys = Object.keys(options) || [];
+    query = optionsKeys.reduce((acc, optionsKey) => {
+      const optionsVal = options[optionsKey];
+      let optionsMethod;
+
+      try {
+        acc = acc[optionsKey](optionsVal);
+      } catch (e) {
+        throw new Error(`esri-leaflet query task does not support option:
+                         ${optionsKey}`);
+      }
+
+      return acc;
+    }, query);
 
     query.run((error, featureCollection, response) => {
       // console.log('did get esri spatial query', response, error);

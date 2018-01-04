@@ -212,11 +212,14 @@ function createStore(config) {
     // pwdParcel: null,
     sources,
     cyclomedia: {
+      latLngFromMap: null,
+      orientation: {
+        yaw: null,
+        hFov: null,
+        xyz: null,
+      },
       active: false,
-      viewer: null,
       recordings: [],
-      locFromApp: null,
-      locFromViewer: null,
     },
     // we need this to know whether or not to force an update on the first show
     pictometry: {
@@ -481,17 +484,23 @@ function createStore(config) {
         }
         state.cyclomedia.active = payload;
       },
-      setCyclomediaViewer(state, payload) {
-        state.cyclomedia.viewer = payload;
+      setCyclomediaYaw(state, payload) {
+        state.cyclomedia.orientation.yaw = payload
+      },
+      setCyclomediaHFov(state, payload) {
+        state.cyclomedia.orientation.hFov = payload
+      },
+      setCyclomediaXyz(state, payload) {
+        state.cyclomedia.orientation.xyz = payload
       },
       setCyclomediaRecordings(state, payload) {
         state.cyclomedia.recordings = payload;
       },
-      setCyclomediaLocFromApp(state, payload) {
-        state.cyclomedia.locFromApp = payload;
-      },
-      setCyclomediaLocFromViewer(state, payload) {
-        state.cyclomedia.locFromViewer = payload;
+      setCyclomediaLatLngFromMap(state, payload) {
+        state.cyclomedia.latLngFromMap = payload;
+        // const { lat, lng } = payload || {};
+        // state.cyclomedia.latLngFromMap[0] = lat;
+        // state.cyclomedia.latLngFromMap[1] = lng;
       },
       setActiveFeature(state, payload) {
         const { featureId, tableId } = payload || {};
