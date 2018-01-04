@@ -21,6 +21,8 @@
 </template>
 
 <script>
+  import $ from 'jquery';
+
   export default {
     props: [
       'apiKey',
@@ -82,7 +84,7 @@
         }
       },
       cyclomediaActive(nextStatus) {
-        if (nextStatus === true) {
+        if (nextStatus) {
           // console.log('pict: cyclo on');
           this.$ipa.showDashboard({
             zoom: false,
@@ -180,221 +182,126 @@
         })
       },
     }, // end of methods
-
-
-      //     didActivateTopic: function (topic) {
-      //       console.log('didActivateTopic is firing with topic: ', topic);
-      //       switch (topic) {
-      //         case 'deeds':
-      //           // turn on DOR Parcels
-      //           ipa.showLayer({
-      //             id: 114828,
-      //             visible: true,
-      //           })
-      //           break;
-      //         case 'zoning':
-      //           // turn on zoning
-      //           ipa.showLayer({
-      //             id: 112230,
-      //             visible: true,
-      //           });
-      //           break;
-      //         case 'water':
-      //           // turn on water Parcels
-      //           ipa.showLayer({
-      //             id: 108982,
-      //             visible: true,
-      //           })
-      //           break;
-      //
-      //         default:
-      //           // turn off DOR parcels
-      //           ipa.showLayer({
-      //             id: 113478,
-      //             visible: false,
-      //           });
-      //           // turn off zoning
-      //           ipa.showLayer({
-      //             id: 112230,
-      //             visible: false,
-      //           });
-      //       }
-      //     },
-      //
-      //     didDeactivateTopic: function (topic) {
-      //       switch (topic) {
-      //         case 'deeds':
-      //           // turn off DOR parcels
-      //           ipa.showLayer({
-      //             id: 114828,
-      //             visible: false,
-      //           });
-      //           break;
-      //
-      //         case 'zoning':
-      //           // turn on zoning
-      //           ipa.showLayer({
-      //             id: 112230,
-      //             visible: false,
-      //           });
-      //           break;
-      //
-      //         case 'water':
-      //           // turn off water
-      //           ipa.showLayer({
-      //             id: 108982,
-      //             visible: false,
-      //           })
-      //
-      //         default:
-      //           // turn off DOR parcels
-      //           ipa.showLayer({
-      //             id: 113478,
-      //             visible: false,
-      //           });
-      //           // turn off zoning
-      //           ipa.showLayer({
-      //             id: 112230,
-      //             visible: false,
-      //           });
-      //       }
-      //     },
-      //
-      //     shapeIds : [],
-      //     circleIds : [],
-      //     cameraIds : [],
-      //
-      //
-      //    }//end of return
-      // })();
-
-
   }; // end of export
-
 </script>
 
-
 <style scoped>
+  header.site-header > .row:last-of-type {
+    background: #2176d2;
+  }
 
+  #in-pict-div {
+    /*float: right;*/
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    /*z-index: 2000000;*/
+    background-color: white;
+    border: 0px solid;
+    width: 30px;
+    height: 30px;
+    /*display:none;*/
+    cursor:pointer;
+    /*position: relative;
+    top: 0px;
+    right: 0px;*/
+  }
 
-header.site-header > .row:last-of-type {
-  background: #2176d2;
-}
-
-#in-pict-div {
-  /*float: right;*/
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  /*z-index: 2000000;*/
-  background-color: white;
-  border: 0px solid;
-  width: 30px;
-  height: 30px;
-  /*display:none;*/
-  cursor:pointer;
-  /*position: relative;
-  top: 0px;
-  right: 0px;*/
-}
-
-.popout-icon {
-  margin-top: 8.5px;
-  font-size: 15px;
-  margin-left: 8.5px;
-}
-
-#pict-container {
-  padding: 0px;
-  height: 50%;
-  position: relative;
-}
-
-/*#iframe-div {
-}*/
-
-#pictometry-ipa {
-  height: 100%;
-  width: 100%;
-  border: 0px;
-}
-
-#search-container {
-    float: right;
-}
-
-#search-input {
-    float: left;
-    width: 400px;
-}
-
-#search-button {
-    height: 2.78571rem;
-}
-
-#data-panel {
-    background: #fff;
-    padding-left: 12px;
-    padding-right: 12px;
-    height: 100%;
-}
-
-#data-panel > h1 {
-    color: #666;
-}
-
-#data-row-list > a {
-    background: #f5f5f5;
-    border: 1px solid #ddd;
-    display: block;
-    font-size: 18px;
-    font-weight: normal;
-    height: 70px;
-    line-height: 45px;
-    /*margin-left: 10px;*/
-    /*margin-right: 10px;*/
-    padding: 10px;
-    /*vertical-align: middle;*/
-    /*text-align: middle;*/
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-    margin-bottom: 8px;
-}
-
-#data-row-list > a:hover {
-    background: #fff;
-    color: inherit;
-}
-
-#data-row-list .data-row-link-icon {
-    padding-right: 30px;
-}
-
-.data-row {
-    padding: 10px;
-    margin-bottom: 10px;
-    display: none;
-}
-
-.data-row table th, .data-row table td {
+  .popout-icon {
+    margin-top: 8.5px;
     font-size: 15px;
-}
+    margin-left: 8.5px;
+  }
 
-.data-row table tr th {
-    text-align: left;
-    vertical-align: top;
-}
+  #pict-container {
+    padding: 0px;
+    height: 50%;
+    position: relative;
+  }
 
-#map {
+  /*#iframe-div {
+  }*/
+
+  #pictometry-ipa {
     height: 100%;
-}
+    width: 100%;
+    border: 0px;
+  }
 
-ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
+  #search-container {
+      float: right;
+  }
 
-img { max-width: inherit; }
+  #search-input {
+      float: left;
+      width: 400px;
+  }
 
+  #search-button {
+      height: 2.78571rem;
+  }
 
+  #data-panel {
+      background: #fff;
+      padding-left: 12px;
+      padding-right: 12px;
+      height: 100%;
+  }
+
+  #data-panel > h1 {
+      color: #666;
+  }
+
+  #data-row-list > a {
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      display: block;
+      font-size: 18px;
+      font-weight: normal;
+      height: 70px;
+      line-height: 45px;
+      /*margin-left: 10px;*/
+      /*margin-right: 10px;*/
+      padding: 10px;
+      /*vertical-align: middle;*/
+      /*text-align: middle;*/
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      margin-bottom: 8px;
+  }
+
+  #data-row-list > a:hover {
+      background: #fff;
+      color: inherit;
+  }
+
+  #data-row-list .data-row-link-icon {
+      padding-right: 30px;
+  }
+
+  .data-row {
+      padding: 10px;
+      margin-bottom: 10px;
+      display: none;
+  }
+
+  .data-row table th, .data-row table td {
+      font-size: 15px;
+  }
+
+  .data-row table tr th {
+      text-align: left;
+      vertical-align: top;
+  }
+
+  #map {
+      height: 100%;
+  }
+
+  ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+  }
+
+  img { max-width: inherit; }
 </style>
