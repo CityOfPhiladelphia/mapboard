@@ -7,12 +7,11 @@
       >
       <i class="fa fa-external-link fa popout-icon"></i>
     </div>
-    <!-- <div id="iframe-div"> -->
-    <iframe
-      id="pictometry-ipa"
-      src="#"
-      ref="pictometryIpa"
-    />
+    <iframe id="pictometry-ipa"
+            src="#"
+            ref="pictometryIpa"
+    >
+    </iframe>
     <!-- </div> -->
     <div>
       <slot />
