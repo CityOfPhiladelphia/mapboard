@@ -24,18 +24,20 @@
                       :offsetY="0"
           />
           <layer v-if="this.pictometryActive" />
-          <!-- <png-marker v-if="this.cyclomediaActive && this.pictometryActive"
-                      :latlng="[this.$store.state.cyclomedia.viewer.props.orientation.xyz[1], this.$store.state.cyclomedia.viewer.props.orientation.xyz[0]]"
+          <png-marker v-if="this.cyclomediaActive && this.pictometryActive"
+                      :latlng="cycloLatlng"
                       :icon="'camera2.png'"
                       :height="20"
                       :width="30"
                       :offsetX="-2"
                       :offsetY="-2"
-          /> -->
+          />
           <!-- :icon="'../assets/camera.png'" -->
-          <!-- <view-cone v-if="this.cyclomediaActive && this.pictometryActive"
-                     :orientation="this.$store.state.cyclomedia.viewer.props.orientation"
-          /> -->
+          <view-cone v-if="this.cyclomediaActive && this.pictometryActive"
+                     :latlng="cycloLatlng"
+                     :rotationAngle="cycloRotationAngle"
+                     :hFov="cycloHFov"
+          />
         </pictometry-widget>
         <!-- :center="this.$store.state.map.map.center" -->
       </map-panel>
@@ -93,6 +95,21 @@
     computed: {
       cyclomediaActive() {
         return this.$store.state.cyclomedia.active
+      },
+      cycloLatlng() {
+        if (this.$store.state.cyclomedia.orientation.xyz !== null) {
+          const xyz = this.$store.state.cyclomedia.orientation.xyz;
+          return [xyz[1], xyz[0]];
+        } else {
+          const center = this.$config.map.center;
+          return center;
+        }
+      },
+      cycloRotationAngle() {
+        return this.$store.state.cyclomedia.orientation.yaw * (180/3.14159265359);
+      },
+      cycloHFov() {
+        return this.$store.state.cyclomedia.orientation.hFov;
       },
       pictometryActive() {
         return this.$store.state.pictometry.active

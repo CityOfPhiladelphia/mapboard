@@ -25,7 +25,6 @@
     props: [
       'apiKey',
       'secretKey',
-      'orientation',
     ],
     created() {
       this.$IFRAME_ID = 'pictometry-ipa';
@@ -282,17 +281,17 @@ header.site-header > .row:last-of-type {
 }
 
 #in-pict-div {
-  /*float: right;*/
   position: absolute;
   top: 0px;
   right: 0px;
-  /*z-index: 2000000;*/
   background-color: white;
   border: 0px solid;
   width: 30px;
   height: 30px;
-  /*display:none;*/
   cursor:pointer;
+  /* float: right; */
+  /*display:none;*/
+  /*z-index: 2000000;*/
   /*position: relative;
   top: 0px;
   right: 0px;*/

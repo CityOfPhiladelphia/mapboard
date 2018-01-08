@@ -212,6 +212,7 @@ function createStore(config) {
     // pwdParcel: null,
     sources,
     cyclomedia: {
+      navBarOpen: false,
       latLngFromMap: null,
       orientation: {
         yaw: null,
@@ -501,6 +502,9 @@ function createStore(config) {
         // const { lat, lng } = payload || {};
         // state.cyclomedia.latLngFromMap[0] = lat;
         // state.cyclomedia.latLngFromMap[1] = lng;
+      },
+      setCyclomediaNavBarOpen(state, payload) {
+        state.cyclomedia.navBarOpen = payload;
       },
       setActiveFeature(state, payload) {
         const { featureId, tableId } = payload || {};

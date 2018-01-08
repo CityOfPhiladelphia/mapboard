@@ -5,6 +5,7 @@
   <!-- v-once -->
     <div id="inCycloDiv"
          @click="this.popoutClicked"
+         :style="{ right: popoutPosition }"
     >
       <i class="fa fa-external-link fa popout-icon"></i>
     </div>
@@ -19,9 +20,19 @@
 
 <script>
   export default {
+    data() {
+      return {
+        'docWidth': 0,
+        'divWidth': 0,
+        'popoutPosition': 0,
+      }
+    },
     computed: {
+      cyclomediaActive() {
+        return this.$store.state.cyclomedia.active;
+      },
       pictometryActive() {
-        return this.$store.state.pictometry.active
+        return this.$store.state.pictometry.active;
       },
       cycloContainerClass() {
         if (this.pictometryActive) {
@@ -43,17 +54,32 @@
       },
       mapCenter() {
         return this.$store.state.map.center;
-      }
+      },
+      navBarOpen() {
+        return this.$store.state.cyclomedia.navBarOpen;
+      },
+      // docWidthComp() {
+      //   return $(document).width();
+      // }
     },
     watch: {
       locForCyclo(newCoords) {
-        // console.log('watch locForCyclo is firing, newCoords:', newCoords);
+        console.log('watch locForCyclo is firing, setNewLocation running with newCoords:', newCoords);
         this.setNewLocation(newCoords);
       },
       latLngFromMap(newCoords) {
-        // console.log('watch latLngFromMap is firing, newCoords:', newCoords);
+        console.log('watch latLngFromMap is firing, setNewLocation running with newCoords:', newCoords);
         this.setNewLocation([newCoords.lat, newCoords.lng]);
-      }
+      },
+      // docWidthComp() {
+      //   console.log('docWidth changed');
+      // }
+      cyclomediaActive() {
+        this.setDivWidth();
+      },
+      // pictometryActive() {
+      //   this.setDivWidth();
+      // }
     },
     mounted() {
       StreetSmartApi.init({
@@ -71,16 +97,40 @@
         () => {
           // get map center and set location
           const map = this.$store.state.map;
-          this.setNewLocation(map.center);
+          console.log('mounted is calling setNewLocation, map.center:', map.center);
+          this.setNewLocation([map.center[1], map.center[0]]);
         },
         err => {
           // console.log('Api: init: failed. Error: ', err);
         }
       );
+      window.addEventListener('resize', this.setDivWidth);
+    },
+    updated() {
+      console.log('cyclomedia updated running');
+      // TODO find a better way to get the image to update and not be stretched
+      // const viewer = this.$store.state.cyclomedia.viewer;
+      if (this.cyclomediaActive) {
+        if (window.panoramaViewer) {
+          window.panoramaViewer.rotateRight(0.0000001);
+        }
+      }
+      this.setDivWidth();
     },
     methods: {
+      setDivWidth() {
+        const docWidth = $(document).width();
+        this.docWidth = docWidth;
+        const el = document.getElementById('cyclo-container');
+        const divStyle = window.getComputedStyle(el);
+        const divWidth = parseFloat(divStyle.getPropertyValue('width').replace('px', ''));
+        this.divWidth = divWidth;
+        console.log('setDivWidth is running, docWidth:', docWidth, 'divWidth', divWidth);
+        this.popoutPosition = docWidth - (docWidth/2 + divWidth) + 'px';
+        // return width;
+      },
       setNewLocation(coords) {
-        // console.log('setNewLocation is running using', coords);
+        console.log('setNewLocation is running using', coords);
         const viewerType = StreetSmartApi.ViewerType.PANORAMA;
         // StreetSmartApi.open(center.lng + ',' + center.lat, {
         StreetSmartApi.open(coords[1] + ',' + coords[0], {
@@ -98,13 +148,16 @@
                 if(result[i].getType() === StreetSmartApi.ViewerType.PANORAMA) window.panoramaViewer = result[i];
               }
               widget.sendOrientationToStore();
-              window.panoramaViewer.on('VIEW_CHANGE', function() {
+              window.panoramaViewer.toggleNavbarExpanded(widget.navBarOpen);
 
+              window.panoramaViewer.on('VIEW_CHANGE', function() {
                 if (window.panoramaViewer.props.orientation.yaw !== widget.$store.state.cyclomedia.orientation.yaw ||
                     window.panoramaViewer.props.orientation.xyz !== widget.$store.state.cyclomedia.orientation.xyz
                 ) {
                   // console.log('on VIEW_CHANGE fired with yaw change', window.panoramaViewer.props.orientation);
                   widget.sendOrientationToStore();
+                } else if (window.panoramaViewer.getNavbarExpanded() !== this.navBarOpen) {
+                  widget.$store.commit('setCyclomediaNavBarOpen', window.panoramaViewer.getNavbarExpanded());
                 }
               })
             }
@@ -142,14 +195,17 @@
 }
 
 #inCycloDiv {
+  /* position: absolute; */
+  position: absolute;
+  /* top: 0px; */
+  right: 0px;
+  /* float: right; */
   background-color: white;
   border: 0px solid;
   width: 30px;
   height: 30px;
   cursor:pointer;
   z-index: 10;
-  position: absolute;
-  right: 0px;
 }
 
 .popout-icon {
