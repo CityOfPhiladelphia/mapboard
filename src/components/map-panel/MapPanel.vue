@@ -530,11 +530,12 @@
 
         const pictometryConfig = this.$config.pictometry || {};
 
+        const center = map.getCenter();
+        const { lat, lng } = center;
+        const coords = [lng, lat];
+
         if (pictometryConfig.enabled) {
           // update state for pictometry
-          const center = map.getCenter();
-          const { lat, lng } = center;
-          const coords = [lng, lat];
           this.$store.commit('setPictometryMapCenter', coords);
 
           const zoom = map.getZoom();
@@ -546,6 +547,7 @@
         if (cyclomediaConfig.enabled) {
           // update cyclo recordings
           this.updateCyclomediaRecordings();
+          this.$store.commit('setCyclomediaLatLngFromMap', [lat, lng]);
         }
       },
       handleSearchFormSubmit(e) {

@@ -83,8 +83,11 @@
       // docWidthComp() {
       //   console.log('docWidth changed');
       // }
-      cyclomediaActive() {
+      cyclomediaActive(newActiveStatus) {
         this.setDivWidth();
+        if (newActiveStatus === true) {
+          this.setNewLocation(this.latLngFromMap);
+        }
       },
       // pictometryActive() {
       //   this.setDivWidth();
