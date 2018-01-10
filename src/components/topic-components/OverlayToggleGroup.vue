@@ -35,6 +35,7 @@
         return getKeyFn(item);
       },
       handleClick(e) {
+        e.preventDefault();
         const prevImageOverlay = this.$store.state.map.imageOverlay;
         const nextImageOverlay = e.target.getAttribute('data-key');
         // console.log(nextImageOverlay);
