@@ -3,8 +3,9 @@
        :class="this.pictContainerClass"
   >
     <div id="in-pict-div"
-      @click="this.popoutClicked"
-      >
+         @click="this.popoutClicked"
+         v-if="this.isMobileOrTablet === false"
+    >
       <i class="fa fa-external-link fa popout-icon"></i>
     </div>
     <!-- <div id="iframe-div"> -->
@@ -36,6 +37,9 @@
       $.getScript(scriptUrl, self.init);
     },
     computed: {
+      isMobileOrTablet() {
+        return this.$store.state.is_mobile_or_tablet;
+      },
       cyclomediaActive() {
         return this.$store.state.cyclomedia.active;
       },

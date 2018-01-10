@@ -213,6 +213,7 @@ function createStore(config) {
     sources,
     cyclomedia: {
       navBarOpen: false,
+      // surfaceCursorOn: true,
       latLngFromMap: null,
       orientation: {
         yaw: null,
@@ -506,6 +507,9 @@ function createStore(config) {
       setCyclomediaNavBarOpen(state, payload) {
         state.cyclomedia.navBarOpen = payload;
       },
+      // setCyclomediaSurfaceCursorOn(state, payload) {
+      //   state.cyclomedia.surfaceCursorOn = payload;
+      // },
       setActiveFeature(state, payload) {
         const { featureId, tableId } = payload || {};
         const nextActiveFeature = { featureId, tableId };

@@ -70,6 +70,7 @@
         return check;
       })();
       this.$store.commit('setIsMobileOrTablet', IS_MOBILE_OR_TABLET);
+      // if (IS_MOBILE_OR_TABLET === true) { this.$store.commit('setCyclomediaSurfaceCursorOn', false) }
     //   console.log('MAPBOARD.VUE CREATED', this.$config);
     //   let tables = {};
     //   for (let topic of this.$config.topics) {

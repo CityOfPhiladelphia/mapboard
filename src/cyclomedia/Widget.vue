@@ -6,6 +6,7 @@
     <div id="inCycloDiv"
          @click="this.popoutClicked"
          :style="{ right: popoutPosition }"
+         v-if="this.isMobileOrTablet === false"
     >
       <i class="fa fa-external-link fa popout-icon"></i>
     </div>
@@ -28,6 +29,9 @@
       }
     },
     computed: {
+      isMobileOrTablet() {
+        return this.$store.state.is_mobile_or_tablet;
+      },
       cyclomediaActive() {
         return this.$store.state.cyclomedia.active;
       },
@@ -58,6 +62,9 @@
       navBarOpen() {
         return this.$store.state.cyclomedia.navBarOpen;
       },
+      // surfaceCursorOn() {
+      //   return this.$store.state.cyclomedia.surfaceCursorOn;
+      // }
       // docWidthComp() {
       //   return $(document).width();
       // }
@@ -149,6 +156,9 @@
               }
               widget.sendOrientationToStore();
               window.panoramaViewer.toggleNavbarExpanded(widget.navBarOpen);
+              if (widget.isMobileOrTablet) {
+                StreetSmartApi.removeOverlay('surfaceCursorLayer');
+              }
 
               window.panoramaViewer.on('VIEW_CHANGE', function() {
                 if (window.panoramaViewer.props.orientation.yaw !== widget.$store.state.cyclomedia.orientation.yaw ||
