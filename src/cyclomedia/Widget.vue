@@ -72,7 +72,9 @@
     watch: {
       locForCyclo(newCoords) {
         console.log('watch locForCyclo is firing, setNewLocation running with newCoords:', newCoords);
-        this.setNewLocation(newCoords);
+        if (newCoords) {
+          this.setNewLocation(newCoords);
+        }
       },
       latLngFromMap(newCoords) {
         console.log('watch latLngFromMap is firing, setNewLocation running with newCoords:', newCoords);
