@@ -3,8 +3,9 @@
        :class="this.pictContainerClass"
   >
     <div id="in-pict-div"
-      @click="this.popoutClicked"
-      >
+         @click="this.popoutClicked"
+         v-if="this.isMobileOrTablet === false"
+    >
       <i class="fa fa-external-link fa popout-icon"></i>
     </div>
     <!-- <div id="iframe-div"> -->
@@ -25,7 +26,6 @@
     props: [
       'apiKey',
       'secretKey',
-      'orientation',
     ],
     created() {
       this.$IFRAME_ID = 'pictometry-ipa';
@@ -37,6 +37,9 @@
       $.getScript(scriptUrl, self.init);
     },
     computed: {
+      isMobileOrTablet() {
+        return this.$store.state.is_mobile_or_tablet;
+      },
       cyclomediaActive() {
         return this.$store.state.cyclomedia.active;
       },
@@ -282,17 +285,17 @@ header.site-header > .row:last-of-type {
 }
 
 #in-pict-div {
-  /*float: right;*/
   position: absolute;
   top: 0px;
   right: 0px;
-  /*z-index: 2000000;*/
   background-color: white;
   border: 0px solid;
   width: 30px;
   height: 30px;
-  /*display:none;*/
   cursor:pointer;
+  /* float: right; */
+  /*display:none;*/
+  /*z-index: 2000000;*/
   /*position: relative;
   top: 0px;
   right: 0px;*/

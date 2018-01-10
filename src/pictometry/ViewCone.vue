@@ -1,7 +1,9 @@
 <script>
   export default {
     props: [
-      'orientation'
+      'latlng',
+      'rotationAngle',
+      'hFov'
     ],
     render(h) {
       return;
@@ -29,7 +31,7 @@
       }
     },
     mounted() {
-      this.getViewConeLatLon(this.$props.orientation);
+      this.getViewConeLatLon();
     },
     beforeDestroy() {
       this.ipa.removeShapes(this.$store.state.pictometry.shapeIds);
@@ -43,27 +45,30 @@
         //   console.log(e);
         // })
         // console.log('radius:', nextRadius);
-        this.getViewConeLatLon(this.orientation);
+        this.getViewConeLatLon();
       },
-      orientation(nextOrientation) {
-        // console.log('viewcone: orientation changed');
+      rotationAngle() {
         this.ipa.removeShapes(this.$store.state.pictometry.shapeIds);
-        this.getViewConeLatLon(nextOrientation);
-      }
+        this.getViewConeLatLon();
+      },
+      latlng() {
+        this.ipa.removeShapes(this.$store.state.pictometry.shapeIds);
+        this.getViewConeLatLon();
+      },
     },
     methods: {
-      getViewConeLatLon(nextOrientation) {
+      getViewConeLatLon() {
         // console.log('getViewConeLatLon is running');
-        const camLat = parseFloat(nextOrientation.xyz[1]);
-        const camLon = parseFloat(nextOrientation.xyz[0]);
+        const camLat = this.latlng[0];
+        const camLon = this.latlng[1];
         // Earth's radius
         const ER=6378137;
         // viewcone radius, for scaling its size
         // const camR = 10;
         const camR = this.radius;
         // Angle1 - camera angle off of N, Angle2 - fov angle
-        const Angle1 = parseFloat(nextOrientation.yaw) * 180/Math.PI;
-        const Angle2 = parseFloat(nextOrientation.hFov) * 180/Math.PI;
+        const Angle1 = this.rotationAngle;
+        const Angle2 = parseFloat(this.hFov) * 180/Math.PI;
 
         const dnLP = Math.cos((Angle1+Angle2/2) * Math.PI/180)*camR;
         const deLP = Math.sin((Angle1+Angle2/2) * Math.PI/180)*camR;
@@ -80,7 +85,7 @@
         const camLeftLat = camLat + dLatRP * 180/Math.PI;
         const camLeftLon = camLon + dLonRP * 180/Math.PI;
 
-        const coordinates = [ {y : nextOrientation.xyz[1], x : nextOrientation.xyz[0], z: 0.0}, {y : camRightLat, x : camRightLon, z: 0.0}, {y : camLeftLat, x : camLeftLon, z: 0.0} ]
+        const coordinates = [ {y : camLat, x : camLon, z: 0.0}, {y : camRightLat, x : camRightLon, z: 0.0}, {y : camLeftLat, x : camLeftLon, z: 0.0} ]
         this.placeViewCone(coordinates)
       },
 
