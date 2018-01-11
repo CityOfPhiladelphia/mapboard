@@ -37,7 +37,9 @@ export default {
       }
     }),
     // transform .vue components
-    vue(),
+    vue({
+      css: true,
+    }),
     // handle some es6-ish syntax that rollup doesn't like
     buble({
       transforms: {
