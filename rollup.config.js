@@ -4,6 +4,7 @@ import buble from 'rollup-plugin-buble';
 import commonjs from 'rollup-plugin-commonjs';
 import uglify from 'rollup-plugin-uglify';
 import analyzer from 'rollup-analyzer-plugin';
+import builtins from 'rollup-plugin-node-builtins';
 
 // get module names of dependencies (we want to treat these as externals so
 // they don't get bundled)
@@ -23,6 +24,8 @@ export default {
   plugins: [
     // allow implicit imports from index.js files
     nodeResolve(),
+    // for bundling node built-in modules (we use `url`)
+    builtins(),
     // handle commonjs modules, e.g. leaflet
     commonjs({
       // specify each named import from leaflet
