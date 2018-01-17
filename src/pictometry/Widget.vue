@@ -38,7 +38,7 @@
     },
     computed: {
       isMobileOrTablet() {
-        return this.$store.state.is_mobile_or_tablet;
+        return this.$store.state.isMobileOrTablet;
       },
       cyclomediaActive() {
         return this.$store.state.cyclomedia.active;
