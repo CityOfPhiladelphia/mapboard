@@ -19,6 +19,16 @@ export default {
     file: 'dist/build.js',
     format: 'umd',
     name: 'Mapboard',
+    // tell rollup the global names for vendor modules
+    globals: {
+      leaflet: 'L',
+      jquery: '$',
+      axios: 'axios',
+      vue: 'Vue',
+      vuex: 'Vuex',
+      vuex: 'Vuex',
+      turf: 'turf',
+    },
   },
   external,
   plugins: [
