@@ -19,6 +19,8 @@ export default {
     file: 'dist/build.js',
     format: 'umd',
     name: 'Mapboard',
+    // silence warning about multiple exports
+    exports: 'named',
     // tell rollup the global names for vendor modules
     globals: {
       leaflet: 'L',
