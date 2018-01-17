@@ -33,6 +33,7 @@ export default {
     },
   },
   external,
+  // don't bundle vendor deps
   plugins: [
     // allow implicit imports from index.js files
     nodeResolve({
@@ -58,7 +59,7 @@ export default {
     vue({
       css: true,
     }),
-    // handle some es6-ish syntax that rollup doesn't like
+    // downgrade es6
     buble({
       transforms: {
         dangerousForOf: true,
