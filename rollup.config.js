@@ -35,7 +35,10 @@ export default {
   external,
   plugins: [
     // allow implicit imports from index.js files
-    nodeResolve(),
+    nodeResolve({
+      // silence warning about preferring built-in modules over local ones
+      preferBuiltins: true,
+    }),
     // for bundling node built-in modules (we use `url`)
     builtins(),
     // handle commonjs modules, e.g. leaflet
