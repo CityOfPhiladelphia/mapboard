@@ -4,6 +4,7 @@ import buble from 'rollup-plugin-buble';
 import commonjs from 'rollup-plugin-commonjs';
 import uglify from 'rollup-plugin-uglify';
 import analyzer from 'rollup-analyzer-plugin';
+import globals from 'rollup-plugin-node-globals';
 import builtins from 'rollup-plugin-node-builtins';
 
 // get module names of dependencies (we want to treat these as externals so
@@ -42,6 +43,8 @@ export default {
     }),
     // for bundling node built-in modules (we use `url`)
     builtins(),
+    // the builtins have some references to `global` so handle those
+    globals(),
     // handle commonjs modules, e.g. leaflet
     commonjs({
       // specify each named import from leaflet
