@@ -19,12 +19,32 @@
 </script>
 
 <style>
+  .leaflet-fullleft {
+    position: absolute;
+    bottom: 0px; /* possible because the placeholder's parent is the map */
+    /*transform: translateY(-50%); /* using the CSS3 Transform technique */
+    /*padding-top: 10px;*/
+    left: 0px;
+    padding-bottom: 10px;
+    z-index: 500;
+  }
+
+  .leaflet-fulltop {
+    position: absolute;
+    top: 10px; /* possible because the placeholder's parent is the map */
+    /*transform: translateY(-50%); /* using the CSS3 Transform technique */
+    /*padding-top: 10px;*/
+    left: 0px;
+    padding-bottom: 10px;
+    z-index: 500;
+  }
+
   .leaflet-almostleft {
     position: absolute;
     bottom: 0px; /* possible because the placeholder's parent is the map */
     /*transform: translateY(-50%); /* using the CSS3 Transform technique */
     /*padding-top: 10px;*/
-    left: 60px;
+    left: 45px;
     padding-bottom: 10px;
     z-index: 500;
   }

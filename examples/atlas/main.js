@@ -622,7 +622,7 @@ Mapboard.default({
             // loop over parts (whether it's simple or multipart)
             parts.forEach(function (coordPairs) {
               coordPairs.forEach(function (coordPair) {
-                console.log('coordPair', coordPair);
+                // console.log('coordPair', coordPair);
 
                 // if the polygon has a hole, it has another level of coord
                 // pairs, presumably one for the outer coords and another for
@@ -775,7 +775,7 @@ Mapboard.default({
   cyclomedia: {
     enabled: true,
     measurementAllowed: false,
-    // popoutAble: false,
+    popoutAble: false,
   },
   pictometry: {
     enabled: true

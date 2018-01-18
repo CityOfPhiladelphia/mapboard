@@ -29,6 +29,11 @@
       'minZoom',
       'maxZoom',
     ],
+    computed: {
+      fullScreenMapEnabled() {
+        return this.$store.state.fullScreenMapEnabled;
+      }
+    },
     watch: {
       center(nextCenter) {
         this.setMapView(nextCenter);
@@ -37,6 +42,10 @@
         if (!nextZoom) return;
 
         this.$leafletElement.setZoom(nextZoom);
+      },
+      fullScreenMapEnabled() {
+        console.log('Map.vue fullScreenMapEnabled watch is firing');
+        this.$leafletElement.invalidateSize();
       }
     },
     mounted() {
