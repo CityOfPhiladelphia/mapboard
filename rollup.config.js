@@ -1,4 +1,4 @@
-import nodeResolve from 'rollup-plugin-node-resolve';
+import resolve from 'rollup-plugin-node-resolve';
 import vue from 'rollup-plugin-vue';
 import buble from 'rollup-plugin-buble';
 import commonjs from 'rollup-plugin-commonjs';
@@ -36,7 +36,7 @@ export default {
   // don't bundle vendor deps
   plugins: [
     // allow implicit imports from index.js files
-    nodeResolve({
+    resolve({
       // silence warning about preferring built-in modules over local ones
       preferBuiltins: true,
     }),
