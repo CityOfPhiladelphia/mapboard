@@ -4,9 +4,8 @@
   "version": "1.1.10",
   "author": "City of Philadelphia <maps@phila.gov>",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --hot",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
-    "build-rollup": "rollup -c rollup.config.js"
+    "dev": "yarn build -w",
+    "build": "rollup -c rollup.config.js"
   },
   "main": "./dist/mapboard.js",
   "dependencies": {
