@@ -1,6 +1,7 @@
 <template>
   <div class="cell medium-auto grid-x" id="mb-root">
-      <topic-panel />
+      <topic-panel v-show="!this.fullScreenMapEnabled"
+      />
       <map-panel>
         <cyclomedia-widget v-if="this.$config.cyclomedia.enabled"
                            slot="cycloWidget"
@@ -90,6 +91,9 @@
     //   this.$store.commit('setTables', tables);
     },
     computed: {
+      fullScreenMapEnabled() {
+        return this.$store.state.fullScreenMapEnabled;
+      },
       cyclomediaActive() {
         return this.$store.state.cyclomedia.active
       },

@@ -1,5 +1,7 @@
 <template>
-  <div class="cell medium-12 small-order-2 medium-order-1">
+  <div id="topic-panel-container"
+       :class="this.topicPanelContainerClass"
+  >
       <!-- before search -->
       <greeting v-show="shouldShowGreeting" />
 
@@ -54,6 +56,16 @@
     //   window.removeEventListener('resize', this.handleWindowResize);
     // },
     computed: {
+      fullScreenMapEnabled() {
+        return this.$store.state.fullScreenMapEnabled;
+      },
+      topicPanelContainerClass() {
+        if (this.fullScreenMapEnabled) {
+          return 'cell medium-1 small-order-2 medium-order-1'
+        } else {
+          return 'cell medium-12 small-order-2 medium-order-1'
+        }
+      },
       geocode() {
         return this.$store.state.geocode.data;
       },

@@ -1,5 +1,7 @@
 <template>
-  <div class="medium-12 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map">
+  <div id="map-panel-container"
+       :class="this.mapPanelContainerClass"
+  >
     <map_ :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }"
           :center="this.$store.state.map.center"
           :zoom="this.$store.state.map.zoom"
@@ -153,10 +155,15 @@
       >
       </control-corner>
 
-      <!-- <control-corner :vSide="'bottom'"
+      <control-corner :vSide="'fulltop'"
+                      :hSide="'fullleft'"
+      >
+      </control-corner>
+
+      <control-corner :vSide="'top'"
                       :hSide="'almostleft'"
       >
-      </control-corner> -->
+      </control-corner>
 
       <!-- <basemap-tooltip :position="'topright'"
       /> -->
@@ -211,6 +218,19 @@
         />
       </div>
 
+      <!-- <div v-once>
+        <full-screen-map-toggle-control v-if="shouldShowImageryToggle"
+                                        v-once
+                                        :position="'topleft'"
+        />
+      </div> -->
+
+      <div v-once>
+        <control position="fulltopfullleft">
+          <full-screen-map-toggle-tab v-once />
+        </control>
+      </div>
+
 
 
       <!-- <basemap-tooltip :position="'bottomalmostleft'"
@@ -227,7 +247,7 @@
            with v-once
       -->
       <div v-once>
-        <control position="topleft">
+        <control position="topalmostleft">
           <div class="mb-search-control-container">
             <form @submit.prevent="handleSearchFormSubmit">
                 <input class="mb-search-control-input"
@@ -277,6 +297,8 @@
   import PngMarker from '../PngMarker.vue';
   import BasemapToggleControl from '../BasemapToggleControl.vue';
   import BasemapSelectControl from '../BasemapSelectControl.vue';
+  import FullScreenMapToggleControl from '../FullScreenMapToggleControl.vue';
+  import FullScreenMapToggleTab from '../FullScreenMapToggleTab.vue';
   import LocationControl from '../LocationControl.vue';
   import CyclomediaButton from '../../cyclomedia/Button.vue';
   import PictometryButton from '../../pictometry/Button.vue';
@@ -307,6 +329,8 @@
       PngMarker,
       BasemapToggleControl,
       BasemapSelectControl,
+      FullScreenMapToggleControl,
+      FullScreenMapToggleTab,
       LocationControl,
       PictometryButton,
       CyclomediaButton,
@@ -340,6 +364,17 @@
       this.$controller.appDidLoad();
     },
     computed: {
+      fullScreenMapEnabled() {
+        return this.$store.state.fullScreenMapEnabled;
+      },
+      mapPanelContainerClass() {
+        // return 'medium-12 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map'
+        if (this.fullScreenMapEnabled) {
+          return 'medium-24 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map'
+        } else {
+          return 'medium-12 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map'
+        }
+      },
       cycloLatlng() {
         if (this.$store.state.cyclomedia.orientation.xyz !== null) {
           const xyz = this.$store.state.cyclomedia.orientation.xyz;
