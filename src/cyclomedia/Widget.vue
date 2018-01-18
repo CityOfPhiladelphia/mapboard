@@ -6,7 +6,7 @@
     <div id="inCycloDiv"
          @click="this.popoutClicked"
          :style="{ right: popoutPosition }"
-         v-if="this.isMobileOrTablet === false"
+         v-if="this.isMobileOrTablet === false && this.popoutAble === true"
     >
       <i class="fa fa-external-link fa popout-icon"></i>
     </div>
@@ -31,6 +31,15 @@
     computed: {
       isMobileOrTablet() {
         return this.$store.state.isMobileOrTablet;
+      },
+      popoutAble() {
+        let answer;
+        if (this.$config.cyclomedia.popoutAble === false) {
+          answer = false
+        } else {
+          answer = true
+        }
+        return answer
       },
       cyclomediaActive() {
         return this.$store.state.cyclomedia.active;
