@@ -297,7 +297,6 @@
   import PngMarker from '../PngMarker.vue';
   import BasemapToggleControl from '../BasemapToggleControl.vue';
   import BasemapSelectControl from '../BasemapSelectControl.vue';
-  import FullScreenMapToggleControl from '../FullScreenMapToggleControl.vue';
   import FullScreenMapToggleTab from '../FullScreenMapToggleTab.vue';
   import LocationControl from '../LocationControl.vue';
   import CyclomediaButton from '../../cyclomedia/Button.vue';
@@ -329,7 +328,6 @@
       PngMarker,
       BasemapToggleControl,
       BasemapSelectControl,
-      FullScreenMapToggleControl,
       FullScreenMapToggleTab,
       LocationControl,
       PictometryButton,
