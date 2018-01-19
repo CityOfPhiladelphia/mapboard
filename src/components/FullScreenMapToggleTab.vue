@@ -1,6 +1,7 @@
 <template>
   <div class="toggle-tab"
        @click="handleFullScreenMapToggleButtonClick"
+       v-if="!this.isMobileOrTablet"
   >
     <span class="align-span">
       <i :class='this.currentIcon'></i>
@@ -21,16 +22,9 @@
       fullScreenMapEnabled() {
         return this.$store.state.fullScreenMapEnabled;
       },
-      geocodeStatus() {
-        return this.$store.state.geocode.status;
+      isMobileOrTablet() {
+        return this.$store.state.isMobileOrTablet;
       },
-      // toggleTabClass() {
-      //   if (this.geocodeStatus === 'success') {
-      //     return 'toggle-tab-geocode'
-      //   } else {
-      //     return 'toggle-tab'
-      //   }
-      // },
       currentIcon() {
         if (this.fullScreenMapEnabled) {
           return 'fa fa-caret-right fa-2x'
