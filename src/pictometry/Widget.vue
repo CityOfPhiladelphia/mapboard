@@ -311,6 +311,13 @@ header.site-header > .row:last-of-type {
   padding: 0px;
   height: 50%;
   position: relative;
+  display: none;
+}
+
+@media screen and (min-width: 46.875em) {
+  #pict-container {
+    display: block;
+  }
 }
 
 /*#iframe-div {
@@ -398,6 +405,7 @@ ul {
 }
 
 img { max-width: inherit; }
+
 
 
 </style>

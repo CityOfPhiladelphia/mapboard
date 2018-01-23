@@ -32,6 +32,9 @@
       isMobileOrTablet() {
         return this.$store.state.isMobileOrTablet;
       },
+      fullScreenMapEnabled() {
+        return this.$store.state.fullScreenMapEnabled;
+      },
       popoutAble() {
         let answer;
         if (this.$config.cyclomedia.popoutAble === false) {
@@ -85,6 +88,9 @@
       // }
     },
     watch: {
+      fullScreenMapEnabled() {
+        this.setDivWidth();
+      },
       locForCyclo(newCoords) {
         console.log('watch locForCyclo is firing, setNewLocation running with newCoords:', newCoords);
         if (newCoords) {
@@ -160,7 +166,13 @@
         const divWidth = parseFloat(divStyle.getPropertyValue('width').replace('px', ''));
         this.divWidth = divWidth;
         console.log('setDivWidth is running, docWidth:', docWidth, 'divWidth', divWidth);
-        this.popoutPosition = docWidth - (docWidth/2 + divWidth) + 'px';
+        let answer;
+        if (this.fullScreenMapEnabled) {
+          answer = docWidth - divWidth + 'px';
+        } else {
+          answer = docWidth - (docWidth/2 + divWidth) + 'px';
+        }
+        this.popoutPosition = answer;
         // return width;
       },
       setNewLocation(coords) {
@@ -240,6 +252,13 @@
 #cyclo-container {
   padding: 0px;
   height: 50%;
+  display: none;
+}
+
+@media screen and (min-width: 46.875em) {
+  #cyclo-container {
+    display: block;
+  }
 }
 
 #inCycloDiv {
@@ -266,6 +285,12 @@
   display: block;
   width: 100%;
   height:100%;
+}
+
+@media screen and (max-width: 46.875em) {
+  .cyclo-container {
+    display: none;
+  }
 }
 
 </style>

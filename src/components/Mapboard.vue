@@ -1,14 +1,14 @@
 <template>
   <div class="cell medium-auto grid-x" id="mb-root">
-      <topic-panel v-show="!this.fullScreenMapEnabled"
+      <topic-panel :class="this.shouldShowTopicPanel"
       />
       <map-panel>
-        <cyclomedia-widget v-if="this.$config.cyclomedia.enabled"
+        <cyclomedia-widget v-if="this.$config.cyclomedia.enabled && !this.isMobileOrTablet"
                            slot="cycloWidget"
                            v-show="cyclomediaActive"
         />
         <!-- @orientation-changed="handleCyclomediaOrientationChange" -->
-        <pictometry-widget v-if="this.$config.pictometry.enabled"
+        <pictometry-widget v-if="this.$config.pictometry.enabled && !this.isMobileOrTablet"
                            slot="pictWidget"
                            v-show="pictometryActive"
                            :apiKey="this.ak"
@@ -91,8 +91,18 @@
     //   this.$store.commit('setTables', tables);
     },
     computed: {
+      isMobileOrTablet() {
+        return this.$store.state.isMobileOrTablet;
+      },
       fullScreenMapEnabled() {
         return this.$store.state.fullScreenMapEnabled;
+      },
+      shouldShowTopicPanel() {
+        let value = 'topic-panel-true';
+        if (this.fullScreenMapEnabled) {
+          value = 'topic-panel-false';
+        }
+        return value;
       },
       cyclomediaActive() {
         return this.$store.state.cyclomedia.active
@@ -210,4 +220,15 @@
   button {
     padding: inherit;
   }
+
+  .topic-panel-false {
+    /* display: none; */
+  }
+
+  @media screen and (min-width: 46.875em) {
+    .topic-panel-false {
+      display: none;
+    }
+  }
+
 </style>

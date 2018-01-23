@@ -2,7 +2,9 @@
   <div id="map-panel-container"
        :class="this.mapPanelContainerClass"
   >
+    <full-screen-map-toggle-tab v-once />
     <map_ :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }"
+          id="map-tag"
           :center="this.$store.state.map.center"
           :zoom="this.$store.state.map.zoom"
           @l-click="handleMapClick"
@@ -155,16 +157,6 @@
       >
       </control-corner>
 
-      <control-corner :vSide="'fulltop'"
-                      :hSide="'fullleft'"
-      >
-      </control-corner>
-
-      <control-corner :vSide="'top'"
-                      :hSide="'almostleft'"
-      >
-      </control-corner>
-
       <!-- <basemap-tooltip :position="'topright'"
       /> -->
 
@@ -180,7 +172,7 @@
       </div>
 
       <div v-once>
-        <pictometry-button v-if="this.$config.pictometry.enabled"
+        <pictometry-button v-if="this.$config.pictometry.enabled && !this.isMobileOrTablet"
                            v-once
                            :position="'topright'"
                            :link="'pictometry'"
@@ -189,7 +181,7 @@
       </div>
 
       <div v-once>
-        <cyclomedia-button v-if="this.$config.cyclomedia.enabled"
+        <cyclomedia-button v-if="this.$config.cyclomedia.enabled && !this.isMobileOrTablet"
                            v-once
                            :position="'topright'"
                            :link="'cyclomedia'"
@@ -218,21 +210,6 @@
         />
       </div>
 
-      <!-- <div v-once>
-        <full-screen-map-toggle-control v-if="shouldShowImageryToggle"
-                                        v-once
-                                        :position="'topleft'"
-        />
-      </div> -->
-
-      <div v-once>
-        <control position="fulltopfullleft">
-          <full-screen-map-toggle-tab v-once />
-        </control>
-      </div>
-
-
-
       <!-- <basemap-tooltip :position="'bottomalmostleft'"
       /> -->
 
@@ -247,7 +224,7 @@
            with v-once
       -->
       <div v-once>
-        <control position="topalmostleft">
+        <control position="topleft">
           <div class="mb-search-control-container">
             <form @submit.prevent="handleSearchFormSubmit">
                 <input class="mb-search-control-input"
@@ -390,6 +367,9 @@
       },
       isMobileOrTablet() {
         return this.$store.state.isMobileOrTablet;
+      },
+      searchBoxPosition() {
+
       },
       geolocationEnabled() {
         return this.$config.geolocation.enabled;
