@@ -7,15 +7,12 @@
                            slot="cycloWidget"
                            v-show="cyclomediaActive"
         />
-        <!-- @orientation-changed="handleCyclomediaOrientationChange" -->
         <pictometry-widget v-if="this.shouldLoadPictometryWidget"
                            slot="pictWidget"
                            v-show="pictometryActive"
                            :apiKey="this.ak"
                            :secretKey="this.sk"
         >
-        <!-- :apiKey="this.$config.pictometry.apiKey"
-        :secretKey="this.$config.pictometry.secretKey" -->
           <png-marker v-if="this.pictometryShowAddressMarker"
                       :latlng="[this.geocodeData.geometry.coordinates[1], this.geocodeData.geometry.coordinates[0]]"
                       :icon="'markers.png'"

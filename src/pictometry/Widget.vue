@@ -45,9 +45,9 @@
       },
       pictContainerClass() {
         if (this.cyclomediaActive) {
-          return 'large-8 columns mb-panel';
+          return 'medium-8 large-8 columns mb-panel';
         } else {
-          return 'large-24 columns mb-panel';
+          return 'medium-24 large-24 columns mb-panel';
         }
       },
       mapCenter() {

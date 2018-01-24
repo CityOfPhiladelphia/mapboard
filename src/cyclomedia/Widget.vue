@@ -52,9 +52,9 @@
       },
       cycloContainerClass() {
         if (this.pictometryActive) {
-          return 'large-16 columns mb-panel'
+          return 'medium-16 large-16 columns mb-panel'
         } else {
-          return 'large-24 columns mb-panel'
+          return 'medium-24 large-24 columns mb-panel'
         }
       },
       locForCyclo() {
