@@ -200,7 +200,7 @@
               window.panoramaViewer.toggleNavbarExpanded(widget.navBarOpen);
               // if (widget.isMobileOrTablet) {
               // console.log('about to remove surfaceCursorLayer');
-              // StreetSmartApi.removeOverlay('surfaceCursorLayer');
+              StreetSmartApi.removeOverlay('surfaceCursorLayer');
               // console.log('removed surfaceCursorLayer');
               // }
 
