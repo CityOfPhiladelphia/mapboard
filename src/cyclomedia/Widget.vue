@@ -199,7 +199,9 @@
               widget.sendOrientationToStore();
               window.panoramaViewer.toggleNavbarExpanded(widget.navBarOpen);
               // if (widget.isMobileOrTablet) {
-              StreetSmartApi.removeOverlay('surfaceCursorLayer');
+              // console.log('about to remove surfaceCursorLayer');
+              // StreetSmartApi.removeOverlay('surfaceCursorLayer');
+              // console.log('removed surfaceCursorLayer');
               // }
 
               if (!this.$config.cyclomedia.measurementAllowed || this.$config.cyclomedia.measurementAllowed === 'false') {

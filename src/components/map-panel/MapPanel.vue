@@ -172,7 +172,7 @@
       </div>
 
       <div v-once>
-        <pictometry-button v-if="this.$config.pictometry.enabled && !this.isMobileOrTablet"
+        <pictometry-button v-if="this.shouldShowPictometryButton"
                            v-once
                            :position="'topright'"
                            :link="'pictometry'"
@@ -181,7 +181,7 @@
       </div>
 
       <div v-once>
-        <cyclomedia-button v-if="this.$config.cyclomedia.enabled && !this.isMobileOrTablet"
+        <cyclomedia-button v-if="this.shouldShowCyclomediaButton"
                            v-once
                            :position="'topright'"
                            :link="'cyclomedia'"
@@ -368,8 +368,11 @@
       isMobileOrTablet() {
         return this.$store.state.isMobileOrTablet;
       },
-      searchBoxPosition() {
-
+      shouldShowCyclomediaButton() {
+        return this.$config.cyclomedia.enabled && !this.isMobileOrTablet;
+      },
+      shouldShowPictometryButton() {
+        return this.$config.pictometry.enabled && !this.isMobileOrTablet;
       },
       geolocationEnabled() {
         return this.$config.geolocation.enabled;
