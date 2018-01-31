@@ -190,7 +190,9 @@
         />
       </div>
 
-      <div v-once>
+      <div v-once
+           v-if="this.measureControlEnabled"
+      >
         <measure-control :position="'bottomleft'" />
       </div>
 
@@ -339,6 +341,13 @@
       this.$controller.appDidLoad();
     },
     computed: {
+      measureControlEnabled() {
+        if (this.$config.measureControlEnabled === false) {
+          return false;
+        } else {
+          return true;
+        }
+      },
       fullScreenMapEnabled() {
         return this.$store.state.fullScreenMapEnabled;
       },
