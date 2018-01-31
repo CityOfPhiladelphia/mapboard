@@ -4,25 +4,27 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <title>Litter Index | phila.gov</title>
-    <link rel='icon' type='image/x-icon' href="//cityofphiladelphia.github.io/patterns/images/favicon.ico">
+    <link rel="canonical" href="">
     <meta name="description" content="">
+    <link rel="shortcut icon" type="image/x-icon" href="http://standards.phila.gov/img/favicon.png">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    <!--pattern stylesheet includes foundation css -->
-    <link rel="stylesheet" href="//cityofphiladelphia.github.io/patterns/dist/1.4.1/css/patterns.css">
+    <link rel="stylesheet" href="//unpkg.com/phila-standards@0.12.0/dist/css/phila-app.min.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//unpkg.com/leaflet-easybutton@2.0.0/src/easy-button.css">
     <link rel="stylesheet" href="//unpkg.com/Leaflet.vector-markers@0.0.6/dist/leaflet-vector-markers.css">
-    <link rel="canonical" href="">
     <link rel="stylesheet" href="styles.css">
   </head>
 
   <body>
-    <div class="full" id="application">
+    <!-- <div class="full" id="application"> -->
+    <div class="grid-y medium-grid-frame" id="application">
+
       <!-- Begin header -->
-      <header data-swiftype-index='false' class="site-header app">
+      <!-- <header data-swiftype-index='false' class="site-header app">
         <div class="row">
           <div class="small-24 columns">
             <a href="http://alpha.phila.gov/" class="logo">
@@ -34,11 +36,26 @@
                 <h2 class="page-subtitle">Mayor's Office</h2>
               </a>
             </div>
-            <!-- This is the search box from Atlas -->
-            <!-- <div id="search-container">
-              <input type="text" placeholder="Enter an address, intersection, OPA number or regmap ID" id="search-input">
-              <a href="#" id="search-button" class="button no-margin">Go</a>
-            </div> -->
+          </div>
+        </div>
+      </header> -->
+      <!-- This is the search box from Atlas -->
+      <!-- <div id="search-container">
+      <input type="text" placeholder="Enter an address, intersection, OPA number or regmap ID" id="search-input">
+      <a href="#" id="search-button" class="button no-margin">Go</a>
+    </div> -->
+      <header class="site-header app group">
+        <div class="row expanded">
+          <div class="columns">
+            <a href="//beta.phila.gov" class="logo">
+              <img src="http://standards.phila.gov/img/logo/city-of-philadelphia-yellow-white.png" alt="City of Philadelphia">
+            </a>
+            <div class="app-divide"></div>
+            <div class="page-title-container">
+              <a href="#/">
+                <h1 class="page-title">Litter Index</h1>
+              </a>
+            </div>
           </div>
         </div>
       </header>
@@ -47,8 +64,9 @@
       <div id="mapboard"></div>
 
       <!-- Begin Footer -->
-      <footer data-swiftype-index='false' class="site-footer">
-        <section class="fat">
+      <!-- <footer data-swiftype-index='false' class="site-footer"> -->
+      <div class="app-footer">
+        <!-- <section class="fat"> -->
           <div class="row">
             <div class="large-8 columns">
               <h1>Government</h1>
@@ -77,7 +95,7 @@
               </nav>
             </div>
           </div>
-        </section>
+        <!-- </section> -->
         <div class="row classic center">
           <div class="columns">
             <nav>
@@ -93,21 +111,22 @@
       <!-- End Footer -->
     </div><!-- end of application div -->
 
-    <!-- JS: Patterns -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/foundation/6.1.2/foundation.min.js"></script>
-    <script src="//cityofphiladelphia.github.io/patterns/dist/1.4.1/js/patterns.min.js"></script>
+    <!-- JS: Foundation -->
+    <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/js/foundation.js"></script>
 
-    <!-- JS: Mapboard -->
-    <script src="//unpkg.com/vue@2.3.3"></script>
-    <script src="//unpkg.com/vue-router@2.5.3"></script>
-    <script src="//unpkg.com/vue-resource@1.3.1/dist/vue-resource.min.js"></script>
+    <!-- JS: Mapboard dependencies -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/vue/2.3.3/vue.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="//unpkg.com/axios@0.16.2/dist/axios.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
     <script src="//unpkg.com/esri-leaflet@2.0.7"></script>
+    <script src="//unpkg.com/turf@3.0.14/turf.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/proj4js/2.4.4/proj4.js"></script>
     <script src="//unpkg.com/leaflet-easybutton@2.0.0/src/easy-button.js"></script>
     <script src="//unpkg.com/Leaflet.vector-markers@0.0.6"></script>
+    <script src="//unpkg.com/leaflet-rotatedmarker@0.2.0"></script>
 
     <!-- JS: Local -->
     <script src="../../dist/build.js"></script>
