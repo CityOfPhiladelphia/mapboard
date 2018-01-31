@@ -367,7 +367,8 @@ class DataManager {
       });
 
       // reset other topic and map state
-      this.store.commit('setActiveTopic', 'property');
+      console.log('about to setActiveTopic, config:', this.config.topics[0].key);
+      this.store.commit('setActiveTopic', this.config.topics[0].key);
       this.store.commit('setActiveParcelLayer', 'pwd');
       this.store.commit('setBasemap', 'pwd');
 
