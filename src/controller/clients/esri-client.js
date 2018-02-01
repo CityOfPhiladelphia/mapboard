@@ -5,8 +5,13 @@ import Leaflet from 'leaflet';
 
 class EsriClient extends BaseClient {
   fetch(feature, dataSource, dataSourceKey) {
+    // console.log('esriclient fetch, feature:', feature, 'dataSource:', dataSource, 'dataSourceKey:', dataSourceKey);
     const url = dataSource.url;
     const { relationship, targetGeometry, ...options } = dataSource.options;
+    const parameters = dataSource.parameters;
+    if (parameters) {
+      parameters['sourceValue'] = feature.properties[parameters.sourceField];
+    }
 
     // check if a target geometry fn was specified. otherwise, use geocode feat
     let geom;
@@ -26,7 +31,7 @@ class EsriClient extends BaseClient {
       return;
     }
 
-    this.fetchBySpatialQuery(dataSourceKey, url, relationship, geom, options);
+    this.fetchBySpatialQuery(dataSourceKey, url, relationship, geom, parameters, options);
   }
 
   fetchNearby(feature, dataSource, dataSourceKey) {
@@ -95,10 +100,15 @@ class EsriClient extends BaseClient {
     });
   }
 
-  fetchBySpatialQuery(dataSourceKey, url, relationship, targetGeom, options = {}, calculateDistancePt) {
-    // console.log('fetch esri spatial query', dataSourceKey, url, relationship, targetGeom);
+  fetchBySpatialQuery(dataSourceKey, url, relationship, targetGeom, parameters = {}, options = {}, calculateDistancePt) {
+    // console.log('fetch esri spatial query', dataSourceKey, url, relationship, targetGeom, parameters, options);
 
-    let query = L.esri.query({ url })[relationship](targetGeom);
+    let query;
+    if (relationship === 'where') {
+      query = L.esri.query({ url })[relationship](parameters.targetField + "='" + parameters.sourceValue + "'");
+    } else {
+      query = L.esri.query({ url })[relationship](targetGeom);
+    }
 
     // apply options by chaining esri leaflet option methods
     const optionsKeys = Object.keys(options) || [];
