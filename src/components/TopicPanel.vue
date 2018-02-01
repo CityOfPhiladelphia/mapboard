@@ -18,6 +18,7 @@
 
         <!-- topics container -->
         <div class="topics-container cell medium-cell-block-y"
+             :style="styleObject"
         >
           <topic v-for="topic in this.$config.topics"
                  :topicKey="topic.key"
@@ -37,21 +38,19 @@
       Greeting,
       Topic
     },
-    // data() {
-    //   const data = {
-    //     styleObject: {
-    //       'position': 'relative',
-    //       'top': '100px',
-    //       'overflow-y': 'auto',
-    //       'height': '100px'
-    //     }
-    //   };
-    //   return data;
-    // },
-    // mounted() {
-    //   window.addEventListener('resize', this.handleWindowResize);
-    //   this.handleWindowResize();
-    // },
+    data() {
+      const data = {
+        styleObject: {
+          'overflow-y': 'auto',
+          'height': '100px'
+        }
+      };
+      return data;
+    },
+    mounted() {
+      window.addEventListener('resize', this.handleWindowResize);
+      this.handleWindowResize();
+    },
     // beforeDestroy() {
     //   window.removeEventListener('resize', this.handleWindowResize);
     // },
@@ -119,15 +118,23 @@
         const sources = this.$store.state.sources;
         return requiredSources.every(key => sources[key].data)
       },
-      // handleWindowResize() {
-      //   // console.log('handleWindowResize is running');
-      //   const rootElement = document.getElementById('mb-root');
-      //   const rootStyle = window.getComputedStyle(rootElement);
-      //   const rootHeight = rootStyle.getPropertyValue('height');
-      //   const rootHeightNum = parseInt(rootHeight.replace('px', ''));
-      //   const topicsHeight = rootHeightNum - 100;
-      //   this.styleObject.height = topicsHeight.toString() + 'px';
-      // }
+      handleWindowResize() {
+        // console.log('handleWindowResize is running');
+        if ($(window).width() >= 750) {
+          console.log('if is running');
+          const rootElement = document.getElementById('mb-root');
+          const rootStyle = window.getComputedStyle(rootElement);
+          const rootHeight = rootStyle.getPropertyValue('height');
+          const rootHeightNum = parseInt(rootHeight.replace('px', ''));
+          const topicsHeight = rootHeightNum - 100;
+          this.styleObject.height = topicsHeight.toString() + 'px';
+          this.styleObject['overflow-y'] = 'auto';
+        } else {
+          console.log('else is running');
+          this.styleObject.height = 'auto';
+          this.styleObject['overflow-y'] = 'hidden';
+        }
+      }
     }
   };
 </script>
@@ -158,7 +165,8 @@
 
   @media screen and (min-width: 40em) {
     .topics-container {
-      height: calc(100vh - 210px);
+      /* height: 100%; */
+      /* height: calc(100vh - 210px); */
     }
   }
 </style>
