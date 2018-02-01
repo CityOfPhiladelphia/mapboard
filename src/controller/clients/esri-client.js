@@ -87,10 +87,14 @@ class EsriClient extends BaseClient {
       // DEBUG
       // buffer.addTo(map);
 
+      //this is a space holder
+      const parameters = {};
+
       this.fetchBySpatialQuery(dataSourceKey,
                                dataSourceUrl,
                                'within',
                                buffer,
+                               parameters,
                                options,
                                calculateDistance ? coords : null
                               );
@@ -101,7 +105,7 @@ class EsriClient extends BaseClient {
   }
 
   fetchBySpatialQuery(dataSourceKey, url, relationship, targetGeom, parameters = {}, options = {}, calculateDistancePt) {
-    // console.log('fetch esri spatial query', dataSourceKey, url, relationship, targetGeom, parameters, options);
+    // console.log('fetch esri spatial query, dataSourceKey:', dataSourceKey, 'url:', url, 'relationship:', relationship, 'targetGeom:', targetGeom, 'parameters:', parameters, 'options:', options);
 
     let query;
     if (relationship === 'where') {
