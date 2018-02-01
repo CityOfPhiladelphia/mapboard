@@ -337,7 +337,26 @@ Mapboard.default({
     }
   },
   dataSources: {
-
+    litter_index_line: {
+      type: 'esri',
+      url: '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LITTER_INDEX_LINE/FeatureServer/0',
+      options: {
+        relationship: 'where',
+      },
+      parameters: {
+        sourceField: 'street_full',
+        targetField: 'STNAME',
+        // sourceField: 'seg_id',
+        // targetField: 'SEG_ID',
+      }
+    },
+    litter_index_polygon: {
+      type: 'esri',
+      url: '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LITTER_INDEX_POLYGON/FeatureServer/0',
+      options: {
+        relationship: 'contains',
+      },
+    }
   },
   legendControls:{},
   topics: [
@@ -421,6 +440,18 @@ Mapboard.default({
                 label: '<a href="//phila.gov/dhcd/neighborhood-resources/neighborhood-advisory-committees/" target="_blank">Neighborhood Advisory Committee</a>',
                 value: function (state) {
                   return state.geocode.data.properties.neighborhood_advisory_committee;
+                }
+              },
+              {
+                label: '<a href="#" target="_blank">Hundred Block Score</a>',
+                value: function (state) {
+                  return state.sources.litter_index_line.data[0].properties.SCORE;
+                }
+              },
+              {
+                label: '<a href="#" target="_blank">Division Score</a>',
+                value: function (state) {
+                  return state.sources.litter_index_polygon.data[0].properties.SCORE;
                 }
               },
               // {
