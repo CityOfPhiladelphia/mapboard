@@ -337,6 +337,43 @@ Mapboard.default({
     // historicBasemaps: {
     //   enabled: false
     // },
+    featureLayers: {
+      litter_index_line: {
+        url: '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LITTER_INDEX_LINE/FeatureServer/0',
+        opacity: 1.0
+      },
+      litter_index_polygon: {
+        url: '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LITTER_INDEX_POLYGON/FeatureServer/0',
+        opacity: 1.0,
+        // color: 'orange',
+        // fillColor: 'orange',
+        fillOpacity: 0.5,
+        weight: 1,
+        minZoom: 16,
+        style: function (feature, layer) {
+          var score = parseFloat(feature.properties.DIVISION_SCORE),
+              fillColor;
+
+          // TODO real colors
+          switch (true) {
+            case 0.944444 < score && score < 1.111111:
+              fillColor = 'rgb(0, 97, 0)';
+              console.log('GREEEEEEEEEN')
+              break;
+            case 1.111111 < score && score < 1.270588:
+              fillColor = 'red';
+              break;
+            default:
+              fillColor = 'blue';
+              // throw new Error('Unhandled litter score');
+          }
+
+          return {
+            fillColor: fillColor,
+          };
+        },
+      }
+    },
   },
   baseConfig: BASE_CONFIG_URL,
   parcels: {
@@ -544,6 +581,10 @@ Mapboard.default({
       basemap: 'pwd',
       identifyFeature: 'address-marker',
       parcels: 'pwd'
+      parcels: 'pwd',
+      featureLayers: [
+        'litter_index_polygon',
+      ],
     }
   ],
 });
