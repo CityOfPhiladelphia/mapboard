@@ -5,6 +5,29 @@ var BASE_CONFIG_URL = '//rawgit.com/rbrtmrtn/mapboard-base-config/13a6bde61aec47
 // TODO get user-entered address
 var searchInput = '1300 market street';
 
+var scoreColorScale = [
+  // min        max     color
+  [3.750001,    4.0,     'rgb(255, 0, 0)'],
+  [3.250001,    3.75,    'rgb(255, 85, 0)'],
+  [2.750001,    3.25,    'rgb(255, 170, 0)'],
+  [2.250001,    2.75,    'rgb(255, 229, 0)'],
+  [1.750001,    2.25,    'rgb(255, 255, 0)'],
+  [1.250001,    1.75,    'rgb(152, 230, 0)'],
+  [1.0,         1.25,    'rgb(56, 168, 0)'],
+];
+
+function colorForScore(score) {
+  var rangesFiltered = scoreColorScale.filter(function (item) {
+        var min = item[0],
+            max = item[1];
+        return min <= score && score < max;
+      }),
+      range = rangesFiltered.length > 0 ? rangesFiltered[0] : [null, null, 'rgb(178, 178, 178)'],
+      color = range[2];
+
+  return color;
+}
+
 // mapping of rco polygon object ids to names
 var RCO_NAMES = {
     10409: "Melrose Civic Association",
@@ -344,10 +367,8 @@ Mapboard.default({
         relationship: 'where',
       },
       parameters: {
-        sourceField: 'street_full',
-        targetField: 'STNAME',
-        // sourceField: 'seg_id',
-        // targetField: 'SEG_ID',
+        sourceField: 'seg_id',
+        targetField: 'SEG_ID',
       }
     },
     litter_index_polygon: {
@@ -365,6 +386,61 @@ Mapboard.default({
       label: 'Litter',
       // icon: 'fa-trash-o',
       components: [
+        // block score badge
+        {
+          type: 'badge',
+          options: {
+            // titleBackground: function (state) {
+            //   var data = state.sources.litter_index_line.data || [],
+            //       firstItem = data[0] || {},
+            //       props = firstItem.properties || {},
+            //       score = props.HUNDRED_BLOCK_SCORE;
+            //
+            //   return colorForScore(score);
+            // }
+          },
+          slots: {
+            title: 'Litter Index Block Score',
+            value: function (state) {
+              var data = state.sources.litter_index_line.data || [],
+                  firstItem = data[0] || {},
+                  props = firstItem.properties || {},
+                  score = props.HUNDRED_BLOCK_SCORE;
+
+              return Math.round(score * 100) / 100;
+            },
+            description: function (state) {
+              return 'out of 4.0';
+            },
+          }
+        },
+        // division score badge
+        {
+          type: 'badge',
+          options: {
+            // titleBackground: function (state) {
+            //   var data = state.sources.litter_index_polygon.data || [],
+            //       firstItem = data[0] || {},
+            //       props = firstItem.properties || {},
+            //       score = props.DIVISION_SCORE;
+            //   return colorForScore(score);
+            // }
+          },
+          slots: {
+            title: 'Litter Index Division Score',
+            value: function (state) {
+              var data = state.sources.litter_index_polygon.data || [],
+                  firstItem = data[0] || {},
+                  props = firstItem.properties || {},
+                  score = props.DIVISION_SCORE;
+
+              return Math.round(score * 100) / 100;
+            },
+            description: function (state) {
+              return 'out of 4.0';
+            },
+          }
+        },
         {
           type: 'vertical-table',
           options: {
@@ -402,10 +478,6 @@ Mapboard.default({
                   return state.geocode.data.properties.sanitation_district;
                 }
               },
-              // {
-              //   label: '<a href="">PMBC Representative</a>',
-              //   value: 'NOT READY'
-              // },
               {
                 label: '<a href="//philadelphiastreets.com/sanitation/residential/sanitation-convenience-centers/" target="_blank">Sanitation Convenience Center</a>',
                 value: function (state) {
@@ -440,18 +512,6 @@ Mapboard.default({
                 label: '<a href="//phila.gov/dhcd/neighborhood-resources/neighborhood-advisory-committees/" target="_blank">Neighborhood Advisory Committee</a>',
                 value: function (state) {
                   return state.geocode.data.properties.neighborhood_advisory_committee;
-                }
-              },
-              {
-                label: '<a href="#" target="_blank">Hundred Block Score</a>',
-                value: function (state) {
-                  return state.sources.litter_index_line.data[0].properties.SCORE;
-                }
-              },
-              {
-                label: '<a href="#" target="_blank">Division Score</a>',
-                value: function (state) {
-                  return state.sources.litter_index_polygon.data[0].properties.SCORE;
                 }
               },
               // {
