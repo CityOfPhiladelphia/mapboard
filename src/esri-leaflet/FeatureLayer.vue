@@ -20,7 +20,8 @@
       'color',
       'fillColor',
       'fillOpacity',
-      'weight'
+      'weight',
+      'style_',
     ],
     created() {
       const leafletElement = this.$leafletElement = this.createLeafletElement();
@@ -41,6 +42,12 @@
     methods: {
       createLeafletElement() {
         const props = Object.assign({}, this.$props);
+
+        // remove underscore from style_ prop. `style` is a vue reserved word.
+        const { style_ } = props;
+        delete props.style_;
+        props.style = style_;
+
         return new EsriFeatureLayer(props);
       },
       parentMounted(parent) {

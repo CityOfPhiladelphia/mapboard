@@ -59,6 +59,7 @@
                           :fillColor="featureLayer.color"
                           :fillOpacity="featureLayer.fillOpacity"
                           :weight="featureLayer.weight"
+                          :style_="featureLayer.style"
       />
 
       <!-- regmaps -->
@@ -540,11 +541,13 @@
         return key === this.imageOverlay;
       },
       shouldShowFeatureLayer(key, minZoom) {
-        if (this.activeFeatureLayers.includes(key) && this.$store.state.map.zoom >= minZoom) {
+        if (this.activeFeatureLayers.includes(key)) {
+          if (minZoom) {
+            return this.$store.state.map.zoom >= minZoom;
+          }
           return true;
-        } else {
-          return false;
         }
+        return false;
       },
       handleMapClick(e) {
         this.$controller.handleMapClick(e);
@@ -621,6 +624,7 @@
     width: 50px;
     background: #2176d2;
     line-height: 48px;
+    padding: 0px;
   }
 
   .mb-search-control-input {

@@ -121,7 +121,7 @@
       handleWindowResize() {
         // console.log('handleWindowResize is running');
         if ($(window).width() >= 750) {
-          console.log('if is running');
+          console.log('if is running, window width is >= 750px');
           const rootElement = document.getElementById('mb-root');
           const rootStyle = window.getComputedStyle(rootElement);
           const rootHeight = rootStyle.getPropertyValue('height');
@@ -130,7 +130,7 @@
           this.styleObject.height = topicsHeight.toString() + 'px';
           this.styleObject['overflow-y'] = 'auto';
         } else {
-          console.log('else is running');
+          console.log('else is running, window width is < 750px');
           this.styleObject.height = 'auto';
           this.styleObject['overflow-y'] = 'hidden';
         }
@@ -152,11 +152,17 @@
     -webkit-box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.18);
     -moz-box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.18);
     box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.18);
+    margin-bottom: 0;
   }
 
   .address-header-line-1 {
     margin-bottom: 0;
     margin-top: 0;
+    padding: 0;
+  }
+
+  .address-header-line-2 {
+    padding: 0;
   }
 
   .topics-container {
