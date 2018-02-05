@@ -624,6 +624,7 @@
     width: 50px;
     background: #2176d2;
     line-height: 48px;
+    padding: 0px;
   }
 
   .mb-search-control-input {

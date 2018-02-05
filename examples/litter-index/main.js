@@ -328,6 +328,37 @@ Mapboard.default({
     left: 0,
     right: 0,
   },
+  legendControls: {
+    litter: {
+      options: {
+        topics: ['litter'],
+        showWithBaseMapOnly: false
+      },
+      data: {
+        '1.0-1.25': {
+          'background-color': 'rgb(56, 168, 0)',
+        },
+        '1.25-1.75': {
+          'background-color': 'rgb(152, 230, 0)'
+        },
+        '1.75-2.25': {
+          'background-color': 'rgb(255, 255, 0)'
+        },
+        '2.25-2.75': {
+          'background-color': 'rgb(255, 229, 0)'
+        },
+        '2.75-3.25': {
+          'background-color': 'rgb(255, 170, 0)'
+        },
+        '3.25-3.75': {
+          'background-color': 'rgb(255, 85, 0)',
+        },
+        '3.75-4.0': {
+          'background-color': 'rgb(255, 0, 0)'
+        },
+      }
+    }
+  },
   map: {
     defaultBasemap: 'pwd',
     defaultIdentifyFeature: 'address-marker',
@@ -337,10 +368,26 @@ Mapboard.default({
     // historicBasemaps: {
     //   enabled: false
     // },
+    tiledLayers: {
+      cityBasemapLabels: {
+        // type: 'labels',
+        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap_Labels/MapServer',
+        zIndex: '3',
+      },
+    },
     featureLayers: {
       litter_index_line: {
         url: '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LITTER_INDEX_LINE/FeatureServer/0',
-        opacity: 1.0
+        opacity: 1.0,
+        weight: 5.0,
+        style: function (feature, layer) {
+          var score = parseFloat(feature.properties.HUNDRED_BLOCK_SCORE),
+              color = colorForScore(score);
+
+          return {
+            color: color,
+          };
+        },
       },
       litter_index_polygon: {
         url: '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LITTER_INDEX_POLYGON/FeatureServer/0',
@@ -352,21 +399,7 @@ Mapboard.default({
         minZoom: 16,
         style: function (feature, layer) {
           var score = parseFloat(feature.properties.DIVISION_SCORE),
-              fillColor;
-
-          // TODO real colors
-          switch (true) {
-            case 0.944444 < score && score < 1.111111:
-              fillColor = 'rgb(0, 97, 0)';
-              console.log('GREEEEEEEEEN')
-              break;
-            case 1.111111 < score && score < 1.270588:
-              fillColor = 'red';
-              break;
-            default:
-              fillColor = 'blue';
-              // throw new Error('Unhandled litter score');
-          }
+              fillColor = colorForScore(score);
 
           return {
             fillColor: fillColor,
@@ -416,7 +449,6 @@ Mapboard.default({
       },
     }
   },
-  legendControls:{},
   topics: [
     {
       key: 'litter',
@@ -427,14 +459,14 @@ Mapboard.default({
         {
           type: 'badge',
           options: {
-            // titleBackground: function (state) {
-            //   var data = state.sources.litter_index_line.data || [],
-            //       firstItem = data[0] || {},
-            //       props = firstItem.properties || {},
-            //       score = props.HUNDRED_BLOCK_SCORE;
-            //
-            //   return colorForScore(score);
-            // }
+            titleBackground: function (state) {
+              var data = state.sources.litter_index_line.data || [],
+                  firstItem = data[0] || {},
+                  props = firstItem.properties || {},
+                  score = props.HUNDRED_BLOCK_SCORE;
+
+              return colorForScore(score);
+            }
           },
           slots: {
             title: 'Litter Index Block Score',
@@ -455,13 +487,13 @@ Mapboard.default({
         {
           type: 'badge',
           options: {
-            // titleBackground: function (state) {
-            //   var data = state.sources.litter_index_polygon.data || [],
-            //       firstItem = data[0] || {},
-            //       props = firstItem.properties || {},
-            //       score = props.DIVISION_SCORE;
-            //   return colorForScore(score);
-            // }
+            titleBackground: function (state) {
+              var data = state.sources.litter_index_polygon.data || [],
+                  firstItem = data[0] || {},
+                  props = firstItem.properties || {},
+                  score = props.DIVISION_SCORE;
+              return colorForScore(score);
+            }
           },
           slots: {
             title: 'Litter Index Division Score',
@@ -580,10 +612,13 @@ Mapboard.default({
       ],
       basemap: 'pwd',
       identifyFeature: 'address-marker',
-      parcels: 'pwd'
       parcels: 'pwd',
+      tiledLayers: [
+        'cityBasemapLabels',
+      ],
       featureLayers: [
         'litter_index_polygon',
+        'litter_index_line',
       ],
     }
   ],
