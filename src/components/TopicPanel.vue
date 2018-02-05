@@ -152,7 +152,7 @@
     -webkit-box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.18);
     -moz-box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.18);
     box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.18);
-    margin-bottom: 0;
+    margin-bottom: 0px !important;
   }
 
   .address-header-line-1 {

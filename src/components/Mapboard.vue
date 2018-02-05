@@ -1,5 +1,6 @@
 <template>
-  <div class="cell medium-auto grid-x" id="mb-root">
+  <!-- <div class="cell medium-auto grid-x" id="mb-root"> -->
+  <div :class="rootClass" id="mb-root">
       <topic-panel :class="this.shouldShowTopicPanel"
       />
       <map-panel>
@@ -88,6 +89,13 @@
     //   this.$store.commit('setTables', tables);
     },
     computed: {
+      rootClass() {
+        if (this.$config.plugin) {
+          return 'grid-x';
+        } else {
+          return 'cell medium-auto grid-x';
+        }
+      },
       isMobileOrTablet() {
         return this.$store.state.isMobileOrTablet;
       },
@@ -212,6 +220,10 @@
   textarea:focus,
   button:focus {
     outline: none;
+  }
+
+  #mb-root {
+    height: 600px;
   }
 
   .mb-panel-topics-with-widget {

@@ -312,6 +312,7 @@ var RCO_NAMES = {
 }
 
 Mapboard.default({
+  plugin: true,
   defaultAddress: searchInput,
   router: {
     enabled: false
