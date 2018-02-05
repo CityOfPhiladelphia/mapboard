@@ -126,7 +126,7 @@
           const rootStyle = window.getComputedStyle(rootElement);
           const rootHeight = rootStyle.getPropertyValue('height');
           const rootHeightNum = parseInt(rootHeight.replace('px', ''));
-          const topicsHeight = rootHeightNum - 100;
+          const topicsHeight = rootHeightNum - 103;
           this.styleObject.height = topicsHeight.toString() + 'px';
           this.styleObject['overflow-y'] = 'auto';
         } else {
