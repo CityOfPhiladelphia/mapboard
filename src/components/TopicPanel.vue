@@ -167,6 +167,7 @@
 
   .topics-container {
     padding: 20px;
+    overflow-x: hidden;
   }
 
   @media screen and (min-width: 40em) {

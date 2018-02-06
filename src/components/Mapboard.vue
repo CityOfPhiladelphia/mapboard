@@ -91,9 +91,9 @@
     computed: {
       rootClass() {
         if (this.$config.plugin) {
-          return 'grid-x';
+          return 'grid-x mb-root-plugin';
         } else {
-          return 'cell medium-auto grid-x';
+          return 'cell medium-auto grid-x mb-root';
         }
       },
       isMobileOrTablet() {
@@ -222,9 +222,15 @@
     outline: none;
   }
 
-  #mb-root {
+  /* #mb-root {
+    height: 600px;
+  } */
+
+  .mb-root-plugin {
     height: 600px;
   }
+
+  
 
   .mb-panel-topics-with-widget {
     height: 50%;
