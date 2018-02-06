@@ -121,7 +121,7 @@
       handleWindowResize() {
         // console.log('handleWindowResize is running');
         if ($(window).width() >= 750) {
-          console.log('if is running, window width is >= 750px');
+          // console.log('if is running, window width is >= 750px');
           const rootElement = document.getElementById('mb-root');
           const rootStyle = window.getComputedStyle(rootElement);
           const rootHeight = rootStyle.getPropertyValue('height');
@@ -130,7 +130,7 @@
           this.styleObject.height = topicsHeight.toString() + 'px';
           this.styleObject['overflow-y'] = 'auto';
         } else {
-          console.log('else is running, window width is < 750px');
+          // console.log('else is running, window width is < 750px');
           this.styleObject.height = 'auto';
           this.styleObject['overflow-y'] = 'hidden';
         }

@@ -165,7 +165,7 @@
         const divStyle = window.getComputedStyle(el);
         const divWidth = parseFloat(divStyle.getPropertyValue('width').replace('px', ''));
         this.divWidth = divWidth;
-        console.log('setDivWidth is running, docWidth:', docWidth, 'divWidth', divWidth);
+        // console.log('setDivWidth is running, docWidth:', docWidth, 'divWidth', divWidth);
         let answer;
         if (this.fullScreenMapEnabled) {
           answer = docWidth - divWidth + 'px';

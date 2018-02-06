@@ -35,7 +35,7 @@
           const el = this.$el;
           const visible = this.isElementInViewport(el);
 
-          console.log('visible?', visible ? 'YES' : 'NO');
+          // console.log('visible?', visible ? 'YES' : 'NO');
 
           if (!visible) {
             el.scrollIntoView();
@@ -45,9 +45,9 @@
     },
     methods: {
       handleRowMouseover(e) {
-        console.log('handleRowMouseover is starting');
+        // console.log('handleRowMouseover is starting');
         if(!this.isMobileOrTablet) {
-          console.log('handleRowMouseover actions are running');
+          // console.log('handleRowMouseover actions are running');
           if (!this.hasOverlay) return;
 
           const featureId = this.item._featureId;
@@ -56,9 +56,9 @@
         }
       },
       handleRowClick(e) {
-        console.log('handleRowClick is starting');
+        // console.log('handleRowClick is starting');
         if(this.isMobileOrTablet) {
-          console.log('handleRowClick actions are running');
+          // console.log('handleRowClick actions are running');
           if (!this.hasOverlay) return;
 
           const featureId = this.item._featureId;
@@ -67,9 +67,9 @@
         }
       },
       handleRowMouseout(e) {
-        console.log('handleRowMouseout is starting');
+        // console.log('handleRowMouseout is starting');
         // if(!this.isMobileOrTablet) {
-          console.log('handleRowMouseout actions are running');
+          // console.log('handleRowMouseout actions are running');
           if (!this.hasOverlay) return;
           this.$store.commit('setActiveFeature', null);
         // }
@@ -79,7 +79,7 @@
       isElementInViewport(el) {
         const rect = el.getBoundingClientRect();
 
-        console.log('bounding box', rect);
+        // console.log('bounding box', rect);
 
         const visibility = {
           // TODO the 108 below is account for the combined height of the
@@ -95,7 +95,7 @@
           right: rect.right <= (window.innerWidth || document.documentElement.clientWidth),
         };
 
-        console.log('visibility', visibility);
+        // console.log('visibility', visibility);
 
         // return if all sides are visible
         return Object.values(visibility).every(val => val);
