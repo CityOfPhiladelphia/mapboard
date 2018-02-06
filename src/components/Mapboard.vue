@@ -1,6 +1,9 @@
 <template>
   <!-- <div class="cell medium-auto grid-x" id="mb-root"> -->
-  <div :class="rootClass" id="mb-root">
+  <div id="mb-root"
+       :class="rootClass"
+       :style="styleObject"
+  >
       <topic-panel :class="this.shouldShowTopicPanel"
       />
       <map-panel>
@@ -62,9 +65,19 @@
       ViewCone,
       PngMarker
     },
+    data() {
+      const data = {
+        styleObject: {
+          'height': '100px'
+        }
+      };
+      return data;
+    },
     created() {
       // check if mobile or tablet
       this.$store.commit('setIsMobileOrTablet', this.isMobileOrTabletMethod());
+      window.addEventListener('resize', this.handleWindowResize);
+      this.handleWindowResize();
       // if (IS_MOBILE_OR_TABLET === true) { this.$store.commit('setCyclomediaSurfaceCursorOn', false) }
     //   console.log('MAPBOARD.VUE CREATED', this.$config);
     //   let tables = {};
@@ -91,9 +104,9 @@
     computed: {
       rootClass() {
         if (this.$config.plugin) {
-          return 'grid-x mb-root-plugin';
+          return 'grid-x';
         } else {
-          return 'cell medium-auto grid-x mb-root';
+          return 'cell medium-auto grid-x';
         }
       },
       isMobileOrTablet() {
@@ -209,6 +222,25 @@
 
         return isMobileOrTablet;
       },
+      handleWindowResize() {
+        // console.log('handleWindowResize is running');
+
+        if ($(window).width() >= 750) {
+          this.styleObject.height = '600px'
+          // console.log('if is running, window width is >= 750px');
+          // const rootElement = document.getElementById('mb-root');
+          // const rootStyle = window.getComputedStyle(rootElement);
+          // const rootHeight = rootStyle.getPropertyValue('height');
+          // const rootHeightNum = parseInt(rootHeight.replace('px', ''));
+          // const topicsHeight = rootHeightNum - 103;
+          // this.styleObject.height = topicsHeight.toString() + 'px';
+          // this.styleObject['overflow-y'] = 'auto';
+        } else {
+          // console.log('else is running, window width is < 750px');
+          this.styleObject.height = 'auto';
+          // this.styleObject['overflow-y'] = 'hidden';
+        }
+      }
     },
   };
 </script>
@@ -226,11 +258,11 @@
     height: 600px;
   } */
 
-  .mb-root-plugin {
+  /* .mb-root-plugin {
     height: 600px;
-  }
+  } */
 
-  
+
 
   .mb-panel-topics-with-widget {
     height: 50%;
