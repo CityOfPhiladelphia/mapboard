@@ -497,7 +497,7 @@ Mapboard.default({
             }
           },
           slots: {
-            title: 'Litter Index Division Score',
+            title: 'Litter Index Neighborhood Score',
             value: function (state) {
               var data = state.sources.litter_index_polygon.data || [],
                   firstItem = data[0] || {},
