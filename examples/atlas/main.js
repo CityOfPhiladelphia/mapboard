@@ -15,7 +15,8 @@ if (location.hostname !== 'localhost') {
 
 var GATEKEEPER_KEY = '82fe014b6575b8c38b44235580bc8b11';
 // var BASE_CONFIG_URL = '//raw.githubusercontent.com/rbrtmrtn/mapboard-base-config/develop/config.js';
-var BASE_CONFIG_URL = '//rawgit.com/rbrtmrtn/mapboard-base-config/13a6bde61aec47278ccb1baff07b6dbbbd614fc1/config.js';
+// var BASE_CONFIG_URL = '//rawgit.com/rbrtmrtn/mapboard-base-config/13a6bde61aec47278ccb1baff07b6dbbbd614fc1/config.js';
+var BASE_CONFIG_URL = '//rawgit.com/rbrtmrtn/mapboard-base-config/24ea6a68fc6cc3da4ab14404f7f9bb20e24159f0/config.js';
 
 var ZONING_CODE_MAP = {
   'RSD-1': 'Residential Single Family Detached-1',
@@ -358,7 +359,8 @@ Mapboard.default({
     // // TODO take zoningBase out and use AIS for base zoning district
     zoningBase: {
       type: 'esri',
-      url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/6/',
+      // url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/6/',
+      url: 'http://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Zoning_BaseDistricts/FeatureServer/0/',
       options: {
         relationship: 'contains',
       },
@@ -413,9 +415,8 @@ Mapboard.default({
           return target.properties.OBJECTID;
         },
       },
-      // url: '//ase.phila.gov/arcgis/rest/services/RTT/MapServer/0/query',
-      // url: '//ase.phila.gov/arcgis/rest/services/DOR/rttsummary/MapServer/0/query',
       url: '//gis.phila.gov/arcgis/rest/services/DOR/rtt_service/MapServer/0/query',
+      // url: '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/MASTERMAPINDEX/FeatureServer/0/query',
       // url: 'https://phl.carto.com/api/v2/sql',
       options: {
         params: {
@@ -569,7 +570,8 @@ Mapboard.default({
     },
     zoningOverlay: {
       type: 'esri',
-      url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/1/',
+      // url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/1/',
+      url: 'http://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Zoning_Overlays/FeatureServer/0/',
       options: {
         relationship: 'contains',
         returnGeometry: false,
@@ -600,7 +602,8 @@ Mapboard.default({
     },
     regmaps: {
       type: 'esri',
-      url: '//gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/0',
+      // url: '//gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/0',
+      url: '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/MASTERMAPINDEX/FeatureServer/0',
       // deps: ['dorParcels'],
       deps: ['parcels.dor'],
       options: {
