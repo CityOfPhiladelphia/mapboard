@@ -615,30 +615,32 @@ class DataManager {
     const configForParcelLayer = this.config.parcels[parcelLayer];
     const geocodeField = configForParcelLayer.geocodeField;
     const parcelQuery = L.esri.query({ url });
-    parcelQuery.where(geocodeField + " = '" + id + "'")
+    parcelQuery.params.outSr = '';
+    parcelQuery.where(geocodeField + " = '" + id + "'");
+    // console.log('parcelQuery:', parcelQuery);
     parcelQuery.run((function(error, featureCollection, response) {
-      // console.log('parcelQuery ran, activeParcelLayer:', activeParcelLayer);
+      // console.log('171111 getParcelsById parcelQuery ran, response:', response);
       this.didGetParcels(error, featureCollection, response, parcelLayer);
     }).bind(this)
   )
   }
 
   getParcelsByLatLng(latlng, parcelLayer, fetch) {
-    console.log('171111 getParcelsByLatLng', parcelLayer, 'fetch', fetch);
+    // console.log('171111 getParcelsByLatLng', parcelLayer, 'fetch', fetch);
 
     const url = this.config.map.featureLayers[parcelLayer+'Parcels'].url;
     const parcelQuery = L.esri.query({ url });
     parcelQuery.contains(latlng);
     const test = 5;
     parcelQuery.run((function(error, featureCollection, response) {
-        console.log('171111 test', test, 'fetch', fetch);
+        console.log('171111 getParcelsByLatLng parcelQuery ran', test, 'fetch', fetch, 'response', response);
         this.didGetParcels(error, featureCollection, response, parcelLayer, fetch);
       }).bind(this)
     )
   }
 
   didGetParcels(error, featureCollection, response, parcelLayer, fetch) {
-    console.log('171111 didGetParcels is running parcelLayer', parcelLayer, 'fetch', fetch);
+    // console.log('171111 didGetParcels is running parcelLayer', parcelLayer, 'fetch', fetch, 'response', response);
     const configForParcelLayer = this.config.parcels[parcelLayer];
     const multipleAllowed = configForParcelLayer.multipleAllowed;
     const geocodeField = configForParcelLayer.geocodeField;
