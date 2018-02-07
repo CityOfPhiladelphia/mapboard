@@ -312,6 +312,7 @@ var RCO_NAMES = {
 }
 
 Mapboard.default({
+  // plugin mode - will affect the css
   plugin: true,
   defaultAddress: searchInput,
   router: {
@@ -321,14 +322,14 @@ Mapboard.default({
     enabled: false
   },
   measureControlEnabled: false,
-  rootStyle: {
-    position: 'absolute',
-    bottom: 0,
-    // top: '78px',
-    top: '118px',
-    left: 0,
-    right: 0,
-  },
+  // rootStyle: {
+  //   position: 'absolute',
+  //   bottom: 0,
+  //   // top: '78px',
+  //   top: '118px',
+  //   left: 0,
+  //   right: 0,
+  // },
   legendControls: {
     litter: {
       options: {
