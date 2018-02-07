@@ -1,5 +1,4 @@
 <template>
-  <!-- <div class="cell medium-auto grid-x" id="mb-root"> -->
   <div id="mb-root"
        :class="rootClass"
        :style="styleObject"
@@ -34,14 +33,12 @@
                       :offsetX="-2"
                       :offsetY="-2"
           />
-          <!-- :icon="'../assets/camera.png'" -->
           <view-cone v-if="this.cyclomediaActive && this.pictometryActive"
                      :latlng="cycloLatlng"
                      :rotationAngle="cycloRotationAngle"
                      :hFov="cycloHFov"
           />
         </pictometry-widget>
-        <!-- :center="this.$store.state.map.map.center" -->
       </map-panel>
   </div>
 </template>
@@ -67,6 +64,7 @@
     },
     data() {
       const data = {
+        // this will only affect the app size if the app is set to "plugin" mode
         styleObject: {
           'height': '100px'
         }
@@ -201,11 +199,6 @@
         }
       }
     },
-    // methods: {
-    //   handleCyclomediaOrientationChange() {
-    //     console.log('handleCyclomediaOrientationChange is running');
-    //   }
-    // },
     watch: {
       pictometryShowAddressMarker(nextValue) {
         console.log('watch pictometryShowAddressMarker', nextValue);
@@ -223,22 +216,11 @@
         return isMobileOrTablet;
       },
       handleWindowResize() {
-        // console.log('handleWindowResize is running');
-
+        // this only actually affects the size if it is set to "plugin mode"
         if ($(window).width() >= 750) {
           this.styleObject.height = '600px'
-          // console.log('if is running, window width is >= 750px');
-          // const rootElement = document.getElementById('mb-root');
-          // const rootStyle = window.getComputedStyle(rootElement);
-          // const rootHeight = rootStyle.getPropertyValue('height');
-          // const rootHeightNum = parseInt(rootHeight.replace('px', ''));
-          // const topicsHeight = rootHeightNum - 103;
-          // this.styleObject.height = topicsHeight.toString() + 'px';
-          // this.styleObject['overflow-y'] = 'auto';
         } else {
-          // console.log('else is running, window width is < 750px');
           this.styleObject.height = 'auto';
-          // this.styleObject['overflow-y'] = 'hidden';
         }
       }
     },
@@ -253,16 +235,6 @@
   button:focus {
     outline: none;
   }
-
-  /* #mb-root {
-    height: 600px;
-  } */
-
-  /* .mb-root-plugin {
-    height: 600px;
-  } */
-
-
 
   .mb-panel-topics-with-widget {
     height: 50%;
