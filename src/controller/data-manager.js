@@ -615,7 +615,6 @@ class DataManager {
     const configForParcelLayer = this.config.parcels[parcelLayer];
     const geocodeField = configForParcelLayer.geocodeField;
     const parcelQuery = L.esri.query({ url });
-    parcelQuery.params.outSr = '';
     parcelQuery.where(geocodeField + " = '" + id + "'");
     // console.log('parcelQuery:', parcelQuery);
     parcelQuery.run((function(error, featureCollection, response) {
@@ -683,6 +682,17 @@ class DataManager {
     // dor
     } else {
       feature = featuresSorted[0];
+    }
+
+    // console.log('didGetParcels, parcelLayer:', parcelLayer, 'multipleAllowed:', multipleAllowed, 'feature:', feature, 'featuresSorted:', featuresSorted);
+
+    // use TURFJS to get area and perimeter of all parcels returned
+    for (let featureSorted of featuresSorted) {
+      const turfPolygon = turf.polygon(featureSorted.geometry.coordinates);
+      // turf area is returned in square meters - conversion is to square feet
+      featureSorted.properties.TURF_AREA = turf.area(turfPolygon) * 10.7639;
+      // this formula for turf perimeter is returned in km - conversion is to feet
+      featureSorted.properties.TURF_PERIMETER = turf.lineDistance(turf.lineString(turfPolygon.geometry.coordinates[0])) * 3280.84;
     }
 
     // at this point there is definitely a feature or features - put it in state
