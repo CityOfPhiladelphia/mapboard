@@ -579,7 +579,6 @@ Mapboard.default({
     },
     regmaps: {
       type: 'esri',
-      // url: '//gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/0',
       url: '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/MASTERMAPINDEX/FeatureServer/0',
       // deps: ['dorParcels'],
       deps: ['parcels.dor'],

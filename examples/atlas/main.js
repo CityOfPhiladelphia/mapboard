@@ -551,9 +551,6 @@ Mapboard.default({
       url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Points/FeatureServer/0',
       options: {
         geometryServerUrl: '//gis.phila.gov/arcgis/rest/services/Geometry/GeometryServer/',
-        // geometryServerUrl: 'http://192.168.103.143:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer/',
-        // radius: 500,
-        // units: 'feet',
         calculateDistance: true,
       },
     },
@@ -591,7 +588,6 @@ Mapboard.default({
     },
     regmaps: {
       type: 'esri',
-      // url: '//gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/0',
       url: '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/MASTERMAPINDEX/FeatureServer/0',
       // deps: ['dorParcels'],
       deps: ['parcels.dor'],
