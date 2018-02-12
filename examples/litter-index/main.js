@@ -5,19 +5,44 @@ var BASE_CONFIG_URL = '//rawgit.com/rbrtmrtn/mapboard-base-config/13a6bde61aec47
 // TODO get user-entered address
 var searchInput = '1300 market street';
 
-var scoreColorScale = [
+var blockScoreColorScale = [
   // min        max     color
-  [3.750001,    4.0,     'rgb(255, 0, 0)'],
-  [3.250001,    3.75,    'rgb(255, 85, 0)'],
-  [2.750001,    3.25,    'rgb(255, 170, 0)'],
-  [2.250001,    2.75,    'rgb(255, 229, 0)'],
-  [1.750001,    2.25,    'rgb(255, 255, 0)'],
+  [3.750001,    4.0,     'rgb(230, 0, 0)'],
+  [3.250001,    3.75,    'rgb(255, 0, 0)'],
+  [2.750001,    3.25,    'rgb(255, 85, 0)'],
+  [2.250001,    2.75,    'rgb(255, 170, 0)'],
+  [1.750001,    2.25,    'rgb(255, 229, 0)'],
   [1.250001,    1.75,    'rgb(152, 230, 0)'],
-  [1.0,         1.25,    'rgb(56, 168, 0)'],
+  [1.0,         1.25,    'rgb(88, 192, 77)'],
 ];
 
-function colorForScore(score) {
-  var rangesFiltered = scoreColorScale.filter(function (item) {
+var divisionScoreColorScale = [
+  // min        max      color
+  [2.520001,    3.03,    'rgb(255, 0, 0)'],
+  [2.364001,    2.52,    'rgb(255, 85, 0)'],
+  [2.207001,    2.364,   'rgb(255, 170, 0)'],
+  [2.049001,    2.207,   'rgb(255, 229, 0)'],
+  [1.890001,    2.049,   'rgb(255, 204, 0)'],
+  [1.730001,    1.89,    'rgb(255, 229, 0)'],
+  [1.576001,    1.73,    'rgb(206, 237, 0)'],
+  [1.419001,    1.576,   'rgb(152, 230, 0)'],
+  [1.3,         1.419,   'rgb(56, 168, 0)'],
+];
+
+function colorForBlockScore(score) {
+  var rangesFiltered = blockScoreColorScale.filter(function (item) {
+        var min = item[0],
+            max = item[1];
+        return min <= score && score < max;
+      }),
+      range = rangesFiltered.length > 0 ? rangesFiltered[0] : [null, null, 'rgb(178, 178, 178)'],
+      color = range[2];
+
+  return color;
+}
+
+function colorForDivisionScore(score) {
+  var rangesFiltered = divisionScoreColorScale.filter(function (item) {
         var min = item[0],
             max = item[1];
         return min <= score && score < max;
@@ -330,37 +355,39 @@ Mapboard.default({
   //   left: 0,
   //   right: 0,
   // },
+
   legendControls: {
-    litter: {
-      options: {
-        topics: ['litter'],
-        showWithBaseMapOnly: false
-      },
-      data: {
-        '1.0-1.25': {
-          'background-color': 'rgb(56, 168, 0)',
-        },
-        '1.25-1.75': {
-          'background-color': 'rgb(152, 230, 0)'
-        },
-        '1.75-2.25': {
-          'background-color': 'rgb(255, 255, 0)'
-        },
-        '2.25-2.75': {
-          'background-color': 'rgb(255, 229, 0)'
-        },
-        '2.75-3.25': {
-          'background-color': 'rgb(255, 170, 0)'
-        },
-        '3.25-3.75': {
-          'background-color': 'rgb(255, 85, 0)',
-        },
-        '3.75-4.0': {
-          'background-color': 'rgb(255, 0, 0)'
-        },
-      }
-    }
+    // litter: {
+    //   options: {
+    //     topics: ['litter'],
+    //     showWithBaseMapOnly: false
+    //   },
+    //   data: {
+    //     '1.0-1.25': {
+    //       'background-color': 'rgb(56, 168, 0)',
+    //     },
+    //     '1.25-1.75': {
+    //       'background-color': 'rgb(152, 230, 0)'
+    //     },
+    //     '1.75-2.25': {
+    //       'background-color': 'rgb(255, 255, 0)'
+    //     },
+    //     '2.25-2.75': {
+    //       'background-color': 'rgb(255, 229, 0)'
+    //     },
+    //     '2.75-3.25': {
+    //       'background-color': 'rgb(255, 170, 0)'
+    //     },
+    //     '3.25-3.75': {
+    //       'background-color': 'rgb(255, 85, 0)',
+    //     },
+    //     '3.75-4.0': {
+    //       'background-color': 'rgb(255, 0, 0)'
+    //     },
+    //   }
+    // }
   },
+
   map: {
     defaultBasemap: 'pwd',
     defaultIdentifyFeature: 'address-marker',
@@ -378,36 +405,36 @@ Mapboard.default({
       },
     },
     featureLayers: {
-      litter_index_line: {
-        url: '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LITTER_INDEX_LINE/FeatureServer/0',
-        opacity: 1.0,
-        weight: 5.0,
-        style: function (feature, layer) {
-          var score = parseFloat(feature.properties.HUNDRED_BLOCK_SCORE),
-              color = colorForScore(score);
-
-          return {
-            color: color,
-          };
-        },
-      },
-      litter_index_polygon: {
-        url: '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LITTER_INDEX_POLYGON/FeatureServer/0',
-        opacity: 1.0,
-        // color: 'orange',
-        // fillColor: 'orange',
-        fillOpacity: 0.5,
-        weight: 1,
-        minZoom: 16,
-        style: function (feature, layer) {
-          var score = parseFloat(feature.properties.DIVISION_SCORE),
-              fillColor = colorForScore(score);
-
-          return {
-            fillColor: fillColor,
-          };
-        },
-      }
+      // litter_index_line: {
+      //   url: '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LITTER_INDEX_LINE/FeatureServer/0',
+      //   opacity: 1.0,
+      //   weight: 5.0,
+      //   style: function (feature, layer) {
+      //     var score = parseFloat(feature.properties.HUNDRED_BLOCK_SCORE),
+      //         color = colorForScore(score);
+      //
+      //     return {
+      //       color: color,
+      //     };
+      //   },
+      // },
+      // litter_index_polygon: {
+      //   url: '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LITTER_INDEX_POLYGON/FeatureServer/0',
+      //   opacity: 1.0,
+      //   // color: 'orange',
+      //   // fillColor: 'orange',
+      //   fillOpacity: 0.5,
+      //   weight: 1,
+      //   minZoom: 16,
+      //   style: function (feature, layer) {
+      //     var score = parseFloat(feature.properties.DIVISION_SCORE),
+      //         fillColor = colorForScore(score);
+      //
+      //     return {
+      //       fillColor: fillColor,
+      //     };
+      //   },
+      // }
     },
   },
   baseConfig: BASE_CONFIG_URL,
@@ -467,7 +494,7 @@ Mapboard.default({
                   props = firstItem.properties || {},
                   score = props.HUNDRED_BLOCK_SCORE;
 
-              return colorForScore(score);
+              return colorForBlockScore(score);
             }
           },
           slots: {
@@ -494,11 +521,11 @@ Mapboard.default({
                   firstItem = data[0] || {},
                   props = firstItem.properties || {},
                   score = props.DIVISION_SCORE;
-              return colorForScore(score);
+              return colorForDivisionScore(score);
             }
           },
           slots: {
-            title: 'Litter Index Neighborhood Score',
+            title: 'Litter Index Neighborhood Average',
             value: function (state) {
               var data = state.sources.litter_index_polygon.data || [],
                   firstItem = data[0] || {},
@@ -613,15 +640,18 @@ Mapboard.default({
         },
       ],
       basemap: 'pwd',
+      dynamicMapLayers: [
+        'zoning'
+      ],
       identifyFeature: 'address-marker',
       parcels: 'pwd',
-      tiledLayers: [
-        'cityBasemapLabels',
-      ],
-      featureLayers: [
-        'litter_index_polygon',
-        'litter_index_line',
-      ],
+      // tiledLayers: [
+      //   'cityBasemapLabels',
+      // ],
+      // featureLayers: [
+      //   'litter_index_polygon',
+      //   'litter_index_line',
+      // ],
     }
   ],
 });
