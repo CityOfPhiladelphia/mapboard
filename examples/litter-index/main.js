@@ -404,37 +404,12 @@ Mapboard.default({
         zIndex: '3',
       },
     },
-    featureLayers: {
-      // litter_index_line: {
-      //   url: '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LITTER_INDEX_LINE/FeatureServer/0',
-      //   opacity: 1.0,
-      //   weight: 5.0,
-      //   style: function (feature, layer) {
-      //     var score = parseFloat(feature.properties.HUNDRED_BLOCK_SCORE),
-      //         color = colorForScore(score);
-      //
-      //     return {
-      //       color: color,
-      //     };
-      //   },
-      // },
-      // litter_index_polygon: {
-      //   url: '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LITTER_INDEX_POLYGON/FeatureServer/0',
-      //   opacity: 1.0,
-      //   // color: 'orange',
-      //   // fillColor: 'orange',
-      //   fillOpacity: 0.5,
-      //   weight: 1,
-      //   minZoom: 16,
-      //   style: function (feature, layer) {
-      //     var score = parseFloat(feature.properties.DIVISION_SCORE),
-      //         fillColor = colorForScore(score);
-      //
-      //     return {
-      //       fillColor: fillColor,
-      //     };
-      //   },
-      // }
+    tiledOverlays: {
+      litterIndex: {
+        url: '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/LitterIndexTiles/MapServer',
+        opacity: 1.0,
+        zIndex: '3',
+      },
     },
   },
   baseConfig: BASE_CONFIG_URL,
@@ -662,14 +637,15 @@ Mapboard.default({
         },
       ],
       basemap: 'pwd',
-      dynamicMapLayers: [
-        'zoning'
-      ],
+      // dynamicMapLayers: [
+      //   'imagery2017',
+      //   'litterIndex'
+      // ],
       identifyFeature: 'address-marker',
       parcels: 'pwd',
-      // tiledLayers: [
-      //   'cityBasemapLabels',
-      // ],
+      tiledOverlays: [
+        'litterIndex',
+      ],
       // featureLayers: [
       //   'litter_index_polygon',
       //   'litter_index_line',

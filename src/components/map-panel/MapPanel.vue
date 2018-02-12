@@ -40,6 +40,14 @@
                             :attribution="tiledLayer.attribution"
       />
 
+      <esri-tiled-overlay v-for="(tiledLayer, key) in this.$config.map.tiledOverlays"
+                          v-if="activeTiledOverlays.includes(key)"
+                          :key="key"
+                          :url="tiledLayer.url"
+                          :zIndex="tiledLayer.zIndex"
+                          :opacity="tiledLayer.opacity"
+      />
+
       <esri-dynamic-map-layer v-for="(dynamicLayer, key) in this.$config.map.dynamicMapLayers"
                               v-if="activeDynamicMaps.includes(key)"
                               :key="key"
@@ -268,6 +276,7 @@
   import Map_ from '../../leaflet/Map.vue';
   import Control from '../../leaflet/Control.vue';
   import EsriTiledMapLayer from '../../esri-leaflet/TiledMapLayer.vue';
+  import EsriTiledOverlay from '../../esri-leaflet/TiledOverlay.vue';
   import EsriDynamicMapLayer from '../../esri-leaflet/DynamicMapLayer.vue';
   import EsriFeatureLayer from '../../esri-leaflet/FeatureLayer.vue';
   import Geojson from '../../leaflet/Geojson.vue';
@@ -299,6 +308,7 @@
       Map_,
       Control,
       EsriTiledMapLayer,
+      EsriTiledOverlay,
       EsriDynamicMapLayer,
       EsriFeatureLayer,
       Geojson,
@@ -427,6 +437,13 @@
         const activeBasemapConfig = this.configForBasemap(activeBasemap)
 
         return activeBasemapConfig.tiledLayers || [];
+      },
+      activeTiledOverlays() {
+        if (!this.activeTopicConfig || !this.activeTopicConfig.tiledOverlays) {
+          return [];
+        } else {
+          return this.activeTopicConfig.tiledOverlays;
+        }
       },
       activeDynamicMaps() {
         if (!this.activeTopicConfig || !this.activeTopicConfig.dynamicMapLayers) {
