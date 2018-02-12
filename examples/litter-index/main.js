@@ -1,5 +1,5 @@
-// var BASE_CONFIG_URL = '//rawgit.com/rbrtmrtn/mapboard-base-config/2fbe59eb4bc61b782c5e3723e764945f7fffed85/config.js',
-var BASE_CONFIG_URL = '//rawgit.com/rbrtmrtn/mapboard-base-config/13a6bde61aec47278ccb1baff07b6dbbbd614fc1/config.js',
+
+var BASE_CONFIG_URL = '//rawgit.com/rbrtmrtn/mapboard-base-config/5378749141d2fd7a2dcd1a3cc1a74ea61aa7f51d/config.js',
     GATEKEEPER_KEY = '77e78967d0a3e768432f74132f784f42';
 
 // TODO get user-entered address
