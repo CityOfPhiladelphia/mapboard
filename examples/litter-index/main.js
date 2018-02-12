@@ -505,10 +505,21 @@ Mapboard.default({
                   props = firstItem.properties || {},
                   score = props.HUNDRED_BLOCK_SCORE;
 
-              return Math.round(score * 100) / 100;
+              if (!score) {
+                return "No Data Available";
+              } else {
+                return Math.round(score * 100) / 100;
+              }
             },
             description: function (state) {
-              return 'out of 4.0';
+              var data = state.sources.litter_index_line.data || [],
+                  firstItem = data[0] || {},
+                  props = firstItem.properties || {},
+                  score = props.HUNDRED_BLOCK_SCORE;
+
+              if (score) {
+                return 'out of 4.0';
+              }
             },
           }
         },
@@ -532,10 +543,21 @@ Mapboard.default({
                   props = firstItem.properties || {},
                   score = props.DIVISION_SCORE;
 
-              return Math.round(score * 100) / 100;
+              if (!score) {
+                return "No Data Available";
+              } else {
+                return Math.round(score * 100) / 100;
+              }
             },
             description: function (state) {
-              return 'out of 4.0';
+              var data = state.sources.litter_index_polygon.data || [],
+                  firstItem = data[0] || {},
+                  props = firstItem.properties || {},
+                  score = props.DIVISION_SCORE;
+
+              if (score) {
+                return 'out of 4.0';
+              }
             },
           }
         },
