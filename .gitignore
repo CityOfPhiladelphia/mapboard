@@ -3,13 +3,6 @@ node_modules/
 dist/
 npm-debug.log
 yarn-error.log
-src/config.js
-src/util/streetsmart.js
-
-examples/atlas/main_es6.js
-
-sh.exe.stackdump
-
-bin/
+/test/e2e/reports/
+selenium-debug.log
 _bin/
-test/
