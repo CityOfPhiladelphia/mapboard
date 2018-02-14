@@ -39,8 +39,10 @@
       constructLocalUrl(host, path1, path2) {
         let url;
         if (window.location.protocol === 'https:') {
+          // console.log('using https', window.location.protocol);
           url = 'https://' + host + path1 + path2;
         } else {
+          // console.log('using http', window.location.protocol);
           url = 'http://' + host + path1 + path2;
         }
         // console.log('constructing url:', url);
