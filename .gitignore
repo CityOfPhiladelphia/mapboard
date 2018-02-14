@@ -11,3 +11,5 @@ examples/atlas/main_es6.js
 sh.exe.stackdump
 
 bin/
+_bin/
+test/
