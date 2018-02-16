@@ -18,7 +18,10 @@
 
     <!-- success -->
     <transition name="topic-body">
-      <div class="topic-body" v-if="shouldShowBody">
+      <div class="topic-body"
+           v-if="shouldShowBody"
+           :data-topic-key="topicKey"
+      >
         <topic-component-group :topic-components="topic.components" />
       </div>
     </transition>
@@ -197,7 +200,7 @@
         if (topic !== this.$store.state.activeTopic) {
           nextTopic = topic;
         }
-        
+
         // notify controller (which will handle routing)
         this.$controller.handleTopicHeaderClick(nextTopic);
       },

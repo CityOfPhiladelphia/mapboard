@@ -6,7 +6,7 @@
       <greeting v-show="shouldShowGreeting" />
 
       <!-- after search -->
-      <div v-if="!shouldShowGreeting" class="cell">
+      <div v-if="!shouldShowGreeting" class="topic-panel-content cell">
         <!-- address header -->
         <div class="address-header">
           <h1 class="address-header-line-1">

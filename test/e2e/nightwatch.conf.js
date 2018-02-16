@@ -20,6 +20,7 @@ module.exports = {
     default: {
       globals: {
         devServerUrl,
+        waitForConditionTimeout: 10000,
       },
     },
     chrome: {
