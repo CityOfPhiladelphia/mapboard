@@ -35,23 +35,36 @@ class EsriClient extends BaseClient {
   }
 
   fetchNearby(feature, dataSource, dataSourceKey) {
+
+    const projection4326 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+    const projection2272 = "+proj=lcc +lat_1=40.96666666666667 +lat_2=39.93333333333333 +lat_0=39.33333333333334 +lon_0=-77.75 +x_0=600000 +y_0=0 +ellps=GRS80 +datum=NAD83 +to_meter=0.3048006096012192 +no_defs";
+
     const dataSourceUrl = dataSource.url;
     const {
       calculateDistance,
       geometryServerUrl,
+      distances,
       ...options
     } = dataSource.options;
+
+    // console.log('distances:', distances)
 
     // params.geometries = `[${feature.geometry.coordinates.join(', ')}]`
     // TODO get some of these values from map, etc.
     const coords = feature.geometry.coordinates;
+    const coords2272 = proj4(projection4326, projection2272, [coords[0], coords[1]]);
+    console.log('coords:', feature.geometry.coordinates, 'coords2272:', coords2272);
     const params = {
       // geometries: feature => '[' + feature.geometry.coordinates[0] + ', ' + feature.geometry.coordinates[1] + ']',
-      geometries: `[${coords.join(', ')}]`,
-      inSR: 4326,
+      geometries: `[${coords2272.join(', ')}]`,
+      inSR: 2272,
       outSR: 4326,
-      bufferSR: 4326,
-      distances: 0.0028,
+      bufferSR: 2272,
+      distances: distances, //|| 0.0028,
+      // inSR: 4326,
+      // outSR: 4326,
+      // bufferSR: 4326,
+      // distances: distances, //|| 0.0028,
       unionResults: true,
       geodesic: false,
       f: 'json',
@@ -143,8 +156,19 @@ class EsriClient extends BaseClient {
         features = features.map(feature => {
           // console.log('feat', feature);
           const featureCoords = feature.geometry.coordinates;
-          const to = turf.point(featureCoords);
-          const dist = turf.distance(from, to, 'miles');
+          // console.log('featureCoords:', featureCoords);
+          let dist;
+          if (Array.isArray(featureCoords[0])) {
+            // console.log('featureCoords is array of coords:', featureCoords[0]);
+            let polygon = turf.polygon([featureCoords[0]]);
+            const vertices = turf.explode(polygon)
+            const closestVertex = turf.nearest(from, vertices);
+            // console.log('closestVertex', closestVertex);
+            dist = turf.distance(from, closestVertex, 'miles')
+          } else {
+            const to = turf.point(featureCoords);
+            dist = turf.distance(from, to, 'miles');
+          }
 
           // TODO make distance units an option. for now, just hard code to ft.
           const distFeet = parseInt(dist * 5280);

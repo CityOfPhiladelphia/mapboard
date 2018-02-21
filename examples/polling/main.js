@@ -556,6 +556,17 @@ Mapboard.default({
       options: {
         geometryServerUrl: '//gis.phila.gov/arcgis/rest/services/Geometry/GeometryServer/',
         calculateDistance: true,
+        distances: 150,
+      },
+    },
+    neighboringProperties: {
+      type: 'esri-nearby',
+      url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/ArcGIS/rest/services/PWD_PARCELS/FeatureServer/0',
+      // url: 'https://gis.phila.gov/arcgis/rest/services/Water/pv_data_geodb2/MapServer/0',
+      options: {
+        geometryServerUrl: '//gis.phila.gov/arcgis/rest/services/Geometry/GeometryServer/',
+        calculateDistance: true,
+        distances: 250,
       },
     },
     zoningOverlay: {
@@ -2247,7 +2258,7 @@ Mapboard.default({
       key: 'polling',
       icon: 'book',
       label: 'Polling',
-      dataSources: ['divisions'],
+      dataSources: ['divisions', 'elections'],
       components: [
         {
           type: 'callout',
@@ -2296,7 +2307,7 @@ Mapboard.default({
         }
       ],
       geojson: {
-        path: ['divisions', 'data', '0'],
+        path: ['divisions', 'data'],
         color: 'red',
         key: 'id'
         // key: 'DIVISION_NUM'
@@ -2308,6 +2319,152 @@ Mapboard.default({
         key: 'display_address',
         color: 'red'
       },
+      basemap: 'pwd',
+      identifyFeature: 'address-marker',
+      parcels: 'pwd'
+    },
+    {
+      key: 'rco',
+      icon: 'map-marker',
+      label: 'RCO',
+      dataSources: ['neighboringProperties'],
+      components: [
+        {
+          type: 'callout',
+          slots: {
+            text: '\
+              These are your neighbors that you have to inform\
+              if you are going to try to change your zoning...\
+            ',
+          }
+        },
+        {
+          type: 'horizontal-table',
+          options: {
+            topicKey: 'rco',
+            id: 'neighboringProperties',
+            // sort: {
+            //   select: true,
+            //   sortFields: [
+            //     'date',
+            //     'distance'
+            //   ],
+            //   getValue: function(item, sortField) {
+            //     var val;
+            //     if (sortField === 'date' || !sortField) {
+            //       val = item.requested_datetime;
+            //     } else if (sortField === 'distance') {
+            //       val = item.distance;
+            //     }
+            //     return val;
+            //   },
+            //   order: function(sortField) {
+            //     var val;
+            //     if (sortField === 'date') {
+            //       val = 'desc';
+            //     } else {
+            //       val = 'asc';
+            //     }
+            //     return val;
+            //   }
+            // },
+            // filters: [
+            //   {
+            //     type: 'time',
+            //     getValue: function(item) {
+            //       return item.requested_datetime;
+            //     },
+            //     label: 'From the last',
+            //     values: [
+            //       {
+            //         label: '30 days',
+            //         value: '30',
+            //         unit: 'days',
+            //         direction: 'subtract',
+            //       },
+            //       {
+            //         label: '90 days',
+            //         value: '90',
+            //         unit: 'days',
+            //         direction: 'subtract',
+            //       },
+            //       {
+            //         label: 'year',
+            //         value: '1',
+            //         unit: 'years',
+            //         direction: 'subtract',
+            //       }
+            //     ]
+            //   }
+            // ],
+            // filterByText: {
+            //   label: 'Filter by text',
+            //   fields: [
+            //     'service_name',
+            //     'address'
+            //   ]
+            // },
+            mapOverlay: {
+              marker: 'geojson',
+              style: {
+                radius: 6,
+                fillColor: 'green',
+                // fillColor: '#ff3f3f',
+                color: '#ff0000',
+                weight: 1,
+                opacity: 1,
+                fillOpacity: 1.0
+              },
+              hoverStyle: {
+                radius: 6,
+                fillColor: 'yellow',
+                color: '#ff0000',
+                weight: 1,
+                opacity: 1,
+                fillOpacity: 1.0
+              }
+            },
+            fields: [
+              {
+                label: 'Address',
+                value: function(state, item) {
+                  return item.properties.ADDRESS;
+                },
+              },
+              // {
+              //   label: 'Description',
+              //   value: function(state, item) {
+              //     return item.properties.BLDG_DESC;
+              //   }
+              // },
+              {
+                label: 'Distance',
+                value: function(state, item) {
+                  return parseInt(item._distance) + ' ft';
+                }
+              }
+            ]
+          },
+          slots: {
+            title: 'Neighboring Properties',
+            data: 'neighboringProperties',
+            items: function(state) {
+              var data = state.sources['neighboringProperties'].data || [];
+              var rows = data.map(function(row){
+                var itemRow = row;
+                // var itemRow = Object.assign({}, row);
+                return itemRow;
+              });
+              return rows;
+            },
+          }
+        },
+      ],
+      // geojson: {
+      //   path: ['neighboringProperties', 'data'],
+      //   color: 'red',
+      //   key: 'id'
+      // },
       basemap: 'pwd',
       identifyFeature: 'address-marker',
       parcels: 'pwd'

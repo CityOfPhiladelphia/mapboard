@@ -17,10 +17,12 @@ export default {
       // get marker
       const layerMap = this.$store.state.map.map._layers;
       const layers = Object.values(layerMap);
+      console.log('layerMap:', layerMap, 'layers:', layers);
 
       const matchingLayer = layers.filter(layer => {
         const options = layer.options || {};
         const data = options.data;
+        console.log('options:', options, 'data:', data);
 
         if (!data) return;
 
@@ -32,7 +34,7 @@ export default {
 
 
       // if (!matchingLayer) return;
-
+      // console.log('matchingLayer:', matchingLayer);
       this.updateCircleMarkerFillColor(matchingLayer);
 
       // bring to front
@@ -100,9 +102,10 @@ export default {
 
       for (let tableId of tableIds) {
         const tableConfig = this.getConfigForTable(tableId) || {};
+        console.log('tableConfig:', tableConfig);
         const mapOverlay = (tableConfig.options || {}).mapOverlay;
 
-        if (!mapOverlay) {
+        if (!mapOverlay || mapOverlay.marker !== 'circle') {
           continue;
         }
 
@@ -116,6 +119,7 @@ export default {
 
         // go through rows
         for (let item of items) {
+          console.log('tableId', tableId)
           let latlng;
 
           // TODO - get geometry field name from config
@@ -169,23 +173,95 @@ export default {
         features.push.apply(features, dorParcelFeatures);
       }
 
+
+      const filteredData = this.$store.state.tables.filteredData;
+      // get visible tables based on active topic
+      const tableIds = this.$store.getters.visibleTableIds;
+
+      for (let tableId of tableIds) {
+        const tableConfig = this.getConfigForTable(tableId) || {};
+        console.log('tableId:', tableId, 'tableConfig:', tableConfig);
+        const mapOverlay = (tableConfig.options || {}).mapOverlay;
+
+        if (!mapOverlay || mapOverlay.marker !== 'geojson') {
+          continue;
+        }
+
+        const items = filteredData[tableId];
+
+        if (items.length < 1) {
+          continue;
+        }
+
+        const style = mapOverlay.style;
+        console.log('tableId:', tableId, 'items:', items);
+        items.push(tableId);
+
+        // go through rows
+        for (let item of items) {
+          // console.log('tableId:', tableId, 'items', items);
+          // let latlng;
+
+          // TODO - get geometry field name from config
+          // if (item.geometry) {
+          //   const [x, y] = item.geometry.coordinates;
+          //   latlng = [y, x];
+          // } else if (item.lat) {
+          //   latlng = [item.lat, item.lng]
+            // if (item.point_x) {
+            //   latlng = [item.point_y, item.point_x];
+            // } else if (item.geocode_x) {
+            //   latlng = [item.geocode_y, item.geocode_x];
+            // }
+          // }
+
+          // check for active feature TODO - bind style props to state
+          // let props = Object.assign({}, style);
+          // props.latlng = latlng;
+          // props.featureId = item._featureId;
+          // props.tableId = tableId;
+
+          const geojson = item.geometry;
+          const color = 'green';
+          // const color = topicGeojson.color || 'green';
+          const key = 'test';
+          const featureId = item._featureId;
+          const tableId = items[items.length-1];
+          // const key = geojson[topicGeojson.key];
+          features.push({geojson, color, key, featureId, tableId});
+        }
+      }
+
+
+
+
+
+
+
+
+
+
+
+
       // other geojson from config
       const topicGeojson = this.activeTopicConfig.geojson;
       if (topicGeojson) {
 
         const geojsonPath = topicGeojson['path'];
-        let geojson = this.$store.state.sources;
+        let path = this.$store.state.sources;
         for (let level of geojsonPath) {
-          console.log('level:', level, 'geojson:', geojson);
-          if (geojson !== null) {
-            geojson = geojson[level];
+          // console.log('level:', level, 'path:', path);
+          if (path !== null) {
+            path = path[level];
           }
         }
-        if (geojson !== null) {
-          console.log('geojson:', geojson);
-          const color = topicGeojson.color || 'green';
-          const key = geojson[topicGeojson.key];
-          features.push({geojson, color, key});
+        if (path !== null) {
+          for (let geojson of path) {
+            // console.log('geojson:', geojson);
+            const color = topicGeojson.color || 'green';
+            const key = geojson[topicGeojson.key];
+            features.push({geojson, color, key});
+          }
         }
       }
 
@@ -294,6 +370,7 @@ export default {
       // }
     },
     updateCircleMarkerFillColor(marker) {
+      console.log('marker:', marker);
       // get next fill color
       const { featureId, tableId } = marker.options.data;
       const nextFillColor = this.fillColorForCircleMarker(featureId, tableId);

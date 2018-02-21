@@ -119,6 +119,13 @@
                :color="geojsonFeature.color"
                :weight="2"
                :key="geojsonFeature.key"
+               :data="{
+                 featureId: geojsonFeature.featureId,
+                 tableId: geojsonFeature.tableId
+               }"
+               @l-mouseover="handleCircleMarkerMouseover"
+               @l-click="handleCircleMarkerClick"
+               @l-mouseout="handleCircleMarkerMouseout"
        />
        <!-- :overlay="geojsonFeature.overlayFeature" -->
 
