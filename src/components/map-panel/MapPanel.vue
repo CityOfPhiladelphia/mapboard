@@ -95,6 +95,7 @@
       <vector-marker v-for="(marker, index) in markers"
                      :latlng="marker.latlng"
                      :key="marker.key"
+                     :markerColor="marker.color"
       />
 
       <!-- marker using a png and ablility to rotate it -->
