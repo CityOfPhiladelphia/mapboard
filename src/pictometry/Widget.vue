@@ -3,8 +3,9 @@
        :class="this.pictContainerClass"
   >
     <div id="in-pict-div"
-      @click="this.popoutClicked"
-      >
+         @click="this.popoutClicked"
+         v-if="this.isMobileOrTablet === false"
+    >
       <i class="fa fa-external-link fa popout-icon"></i>
     </div>
     <!-- <div id="iframe-div"> -->
@@ -25,7 +26,6 @@
     props: [
       'apiKey',
       'secretKey',
-      'orientation',
     ],
     created() {
       this.$IFRAME_ID = 'pictometry-ipa';
@@ -37,14 +37,17 @@
       $.getScript(scriptUrl, self.init);
     },
     computed: {
+      isMobileOrTablet() {
+        return this.$store.state.isMobileOrTablet;
+      },
       cyclomediaActive() {
         return this.$store.state.cyclomedia.active;
       },
       pictContainerClass() {
         if (this.cyclomediaActive) {
-          return 'large-8 columns mb-panel';
+          return 'medium-8 large-8 columns mb-panel';
         } else {
-          return 'large-24 columns mb-panel';
+          return 'medium-24 large-24 columns mb-panel';
         }
       },
       mapCenter() {
@@ -282,17 +285,17 @@ header.site-header > .row:last-of-type {
 }
 
 #in-pict-div {
-  /*float: right;*/
   position: absolute;
   top: 0px;
   right: 0px;
-  /*z-index: 2000000;*/
   background-color: white;
   border: 0px solid;
   width: 30px;
   height: 30px;
-  /*display:none;*/
   cursor:pointer;
+  /* float: right; */
+  /*display:none;*/
+  /*z-index: 2000000;*/
   /*position: relative;
   top: 0px;
   right: 0px;*/
@@ -308,6 +311,13 @@ header.site-header > .row:last-of-type {
   padding: 0px;
   height: 50%;
   position: relative;
+  display: none;
+}
+
+@media screen and (min-width: 46.875em) {
+  #pict-container {
+    display: block;
+  }
 }
 
 /*#iframe-div {
@@ -395,6 +405,7 @@ ul {
 }
 
 img { max-width: inherit; }
+
 
 
 </style>

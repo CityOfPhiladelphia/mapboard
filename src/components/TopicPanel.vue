@@ -1,10 +1,12 @@
 <template>
-  <div class="cell medium-12 small-order-2 medium-order-1">
+  <div id="topic-panel-container"
+       :class="this.topicPanelContainerClass"
+  >
       <!-- before search -->
       <greeting v-show="shouldShowGreeting" />
 
       <!-- after search -->
-      <div v-if="!shouldShowGreeting" class="cell">
+      <div v-if="!shouldShowGreeting" class="topic-panel-content cell">
         <!-- address header -->
         <div class="address-header">
           <h1 class="address-header-line-1">
@@ -16,6 +18,7 @@
 
         <!-- topics container -->
         <div class="topics-container cell medium-cell-block-y"
+             :style="styleObject"
         >
           <topic v-for="topic in this.$config.topics"
                  :topicKey="topic.key"
@@ -35,25 +38,33 @@
       Greeting,
       Topic
     },
-    // data() {
-    //   const data = {
-    //     styleObject: {
-    //       'position': 'relative',
-    //       'top': '100px',
-    //       'overflow-y': 'auto',
-    //       'height': '100px'
-    //     }
-    //   };
-    //   return data;
-    // },
-    // mounted() {
-    //   window.addEventListener('resize', this.handleWindowResize);
-    //   this.handleWindowResize();
-    // },
+    data() {
+      const data = {
+        styleObject: {
+          'overflow-y': 'auto',
+          'height': '100px'
+        }
+      };
+      return data;
+    },
+    mounted() {
+      window.addEventListener('resize', this.handleWindowResize);
+      this.handleWindowResize();
+    },
     // beforeDestroy() {
     //   window.removeEventListener('resize', this.handleWindowResize);
     // },
     computed: {
+      fullScreenMapEnabled() {
+        return this.$store.state.fullScreenMapEnabled;
+      },
+      topicPanelContainerClass() {
+        if (this.fullScreenMapEnabled) {
+          return 'cell medium-1 small-order-2 medium-order-1'
+        } else {
+          return 'cell medium-12 small-order-2 medium-order-1'
+        }
+      },
       geocode() {
         return this.$store.state.geocode.data;
       },
@@ -107,15 +118,23 @@
         const sources = this.$store.state.sources;
         return requiredSources.every(key => sources[key].data)
       },
-      // handleWindowResize() {
-      //   // console.log('handleWindowResize is running');
-      //   const rootElement = document.getElementById('mb-root');
-      //   const rootStyle = window.getComputedStyle(rootElement);
-      //   const rootHeight = rootStyle.getPropertyValue('height');
-      //   const rootHeightNum = parseInt(rootHeight.replace('px', ''));
-      //   const topicsHeight = rootHeightNum - 100;
-      //   this.styleObject.height = topicsHeight.toString() + 'px';
-      // }
+      handleWindowResize() {
+        // console.log('handleWindowResize is running');
+        if ($(window).width() >= 750) {
+          // console.log('if is running, window width is >= 750px');
+          const rootElement = document.getElementById('mb-root');
+          const rootStyle = window.getComputedStyle(rootElement);
+          const rootHeight = rootStyle.getPropertyValue('height');
+          const rootHeightNum = parseInt(rootHeight.replace('px', ''));
+          const topicsHeight = rootHeightNum - 103;
+          this.styleObject.height = topicsHeight.toString() + 'px';
+          this.styleObject['overflow-y'] = 'auto';
+        } else {
+          // console.log('else is running, window width is < 750px');
+          this.styleObject.height = 'auto';
+          this.styleObject['overflow-y'] = 'hidden';
+        }
+      }
     }
   };
 </script>
@@ -133,20 +152,28 @@
     -webkit-box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.18);
     -moz-box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.18);
     box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.18);
+    margin-bottom: 0px !important;
   }
 
   .address-header-line-1 {
     margin-bottom: 0;
     margin-top: 0;
+    padding: 0px !important;
+  }
+
+  .address-header-line-2 {
+    padding: 0px;
   }
 
   .topics-container {
     padding: 20px;
+    overflow-x: hidden;
   }
 
   @media screen and (min-width: 40em) {
     .topics-container {
-      height: calc(100vh - 210px);
+      /* height: 100%; */
+      /* height: calc(100vh - 210px); */
     }
   }
 </style>

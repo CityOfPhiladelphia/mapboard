@@ -63,8 +63,30 @@ export default {
       if (this.identifyFeature === 'address-marker' && geocodeGeom) {
         const latlng = [...geocodeGeom.coordinates].reverse();
         const key = this.geocodeResult.properties.street_address;
-        const addressMarker = {latlng, key};
+        const color = '#2176d2';
+        const addressMarker = {latlng, key, color};
         markers.push(addressMarker);
+      }
+
+      // marker for topic from config
+      const topicMarker = this.activeTopicConfig.marker;
+      // console.log('topicMarker', topicMarker);
+      if (topicMarker) {
+        const markerPath = topicMarker['path'];
+        let path = this.$store.state.sources;
+        for (let level of markerPath) {
+          // console.log('level:', level, 'path:', path);
+          if (path !== null) {
+            path = path[level];
+          }
+        }
+        if (path !== null) {
+          const latlng = [path[topicMarker.lat], path[topicMarker.lng]];
+          const key = path[topicMarker.key];
+          const color = topicMarker.color || 'green';
+          const markerObject = {latlng, key, color};
+          markers.push(markerObject);
+        }
       }
 
       return markers;
@@ -135,6 +157,7 @@ export default {
         const key = geojson.properties.PARCELID;
 
         features.push({geojson, color, key});
+
       // dor parcel
       } else if (identifyFeature === 'dor-parcel' && activeParcelLayer === 'dor') {
         const color = 'blue';
@@ -145,6 +168,27 @@ export default {
         });
         features.push.apply(features, dorParcelFeatures);
       }
+
+      // other geojson from config
+      const topicGeojson = this.activeTopicConfig.geojson;
+      if (topicGeojson) {
+
+        const geojsonPath = topicGeojson['path'];
+        let geojson = this.$store.state.sources;
+        for (let level of geojsonPath) {
+          console.log('level:', level, 'geojson:', geojson);
+          if (geojson !== null) {
+            geojson = geojson[level];
+          }
+        }
+        if (geojson !== null) {
+          console.log('geojson:', geojson);
+          const color = topicGeojson.color || 'green';
+          const key = geojson[topicGeojson.key];
+          features.push({geojson, color, key});
+        }
+      }
+
 
       // GeoJSON overlays
       // const stateSources = this.$store.state.sources;

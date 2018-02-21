@@ -59,11 +59,14 @@
       });
     },
     mounted() {
+
       const leafletElement = this.$leafletElement = this.createLeafletElement();
       const map = this.$store.state.map;
       // REVIEW kind of hacky/not reactive?
       if (map) {
-        leafletElement.addTo(map.map);
+        this.$nextTick(() => {
+          leafletElement.addTo(map.map);
+        });
       }
     },
     destroyed() {

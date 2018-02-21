@@ -341,6 +341,41 @@ class DataManager {
       }
     }
 
+    // this gets called when the current geocoded address is wiped out, such as
+    // when you click on the "Atlas" title and it navigates to an empty hash
+    resetGeocode() {
+      // reset geocode
+      this.store.commit('setGeocodeStatus', null);
+      this.store.commit('setGeocodeData', null);
+      this.store.commit('setGeocodeRelated', null);
+      this.store.commit('setGeocodeInput', null);
+
+      // reset parcels
+      this.store.commit('setParcelData', {
+        parcelLayer: 'dor',
+        multipleAllowed: true,
+        data: [],
+        status: null,
+        activeParcel: null,
+        activeAddress: null,
+        activeMapreg: null
+      });
+      this.store.commit('setParcelData', {
+        parcelLayer: 'pwd',
+        multipleAllowed: false,
+        data: null
+      });
+
+      // reset other topic and map state
+      console.log('about to setActiveTopic, config:', this.config.topics[0].key);
+      this.store.commit('setActiveTopic', this.config.topics[0].key);
+      this.store.commit('setActiveParcelLayer', 'pwd');
+      this.store.commit('setBasemap', 'pwd');
+
+      // reset data sources
+      this.resetData();
+    }
+
   checkDataSourcesFetched(paths = []) {
     // console.log('check data sources fetched', paths);
 
@@ -549,7 +584,7 @@ class DataManager {
     }
 
     // only recenter the map on geocode
-    if (lastSearchMethod === 'geocode') {
+    if (lastSearchMethod === 'geocode' && this.store.state.geocode.status !== 'error') {
       this.store.commit('setMapCenter', coords);
       this.store.commit('setMapZoom', 19);
     }
@@ -580,30 +615,31 @@ class DataManager {
     const configForParcelLayer = this.config.parcels[parcelLayer];
     const geocodeField = configForParcelLayer.geocodeField;
     const parcelQuery = L.esri.query({ url });
-    parcelQuery.where(geocodeField + " = '" + id + "'")
+    parcelQuery.where(geocodeField + " = '" + id + "'");
+    // console.log('parcelQuery:', parcelQuery);
     parcelQuery.run((function(error, featureCollection, response) {
-      // console.log('parcelQuery ran, activeParcelLayer:', activeParcelLayer);
+      // console.log('171111 getParcelsById parcelQuery ran, response:', response);
       this.didGetParcels(error, featureCollection, response, parcelLayer);
     }).bind(this)
   )
   }
 
   getParcelsByLatLng(latlng, parcelLayer, fetch) {
-    console.log('171111 getParcelsByLatLng', parcelLayer, 'fetch', fetch);
+    // console.log('171111 getParcelsByLatLng', parcelLayer, 'fetch', fetch);
 
     const url = this.config.map.featureLayers[parcelLayer+'Parcels'].url;
     const parcelQuery = L.esri.query({ url });
     parcelQuery.contains(latlng);
     const test = 5;
     parcelQuery.run((function(error, featureCollection, response) {
-        console.log('171111 test', test, 'fetch', fetch);
+        console.log('171111 getParcelsByLatLng parcelQuery ran', test, 'fetch', fetch, 'response', response);
         this.didGetParcels(error, featureCollection, response, parcelLayer, fetch);
       }).bind(this)
     )
   }
 
   didGetParcels(error, featureCollection, response, parcelLayer, fetch) {
-    console.log('171111 didGetParcels is running parcelLayer', parcelLayer, 'fetch', fetch);
+    // console.log('171111 didGetParcels is running parcelLayer', parcelLayer, 'fetch', fetch, 'response', response);
     const configForParcelLayer = this.config.parcels[parcelLayer];
     const multipleAllowed = configForParcelLayer.multipleAllowed;
     const geocodeField = configForParcelLayer.geocodeField;
@@ -646,6 +682,17 @@ class DataManager {
     // dor
     } else {
       feature = featuresSorted[0];
+    }
+
+    // console.log('didGetParcels, parcelLayer:', parcelLayer, 'multipleAllowed:', multipleAllowed, 'feature:', feature, 'featuresSorted:', featuresSorted);
+
+    // use TURFJS to get area and perimeter of all parcels returned
+    for (let featureSorted of featuresSorted) {
+      const turfPolygon = turf.polygon(featureSorted.geometry.coordinates);
+      // turf area is returned in square meters - conversion is to square feet
+      featureSorted.properties.TURF_AREA = turf.area(turfPolygon) * 10.7639;
+      // this formula for turf perimeter is returned in km - conversion is to feet
+      featureSorted.properties.TURF_PERIMETER = turf.lineDistance(turf.lineString(turfPolygon.geometry.coordinates[0])) * 3280.84;
     }
 
     // at this point there is definitely a feature or features - put it in state

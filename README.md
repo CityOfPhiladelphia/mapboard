@@ -4,6 +4,9 @@ Mapboard is a framework for building data-rich mapping applications for the City
 
 ![Atlas](http://i.imgur.com/GcZpsgX.png)
 
+## Usage
+Check out [the wiki](https://github.com/CityOfPhiladelphia/mapboard/wiki) for usage documentation.
+
 ## Publishing
 
 To publish a new version of Mapboard to NPM:

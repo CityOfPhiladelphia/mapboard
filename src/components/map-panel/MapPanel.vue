@@ -1,6 +1,10 @@
 <template>
-  <div class="medium-12 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map">
+  <div id="map-panel-container"
+       :class="this.mapPanelContainerClass"
+  >
+    <full-screen-map-toggle-tab v-once />
     <map_ :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }"
+          id="map-tag"
           :center="this.$store.state.map.center"
           :zoom="this.$store.state.map.zoom"
           @l-click="handleMapClick"
@@ -36,6 +40,14 @@
                             :attribution="tiledLayer.attribution"
       />
 
+      <esri-tiled-overlay v-for="(tiledLayer, key) in this.$config.map.tiledOverlays"
+                          v-if="activeTiledOverlays.includes(key)"
+                          :key="key"
+                          :url="tiledLayer.url"
+                          :zIndex="tiledLayer.zIndex"
+                          :opacity="tiledLayer.opacity"
+      />
+
       <esri-dynamic-map-layer v-for="(dynamicLayer, key) in this.$config.map.dynamicMapLayers"
                               v-if="activeDynamicMaps.includes(key)"
                               :key="key"
@@ -55,6 +67,7 @@
                           :fillColor="featureLayer.color"
                           :fillOpacity="featureLayer.fillOpacity"
                           :weight="featureLayer.weight"
+                          :style_="featureLayer.style"
       />
 
       <!-- regmaps -->
@@ -82,6 +95,7 @@
       <vector-marker v-for="(marker, index) in markers"
                      :latlng="marker.latlng"
                      :key="marker.key"
+                     :markerColor="marker.color"
       />
 
       <!-- marker using a png and ablility to rotate it -->
@@ -153,11 +167,6 @@
       >
       </control-corner>
 
-      <!-- <control-corner :vSide="'bottom'"
-                      :hSide="'almostleft'"
-      >
-      </control-corner> -->
-
       <!-- <basemap-tooltip :position="'topright'"
       /> -->
 
@@ -173,7 +182,7 @@
       </div>
 
       <div v-once>
-        <pictometry-button v-if="this.$config.pictometry.enabled"
+        <pictometry-button v-if="this.shouldShowPictometryButton"
                            v-once
                            :position="'topright'"
                            :link="'pictometry'"
@@ -182,7 +191,7 @@
       </div>
 
       <div v-once>
-        <cyclomedia-button v-if="this.$config.cyclomedia.enabled"
+        <cyclomedia-button v-if="this.shouldShowCyclomediaButton"
                            v-once
                            :position="'topright'"
                            :link="'cyclomedia'"
@@ -191,7 +200,9 @@
         />
       </div>
 
-      <div v-once>
+      <div v-once
+           v-if="this.measureControlEnabled"
+      >
         <measure-control :position="'bottomleft'" />
       </div>
 
@@ -210,8 +221,6 @@
                           :position="'bottomright'"
         />
       </div>
-
-
 
       <!-- <basemap-tooltip :position="'bottomalmostleft'"
       /> -->
@@ -268,6 +277,7 @@
   import Map_ from '../../leaflet/Map.vue';
   import Control from '../../leaflet/Control.vue';
   import EsriTiledMapLayer from '../../esri-leaflet/TiledMapLayer.vue';
+  import EsriTiledOverlay from '../../esri-leaflet/TiledOverlay.vue';
   import EsriDynamicMapLayer from '../../esri-leaflet/DynamicMapLayer.vue';
   import EsriFeatureLayer from '../../esri-leaflet/FeatureLayer.vue';
   import Geojson from '../../leaflet/Geojson.vue';
@@ -277,6 +287,7 @@
   import PngMarker from '../PngMarker.vue';
   import BasemapToggleControl from '../BasemapToggleControl.vue';
   import BasemapSelectControl from '../BasemapSelectControl.vue';
+  import FullScreenMapToggleTab from '../FullScreenMapToggleTab.vue';
   import LocationControl from '../LocationControl.vue';
   import CyclomediaButton from '../../cyclomedia/Button.vue';
   import PictometryButton from '../../pictometry/Button.vue';
@@ -298,6 +309,7 @@
       Map_,
       Control,
       EsriTiledMapLayer,
+      EsriTiledOverlay,
       EsriDynamicMapLayer,
       EsriFeatureLayer,
       Geojson,
@@ -307,6 +319,7 @@
       PngMarker,
       BasemapToggleControl,
       BasemapSelectControl,
+      FullScreenMapToggleTab,
       LocationControl,
       PictometryButton,
       CyclomediaButton,
@@ -340,6 +353,24 @@
       this.$controller.appDidLoad();
     },
     computed: {
+      measureControlEnabled() {
+        if (this.$config.measureControlEnabled === false) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      fullScreenMapEnabled() {
+        return this.$store.state.fullScreenMapEnabled;
+      },
+      mapPanelContainerClass() {
+        // return 'medium-12 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map'
+        if (this.fullScreenMapEnabled) {
+          return 'medium-24 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map'
+        } else {
+          return 'medium-12 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map'
+        }
+      },
       cycloLatlng() {
         if (this.$store.state.cyclomedia.orientation.xyz !== null) {
           const xyz = this.$store.state.cyclomedia.orientation.xyz;
@@ -356,7 +387,13 @@
         return this.$store.state.cyclomedia.orientation.hFov;
       },
       isMobileOrTablet() {
-        return this.$store.state.is_mobile_or_tablet;
+        return this.$store.state.isMobileOrTablet;
+      },
+      shouldShowCyclomediaButton() {
+        return this.$config.cyclomedia.enabled && !this.isMobileOrTablet;
+      },
+      shouldShowPictometryButton() {
+        return this.$config.pictometry.enabled && !this.isMobileOrTablet;
       },
       geolocationEnabled() {
         return this.$config.geolocation.enabled;
@@ -402,6 +439,13 @@
 
         return activeBasemapConfig.tiledLayers || [];
       },
+      activeTiledOverlays() {
+        if (!this.activeTopicConfig || !this.activeTopicConfig.tiledOverlays) {
+          return [];
+        } else {
+          return this.activeTopicConfig.tiledOverlays;
+        }
+      },
       activeDynamicMaps() {
         if (!this.activeTopicConfig || !this.activeTopicConfig.dynamicMapLayers) {
           return [];
@@ -432,12 +476,15 @@
         return this.hasImageryBasemaps && this.$config.map.imagery.enabled;
       },
       identifyFeature() {
-        const configFeature = this.activeTopicConfig.identifyFeature;
-        if (configFeature) {
-          return configFeature;
+        let configFeature;
+        if (this.geocodeType === 'intersection') {
+          configFeature = "address-marker";
+        } else if (this.activeTopicConfig.identifyFeature) {
+          configFeature = this.activeTopicConfig.identifyFeature;
         } else {
-          return this.$config.map.defaultIdentifyFeature;
+          configFeature = this.$config.map.defaultIdentifyFeature;
         }
+        return configFeature;
       },
       activeTopic() {
         return this.$store.state.activeTopic;
@@ -469,6 +516,9 @@
       },
       geocodeGeom() {
         return this.geocodeResult.geometry;
+      },
+      geocodeType() {
+        return this.geocodeResult.ais_feature_type;
       },
       streetAddress() {
         return this.geocodeResult.properties.street_address;
@@ -509,11 +559,13 @@
         return key === this.imageOverlay;
       },
       shouldShowFeatureLayer(key, minZoom) {
-        if (this.activeFeatureLayers.includes(key) && this.$store.state.map.zoom >= minZoom) {
+        if (this.activeFeatureLayers.includes(key)) {
+          if (minZoom) {
+            return this.$store.state.map.zoom >= minZoom;
+          }
           return true;
-        } else {
-          return false;
         }
+        return false;
       },
       handleMapClick(e) {
         this.$controller.handleMapClick(e);
@@ -524,11 +576,12 @@
 
         const pictometryConfig = this.$config.pictometry || {};
 
+        const center = map.getCenter();
+        const { lat, lng } = center;
+        const coords = [lng, lat];
+
         if (pictometryConfig.enabled) {
           // update state for pictometry
-          const center = map.getCenter();
-          const { lat, lng } = center;
-          const coords = [lng, lat];
           this.$store.commit('setPictometryMapCenter', coords);
 
           const zoom = map.getZoom();
@@ -540,6 +593,7 @@
         if (cyclomediaConfig.enabled) {
           // update cyclo recordings
           this.updateCyclomediaRecordings();
+          this.$store.commit('setCyclomediaLatLngFromMap', [lat, lng]);
         }
       },
       handleSearchFormSubmit(e) {
@@ -588,6 +642,7 @@
     width: 50px;
     background: #2176d2;
     line-height: 48px;
+    padding: 0px;
   }
 
   .mb-search-control-input {
