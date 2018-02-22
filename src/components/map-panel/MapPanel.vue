@@ -132,9 +132,9 @@
        <!-- reactive geojson features -->
        <geojson v-for="geojsonFeature in reactiveGeojsonFeatures"
                 v-if="shouldShowGeojson(geojsonFeature.key)"
-                @l-mouseover="handleCircleMarkerMouseover"
-                @l-click="handleCircleMarkerClick"
-                @l-mouseout="handleCircleMarkerMouseout"
+                @l-mouseover="handleMarkerMouseover"
+                @l-click="handleMarkerClick"
+                @l-mouseout="handleMarkerMouseout"
                 :geojson="geojsonFeature.geojson"
                 :fillColor="geojsonFeature.fillColor"
                 :color="geojsonFeature.color"
@@ -162,9 +162,9 @@
 
        <!-- TODO give these a real key -->
       <circle-marker v-for="circleMarker in circleMarkers"
-                     @l-mouseover="handleCircleMarkerMouseover"
-                     @l-click="handleCircleMarkerClick"
-                     @l-mouseout="handleCircleMarkerMouseout"
+                     @l-mouseover="handleMarkerMouseover"
+                     @l-click="handleMarkerClick"
+                     @l-mouseout="handleMarkerMouseout"
                      :latlng="circleMarker.latlng"
                      :radius="circleMarker.radius"
                      :fillColor="circleMarker.fillColor"

@@ -35,10 +35,10 @@ export default {
 
       // if (!matchingLayer) return;
       // console.log('matchingLayer:', matchingLayer);
-      this.updateCircleMarkerFillColor(matchingLayer);
+      this.updateMarkerFillColor(matchingLayer);
 
       // bring to front
-      this.bringCircleMarkerToFront(matchingLayer);
+      this.bringMarkerToFront(matchingLayer);
     },
   },
   computed: {
@@ -290,7 +290,7 @@ export default {
         }
       }
     },
-    bringCircleMarkerToFront(circleMarker) {
+    bringMarkerToFront(circleMarker) {
       // put marker on top
       const el = circleMarker._path;
 
@@ -301,35 +301,35 @@ export default {
       // append to end (which brings it to the front)
       group.appendChild(el);
     },
-    handleCircleMarkerMouseover(e) {
-      console.log('handleCircleMarkerMouseover is starting');
+    handleMarkerMouseover(e) {
+      // console.log('handleMarkerMouseover is starting');
       if (!this.isMobileOrTablet) {
-        console.log('handleCircleMarkerMouseover actions are running');
+        // console.log('handleMarkerMouseover actions are running');
         const { target } = e;
         const { featureId, tableId } = target.options.data;
-        console.log('target:', target, 'featureId:', featureId, 'tableId:', tableId);
+        // console.log('target:', target, 'featureId:', featureId, 'tableId:', tableId);
         this.$store.commit('setActiveFeature', { featureId, tableId });
       }
     },
-    handleCircleMarkerClick(e) {
-      console.log('handleCircleMarkerClick is starting');
+    handleMarkerClick(e) {
+      // console.log('handleMarkerClick is starting');
       if (this.isMobileOrTablet) {
-        console.log('handleCircleMarkerClick actions are running');
+        // console.log('handleMarkerClick actions are running');
         const { target } = e;
         const { featureId, tableId } = target.options.data;
-        console.log('target:', target, 'featureId:', featureId, 'tableId:', tableId);
+        // console.log('target:', target, 'featureId:', featureId, 'tableId:', tableId);
         this.$store.commit('setActiveFeature', { featureId, tableId });
       }
     },
-    handleCircleMarkerMouseout(e) {
-      console.log('handleCircleMarkerMouseout is starting');
+    handleMarkerMouseout(e) {
+      // console.log('handleMarkerMouseout is starting');
       // if (!this.isMobileOrTablet) {
-        console.log('handleCircleMarkerMouseout actions are running');
+        // console.log('handleMarkerMouseout actions are running');
         const { target } = e;
         this.$store.commit('setActiveFeature', null);
       // }
     },
-    updateCircleMarkerFillColor(marker) {
+    updateMarkerFillColor(marker) {
       // console.log('marker:', marker);
       // get next fill color
       const { featureId, tableId } = marker.options.data;
