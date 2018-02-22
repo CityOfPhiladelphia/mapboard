@@ -1,13 +1,18 @@
 <script>
   import { geoJSON } from 'leaflet';
+  import bindEvents from './util/bind-events';
+
   // pascal case
   const GeoJson = geoJSON;
 
   export default {
     props: [
       'geojson',
+      'fillColor',
       'color',
       'weight',
+      'opacity',
+      'fillOpacity',
       'data'
     ],
     mounted() {
@@ -17,6 +22,8 @@
       if (map) {
         leafletElement.addTo(map);
       }
+
+      bindEvents(this, this.$leafletElement, this._events);
     },
     destroyed() {
       this.$leafletElement._map.removeLayer(this.$leafletElement);
@@ -34,7 +41,7 @@
           ...options
         } = props;
 
-        console.log('geojson', geojson)
+        // console.log('geojson', geojson)
         const newGeojson = new GeoJson(geojson, options);
         //this.$store.commit('setCircleMarkers', newCircleMarker);
         return newGeojson;

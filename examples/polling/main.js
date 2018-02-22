@@ -2308,16 +2308,21 @@ Mapboard.default({
       ],
       geojson: {
         path: ['divisions', 'data'],
-        color: 'red',
-        key: 'id'
-        // key: 'DIVISION_NUM'
+        key: 'id',
+        style: {
+          fillColor: '#42f459',
+          color: '#42f459',
+          weight: 2,
+          opacity: 1,
+          fillOpacity: 0.3
+        }
       },
       marker: {
         path: ['elections', 'data', 'features', '0', 'attributes'],
         lat: 'lat',
         lng: 'lng',
         key: 'display_address',
-        color: 'red'
+        color: '#42f459'
       },
       basemap: 'pwd',
       identifyFeature: 'address-marker',
@@ -2407,21 +2412,21 @@ Mapboard.default({
             mapOverlay: {
               marker: 'geojson',
               style: {
-                radius: 6,
-                fillColor: 'green',
+                // radius: 6,
+                fillColor: 'red',
                 // fillColor: '#ff3f3f',
-                color: '#ff0000',
-                weight: 1,
+                color: 'red',
+                weight: 2,
                 opacity: 1,
-                fillOpacity: 1.0
+                fillOpacity: 0.3
               },
               hoverStyle: {
-                radius: 6,
+                // radius: 6,
                 fillColor: 'yellow',
                 color: '#ff0000',
-                weight: 1,
+                weight: 2,
                 opacity: 1,
-                fillOpacity: 1.0
+                fillOpacity: 0.3
               }
             },
             fields: [

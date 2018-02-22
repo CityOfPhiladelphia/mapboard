@@ -112,22 +112,41 @@
                             :hFov="cycloHFov"
       />
 
-      <!-- geojson features -->
+
+      <!-- non-reactive geojson features -->
       <geojson v-for="geojsonFeature in geojsonFeatures"
                v-if="shouldShowGeojson(geojsonFeature.key)"
                :geojson="geojsonFeature.geojson"
+               :fillColor="geojsonFeature.fillColor"
                :color="geojsonFeature.color"
-               :weight="2"
+               :weight="geojsonFeature.weight"
+               :opacity="geojsonFeature.opacity"
+               :fillOpacity="geojsonFeature.fillOpacity"
                :key="geojsonFeature.key"
                :data="{
                  featureId: geojsonFeature.featureId,
                  tableId: geojsonFeature.tableId
                }"
-               @l-mouseover="handleCircleMarkerMouseover"
-               @l-click="handleCircleMarkerClick"
-               @l-mouseout="handleCircleMarkerMouseout"
        />
-       <!-- :overlay="geojsonFeature.overlayFeature" -->
+
+       <!-- reactive geojson features -->
+       <geojson v-for="geojsonFeature in reactiveGeojsonFeatures"
+                v-if="shouldShowGeojson(geojsonFeature.key)"
+                @l-mouseover="handleCircleMarkerMouseover"
+                @l-click="handleCircleMarkerClick"
+                @l-mouseout="handleCircleMarkerMouseout"
+                :geojson="geojsonFeature.geojson"
+                :fillColor="geojsonFeature.fillColor"
+                :color="geojsonFeature.color"
+                :weight="geojsonFeature.weight"
+                :opacity="geojsonFeature.opacity"
+                :fillOpacity="geojsonFeature.fillOpacity"
+                :key="geojsonFeature.key"
+                :data="{
+                  featureId: geojsonFeature.featureId,
+                  tableId: geojsonFeature.tableId
+                }"
+        />
 
        <!-- location marker -->
        <circle-marker v-if="this.$store.state.map.location.lat != null"

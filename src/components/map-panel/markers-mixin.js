@@ -17,12 +17,12 @@ export default {
       // get marker
       const layerMap = this.$store.state.map.map._layers;
       const layers = Object.values(layerMap);
-      console.log('layerMap:', layerMap, 'layers:', layers);
+      // console.log('layerMap:', layerMap, 'layers:', layers);
 
       const matchingLayer = layers.filter(layer => {
         const options = layer.options || {};
         const data = options.data;
-        console.log('options:', options, 'data:', data);
+        // console.log('options:', options, 'data:', data);
 
         if (!data) return;
 
@@ -156,23 +156,59 @@ export default {
       const activeParcelLayer = this.activeParcelLayer;
       // pwd parcel
       if (identifyFeature === 'pwd-parcel' && activeParcelLayer === 'pwd' && this.pwdParcel) {
-        const geojson = this.pwdParcel;
-        const color = 'blue';
-        const key = geojson.properties.PARCELID;
-
-        features.push({geojson, color, key});
+        let props = {};
+        props.geojson = this.pwdParcel;
+        props.color = 'blue';
+        props.fillColor = 'blue';
+        props.weight = 2;
+        props.opacity = 1;
+        props.fillOpacity = 0.3;
+        props.key = geojson.properties.PARCELID;
+        features.push(props);
 
       // dor parcel
       } else if (identifyFeature === 'dor-parcel' && activeParcelLayer === 'dor') {
         const color = 'blue';
         const dorParcelFeatures = this.dorParcels.map(dorParcel => {
-          const geojson = dorParcel;
-          const key = geojson.properties.OBJECTID;
-          return {geojson, color, key};
+          let props = {};
+          props.geojson = dorParcel;
+          props.color = 'blue';
+          props.fillColor = 'blue';
+          props.weight = 2;
+          props.opacity = 1;
+          props.fillOpacity = 0.3;
+          props.key = dorParcel.properties.OBJECTID;
+          return props;
         });
         features.push.apply(features, dorParcelFeatures);
       }
 
+      // other geojson from config
+      const topicGeojson = this.activeTopicConfig.geojson;
+      if (topicGeojson) {
+        console.log('topicGeojson exists:', topicGeojson);
+        const geojsonPath = topicGeojson['path'];
+        let path = this.$store.state.sources;
+        for (let level of geojsonPath) {
+          if (path !== null) {
+            path = path[level];
+          }
+        }
+        if (path !== null) {
+          console.log('path:', path);
+          for (let geojson of path) {
+            let props = Object.assign({}, topicGeojson.style);
+            props.key = geojson[topicGeojson.key];
+            props.geojson = geojson
+            features.push(props);
+          }
+        }
+      }
+      return features;
+    },
+
+    reactiveGeojsonFeatures() {
+      const features = [];
 
       const filteredData = this.$store.state.tables.filteredData;
       // get visible tables based on active topic
@@ -180,7 +216,6 @@ export default {
 
       for (let tableId of tableIds) {
         const tableConfig = this.getConfigForTable(tableId) || {};
-        console.log('tableId:', tableId, 'tableConfig:', tableConfig);
         const mapOverlay = (tableConfig.options || {}).mapOverlay;
 
         if (!mapOverlay || mapOverlay.marker !== 'geojson') {
@@ -194,97 +229,22 @@ export default {
         }
 
         const style = mapOverlay.style;
-        console.log('tableId:', tableId, 'items:', items);
         items.push(tableId);
 
         // go through rows
         for (let item of items) {
-          // console.log('tableId:', tableId, 'items', items);
-          // let latlng;
+          let props = Object.assign({}, style);
 
-          // TODO - get geometry field name from config
-          // if (item.geometry) {
-          //   const [x, y] = item.geometry.coordinates;
-          //   latlng = [y, x];
-          // } else if (item.lat) {
-          //   latlng = [item.lat, item.lng]
-            // if (item.point_x) {
-            //   latlng = [item.point_y, item.point_x];
-            // } else if (item.geocode_x) {
-            //   latlng = [item.geocode_y, item.geocode_x];
-            // }
-          // }
-
-          // check for active feature TODO - bind style props to state
-          // let props = Object.assign({}, style);
-          // props.latlng = latlng;
-          // props.featureId = item._featureId;
-          // props.tableId = tableId;
-
-          const geojson = item.geometry;
-          const color = 'green';
-          // const color = topicGeojson.color || 'green';
-          const key = 'test';
-          const featureId = item._featureId;
-          const tableId = items[items.length-1];
-          // const key = geojson[topicGeojson.key];
-          features.push({geojson, color, key, featureId, tableId});
+          props.geojson = item.geometry;
+          props.key = item.id;
+          props.featureId = item._featureId || null;
+          props.tableId = items[items.length-1];
+          features.push(props);
         }
       }
-
-
-
-
-
-
-
-
-
-
-
-
-      // other geojson from config
-      const topicGeojson = this.activeTopicConfig.geojson;
-      if (topicGeojson) {
-
-        const geojsonPath = topicGeojson['path'];
-        let path = this.$store.state.sources;
-        for (let level of geojsonPath) {
-          // console.log('level:', level, 'path:', path);
-          if (path !== null) {
-            path = path[level];
-          }
-        }
-        if (path !== null) {
-          for (let geojson of path) {
-            // console.log('geojson:', geojson);
-            const color = topicGeojson.color || 'green';
-            const key = geojson[topicGeojson.key];
-            features.push({geojson, color, key});
-          }
-        }
-      }
-
-
-      // GeoJSON overlays
-      // const stateSources = this.$store.state.sources;
-      // const dataSourcesConfig = this.$config.dataSources;
-      //
-      // // step through the (possibly multiple) datasources for the active topic
-      // for (let dataSource of this.activeTopicConfig.dataSources) {
-      //   // filter datasources with format geojson
-      //   if (dataSourcesConfig[dataSource].format === 'geojson') {
-      //     // step through to add each geojson object to "features"
-      //     for (let geojson of stateSources[dataSource].data) {
-      //       let overlayFeature = this.activeTopicConfig.overlayFeature;
-      //       let key = geojson.id;
-      //       features.push({geojson, overlayFeature, key});
-      //     }
-      //   }
-      // }
-      // TODO filter by selected 311, police
       return features;
     },
+
     leafletMarkers() {
       const markers = [];
 
@@ -370,7 +330,7 @@ export default {
       // }
     },
     updateCircleMarkerFillColor(marker) {
-      console.log('marker:', marker);
+      // console.log('marker:', marker);
       // get next fill color
       const { featureId, tableId } = marker.options.data;
       const nextFillColor = this.fillColorForCircleMarker(featureId, tableId);
