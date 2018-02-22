@@ -78,12 +78,12 @@ export default {
         const markerPath = topicMarker['path'];
         let path = this.$store.state.sources;
         for (let level of markerPath) {
-          // console.log('level:', level, 'path:', path);
-          if (path !== null) {
+          console.log('level:', level, 'path:', path);
+          if (path !== null && path !== undefined) {
             path = path[level];
           }
         }
-        if (path !== null) {
+        if (path !== null && path !== undefined) {
           const latlng = [path[topicMarker.lat], path[topicMarker.lng]];
           const key = path[topicMarker.key];
           const color = topicMarker.color || 'green';

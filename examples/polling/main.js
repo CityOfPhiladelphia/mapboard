@@ -234,8 +234,20 @@ Mapboard.default({
         params: {
           option: 'com_pollingplaces',
           view: 'json',
-          ward: function(feature) { return feature.properties.election_precinct.slice(0,2); },
-          division: function(feature) { return feature.properties.election_precinct.slice(2,4); }
+          ward: function(feature) {
+            if (feature.properties.election_precinct !== '') {
+              return feature.properties.election_precinct.slice(0,2);
+            } else {
+              return feature.properties.political_division.slice(0,2);
+            }
+          },
+          division: function(feature) {
+            if (feature.properties.election_precinct !== '') {
+              return feature.properties.election_precinct.slice(2,4);
+            } else {
+              return feature.properties.political_division.slice(2,4);
+            }
+          }
         },
         success(data) {
           return data;
@@ -2279,27 +2291,35 @@ Mapboard.default({
               {
                 label: 'Ward',
                 value: function(state) {
-                  return state.sources.elections.data.features[0].attributes.ward;
+                  if (state.sources.elections.data.features[0]) {
+                    return state.sources.elections.data.features[0].attributes.ward;
+                  }
                   // return state.geocode.data.properties.political_ward;
                 }
               },
               {
                 label: 'Division',
                 value: function(state) {
-                  return state.sources.elections.data.features[0].attributes.division;
+                  if (state.sources.elections.data.features[0]) {
+                    return state.sources.elections.data.features[0].attributes.division;
+                  }
                   // return state.geocode.data.properties.political_division;
                 }
               },
               {
                 label: 'Polling Location',
                 value: function(state) {
-                  return state.sources.elections.data.features[0].attributes.location;
+                  if (state.sources.elections.data.features[0]) {
+                    return state.sources.elections.data.features[0].attributes.location;
+                  }
                 }
               },
               {
                 label: 'Polling Address',
                 value: function(state) {
-                  return state.sources.elections.data.features[0].attributes.display_address;
+                  if (state.sources.elections.data.features[0]) {
+                    return state.sources.elections.data.features[0].attributes.display_address;
+                  }
                 }
               }
             ]
