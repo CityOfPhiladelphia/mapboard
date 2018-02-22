@@ -508,7 +508,9 @@
         } else if (this.activeTopicConfig.identifyFeature) {
           configFeature = this.activeTopicConfig.identifyFeature;
         } else {
-          configFeature = this.$config.map.defaultIdentifyFeature;
+          if (this.$config) {
+            configFeature = this.$config.map.defaultIdentifyFeature;
+          }
         }
         return configFeature;
       },
@@ -559,6 +561,9 @@
       mapBounds() {
         // TODO calculate map bounds based on leaflet markers above
       },
+      boundsBasedOnShape() {
+        return this.$store.state.map.boundsBasedOnShape;
+      },
       isGeocoding() {
         return this.$store.state.geocode.status === 'waiting';
       }
@@ -568,9 +573,45 @@
         this.$nextTick(() => {
           this.$store.state.map.map.invalidateSize();
         })
+      },
+      boundsBasedOnShape() {
+        console.log('WATCH BOUNDSBASEDONSHAPE IS RUNNING');
+        this.setMapToBounds();
+      },
+      geojsonFeatures() {
+        console.log('WATCH GEOJSONFEATURES IS RUNNING');
+        this.setMapToBounds();
+      },
+      markers() {
+        console.log('WATCH MARKERS IS FIRING');
+        this.setMapToBounds();
       }
     },
     methods: {
+      setMapToBounds() {
+        console.log('setMapToBounds is running');
+        let featureArray = []
+        if (this.activeTopicConfig.zoomToShape) {
+          if (this.activeTopicConfig.zoomToShape.includes('geojson')) {
+            console.log('if zoomToShape includes geojson is running, geojsonFeatures:', this.geojsonFeatures);
+            for (let geojsonFeature of this.geojsonFeatures) {
+              console.log('looping geojsonFeatures:', geojsonFeature);
+              featureArray.push(L.geoJSON(geojsonFeature.geojson))
+            }
+          }
+          if (this.activeTopicConfig.zoomToShape.includes('marker')) {
+            console.log('if zoomToShape includes marker is running, markers:', this.markers);
+            for (let marker of this.markers) {
+              console.log('looping markers:', marker);
+              featureArray.push(L.marker(marker.latlng))
+            }
+          }
+          const group = new L.featureGroup(featureArray);
+          const bounds = group.getBounds();
+          console.log('MAP PANEL SETMAPTOBOUNDS IS RUNNING, group:', group, 'bounds:', bounds);
+          this.$store.commit('setMapBounds', bounds);
+        }
+      },
       configForBasemap(basemap) {
         return this.$config.map.basemaps[basemap] || {};
       },

@@ -2306,6 +2306,7 @@ Mapboard.default({
           }
         }
       ],
+      zoomToShape: ['geojson', 'marker'],
       geojson: {
         path: ['divisions', 'data'],
         key: 'id',
