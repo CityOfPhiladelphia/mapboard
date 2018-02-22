@@ -66,7 +66,8 @@ export default {
         const latlng = [...geocodeGeom.coordinates].reverse();
         const key = this.geocodeResult.properties.street_address;
         const color = '#2176d2';
-        const addressMarker = {latlng, key, color};
+        const markerType = 'geocode';
+        const addressMarker = {latlng, key, color, markerType};
         markers.push(addressMarker);
       }
 
@@ -86,7 +87,8 @@ export default {
           const latlng = [path[topicMarker.lat], path[topicMarker.lng]];
           const key = path[topicMarker.key];
           const color = topicMarker.color || 'green';
-          const markerObject = {latlng, key, color};
+          const markerType = 'overlay';
+          const markerObject = {latlng, key, color, markerType};
           markers.push(markerObject);
         }
       }

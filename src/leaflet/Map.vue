@@ -149,8 +149,10 @@
         })
       },
       setMapBounds(bounds) {
-        console.log('MAP.VUE SETMAPBOUNDS IS RUNNING:', bounds);
-        this.$leafletElement.fitBounds(bounds);
+        if (bounds._northEast) {
+          console.log('MAP.VUE SETMAPBOUNDS IS RUNNING:', bounds._northEast.lat, bounds._northEast.lng, bounds._southWest.lat, bounds._southWest.lng);
+          this.$leafletElement.fitBounds(bounds);
+        }
       }
       // getMarkers() {
       //   const children = this.$children;

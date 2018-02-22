@@ -574,22 +574,22 @@
           this.$store.state.map.map.invalidateSize();
         })
       },
-      boundsBasedOnShape() {
-        console.log('WATCH BOUNDSBASEDONSHAPE IS RUNNING');
-        this.setMapToBounds();
-      },
+      // boundsBasedOnShape() {
+      //   console.log('WATCH BOUNDSBASEDONSHAPE IS RUNNING SETMAPTOBOUNDS');
+      //   this.setMapToBounds();
+      // },
       geojsonFeatures() {
-        console.log('WATCH GEOJSONFEATURES IS RUNNING');
+        console.log('WATCH GEOJSONFEATURES IS RUNNING SETMAPTOBOUNDS');
         this.setMapToBounds();
       },
       markers() {
-        console.log('WATCH MARKERS IS FIRING');
+        console.log('WATCH MARKERS IS FIRING SETMAPTOBOUNDS');
         this.setMapToBounds();
       }
     },
     methods: {
       setMapToBounds() {
-        console.log('setMapToBounds is running');
+        // console.log('setMapToBounds is running');
         let featureArray = []
         if (this.activeTopicConfig.zoomToShape) {
           if (this.activeTopicConfig.zoomToShape.includes('geojson')) {
@@ -603,7 +603,9 @@
             console.log('if zoomToShape includes marker is running, markers:', this.markers);
             for (let marker of this.markers) {
               console.log('looping markers:', marker);
-              featureArray.push(L.marker(marker.latlng))
+              if (marker.markerType === 'overlay') {
+                featureArray.push(L.marker(marker.latlng))
+              }
             }
           }
           const group = new L.featureGroup(featureArray);
