@@ -14,6 +14,7 @@
     "axios": "^0.16.2",
     "jquery": "^3.2.1",
     "jquery-ui": "^1.12.1",
+    "json2csv": "^4.0.0-alpha.0",
     "leaflet": "^1.0.3",
     "leaflet-easybutton": "^2.2.2",
     "leaflet-measure": "^2.1.7",

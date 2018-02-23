@@ -156,6 +156,8 @@ export default {
 
       const identifyFeature = this.identifyFeature;
       const activeParcelLayer = this.activeParcelLayer;
+
+      // TODO - get pwd parcel and dor parcel into the config file
       // pwd parcel
       if (identifyFeature === 'pwd-parcel' && activeParcelLayer === 'pwd' && this.pwdParcel) {
         let props = {};
@@ -209,6 +211,8 @@ export default {
       return features;
     },
 
+    // these geojson features will have mouseover and mouseout events,
+    // for highlighting horizontal table rows
     reactiveGeojsonFeatures() {
       const features = [];
 

@@ -2369,6 +2369,7 @@ Mapboard.default({
           options: {
             topicKey: 'rco',
             id: 'neighboringProperties',
+            downloadButton: true,
             // sort: {
             //   select: true,
             //   sortFields: [

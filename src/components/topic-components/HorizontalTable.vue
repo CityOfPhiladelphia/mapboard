@@ -82,6 +82,12 @@
           <h5 style="display:inline-block; color: gray">
             {{ evaluateSlot(slots.subtitle) }}
           </h5>
+          <a class="button mb-download-data-button"
+                  v-if="this.shouldShowDownloadButton"
+                  @click="this.exportTableToCSV"
+          >
+            Download Data
+          </a>
         </div>
 
         <table role="grid" class="stack">
@@ -130,6 +136,7 @@
 <script>
   import TopicComponent from './TopicComponent.vue';
   import HorizontalTableRow from './HorizontalTableRow.vue';
+  import json2csv from 'json2csv';
 
   const DEFAULT_SORT_FIELDS = [
     'date',
@@ -203,6 +210,13 @@
       }
     },
     computed: {
+      shouldShowDownloadButton() {
+        let downloadButton = false;
+        if (this.options.downloadButton) {
+          downloadButton = this.options.downloadButton;
+        }
+        return downloadButton;
+      },
       secondaryStatus() {
         return this.$store.state.sources[this.options.id].secondaryStatus;
       },
@@ -406,6 +420,30 @@
       },
     },
     methods: {
+      exportTableToCSV() {
+        console.log('exportTableToCSV is running');
+        const json2csv = require('json2csv');
+        const fs = require('fs');
+        const fields = ['car', 'price', 'color'];
+        const myCars = [
+          {
+            "car": "Audi",
+            "price": 40000,
+            "color": "blue"
+          }, {
+            "car": "BMW",
+            "price": 35000,
+            "color": "black"
+          }, {
+            "car": "Porsche",
+            "price": 60000,
+            "color": "green"
+          }
+        ];
+        const csv = json2csv(myCars, { fields });
+
+        console.log(csv);
+      },
       showMoreRecords() {
         // if there is only 1 page to return (from AIS);
         if (!this.pageCount) {
@@ -704,6 +742,12 @@
     background: #ccc;
     line-height: 40px;
     float: right;
+  }
+
+  .mb-download-data-button {
+    float: right;
+    vertical-align: baseline;
+    display: inline-block;
   }
 
   .group:after {
