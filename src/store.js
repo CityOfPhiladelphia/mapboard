@@ -181,7 +181,12 @@ function createStore(config) {
         lng: null
       },
       center: config.map.center,
+      bounds: {
+        northEast: null,
+        southWest: null,
+      },
       zoom: config.map.zoom,
+      boundsBasedOnShape: null,
       map: null,
       // this gets set to the parcel layer for the default topic by
       // DataManager.resetGeocode; see note above for activeTopic and
@@ -416,7 +421,16 @@ function createStore(config) {
         state.map.center = payload;
       },
       setMapZoom(state, payload) {
-        state.map.zoom = payload
+        state.map.zoom = payload;
+      },
+      setMapBounds(state, payload) {
+        // const { northEast, southWest } = payload || {};
+        // state.map.bounds.northEast = northEast;
+        // state.map.bounds.southWest = southWest;
+        state.map.bounds = payload;
+      },
+      setMapBoundsBasedOnShape(state, payload) {
+        state.map.boundsBasedOnShape = payload
       },
       setParcelData(state, payload) {
         // console.log('store setParcelData payload:', payload);

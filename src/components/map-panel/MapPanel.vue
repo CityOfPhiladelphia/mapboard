@@ -95,6 +95,7 @@
       <vector-marker v-for="(marker, index) in markers"
                      :latlng="marker.latlng"
                      :key="marker.key"
+                     :markerColor="marker.color"
       />
 
       <!-- marker using a png and ablility to rotate it -->
@@ -111,15 +112,41 @@
                             :hFov="cycloHFov"
       />
 
-      <!-- geojson features -->
+
+      <!-- non-reactive geojson features -->
       <geojson v-for="geojsonFeature in geojsonFeatures"
                v-if="shouldShowGeojson(geojsonFeature.key)"
                :geojson="geojsonFeature.geojson"
+               :fillColor="geojsonFeature.fillColor"
                :color="geojsonFeature.color"
-               :weight="2"
+               :weight="geojsonFeature.weight"
+               :opacity="geojsonFeature.opacity"
+               :fillOpacity="geojsonFeature.fillOpacity"
                :key="geojsonFeature.key"
+               :data="{
+                 featureId: geojsonFeature.featureId,
+                 tableId: geojsonFeature.tableId
+               }"
        />
-       <!-- :overlay="geojsonFeature.overlayFeature" -->
+
+       <!-- reactive geojson features -->
+       <geojson v-for="geojsonFeature in reactiveGeojsonFeatures"
+                v-if="shouldShowGeojson(geojsonFeature.key)"
+                @l-mouseover="handleMarkerMouseover"
+                @l-click="handleMarkerClick"
+                @l-mouseout="handleMarkerMouseout"
+                :geojson="geojsonFeature.geojson"
+                :fillColor="geojsonFeature.fillColor"
+                :color="geojsonFeature.color"
+                :weight="geojsonFeature.weight"
+                :opacity="geojsonFeature.opacity"
+                :fillOpacity="geojsonFeature.fillOpacity"
+                :key="geojsonFeature.key"
+                :data="{
+                  featureId: geojsonFeature.featureId,
+                  tableId: geojsonFeature.tableId
+                }"
+        />
 
        <!-- location marker -->
        <circle-marker v-if="this.$store.state.map.location.lat != null"
@@ -135,9 +162,9 @@
 
        <!-- TODO give these a real key -->
       <circle-marker v-for="circleMarker in circleMarkers"
-                     @l-mouseover="handleCircleMarkerMouseover"
-                     @l-click="handleCircleMarkerClick"
-                     @l-mouseout="handleCircleMarkerMouseout"
+                     @l-mouseover="handleMarkerMouseover"
+                     @l-click="handleMarkerClick"
+                     @l-mouseout="handleMarkerMouseout"
                      :latlng="circleMarker.latlng"
                      :radius="circleMarker.radius"
                      :fillColor="circleMarker.fillColor"
@@ -481,7 +508,9 @@
         } else if (this.activeTopicConfig.identifyFeature) {
           configFeature = this.activeTopicConfig.identifyFeature;
         } else {
-          configFeature = this.$config.map.defaultIdentifyFeature;
+          if (this.$config) {
+            configFeature = this.$config.map.defaultIdentifyFeature;
+          }
         }
         return configFeature;
       },
@@ -532,6 +561,9 @@
       mapBounds() {
         // TODO calculate map bounds based on leaflet markers above
       },
+      boundsBasedOnShape() {
+        return this.$store.state.map.boundsBasedOnShape;
+      },
       isGeocoding() {
         return this.$store.state.geocode.status === 'waiting';
       }
@@ -541,9 +573,47 @@
         this.$nextTick(() => {
           this.$store.state.map.map.invalidateSize();
         })
+      },
+      // boundsBasedOnShape() {
+      //   console.log('WATCH BOUNDSBASEDONSHAPE IS RUNNING SETMAPTOBOUNDS');
+      //   this.setMapToBounds();
+      // },
+      geojsonFeatures() {
+        console.log('WATCH GEOJSONFEATURES IS RUNNING SETMAPTOBOUNDS');
+        this.setMapToBounds();
+      },
+      markers() {
+        console.log('WATCH MARKERS IS FIRING SETMAPTOBOUNDS');
+        this.setMapToBounds();
       }
     },
     methods: {
+      setMapToBounds() {
+        // console.log('setMapToBounds is running');
+        let featureArray = []
+        if (this.activeTopicConfig.zoomToShape) {
+          if (this.activeTopicConfig.zoomToShape.includes('geojson')) {
+            console.log('if zoomToShape includes geojson is running, geojsonFeatures:', this.geojsonFeatures);
+            for (let geojsonFeature of this.geojsonFeatures) {
+              console.log('looping geojsonFeatures:', geojsonFeature);
+              featureArray.push(L.geoJSON(geojsonFeature.geojson))
+            }
+          }
+          if (this.activeTopicConfig.zoomToShape.includes('marker')) {
+            console.log('if zoomToShape includes marker is running, markers:', this.markers);
+            for (let marker of this.markers) {
+              console.log('looping markers:', marker);
+              if (marker.markerType === 'overlay') {
+                featureArray.push(L.marker(marker.latlng))
+              }
+            }
+          }
+          const group = new L.featureGroup(featureArray);
+          const bounds = group.getBounds();
+          console.log('MAP PANEL SETMAPTOBOUNDS IS RUNNING, group:', group, 'bounds:', bounds);
+          this.$store.commit('setMapBounds', bounds);
+        }
+      },
       configForBasemap(basemap) {
         return this.$config.map.basemaps[basemap] || {};
       },

@@ -35,19 +35,19 @@ class DataManager {
   // REVIEW maybe the getXXXParcelsById methods should just take an argument
   // activeParcelLayer? that's the only reason these are in here.
 
-  // activeTopicConfig() {
-  //   const key = this.store.state.activeTopic;
-  //   let config;
-  //
-  //   // if no active topic, return null
-  //   if (key) {
-  //     config = this.config.topics.filter((topic) => {
-  //       return topic.key === key;
-  //     })[0];
-  //   }
-  //
-  //   return config || {};
-  // }
+  activeTopicConfig() {
+    const key = this.store.state.activeTopic;
+    let config;
+
+    // if no active topic, return null
+    if (key) {
+      config = this.config.topics.filter((topic) => {
+        return topic.key === key;
+      })[0];
+    }
+
+    return config || {};
+  }
   //
   // activeParcelLayer() {
   //   return this.activeTopicConfig().parcels || this.config.map.defaultBasemap;
@@ -583,10 +583,25 @@ class DataManager {
       }
     }
 
+    // console.log('in didGeocode, activeTopicConfig:', this.activeTopicConfig());
+    const activeTopicConfig = this.activeTopicConfig();
+    console.log('activeTopicConfig.zoomToShape:', activeTopicConfig.zoomToShape);
+    const newShape = this.store.state.geocode.data.properties.opa_account_num;
+
     // only recenter the map on geocode
     if (lastSearchMethod === 'geocode' && this.store.state.geocode.status !== 'error') {
-      this.store.commit('setMapCenter', coords);
-      this.store.commit('setMapZoom', 19);
+      if (!activeTopicConfig.zoomToShape) {
+        console.log('NO ZOOM TO SHAPE - NOW IT SHOULD NOT BE ZOOMING TO THE SHAPE ON GEOCODE');
+        this.store.commit('setMapCenter', coords);
+        this.store.commit('setMapZoom', 19);
+      } else {
+        console.log('ZOOM TO SHAPE - NOW IT SHOULD BE ZOOMING TO THE SHAPE ON GEOCODE');
+        // this.store.commit('setMapBoundsBasedOnShape', newShape);
+      }
+
+    } else if (activeTopicConfig.zoomToShape && lastSearchMethod === 'reverseGeocode' && this.store.state.geocode.status !== 'error') {
+      console.log('ZOOM TO SHAPE - NOW IT SHOULD BE ZOOMING TO THE SHAPE ON REVERSE GEOCODE');
+      // this.store.commit('setMapBoundsBasedOnShape', newShape);
     }
 
     // reset data only when not a rev geocode second attempt

@@ -32,6 +32,9 @@
     computed: {
       fullScreenMapEnabled() {
         return this.$store.state.fullScreenMapEnabled;
+      },
+      mapBounds() {
+        return this.$store.state.map.bounds;
       }
     },
     watch: {
@@ -42,6 +45,9 @@
         if (!nextZoom) return;
 
         this.$leafletElement.setZoom(nextZoom);
+      },
+      mapBounds(nextBounds) {
+        this.setMapBounds(nextBounds)
       },
       fullScreenMapEnabled() {
         console.log('Map.vue fullScreenMapEnabled watch is firing');
@@ -141,6 +147,12 @@
         this.$nextTick(() => {
           this.$leafletElement.setView(latLng, zoom);
         })
+      },
+      setMapBounds(bounds) {
+        if (bounds._northEast) {
+          console.log('MAP.VUE SETMAPBOUNDS IS RUNNING:', bounds._northEast.lat, bounds._northEast.lng, bounds._southWest.lat, bounds._southWest.lng);
+          this.$leafletElement.fitBounds(bounds);
+        }
       }
       // getMarkers() {
       //   const children = this.$children;

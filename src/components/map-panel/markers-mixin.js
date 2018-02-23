@@ -17,10 +17,12 @@ export default {
       // get marker
       const layerMap = this.$store.state.map.map._layers;
       const layers = Object.values(layerMap);
+      // console.log('layerMap:', layerMap, 'layers:', layers);
 
       const matchingLayer = layers.filter(layer => {
         const options = layer.options || {};
         const data = options.data;
+        // console.log('options:', options, 'data:', data);
 
         if (!data) return;
 
@@ -32,11 +34,11 @@ export default {
 
 
       // if (!matchingLayer) return;
-
-      this.updateCircleMarkerFillColor(matchingLayer);
+      // console.log('matchingLayer:', matchingLayer);
+      this.updateMarkerFillColor(matchingLayer);
 
       // bring to front
-      this.bringCircleMarkerToFront(matchingLayer);
+      this.bringMarkerToFront(matchingLayer);
     },
   },
   computed: {
@@ -63,8 +65,32 @@ export default {
       if (this.identifyFeature === 'address-marker' && geocodeGeom) {
         const latlng = [...geocodeGeom.coordinates].reverse();
         const key = this.geocodeResult.properties.street_address;
-        const addressMarker = {latlng, key};
+        const color = '#2176d2';
+        const markerType = 'geocode';
+        const addressMarker = {latlng, key, color, markerType};
         markers.push(addressMarker);
+      }
+
+      // marker for topic from config
+      const topicMarker = this.activeTopicConfig.marker;
+      // console.log('topicMarker', topicMarker);
+      if (topicMarker) {
+        const markerPath = topicMarker['path'];
+        let path = this.$store.state.sources;
+        for (let level of markerPath) {
+          console.log('level:', level, 'path:', path);
+          if (path !== null && path !== undefined) {
+            path = path[level];
+          }
+        }
+        if (path !== null && path !== undefined) {
+          const latlng = [path[topicMarker.lat], path[topicMarker.lng]];
+          const key = path[topicMarker.key];
+          const color = topicMarker.color || 'green';
+          const markerType = 'overlay';
+          const markerObject = {latlng, key, color, markerType};
+          markers.push(markerObject);
+        }
       }
 
       return markers;
@@ -78,9 +104,10 @@ export default {
 
       for (let tableId of tableIds) {
         const tableConfig = this.getConfigForTable(tableId) || {};
+        console.log('tableConfig:', tableConfig);
         const mapOverlay = (tableConfig.options || {}).mapOverlay;
 
-        if (!mapOverlay) {
+        if (!mapOverlay || mapOverlay.marker !== 'circle') {
           continue;
         }
 
@@ -94,6 +121,7 @@ export default {
 
         // go through rows
         for (let item of items) {
+          console.log('tableId', tableId)
           let latlng;
 
           // TODO - get geometry field name from config
@@ -128,43 +156,101 @@ export default {
 
       const identifyFeature = this.identifyFeature;
       const activeParcelLayer = this.activeParcelLayer;
+
+      // TODO - get pwd parcel and dor parcel into the config file
       // pwd parcel
       if (identifyFeature === 'pwd-parcel' && activeParcelLayer === 'pwd' && this.pwdParcel) {
-        const geojson = this.pwdParcel;
-        const color = 'blue';
-        const key = geojson.properties.PARCELID;
+        let props = {};
+        props.geojson = this.pwdParcel;
+        props.color = 'blue';
+        props.fillColor = 'blue';
+        props.weight = 2;
+        props.opacity = 1;
+        props.fillOpacity = 0.3;
+        props.key = geojson.properties.PARCELID;
+        features.push(props);
 
-        features.push({geojson, color, key});
       // dor parcel
       } else if (identifyFeature === 'dor-parcel' && activeParcelLayer === 'dor') {
         const color = 'blue';
         const dorParcelFeatures = this.dorParcels.map(dorParcel => {
-          const geojson = dorParcel;
-          const key = geojson.properties.OBJECTID;
-          return {geojson, color, key};
+          let props = {};
+          props.geojson = dorParcel;
+          props.color = 'blue';
+          props.fillColor = 'blue';
+          props.weight = 2;
+          props.opacity = 1;
+          props.fillOpacity = 0.3;
+          props.key = dorParcel.properties.OBJECTID;
+          return props;
         });
         features.push.apply(features, dorParcelFeatures);
       }
 
-      // GeoJSON overlays
-      // const stateSources = this.$store.state.sources;
-      // const dataSourcesConfig = this.$config.dataSources;
-      //
-      // // step through the (possibly multiple) datasources for the active topic
-      // for (let dataSource of this.activeTopicConfig.dataSources) {
-      //   // filter datasources with format geojson
-      //   if (dataSourcesConfig[dataSource].format === 'geojson') {
-      //     // step through to add each geojson object to "features"
-      //     for (let geojson of stateSources[dataSource].data) {
-      //       let overlayFeature = this.activeTopicConfig.overlayFeature;
-      //       let key = geojson.id;
-      //       features.push({geojson, overlayFeature, key});
-      //     }
-      //   }
-      // }
-      // TODO filter by selected 311, police
+      // other geojson from config
+      const topicGeojson = this.activeTopicConfig.geojson;
+      if (topicGeojson) {
+        console.log('topicGeojson exists:', topicGeojson);
+        const geojsonPath = topicGeojson['path'];
+        let path = this.$store.state.sources;
+        for (let level of geojsonPath) {
+          if (path !== null) {
+            path = path[level];
+          }
+        }
+        if (path !== null) {
+          console.log('path:', path);
+          for (let geojson of path) {
+            let props = Object.assign({}, topicGeojson.style);
+            props.key = geojson[topicGeojson.key];
+            props.geojson = geojson
+            features.push(props);
+          }
+        }
+      }
       return features;
     },
+
+    // these geojson features will have mouseover and mouseout events,
+    // for highlighting horizontal table rows
+    reactiveGeojsonFeatures() {
+      const features = [];
+
+      const filteredData = this.$store.state.tables.filteredData;
+      // get visible tables based on active topic
+      const tableIds = this.$store.getters.visibleTableIds;
+
+      for (let tableId of tableIds) {
+        const tableConfig = this.getConfigForTable(tableId) || {};
+        const mapOverlay = (tableConfig.options || {}).mapOverlay;
+
+        if (!mapOverlay || mapOverlay.marker !== 'geojson') {
+          continue;
+        }
+
+        const items = filteredData[tableId];
+
+        if (items.length < 1) {
+          continue;
+        }
+
+        const style = mapOverlay.style;
+        items.push(tableId);
+
+        // go through rows
+        for (let item of items) {
+          let props = Object.assign({}, style);
+
+          props.geojson = item.geometry;
+          props.key = item.id;
+          props.featureId = item._featureId || null;
+          props.tableId = items[items.length-1];
+          features.push(props);
+        }
+      }
+      return features;
+    },
+
     leafletMarkers() {
       const markers = [];
 
@@ -210,7 +296,7 @@ export default {
         }
       }
     },
-    bringCircleMarkerToFront(circleMarker) {
+    bringMarkerToFront(circleMarker) {
       // put marker on top
       const el = circleMarker._path;
 
@@ -221,35 +307,36 @@ export default {
       // append to end (which brings it to the front)
       group.appendChild(el);
     },
-    handleCircleMarkerMouseover(e) {
-      console.log('handleCircleMarkerMouseover is starting');
+    handleMarkerMouseover(e) {
+      // console.log('handleMarkerMouseover is starting');
       if (!this.isMobileOrTablet) {
-        console.log('handleCircleMarkerMouseover actions are running');
+        // console.log('handleMarkerMouseover actions are running');
         const { target } = e;
         const { featureId, tableId } = target.options.data;
-        console.log('target:', target, 'featureId:', featureId, 'tableId:', tableId);
+        // console.log('target:', target, 'featureId:', featureId, 'tableId:', tableId);
         this.$store.commit('setActiveFeature', { featureId, tableId });
       }
     },
-    handleCircleMarkerClick(e) {
-      console.log('handleCircleMarkerClick is starting');
+    handleMarkerClick(e) {
+      // console.log('handleMarkerClick is starting');
       if (this.isMobileOrTablet) {
-        console.log('handleCircleMarkerClick actions are running');
+        // console.log('handleMarkerClick actions are running');
         const { target } = e;
         const { featureId, tableId } = target.options.data;
-        console.log('target:', target, 'featureId:', featureId, 'tableId:', tableId);
+        // console.log('target:', target, 'featureId:', featureId, 'tableId:', tableId);
         this.$store.commit('setActiveFeature', { featureId, tableId });
       }
     },
-    handleCircleMarkerMouseout(e) {
-      console.log('handleCircleMarkerMouseout is starting');
+    handleMarkerMouseout(e) {
+      // console.log('handleMarkerMouseout is starting');
       // if (!this.isMobileOrTablet) {
-        console.log('handleCircleMarkerMouseout actions are running');
+        // console.log('handleMarkerMouseout actions are running');
         const { target } = e;
         this.$store.commit('setActiveFeature', null);
       // }
     },
-    updateCircleMarkerFillColor(marker) {
+    updateMarkerFillColor(marker) {
+      // console.log('marker:', marker);
       // get next fill color
       const { featureId, tableId } = marker.options.data;
       const nextFillColor = this.fillColorForCircleMarker(featureId, tableId);

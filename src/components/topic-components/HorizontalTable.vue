@@ -82,6 +82,12 @@
           <h5 style="display:inline-block; color: gray">
             {{ evaluateSlot(slots.subtitle) }}
           </h5>
+          <a class="button mb-download-data-button"
+                  v-if="this.shouldShowDownloadButton"
+                  @click="this.exportTableToCSV"
+          >
+            Download Data
+          </a>
         </div>
 
         <table role="grid" class="stack">
@@ -130,6 +136,8 @@
 <script>
   import TopicComponent from './TopicComponent.vue';
   import HorizontalTableRow from './HorizontalTableRow.vue';
+  import json2csv from 'json2csv';
+  // import fs from 'fs';
 
   const DEFAULT_SORT_FIELDS = [
     'date',
@@ -203,6 +211,13 @@
       }
     },
     computed: {
+      shouldShowDownloadButton() {
+        let downloadButton = false;
+        if (this.options.downloadButton) {
+          downloadButton = this.options.downloadButton;
+        }
+        return downloadButton;
+      },
       secondaryStatus() {
         return this.$store.state.sources[this.options.id].secondaryStatus;
       },
@@ -406,6 +421,47 @@
       },
     },
     methods: {
+      exportTableToCSV() {
+        // console.log('exportTableToCSV is running');
+
+        const Json2csvParser = require('json2csv').Parser;
+
+        const tableData = []
+        for (let item of this.items) {
+          // console.log('item:', item);
+          let object = {
+            'address': item.properties.ADDRESS,
+            'distance': item._distance
+          }
+          tableData.push(object);
+        }
+        const fields = ['address', 'distance'];
+        const opts = { fields };
+
+        try {
+          const parser = new Json2csvParser(opts);
+          let csv = parser.parse(tableData);
+
+          let data, filename, link;
+
+          // filename = 'export.csv';
+          filename = this.$props.options.downloadFile + '.csv' || 'export.csv';
+
+          if (!csv.match(/^data:text\/csv/i)) {
+              csv = 'data:text/csv;charset=utf-8,' + csv;
+          }
+          data = encodeURI(csv);
+
+          link = document.createElement('a');
+          link.setAttribute('href', data);
+          link.setAttribute('download', filename);
+          link.click();
+
+        } catch (err) {
+          console.error(err);
+        }
+
+      },
       showMoreRecords() {
         // if there is only 1 page to return (from AIS);
         if (!this.pageCount) {
@@ -704,6 +760,12 @@
     background: #ccc;
     line-height: 40px;
     float: right;
+  }
+
+  .mb-download-data-button {
+    float: right;
+    vertical-align: baseline;
+    display: inline-block;
   }
 
   .group:after {
