@@ -578,7 +578,7 @@ Mapboard.default({
       options: {
         geometryServerUrl: '//gis.phila.gov/arcgis/rest/services/Geometry/GeometryServer/',
         calculateDistance: true,
-        distances: 250,
+        distances: 320,
       },
     },
     zoningOverlay: {
@@ -2352,7 +2352,7 @@ Mapboard.default({
     {
       key: 'rco',
       icon: 'map-marker',
-      label: 'RCO',
+      label: 'RCO Notification',
       dataSources: ['neighboringProperties'],
       components: [
         {
@@ -2370,6 +2370,7 @@ Mapboard.default({
             topicKey: 'rco',
             id: 'neighboringProperties',
             downloadButton: true,
+            downloadFile: 'neighboring-properties',
             // sort: {
             //   select: true,
             //   sortFields: [

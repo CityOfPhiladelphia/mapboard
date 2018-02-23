@@ -137,6 +137,7 @@
   import TopicComponent from './TopicComponent.vue';
   import HorizontalTableRow from './HorizontalTableRow.vue';
   import json2csv from 'json2csv';
+  // import fs from 'fs';
 
   const DEFAULT_SORT_FIELDS = [
     'date',
@@ -421,28 +422,45 @@
     },
     methods: {
       exportTableToCSV() {
-        console.log('exportTableToCSV is running');
-        const json2csv = require('json2csv');
-        const fs = require('fs');
-        const fields = ['car', 'price', 'color'];
-        const myCars = [
-          {
-            "car": "Audi",
-            "price": 40000,
-            "color": "blue"
-          }, {
-            "car": "BMW",
-            "price": 35000,
-            "color": "black"
-          }, {
-            "car": "Porsche",
-            "price": 60000,
-            "color": "green"
-          }
-        ];
-        const csv = json2csv(myCars, { fields });
+        // console.log('exportTableToCSV is running');
 
-        console.log(csv);
+        const Json2csvParser = require('json2csv').Parser;
+
+        const tableData = []
+        for (let item of this.items) {
+          // console.log('item:', item);
+          let object = {
+            'address': item.properties.ADDRESS,
+            'distance': item._distance
+          }
+          tableData.push(object);
+        }
+        const fields = ['address', 'distance'];
+        const opts = { fields };
+
+        try {
+          const parser = new Json2csvParser(opts);
+          let csv = parser.parse(tableData);
+
+          let data, filename, link;
+
+          // filename = 'export.csv';
+          filename = this.$props.options.downloadFile + '.csv' || 'export.csv';
+
+          if (!csv.match(/^data:text\/csv/i)) {
+              csv = 'data:text/csv;charset=utf-8,' + csv;
+          }
+          data = encodeURI(csv);
+
+          link = document.createElement('a');
+          link.setAttribute('href', data);
+          link.setAttribute('download', filename);
+          link.click();
+
+        } catch (err) {
+          console.error(err);
+        }
+
       },
       showMoreRecords() {
         // if there is only 1 page to return (from AIS);
