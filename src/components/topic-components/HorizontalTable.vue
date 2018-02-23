@@ -439,8 +439,39 @@
         const opts = { fields };
 
         try {
-          const parser = new Json2csvParser(opts);
-          let csv = parser.parse(tableData);
+          // const parser = new Json2csvParser(opts);
+          var result, ctr, keys, columnDelimiter, lineDelimiter, data;
+
+          data = tableData || null;
+          if (data == null || !data.length) {
+              return null;
+          }
+
+          columnDelimiter = ',';
+          lineDelimiter = '\n';
+          // columnDelimiter = args.columnDelimiter || ',';
+          // lineDelimiter = args.lineDelimiter || '\n';
+
+          keys = Object.keys(data[0]);
+
+          result = '';
+          result += keys.join(columnDelimiter);
+          result += lineDelimiter;
+
+          data.forEach(function(item) {
+              ctr = 0;
+              keys.forEach(function(key) {
+                  if (ctr > 0) result += columnDelimiter;
+
+                  result += item[key];
+                  ctr++;
+              });
+              result += lineDelimiter;
+          });
+
+          let csv = result;
+          // console.log('csv', csv);
+          // let csv = parser.parse(tableData);
 
           let data, filename, link;
 
