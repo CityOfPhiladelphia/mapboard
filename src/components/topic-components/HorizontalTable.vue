@@ -136,7 +136,7 @@
 <script>
   import TopicComponent from './TopicComponent.vue';
   import HorizontalTableRow from './HorizontalTableRow.vue';
-  import json2csv from 'json2csv';
+  // import json2csv from 'json2csv';
   // import fs from 'fs';
 
   const DEFAULT_SORT_FIELDS = [
@@ -424,7 +424,7 @@
       exportTableToCSV() {
         // console.log('exportTableToCSV is running');
 
-        const Json2csvParser = require('json2csv').Parser;
+        // const Json2csvParser = require('json2csv').Parser;
 
         const tableData = []
         for (let item of this.items) {
