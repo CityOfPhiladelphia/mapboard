@@ -666,6 +666,7 @@ Mapboard.default({
       options: {
         geometryServerUrl: 'http://gis.phila.gov/arcgis/rest/services/Geometry/GeometryServer/',
         calculateDistance: true,
+        distances: 150,
       },
     },
   },

@@ -551,6 +551,7 @@ Mapboard.default({
       options: {
         geometryServerUrl: '//gis.phila.gov/arcgis/rest/services/Geometry/GeometryServer/',
         calculateDistance: true,
+        distances: 150,
       },
     },
     zoningOverlay: {
