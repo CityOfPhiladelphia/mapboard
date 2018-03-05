@@ -3,8 +3,9 @@
        :class="this.pictContainerClass"
   >
     <div id="in-pict-div"
-      @click="this.popoutClicked"
-      >
+         @click="this.popoutClicked"
+         v-if="this.isMobileOrTablet === false"
+    >
       <i class="fa fa-external-link fa popout-icon"></i>
     </div>
     <iframe id="pictometry-ipa"
@@ -26,7 +27,6 @@
     props: [
       'apiKey',
       'secretKey',
-      'orientation',
     ],
     created() {
       this.$IFRAME_ID = 'pictometry-ipa';
@@ -38,14 +38,17 @@
       $.getScript(scriptUrl, self.init);
     },
     computed: {
+      isMobileOrTablet() {
+        return this.$store.state.isMobileOrTablet;
+      },
       cyclomediaActive() {
         return this.$store.state.cyclomedia.active;
       },
       pictContainerClass() {
         if (this.cyclomediaActive) {
-          return 'large-8 columns mb-panel';
+          return 'medium-8 large-8 columns mb-panel';
         } else {
-          return 'large-24 columns mb-panel';
+          return 'medium-24 large-24 columns mb-panel';
         }
       },
       mapCenter() {
@@ -185,29 +188,114 @@
 </script>
 
 <style scoped>
-  header.site-header > .row:last-of-type {
-    background: #2176d2;
-  }
 
-  #in-pict-div {
-    /*float: right;*/
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    /*z-index: 2000000;*/
-    background-color: white;
-    border: 0px solid;
-    width: 30px;
-    height: 30px;
-    /*display:none;*/
-    cursor:pointer;
-    /*position: relative;
-    top: 0px;
-    right: 0px;*/
-  }
 
-  .popout-icon {
-    margin-top: 8.5px;
+header.site-header > .row:last-of-type {
+  background: #2176d2;
+}
+
+#in-pict-div {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  background-color: white;
+  border: 0px solid;
+  width: 30px;
+  height: 30px;
+  cursor:pointer;
+  /* float: right; */
+  /*display:none;*/
+  /*z-index: 2000000;*/
+  /*position: relative;
+  top: 0px;
+  right: 0px;*/
+}
+
+.popout-icon {
+  margin-top: 8.5px;
+  font-size: 15px;
+  margin-left: 8.5px;
+}
+
+#pict-container {
+  padding: 0px;
+  height: 50%;
+  position: relative;
+  display: none;
+}
+
+@media screen and (min-width: 46.875em) {
+  #pict-container {
+    display: block;
+  }
+}
+
+/*#iframe-div {
+}*/
+
+#pictometry-ipa {
+  height: 100%;
+  width: 100%;
+  border: 0px;
+}
+
+#search-container {
+    float: right;
+}
+
+#search-input {
+    float: left;
+    width: 400px;
+}
+
+#search-button {
+    height: 2.78571rem;
+}
+
+#data-panel {
+    background: #fff;
+    padding-left: 12px;
+    padding-right: 12px;
+    height: 100%;
+}
+
+#data-panel > h1 {
+    color: #666;
+}
+
+#data-row-list > a {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    display: block;
+    font-size: 18px;
+    font-weight: normal;
+    height: 70px;
+    line-height: 45px;
+    /*margin-left: 10px;*/
+    /*margin-right: 10px;*/
+    padding: 10px;
+    /*vertical-align: middle;*/
+    /*text-align: middle;*/
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    margin-bottom: 8px;
+}
+
+#data-row-list > a:hover {
+    background: #fff;
+    color: inherit;
+}
+
+#data-row-list .data-row-link-icon {
+    padding-right: 30px;
+}
+
+.data-row {
+    padding: 10px;
+    margin-bottom: 10px;
+    display: none;
+}
+
+.data-row table th, .data-row table td {
     font-size: 15px;
     margin-left: 8.5px;
   }
@@ -221,86 +309,5 @@
   /*#iframe-div {
   }*/
 
-  #pictometry-ipa {
-    height: 100%;
-    width: 100%;
-    border: 0px;
-  }
 
-  #search-container {
-      float: right;
-  }
-
-  #search-input {
-      float: left;
-      width: 400px;
-  }
-
-  #search-button {
-      height: 2.78571rem;
-  }
-
-  #data-panel {
-      background: #fff;
-      padding-left: 12px;
-      padding-right: 12px;
-      height: 100%;
-  }
-
-  #data-panel > h1 {
-      color: #666;
-  }
-
-  #data-row-list > a {
-      background: #f5f5f5;
-      border: 1px solid #ddd;
-      display: block;
-      font-size: 18px;
-      font-weight: normal;
-      height: 70px;
-      line-height: 45px;
-      /*margin-left: 10px;*/
-      /*margin-right: 10px;*/
-      padding: 10px;
-      /*vertical-align: middle;*/
-      /*text-align: middle;*/
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-      margin-bottom: 8px;
-  }
-
-  #data-row-list > a:hover {
-      background: #fff;
-      color: inherit;
-  }
-
-  #data-row-list .data-row-link-icon {
-      padding-right: 30px;
-  }
-
-  .data-row {
-      padding: 10px;
-      margin-bottom: 10px;
-      display: none;
-  }
-
-  .data-row table th, .data-row table td {
-      font-size: 15px;
-  }
-
-  .data-row table tr th {
-      text-align: left;
-      vertical-align: top;
-  }
-
-  #map {
-      height: 100%;
-  }
-
-  ul {
-      list-style-type: none;
-      padding: 0;
-      margin: 0;
-  }
-
-  img { max-width: inherit; }
 </style>

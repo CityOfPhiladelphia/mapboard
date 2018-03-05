@@ -1,34 +1,37 @@
-<!-- <template>
+<template>
   <opacity-slider :layer="this.$leafletElement"
                   :position="'topleft'"
+                  :initialOpacity="opacity"
   />
-</template> -->
+  <!-- <div v-if="!opacitySlider"></div> -->
+</template>
+
 <script>
   import L from 'leaflet';
-  // import OpacitySlider from '../leaflet/OpacitySlider';
   // TODO look into a cleaner way of importing from esri-leaflet
-  const EsriFeatureLayer = L.esri.featureLayer;
+  import OpacitySlider from '../components/OpacitySlider.vue';
+  const EsriTiledMapLayer = L.esri.tiledMapLayer;
 
-  // min and max zooms are not handled by esri leaflet, but are handled by vue
   export default {
+    components: {
+      OpacitySlider
+    },
     props: [
       'url',
       'minZoom',
       'maxZoom',
       'zIndex',
-      'layerName',
-      'color',
-      'fillColor',
-      'fillOpacity',
-      'weight',
-      'style_',
+      'attribution',
+      'opacity'
     ],
     created() {
       const leafletElement = this.$leafletElement = this.createLeafletElement();
       const map = this.$store.state.map.map;
+
       // REVIEW kind of hacky/not reactive?
       if (map) {
         leafletElement.addTo(map);
+        map.attributionControl.removeAttribution('overwrite');
       }
     },
     destroyed() {
@@ -36,19 +39,15 @@
     },
     // we don't actually render anything, but need to define either a template
     // or a render function
-    render(h) {
-      return;
-    },
+    // render(h) {
+    //   return;
+    // },
     methods: {
       createLeafletElement() {
         const props = Object.assign({}, this.$props);
+        const mapLayer = new EsriTiledMapLayer(props);
+        return mapLayer;
 
-        // remove underscore from style_ prop. `style` is a vue reserved word.
-        const { style_ } = props;
-        delete props.style_;
-        props.style = style_;
-
-        return new EsriFeatureLayer(props);
       },
       parentMounted(parent) {
         const map = parent.$leafletElement;
@@ -57,8 +56,3 @@
     }
   };
 </script>
-
-<style>
-
-
-</style>

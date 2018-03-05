@@ -103,8 +103,6 @@ function createTableGroups(config) {
 }
 
 function createStore(config) {
-  const defaultTopic = config.topics[0];
-
   // create initial state for sources. data key => {}
   const sourceKeys = Object.keys(config.dataSources || {});
   const sources = sourceKeys.reduce((o, key) => {
@@ -156,9 +154,15 @@ function createStore(config) {
   }, {});
 
   const initialState = {
-    is_mobile_or_tablet: false,
-    activeTopic: defaultTopic.key,
-    activeParcelLayer: defaultTopic.parcels,
+    isMobileOrTablet: false,
+    fullScreenMapEnabled: false,
+
+    // this gets set to the parcel layer for the default (aka first) topic in
+    // DataManager.resetGeocode, which is called by Router.hashChanged on app
+    // load.
+    activeTopic: '',
+    activeParcelLayer: '',
+
     // the ais feature
     clickCoords: null,
     geocode: {
@@ -177,9 +181,17 @@ function createStore(config) {
         lng: null
       },
       center: config.map.center,
+      bounds: {
+        northEast: null,
+        southWest: null,
+      },
       zoom: config.map.zoom,
+      boundsBasedOnShape: null,
       map: null,
-      basemap: defaultTopic.basemap,
+      // this gets set to the parcel layer for the default topic by
+      // DataManager.resetGeocode; see note above for activeTopic and
+      // activeParcelLayer.
+      basemap: '',
       imagery: 'imagery2017',
       shouldShowImagery: false,
       // circleMarkers: [],
@@ -212,11 +224,16 @@ function createStore(config) {
     // pwdParcel: null,
     sources,
     cyclomedia: {
+      navBarOpen: false,
+      // surfaceCursorOn: true,
+      latLngFromMap: null,
+      orientation: {
+        yaw: null,
+        hFov: null,
+        xyz: null,
+      },
       active: false,
-      viewer: null,
       recordings: [],
-      locFromApp: null,
-      locFromViewer: null,
     },
     // we need this to know whether or not to force an update on the first show
     pictometry: {
@@ -281,7 +298,10 @@ function createStore(config) {
     },
     mutations: {
       setIsMobileOrTablet(state, payload) {
-        state.is_mobile_or_tablet = payload;
+        state.isMobileOrTablet = payload;
+      },
+      setFullScreenMapEnabled(state, payload) {
+        state.fullScreenMapEnabled = payload;
       },
       setLocation(state, payload) {
         state.map.location.lat = payload.lat;
@@ -401,7 +421,16 @@ function createStore(config) {
         state.map.center = payload;
       },
       setMapZoom(state, payload) {
-        state.map.zoom = payload
+        state.map.zoom = payload;
+      },
+      setMapBounds(state, payload) {
+        // const { northEast, southWest } = payload || {};
+        // state.map.bounds.northEast = northEast;
+        // state.map.bounds.southWest = southWest;
+        state.map.bounds = payload;
+      },
+      setMapBoundsBasedOnShape(state, payload) {
+        state.map.boundsBasedOnShape = payload
       },
       setParcelData(state, payload) {
         // console.log('store setParcelData payload:', payload);
@@ -481,18 +510,30 @@ function createStore(config) {
         }
         state.cyclomedia.active = payload;
       },
-      setCyclomediaViewer(state, payload) {
-        state.cyclomedia.viewer = payload;
+      setCyclomediaYaw(state, payload) {
+        state.cyclomedia.orientation.yaw = payload
+      },
+      setCyclomediaHFov(state, payload) {
+        state.cyclomedia.orientation.hFov = payload
+      },
+      setCyclomediaXyz(state, payload) {
+        state.cyclomedia.orientation.xyz = payload
       },
       setCyclomediaRecordings(state, payload) {
         state.cyclomedia.recordings = payload;
       },
-      setCyclomediaLocFromApp(state, payload) {
-        state.cyclomedia.locFromApp = payload;
+      setCyclomediaLatLngFromMap(state, payload) {
+        state.cyclomedia.latLngFromMap = payload;
+        // const { lat, lng } = payload || {};
+        // state.cyclomedia.latLngFromMap[0] = lat;
+        // state.cyclomedia.latLngFromMap[1] = lng;
       },
-      setCyclomediaLocFromViewer(state, payload) {
-        state.cyclomedia.locFromViewer = payload;
+      setCyclomediaNavBarOpen(state, payload) {
+        state.cyclomedia.navBarOpen = payload;
       },
+      // setCyclomediaSurfaceCursorOn(state, payload) {
+      //   state.cyclomedia.surfaceCursorOn = payload;
+      // },
       setActiveFeature(state, payload) {
         const { featureId, tableId } = payload || {};
         const nextActiveFeature = { featureId, tableId };

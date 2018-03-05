@@ -4,8 +4,10 @@ var webpack = require('webpack')
 module.exports = {
   entry: './src/main.js',
   output: {
-    path: path.resolve(__dirname, './dist'),
-    publicPath: '/dist/',
+    path: path.resolve(__dirname),
+    publicPath: '/',
+    // path: path.resolve(__dirname, './dist'),
+    // publicPath: '/dist/',
     filename: 'build.js',
     library: 'Mapboard'
   },
@@ -42,7 +44,11 @@ module.exports = {
     'turf': 'turf',
     'vue': 'Vue',
     'md5': 'md5'
+    // 'fs': 'commonjs fs'
   },
+  // node: {
+  //   fs: "empty"
+  // },
   devServer: {
     clientLogLevel: 'none',
     historyApiFallback: true,

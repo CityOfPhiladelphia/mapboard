@@ -5,20 +5,22 @@ import Leaflet from 'leaflet';
 
 class EsriClient extends BaseClient {
   fetch(feature, dataSource, dataSourceKey) {
-    const options = dataSource.options;
+    // console.log('esriclient fetch, feature:', feature, 'dataSource:', dataSource, 'dataSourceKey:', dataSourceKey);
     const url = dataSource.url;
-    const relationship = options.relationship;
+    const { relationship, targetGeometry, ...options } = dataSource.options;
+    const parameters = dataSource.parameters;
+    if (parameters) {
+      parameters['sourceValue'] = feature.properties[parameters.sourceField];
+    }
 
     // check if a target geometry fn was specified. otherwise, use geocode feat
-    const targetGeomFn = options.targetGeometry;
     let geom;
-
-    if (targetGeomFn) {
+    if (targetGeometry) {
       const state = this.store.state;
       // pass leaflet to the targetgeom function so it can construct a custom
       // geometry (such as the lat lng bounds of a set of parcels) if it needs
       // to. use case: fetching regmaps.
-      geom = targetGeomFn(state, Leaflet);
+      geom = targetGeometry(state, Leaflet);
     } else {
       geom = feature.geometry;
     }
@@ -29,28 +31,40 @@ class EsriClient extends BaseClient {
       return;
     }
 
-    this.fetchBySpatialQuery(dataSourceKey, url, relationship, geom);
+    this.fetchBySpatialQuery(dataSourceKey, url, relationship, geom, parameters, options);
   }
 
   fetchNearby(feature, dataSource, dataSourceKey) {
-    // console.log('fetch esri nearby', feature);
 
-    // const url = dataSource.url;
-    const { options } = dataSource;
+    const projection4326 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+    const projection2272 = "+proj=lcc +lat_1=40.96666666666667 +lat_2=39.93333333333333 +lat_0=39.33333333333334 +lon_0=-77.75 +x_0=600000 +y_0=0 +ellps=GRS80 +datum=NAD83 +to_meter=0.3048006096012192 +no_defs";
+
     const dataSourceUrl = dataSource.url;
-    const { geometryServerUrl } = options;
-    const calculateDistance = options.calculateDistance;
+    const {
+      calculateDistance,
+      geometryServerUrl,
+      distances,
+      ...options
+    } = dataSource.options;
+
+    // console.log('distances:', distances)
 
     // params.geometries = `[${feature.geometry.coordinates.join(', ')}]`
     // TODO get some of these values from map, etc.
     const coords = feature.geometry.coordinates;
+    const coords2272 = proj4(projection4326, projection2272, [coords[0], coords[1]]);
+    console.log('coords:', feature.geometry.coordinates, 'coords2272:', coords2272);
     const params = {
       // geometries: feature => '[' + feature.geometry.coordinates[0] + ', ' + feature.geometry.coordinates[1] + ']',
-      geometries: `[${coords.join(', ')}]`,
-      inSR: 4326,
+      geometries: `[${coords2272.join(', ')}]`,
+      inSR: 2272,
       outSR: 4326,
-      bufferSR: 4326,
-      distances: 0.0028,
+      bufferSR: 2272,
+      distances: distances, //|| 0.0028,
+      // inSR: 4326,
+      // outSR: 4326,
+      // bufferSR: 4326,
+      // distances: distances, //|| 0.0028,
       unionResults: true,
       geodesic: false,
       f: 'json',
@@ -86,10 +100,15 @@ class EsriClient extends BaseClient {
       // DEBUG
       // buffer.addTo(map);
 
+      //this is a space holder
+      const parameters = {};
+
       this.fetchBySpatialQuery(dataSourceKey,
                                dataSourceUrl,
                                'within',
                                buffer,
+                               parameters,
+                               options,
                                calculateDistance ? coords : null
                               );
     }, response => {
@@ -98,10 +117,31 @@ class EsriClient extends BaseClient {
     });
   }
 
-  fetchBySpatialQuery(dataSourceKey, url, relationship, targetGeom, calculateDistancePt) {
-    // console.log('fetch esri spatial query', dataSourceKey, url, relationship, targetGeom);
+  fetchBySpatialQuery(dataSourceKey, url, relationship, targetGeom, parameters = {}, options = {}, calculateDistancePt) {
+    // console.log('fetch esri spatial query, dataSourceKey:', dataSourceKey, 'url:', url, 'relationship:', relationship, 'targetGeom:', targetGeom, 'parameters:', parameters, 'options:', options);
 
-    const query = L.esri.query({ url })[relationship](targetGeom);
+    let query;
+    if (relationship === 'where') {
+      query = L.esri.query({ url })[relationship](parameters.targetField + "='" + parameters.sourceValue + "'");
+    } else {
+      query = L.esri.query({ url })[relationship](targetGeom);
+    }
+
+    // apply options by chaining esri leaflet option methods
+    const optionsKeys = Object.keys(options) || [];
+    query = optionsKeys.reduce((acc, optionsKey) => {
+      const optionsVal = options[optionsKey];
+      let optionsMethod;
+
+      try {
+        acc = acc[optionsKey](optionsVal);
+      } catch (e) {
+        throw new Error(`esri-leaflet query task does not support option:
+                         ${optionsKey}`);
+      }
+
+      return acc;
+    }, query);
 
     query.run((error, featureCollection, response) => {
       // console.log('did get esri spatial query', response, error);
@@ -116,8 +156,19 @@ class EsriClient extends BaseClient {
         features = features.map(feature => {
           // console.log('feat', feature);
           const featureCoords = feature.geometry.coordinates;
-          const to = turf.point(featureCoords);
-          const dist = turf.distance(from, to, 'miles');
+          // console.log('featureCoords:', featureCoords);
+          let dist;
+          if (Array.isArray(featureCoords[0])) {
+            // console.log('featureCoords is array of coords:', featureCoords[0]);
+            let polygon = turf.polygon([featureCoords[0]]);
+            const vertices = turf.explode(polygon)
+            const closestVertex = turf.nearest(from, vertices);
+            // console.log('closestVertex', closestVertex);
+            dist = turf.distance(from, closestVertex, 'miles')
+          } else {
+            const to = turf.point(featureCoords);
+            dist = turf.distance(from, to, 'miles');
+          }
 
           // TODO make distance units an option. for now, just hard code to ft.
           const distFeet = parseInt(dist * 5280);
