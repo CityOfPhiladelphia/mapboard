@@ -439,6 +439,10 @@ Mapboard.default({
               if (geocode.address_low_suffix != '') {
                 where += " AND ADDRESS_LOW_SUFFIX = '" + geocode.address_low_suffix + "'";
               }
+              // this is hardcoded right now to handle DOR address suffixes that are actually fractions
+              if (geocode.address_low_frac = '1/2') {
+                where += " AND ADDRESS_LOW_SUFFIX = '2'" //+ geocode.address_low_frac + "'";
+              }
               if (geocode.street_postdir != '') {
                 where += " AND STREET_POSTDIR = '" + geocode.street_postdir + "'";
               }
