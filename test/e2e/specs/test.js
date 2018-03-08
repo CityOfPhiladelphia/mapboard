@@ -119,6 +119,9 @@ module.exports = {
       .waitForElementVisible(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2) .topic-component:nth-of-type(1) .mb-horizontal-table-body`);
       browser.expect.element(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2) .topic-component:nth-of-type(1) h4`).text.to.contain('Nearby Service Requests');
 
+    browser
+      .click(`.easy-button-container:nth-of-type(3)`)
+      .waitForElementVisible(`#inCycloDiv`);
 
       // .end();
   },
