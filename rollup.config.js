@@ -17,7 +17,7 @@ const external = Object.keys(pkg.dependencies || {});
 export default {
   input: 'src/main.js',
   output: {
-    file: 'dist/build.js',
+    file: 'dist/mapboard.js',
     format: 'umd',
     name: 'mapboard',
     // silence warning about multiple exports
