@@ -19,7 +19,7 @@ export default {
   output: {
     file: 'dist/build.js',
     format: 'umd',
-    name: 'Mapboard',
+    name: 'mapboard',
     // silence warning about multiple exports
     exports: 'named',
     // tell rollup the global names for vendor modules
