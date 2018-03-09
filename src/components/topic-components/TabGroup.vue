@@ -21,7 +21,8 @@
            v-bind:class="{'is-active': itemIsActive(item)}"
            v-bind:id="'parcel-' + keyForItem(item)"
       >
-        <topic-component-group :topic-components="comps" :item="item"/>
+        <topic-component-group :topic-components="comps" :item="item">
+        </topic-component-group>
       </div>
     </div>
   </div>
@@ -33,8 +34,11 @@
 
   export default {
     mixins: [TopicComponent],
-    components: {
-      TopicComponentGroup
+    // components: {
+    //   TopicComponentGroup
+    // },
+    beforeCreate() {
+      this.$options.components.TopicComponentGroup = TopicComponentGroup;
     },
     // some internal state for things local enough that they shouldn't be in
     // vuex if we can avoid it.
@@ -86,8 +90,6 @@
         this.$data.activeItem = this.keyForItem(item)
         this.$data.activeMapreg = this.titleForItem(item);
         this.$data.activeAddress = this.addressForItem(item);
-        console.log('clickedItem is firing');
-        // const dorParcel = this.$store.state.parcels.dor;
 
         const payload = {
           parcelLayer: 'dor',
