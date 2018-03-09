@@ -5,7 +5,7 @@ and storing them in state.
 The router should own an instance of DataManager and make calls to it based on
 navigation events.
 */
-import L from 'leaflet';
+import * as L from 'leaflet';
 import {
   GeocodeClient,
   HttpClient,
