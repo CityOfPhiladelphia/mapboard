@@ -6,6 +6,10 @@ The router should own an instance of DataManager and make calls to it based on
 navigation events.
 */
 import * as L from 'leaflet';
+import { query as Query } from 'esri-leaflet';
+import { polygon } from '@turf/helpers';
+import distance from '@turf/distance';
+import area from '@turf/area';
 import {
   GeocodeClient,
   HttpClient,
@@ -629,7 +633,7 @@ class DataManager {
     const url = this.config.map.featureLayers[parcelLayer+'Parcels'].url;
     const configForParcelLayer = this.config.parcels[parcelLayer];
     const geocodeField = configForParcelLayer.geocodeField;
-    const parcelQuery = L.esri.query({ url });
+    const parcelQuery = Query({ url });
     parcelQuery.where(geocodeField + " = '" + id + "'");
     // console.log('parcelQuery:', parcelQuery);
     parcelQuery.run((function(error, featureCollection, response) {
@@ -643,7 +647,7 @@ class DataManager {
     // console.log('171111 getParcelsByLatLng', parcelLayer, 'fetch', fetch);
 
     const url = this.config.map.featureLayers[parcelLayer+'Parcels'].url;
-    const parcelQuery = L.esri.query({ url });
+    const parcelQuery = Query({ url });
     parcelQuery.contains(latlng);
     const test = 5;
     parcelQuery.run((function(error, featureCollection, response) {
@@ -703,11 +707,12 @@ class DataManager {
 
     // use TURFJS to get area and perimeter of all parcels returned
     for (let featureSorted of featuresSorted) {
-      const turfPolygon = turf.polygon(featureSorted.geometry.coordinates);
+      const turfPolygon = polygon(featureSorted.geometry.coordinates);
       // turf area is returned in square meters - conversion is to square feet
-      featureSorted.properties.TURF_AREA = turf.area(turfPolygon) * 10.7639;
+      featureSorted.properties.TURF_AREA = area(turfPolygon) * 10.7639;
       // this formula for turf perimeter is returned in km - conversion is to feet
-      featureSorted.properties.TURF_PERIMETER = turf.lineDistance(turf.lineString(turfPolygon.geometry.coordinates[0])) * 3280.84;
+      console.log('turf poly', turfPolygon);
+      // featureSorted.properties.TURF_PERIMETER = turf.lineDistance(turf.lineString(turfPolygon.geometry.coordinates[0])) * 3280.84;
     }
 
     // at this point there is definitely a feature or features - put it in state
@@ -772,7 +777,10 @@ class DataManager {
         data: featuresSorted,
         status: 'success',
         activeParcel: feature ? feature.id : null,
-        activeAddress: feature ? concatDorAddress(feature) : null,
+        // TODO apply concatDorAddress in client config - this global is no
+        // longer available
+        // activeAddress: feature ? concatDorAddress(feature) : null,
+        activeAddress: null,
         activeMapreg: feature ? feature.properties.MAPREG : null
       }
     }
