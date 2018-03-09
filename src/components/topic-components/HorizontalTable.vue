@@ -472,8 +472,9 @@
           let csv = result;
           // console.log('csv', csv);
           // let csv = parser.parse(tableData);
-
-          let data, filename, link;
+          data = null;
+          let filename;
+          let link;
 
           // filename = 'export.csv';
           filename = this.$props.options.downloadFile + '.csv' || 'export.csv';
