@@ -6,10 +6,11 @@ import mergeDeep from './util/merge-deep';
 import controllerMixin from './controller';
 import generateUniqueId from './util/unique-id';
 
-if (!global._babelPolyfill) {
-  require('babel-polyfill');
-}
-require('es6-promise').polyfill();
+// TODO can these be converted to es6?
+// if (!global._babelPolyfill) {
+//   require('babel-polyfill');
+// }
+// require('es6-promise').polyfill();
 
 // helper function to auto-assign ids to horizontal tables
 function assignTableIds(comps) {
