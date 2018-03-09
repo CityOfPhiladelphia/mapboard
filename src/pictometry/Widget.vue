@@ -22,6 +22,7 @@
 
 <script>
   import $ from 'jquery';
+  import md5 from 'blueimp-md5-es6';
 
   export default {
     props: [
