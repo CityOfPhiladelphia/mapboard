@@ -1,4 +1,5 @@
 import axios from 'axios';
+import moment from 'moment';
 import BaseClient from './base-client';
 
 class HttpClient extends BaseClient {
@@ -93,6 +94,8 @@ class HttpClient extends BaseClient {
     const options = dataSource.options;
     // const srid = options.srid || 4326;
     const table = options.table;
+    // TODO generalize these options into something like a `sql` param that
+    // returns a sql statement
     const dateMinNum = options.dateMinNum || null;
     const dateMinType = options.dateMinType || null;
     const dateField = options.dateField || null;
