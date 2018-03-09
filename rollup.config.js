@@ -4,8 +4,8 @@ import buble from 'rollup-plugin-buble';
 import commonjs from 'rollup-plugin-commonjs';
 import uglify from 'rollup-plugin-uglify';
 import analyzer from 'rollup-analyzer-plugin';
-import globals from 'rollup-plugin-node-globals';
 import builtins from 'rollup-plugin-node-builtins';
+import globals from 'rollup-plugin-node-globals';
 
 // get module names of dependencies (we want to treat these as externals so
 // they don't get bundled)
@@ -31,7 +31,11 @@ export default {
       vuex: 'Vuex',
       vuex: 'Vuex',
       turf: 'turf',
+      md5: 'md5',
+      proj4: 'proj4',
+      'blueimp-md5-es6': 'md5',
     },
+    sourcemap: true,
   },
   external,
   // don't bundle vendor deps
@@ -40,24 +44,14 @@ export default {
     resolve({
       // silence warning about preferring built-in modules over local ones
       preferBuiltins: true,
+      // use browser versions of dependecy packages where available
+      // browser: true,
+      jsnext: true,
     }),
     // for bundling node built-in modules (we use `url`)
     builtins(),
     // the builtins have some references to `global` so handle those
     globals(),
-    // handle commonjs modules, e.g. leaflet
-    commonjs({
-      // specify each named import from leaflet
-      namedExports: {
-        'node_modules/leaflet/dist/leaflet-src.js': [
-          'Map',
-          'LatLng',
-          'geoJSON',
-          'CircleMarker',
-          'Circle',
-        ],
-      }
-    }),
     // transform .vue components
     vue({
       css: true,
@@ -68,7 +62,10 @@ export default {
         dangerousForOf: true,
       },
     }),
-    uglify(),
+    // handle commonjs modules, e.g. leaflet
+    // REVIEW is this needed?
+    commonjs(),
+    // uglify(),
     // analyzer(),
   ],
 };
