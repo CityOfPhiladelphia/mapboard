@@ -5,7 +5,7 @@
   />
 </template>
 <script>
-  import L from 'leaflet';
+  import * as L from 'leaflet';
   // TODO things in esri-leaflet should be standalone and not depend on
   // mapboard components. pass this in as a prop/plugin rather than importing.
   import OpacitySlider from '../components/OpacitySlider.vue';

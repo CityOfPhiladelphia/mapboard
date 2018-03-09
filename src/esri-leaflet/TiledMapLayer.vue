@@ -1,7 +1,7 @@
 <script>
-  import L from 'leaflet';
   // TODO look into a cleaner way of importing from esri-leaflet
   const EsriTiledMapLayer = L.esri.tiledMapLayer;
+  import * as L from 'leaflet';
 
   export default {
     props: [

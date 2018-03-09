@@ -1,5 +1,5 @@
 <script>
-  import L from 'leaflet';
+  import * as L from 'leaflet';
 
   // TODO look into a cleaner way of importing from esri-leaflet
   // import Control from '../leaflet/Control';

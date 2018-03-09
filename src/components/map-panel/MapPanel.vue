@@ -295,6 +295,7 @@
 </template>
 
 <script>
+  import * as L from 'leaflet';
   // mixins
   import markersMixin from './markers-mixin';
   import cyclomediaMixin from '../../cyclomedia/map-panel-mixin';

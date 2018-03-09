@@ -4,7 +4,7 @@
 -->
 
 <script>
-  import L from 'leaflet';
+  import * as L from 'leaflet';
 
   export default {
     props: [
