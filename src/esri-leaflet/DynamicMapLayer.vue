@@ -6,11 +6,10 @@
 </template>
 <script>
   import * as L from 'leaflet';
+  import { dynamicMapLayer as DynamicMapLayer } from 'esri-leaflet';
   // TODO things in esri-leaflet should be standalone and not depend on
   // mapboard components. pass this in as a prop/plugin rather than importing.
   import OpacitySlider from '../components/OpacitySlider.vue';
-  // TODO look into a cleaner way of importing from esri-leaflet
-  const EsriDynamicMapLayer = L.esri.dynamicMapLayer;
 
   export default {
     components: {
@@ -64,7 +63,7 @@
     methods: {
       createLeafletElement() {
         const props = Object.assign({}, this.$props);
-        return new EsriDynamicMapLayer(props);
+        return new DynamicMapLayer(props);
       },
       parentMounted(parent) {
         const map = parent.$leafletElement;
