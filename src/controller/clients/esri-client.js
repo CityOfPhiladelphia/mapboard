@@ -1,7 +1,12 @@
 import axios from 'axios';
-import turf from 'turf';
+import { point, polygon } from '@turf/helpers';
+import '@turf/distance';
+import '@turf/explode';
+import '@turf/nearest-point';
+import proj4 from 'proj4';
+import * as L from 'leaflet';
+import { query as Query } from 'esri-leaflet';
 import BaseClient from './base-client';
-import Leaflet from 'leaflet';
 
 class EsriClient extends BaseClient {
   fetch(feature, dataSource, dataSourceKey) {
@@ -20,7 +25,7 @@ class EsriClient extends BaseClient {
       // pass leaflet to the targetgeom function so it can construct a custom
       // geometry (such as the lat lng bounds of a set of parcels) if it needs
       // to. use case: fetching regmaps.
-      geom = targetGeometry(state, Leaflet);
+      geom = targetGeometry(state, L);
     } else {
       geom = feature.geometry;
     }
@@ -35,7 +40,6 @@ class EsriClient extends BaseClient {
   }
 
   fetchNearby(feature, dataSource, dataSourceKey) {
-
     const projection4326 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
     const projection2272 = "+proj=lcc +lat_1=40.96666666666667 +lat_2=39.93333333333333 +lat_0=39.33333333333334 +lon_0=-77.75 +x_0=600000 +y_0=0 +ellps=GRS80 +datum=NAD83 +to_meter=0.3048006096012192 +no_defs";
 
@@ -118,13 +122,13 @@ class EsriClient extends BaseClient {
   }
 
   fetchBySpatialQuery(dataSourceKey, url, relationship, targetGeom, parameters = {}, options = {}, calculateDistancePt) {
-    // console.log('fetch esri spatial query, dataSourceKey:', dataSourceKey, 'url:', url, 'relationship:', relationship, 'targetGeom:', targetGeom, 'parameters:', parameters, 'options:', options);
+    console.log('fetch esri spatial query, dataSourceKey:', dataSourceKey, 'url:', url, 'relationship:', relationship, 'targetGeom:', targetGeom, 'parameters:', parameters, 'options:', options);
 
     let query;
     if (relationship === 'where') {
-      query = L.esri.query({ url })[relationship](parameters.targetField + "='" + parameters.sourceValue + "'");
+      query = Query({ url })[relationship](parameters.targetField + "='" + parameters.sourceValue + "'");
     } else {
-      query = L.esri.query({ url })[relationship](targetGeom);
+      query = Query({ url })[relationship](targetGeom);
     }
 
     // apply options by chaining esri leaflet option methods
@@ -151,7 +155,7 @@ class EsriClient extends BaseClient {
 
       // calculate distance
       if (calculateDistancePt) {
-        const from = turf.point(calculateDistancePt);
+        const from = point(calculateDistancePt);
 
         features = features.map(feature => {
           // console.log('feat', feature);
@@ -160,14 +164,14 @@ class EsriClient extends BaseClient {
           let dist;
           if (Array.isArray(featureCoords[0])) {
             // console.log('featureCoords is array of coords:', featureCoords[0]);
-            let polygon = turf.polygon([featureCoords[0]]);
-            const vertices = turf.explode(polygon)
-            const closestVertex = turf.nearest(from, vertices);
+            let polygon = polygon([featureCoords[0]]);
+            const vertices = explode(polygon)
+            const closestVertex = nearest(from, vertices);
             // console.log('closestVertex', closestVertex);
-            dist = turf.distance(from, closestVertex, 'miles')
+            dist = distance(from, closestVertex, 'miles')
           } else {
-            const to = turf.point(featureCoords);
-            dist = turf.distance(from, to, 'miles');
+            const to = point(featureCoords);
+            dist = distance(from, to, 'miles');
           }
 
           // TODO make distance units an option. for now, just hard code to ft.
