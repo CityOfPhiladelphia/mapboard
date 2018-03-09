@@ -59,7 +59,7 @@ function assignTableGroupIds(comps) {
   }
 }
 
-export default (clientConfig) => {
+function initMapboard(clientConfig) {
   const baseConfigUrl = clientConfig.baseConfig;
 
   // create a global event bus used to proxy events to the mapboard host
@@ -142,6 +142,9 @@ export default (clientConfig) => {
   }).catch(err => {
     console.error('Error loading base config:', err);
   });
-};
+}
 
+export default initMapboard;
+
+// also expose the vue component as a named export
 export { Mapboard };
