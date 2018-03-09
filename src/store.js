@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 // when you load vuex from a script tag this seems to happen automatically
-// Vue.use(Vuex);
+Vue.use(Vuex);
 
 // this grabs horizontal table ids from an array of topic components,
 // recursively
