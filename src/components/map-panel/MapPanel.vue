@@ -226,11 +226,11 @@
         />
       </div>
 
-      <div v-once
+      <!-- <div v-once
            v-if="this.measureControlEnabled"
       >
         <measure-control :position="'bottomleft'" />
-      </div>
+      </div> -->
 
       <div v-once>
         <legend-control v-for="legendControl in Object.keys(legendControls)"
@@ -321,7 +321,7 @@
   import CyclomediaRecordingCircle from '../../cyclomedia/RecordingCircle.vue';
   import CyclomediaRecordingsClient from '../../cyclomedia/recordings-client';
   import SvgViewConeMarker from '../../cyclomedia/SvgViewConeMarker.vue';
-  import MeasureControl from '../MeasureControl.vue';
+  // import MeasureControl from '../MeasureControl.vue';
   import LegendControl from '../LegendControl.vue';
   import BasemapTooltip from '../BasemapTooltip.vue';
   import ControlCorner from '../../leaflet/ControlCorner.vue';
@@ -352,7 +352,7 @@
       CyclomediaButton,
       CyclomediaRecordingCircle,
       SvgViewConeMarker,
-      MeasureControl,
+      // MeasureControl,
       LegendControl,
       BasemapTooltip,
       ControlCorner,
