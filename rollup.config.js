@@ -28,20 +28,24 @@ export default {
     // tell rollup the global names for vendor modules
     globals: {
       leaflet: 'L',
+      'esri-leaflet': 'L.esri',
+      moment: 'moment',
+      'leaflet-measure': 'L.Control.Measure',
       jquery: '$',
       axios: 'axios',
       vue: 'Vue',
       vuex: 'Vuex',
-      vuex: 'Vuex',
-      turf: 'turf',
       md5: 'md5',
       proj4: 'proj4',
       'blueimp-md5-es6': 'md5',
+      '@turf/helpers': 'turf',
+      '@turf/distance': 'turf.distance',
+      '@turf/area': 'turf.area',
     },
     sourcemap: true,
   },
-  external,
   // don't bundle vendor deps
+  external,
   plugins: [
     // allow implicit imports from index.js files
     resolve({
