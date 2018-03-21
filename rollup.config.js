@@ -14,6 +14,9 @@ import path from 'path';
 const pkg = JSON.parse(fs.readFileSync(path.resolve('./package.json'), 'utf-8'));
 const external = Object.keys(pkg.dependencies || {});
 
+// don't bundle this css either
+external.push('leaflet-measure/dist/leaflet-measure.css');
+
 export default {
   input: 'src/main.js',
   output: {
