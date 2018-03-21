@@ -1958,9 +1958,9 @@ leaflet-easybutton@^2.2.2:
   dependencies:
     leaflet "^1.0.1"
 
-"leaflet-measure@https://github.com/CityOfPhiladelphia/leaflet-measure#2826204d53afb534b9b585d7457eacaa39444ba4":
+"leaflet-measure@https://github.com/CityOfPhiladelphia/leaflet-measure#56d32ea013671d9f88c0c769d62ac41b0361250a":
   version "3.0.3"
-  resolved "https://github.com/CityOfPhiladelphia/leaflet-measure#2826204d53afb534b9b585d7457eacaa39444ba4"
+  resolved "https://github.com/CityOfPhiladelphia/leaflet-measure#56d32ea013671d9f88c0c769d62ac41b0361250a"
   dependencies:
     "@turf/area" "^5.1.5"
     "@turf/length" "^5.1.5"
