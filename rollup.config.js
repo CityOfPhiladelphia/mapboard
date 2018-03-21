@@ -7,6 +7,9 @@ import analyzer from 'rollup-analyzer-plugin';
 import builtins from 'rollup-plugin-node-builtins';
 import globals from 'rollup-plugin-node-globals';
 
+// check if we're in development mode (i.e. rollup is running with watch)
+const dev = !!process.env.ROLLUP_WATCH;
+
 // get module names of dependencies (we want to treat these as externals so
 // they don't get bundled)
 import fs from 'fs';
@@ -25,7 +28,7 @@ export default {
     name: 'mapboard',
     // silence warning about multiple exports
     exports: 'named',
-    // tell rollup the global names for vendor modules
+    // map imports to global names for using mapboard in the browser
     globals: {
       leaflet: 'L',
       'esri-leaflet': 'L.esri',
@@ -72,7 +75,9 @@ export default {
     // handle commonjs modules, e.g. leaflet
     // REVIEW is this needed?
     commonjs(),
-    // uglify(),
-    // analyzer(),
+    // minify if production
+    !dev && uglify(),
+    // analyze if dev
+    dev && analyzer(),
   ],
 };
