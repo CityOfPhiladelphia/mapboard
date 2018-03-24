@@ -23,7 +23,7 @@
     "jquery-ui": "^1.12.1",
     "leaflet": "https://github.com/CityOfPhiladelphia/Leaflet#e8abb15619a81792b7bd9360e39d71ea13d93a5d",
     "leaflet-easybutton": "^2.2.2",
-    "leaflet-measure": "https://github.com/CityOfPhiladelphia/leaflet-measure#56d32ea013671d9f88c0c769d62ac41b0361250a",
+    "leaflet-measure": "https://github.com/CityOfPhiladelphia/leaflet-measure#c91eedea328e02a50b7849ef6e2b3adab3a55e49",
     "leaflet-rotatedmarker": "^0.2.0",
     "moment": "^2.21.0",
     "proj4": "^2.4.4",
