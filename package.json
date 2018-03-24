@@ -15,7 +15,7 @@
     "@turf/explode": "^5.1.5",
     "@turf/helpers": "^6.0.1",
     "@turf/nearest-point": "^5.1.5",
-    "Leaflet.vector-markers": "^0.0.6",
+    "leaflet-vector-icon": "https://github.com/CityOfPhiladelphia/leaflet-vector-icon#7230dfe0a916cf8a36ea0154b1ca361fef0818c2",
     "axios": "^0.18.0",
     "blueimp-md5-es6": "https://github.com/gunins/JavaScript-MD5",
     "esri-leaflet": "^2.1.4",
