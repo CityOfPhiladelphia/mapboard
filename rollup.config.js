@@ -19,6 +19,7 @@ const external = Object.keys(pkg.dependencies || {});
 
 // don't bundle this css either
 external.push('leaflet-measure/dist/leaflet-measure.css');
+external.push('leaflet-vector-icon/dist/leaflet-vector-icon.css');
 
 export default {
   input: 'src/main.js',
@@ -34,6 +35,7 @@ export default {
       'esri-leaflet': 'L.esri',
       moment: 'moment',
       'leaflet-measure': 'L.Control.Measure',
+      'leaflet-vector-icon': 'leafletVectorIcon',
       jquery: '$',
       axios: 'axios',
       vue: 'Vue',

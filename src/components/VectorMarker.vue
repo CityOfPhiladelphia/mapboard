@@ -1,10 +1,6 @@
-<!--
-  wraps Leaflet.vector-markers as a vue component
-  https://github.com/hiasinho/Leaflet.vector-markers
--->
-
 <script>
-  import * as L from 'leaflet';
+  import { Marker } from 'leaflet';
+  import VectorIcon from 'leaflet-vector-icon';
 
   export default {
     props: [
@@ -12,19 +8,14 @@
       'markerColor',
       'icon'
     ],
-    data: function() {
-      return {
-        thelatlng: this.$props.latlng
-      }
-    },
     render(h) {
       const a = this.$props.latlng;
       return;
     },
     mounted() {
-      // console.log('vectorMarker mounted fired, latlng is', this.latlng);
       const leafletElement = this.$leafletElement = this.createLeafletElement();
       const map = this.$store.state.map.map;
+
       // REVIEW kind of hacky/not reactive?
       if (map) {
         leafletElement.addTo(map);
@@ -34,6 +25,7 @@
       this.$leafletElement._map.removeLayer(this.$leafletElement);
       const leafletElement = this.$leafletElement = this.createLeafletElement();
       const map = this.$store.state.map.map;
+
       // REVIEW kind of hacky/not reactive?
       if (map) {
         leafletElement.addTo(map);
@@ -44,16 +36,18 @@
     },
     methods: {
       createLeafletElement() {
-        const icon = L.VectorMarkers.icon({
+        const icon = new VectorIcon({
           icon:  this.$props.icon || 'circle',
-          markerColor: this.$props.markerColor || '#2176d2'
+          markerColor: this.$props.markerColor || '#2176d2',
         });
-        return L.marker(this.latlng, { icon });
+        // const icon = {};
+
+        return new Marker(this.latlng, { icon });
       },
       parentMounted(parent) {
         const map = parent.$leafletElement;
         this.$leafletElement.addTo(map);
       },
-    }
+    },
   };
 </script>
