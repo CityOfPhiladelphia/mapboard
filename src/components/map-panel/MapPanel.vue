@@ -575,16 +575,10 @@
           this.$store.state.map.map.invalidateSize();
         })
       },
-      // boundsBasedOnShape() {
-      //   console.log('WATCH BOUNDSBASEDONSHAPE IS RUNNING SETMAPTOBOUNDS');
-      //   this.setMapToBounds();
-      // },
       geojsonFeatures() {
-        console.log('WATCH GEOJSONFEATURES IS RUNNING SETMAPTOBOUNDS');
         this.setMapToBounds();
       },
       markers() {
-        console.log('WATCH MARKERS IS FIRING SETMAPTOBOUNDS');
         this.setMapToBounds();
       }
     },
@@ -594,16 +588,12 @@
         let featureArray = []
         if (this.activeTopicConfig.zoomToShape) {
           if (this.activeTopicConfig.zoomToShape.includes('geojson')) {
-            console.log('if zoomToShape includes geojson is running, geojsonFeatures:', this.geojsonFeatures);
             for (let geojsonFeature of this.geojsonFeatures) {
-              console.log('looping geojsonFeatures:', geojsonFeature);
               featureArray.push(L.geoJSON(geojsonFeature.geojson))
             }
           }
           if (this.activeTopicConfig.zoomToShape.includes('marker')) {
-            console.log('if zoomToShape includes marker is running, markers:', this.markers);
             for (let marker of this.markers) {
-              console.log('looping markers:', marker);
               if (marker.markerType === 'overlay') {
                 featureArray.push(L.marker(marker.latlng))
               }
@@ -611,7 +601,6 @@
           }
           const group = new L.featureGroup(featureArray);
           const bounds = group.getBounds();
-          console.log('MAP PANEL SETMAPTOBOUNDS IS RUNNING, group:', group, 'bounds:', bounds);
           this.$store.commit('setMapBounds', bounds);
         }
       },

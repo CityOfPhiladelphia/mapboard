@@ -94,7 +94,7 @@
         this.setDivWidth();
       },
       locForCyclo(newCoords) {
-        console.log('watch locForCyclo is firing, setNewLocation running with newCoords:', newCoords);
+        // console.log('watch locForCyclo is firing, setNewLocation running with newCoords:', newCoords);
         if (newCoords) {
           this.setNewLocation(newCoords);
         }
@@ -139,7 +139,6 @@
         () => {
           // get map center and set location
           const map = this.$store.state.map;
-          console.log('mounted is calling setNewLocation, map.center:', map.center);
           this.setNewLocation([map.center[1], map.center[0]]);
         },
         err => {
@@ -149,7 +148,7 @@
       window.addEventListener('resize', this.setDivWidth);
     },
     updated() {
-      console.log('cyclomedia updated running');
+      // console.log('cyclomedia updated running');
       // TODO find a better way to get the image to update and not be stretched
       // const viewer = this.$store.state.cyclomedia.viewer;
       if (this.cyclomediaActive) {

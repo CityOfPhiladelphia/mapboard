@@ -27,9 +27,7 @@
     ],
     methods: Object.assign(methods, {
       handleButtonClick(link) {
-        console.log('click', link);
-        //window.open(window.location.href + link)
-        window.open('http://localhost:8080/' + link)
+        window.open('http://localhost:8080/' + link);
       },
     })
   };

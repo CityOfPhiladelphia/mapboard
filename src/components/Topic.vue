@@ -144,7 +144,6 @@
       },
       errorMessage() {
         if (this.topic.errorMessage) {
-          console.log('errorMessage exists', this.topic.errorMessage(this.$store.state));
           return this.topic.errorMessage(this.$store.state);
         } else {
           return 'Could not locate records for that address.';

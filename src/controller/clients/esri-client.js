@@ -11,6 +11,7 @@ import BaseClient from './base-client';
 class EsriClient extends BaseClient {
   fetch(feature, dataSource, dataSourceKey) {
     // console.log('esriclient fetch, feature:', feature, 'dataSource:', dataSource, 'dataSourceKey:', dataSourceKey);
+
     const url = dataSource.url;
     const { relationship, targetGeometry, ...options } = dataSource.options;
     const parameters = dataSource.parameters;
@@ -57,7 +58,6 @@ class EsriClient extends BaseClient {
     // TODO get some of these values from map, etc.
     const coords = feature.geometry.coordinates;
     const coords2272 = proj4(projection4326, projection2272, [coords[0], coords[1]]);
-    console.log('coords:', feature.geometry.coordinates, 'coords2272:', coords2272);
     const params = {
       // geometries: feature => '[' + feature.geometry.coordinates[0] + ', ' + feature.geometry.coordinates[1] + ']',
       geometries: `[${coords2272.join(', ')}]`,
@@ -116,13 +116,14 @@ class EsriClient extends BaseClient {
                                calculateDistance ? coords : null
                               );
     }, response => {
-      console.log('did fetch esri nearby error', response);
+      // console.log('did fetch esri nearby error', response);
+
       this.dataManager.didFetchData(dataSourceKey, 'error');
     });
   }
 
   fetchBySpatialQuery(dataSourceKey, url, relationship, targetGeom, parameters = {}, options = {}, calculateDistancePt) {
-    console.log('fetch esri spatial query, dataSourceKey:', dataSourceKey, 'url:', url, 'relationship:', relationship, 'targetGeom:', targetGeom, 'parameters:', parameters, 'options:', options);
+    // console.log('fetch esri spatial query, dataSourceKey:', dataSourceKey, 'url:', url, 'relationship:', relationship, 'targetGeom:', targetGeom, 'parameters:', parameters, 'options:', options);
 
     let query;
     if (relationship === 'where') {
