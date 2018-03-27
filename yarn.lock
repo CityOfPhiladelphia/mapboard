@@ -1931,9 +1931,9 @@ leaflet-rotatedmarker@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/leaflet-rotatedmarker/-/leaflet-rotatedmarker-0.2.0.tgz#4467f49f98d1bfd56959bd9c6705203dd2601277"
 
-"leaflet-vector-icon@https://github.com/CityOfPhiladelphia/leaflet-vector-icon#7230dfe0a916cf8a36ea0154b1ca361fef0818c2":
+"leaflet-vector-icon@https://github.com/CityOfPhiladelphia/leaflet-vector-icon#8419d4025be2c3acc26a1e66b6a1a1e95c340142":
   version "1.0.0"
-  resolved "https://github.com/CityOfPhiladelphia/leaflet-vector-icon#7230dfe0a916cf8a36ea0154b1ca361fef0818c2"
+  resolved "https://github.com/CityOfPhiladelphia/leaflet-vector-icon#8419d4025be2c3acc26a1e66b6a1a1e95c340142"
 
 leaflet-virtual-grid@^1.0.5:
   version "1.0.5"
