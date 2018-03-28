@@ -1,9 +1,9 @@
 <template>
   <!-- REVIEW this uses patterns -->
   <div class="mb-badge panel center">
-    <!-- <div class="mb-badge-header" :style="style">
+    <div class="mb-badge-header" :style="style">
       {{ evaluateSlot(slots.title) }}
-    </div> -->
+    </div>
     <!-- <div class="mb-badge-body"
          v-if="this.value"
     >
@@ -13,13 +13,13 @@
     <!-- <div class="mb-badge-body"
          v-if="this.data"
     > -->
-      <!-- <topic-component-group :topic-components="options.components" :item="item" /> -->
+      <topic-component-group :topic-components="options.components" :item="item" />
     <!-- </div> -->
   </div>
 </template>
 
 <script>
-  console.log('in Badge.vue script');
+  // console.log('in Badge.vue script');
   import TopicComponent from './TopicComponent.vue';
   import TopicComponentGroup from '../TopicComponentGroup.vue';
   // console.log('in Badge.vue - TopicComponentGroup:', TopicComponentGroup);
@@ -30,7 +30,7 @@
     //   TopicComponentGroup
     // },
     beforeCreate() {
-      console.log('in Badge.vue beforeCreate, TopicComponentGroup')
+      // console.log('in Badge.vue beforeCreate, TopicComponentGroup')
       this.$options.components.TopicComponentGroup = TopicComponentGroup;
     },
     computed: {

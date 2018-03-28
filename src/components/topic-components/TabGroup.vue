@@ -31,6 +31,7 @@
 <script>
   import TopicComponent from './TopicComponent.vue';
   import TopicComponentGroup from '../TopicComponentGroup.vue';
+  // console.log('in TabGroup.vue script, TopicComponentGroup:', TopicComponentGroup);
 
   export default {
     mixins: [TopicComponent],
@@ -38,6 +39,7 @@
     //   TopicComponentGroup
     // },
     beforeCreate() {
+      // console.log('tabGroup beforeCreate is running');
       this.$options.components.TopicComponentGroup = TopicComponentGroup;
     },
     // some internal state for things local enough that they shouldn't be in

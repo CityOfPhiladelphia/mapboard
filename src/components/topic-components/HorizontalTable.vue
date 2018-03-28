@@ -717,7 +717,7 @@
       },
       // this updates the global state that stores filtered table rows
       updateTableFilteredData() {
-        // console.log('update table filtered data');
+        console.log('update table filtered data is running, options:', this.options);
 
         // get table id
         const { tableId } = this.options;

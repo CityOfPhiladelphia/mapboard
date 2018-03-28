@@ -24,6 +24,8 @@
   import List from './topic-components/List.vue';
   import TabGroup from './topic-components/TabGroup.vue';
   import TableGroup from './topic-components/TableGroup.vue';
+  import TabBadge from './topic-components/TabBadge.vue';
+  // console.log('in TopicComponentGroup.vue script, Badge:', Badge, 'TabGroup:', TabGroup, 'Callout:', Callout, 'CollectionSummary:', CollectionSummary, 'HorizontalTable:', HorizontalTable);
 
   export default {
     props: ['topicComponents', 'item', 'filterData'],
@@ -38,6 +40,13 @@
       List,
       TabGroup,
       TableGroup,
+      TabBadge,
+    },
+    beforeCreate() {
+      // console.log('TopicComponentGroup beforeCreate is running');
+    },
+    created() {
+      // console.log('TopicComponentGroup.vue created is running, Badge:', Badge, 'topicComponents:', this.$props.topicComponents);
     },
     data() {
       return {
