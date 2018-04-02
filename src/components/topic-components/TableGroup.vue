@@ -22,7 +22,7 @@
         </select>
       </div>
     </div>
-    <topic-component-group :topic-components="options.components" :item="item" />
+    <topic-component-group :topic-components="options.components" :item="dataItem" />
   </div>
 </template>
 
@@ -38,14 +38,18 @@
     // some internal state for things local enough that they shouldn't be in
     // vuex if we can avoid it.
     data() {
-      const item = {
+      const dataItem = {
         'tableGroupId': this.options.tableGroupId,
         'activeTable': null,
         'activeTableId': null
       }
       return {
-        item
+        dataItem
       };
+    },
+    beforeCreate() {
+      // console.log('tabGroup beforeCreate is running');
+      this.$options.components.TopicComponentGroup = TopicComponentGroup;
     },
     created() {
       if (this.options.filters) {
@@ -53,15 +57,15 @@
           const defaultTableName = filter.values[0].value || {};
 
           // add activeTable to local data
-          this.item.activeTable = defaultTableName;
+          this.dataItem.activeTable = defaultTableName;
           // add activeTableId to local data
           for (let comp of this.options.components) {
             if (comp.options.id === defaultTableName) {
-              this.item.activeTableId = comp._id;
+              this.dataItem.activeTableId = comp._id;
             }
           }
-          // console.log('tablegroup this.item', this.item);
-          this.$store.commit('setTableGroupActiveTable', this.item)
+          // console.log('tablegroup this.dataItem', this.dataItem);
+          this.$store.commit('setTableGroupActiveTable', this.dataItem)
         }
       }
       if (this.options.alternate) {
@@ -71,13 +75,13 @@
         // console.log('Tablegroup source check main', sources[this.altMainTable.dataSource].data);
         if (sources[this.altDepTable.dataSource].data && !sources[this.altMainTable.dataSource].data) {
           // console.log('Tablegroup there is a dep table, and not a main table');
-          this.item.activeTable = this.altDepTable.id;
-          this.item.activeTableId = 'aaa'
-          this.$store.commit('setTableGroupActiveTable', this.item);
+          this.dataItem.activeTable = this.altDepTable.id;
+          this.dataItem.activeTableId = 'aaa'
+          this.$store.commit('setTableGroupActiveTable', this.dataItem);
         } else if (sources[this.altMainTable.dataSource].data) {
-          this.item.activeTable = this.altMainTable.id;
-          this.item.activeTableId = 'bbb'
-          this.$store.commit('setTableGroupActiveTable', this.item);
+          this.dataItem.activeTable = this.altMainTable.id;
+          this.dataItem.activeTableId = 'bbb'
+          this.$store.commit('setTableGroupActiveTable', this.dataItem);
         }
       }
       if (this.options.showBoth) {
@@ -119,16 +123,16 @@
         const tableName = valueObj.value;
 
         // add activeTable to local data
-        this.item.activeTable = tableName;
+        this.dataItem.activeTable = tableName;
 
         // add activeTableId to local data
         for (let comp of this.options.components) {
           if (comp.options.id === tableName) {
-            this.item.activeTableId = comp._id;
+            this.dataItem.activeTableId = comp._id;
           }
         }
 
-        this.$store.commit('setTableGroupActiveTable', this.item)
+        this.$store.commit('setTableGroupActiveTable', this.dataItem)
       },
     }
   };

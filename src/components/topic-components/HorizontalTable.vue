@@ -6,7 +6,9 @@
     </button> -->
     <div v-if="shouldShowTable">
       <!-- controls -->
-      <div class="mb-horizontal-table-controls">
+      <div class="mb-horizontal-table-controls"
+           v-if="shouldShowHeaders"
+      >
         <div v-if="!!options.filters"
              class="vertically-centered"
         >
@@ -91,7 +93,7 @@
         </div>
 
         <table role="grid" class="stack">
-          <thead>
+          <thead v-if="shouldShowHeaders !== false">
             <tr>
               <th v-for="field in fields">{{ evaluateSlot(field.label) }}</th>
             </tr>
@@ -108,9 +110,10 @@
         </table>
 
         <!-- external link (aka "see more")-->
-        <div class="external-link">
-          <a v-if="options.externalLink && shouldShowExternalLink"
-             :href="externalLinkHref"
+        <div class="external-link"
+             v-if="options.externalLink && shouldShowExternalLink"
+        >
+          <a :href="externalLinkHref"
              class="external"
              target="_blank"
           >
@@ -211,6 +214,9 @@
       }
     },
     computed: {
+      shouldShowHeaders() {
+        return this.options.shouldShowHeaders
+      },
       shouldShowDownloadButton() {
         let downloadButton = false;
         if (this.options.downloadButton) {
@@ -807,7 +813,7 @@
   }
 
   .mb-horizontal-table-body {
-    padding-top: 1rem;
+    /* padding-top: 1rem; */
   }
 
   .center-button {

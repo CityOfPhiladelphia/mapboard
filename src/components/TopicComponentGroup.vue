@@ -24,7 +24,7 @@
   import List from './topic-components/List.vue';
   import TabGroup from './topic-components/TabGroup.vue';
   import TableGroup from './topic-components/TableGroup.vue';
-  import TabBadge from './topic-components/TabBadge.vue';
+  import BadgeWithTable from './topic-components/BadgeWithTable.vue';
   // console.log('in TopicComponentGroup.vue script, Badge:', Badge, 'TabGroup:', TabGroup, 'Callout:', Callout, 'CollectionSummary:', CollectionSummary, 'HorizontalTable:', HorizontalTable);
 
   export default {
@@ -40,7 +40,7 @@
       List,
       TabGroup,
       TableGroup,
-      TabBadge,
+      BadgeWithTable,
     },
     beforeCreate() {
       // console.log('TopicComponentGroup beforeCreate is running');

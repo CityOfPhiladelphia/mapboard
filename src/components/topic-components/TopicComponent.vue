@@ -34,7 +34,7 @@
           // const deps = depsText.map(eval);
 
           const item = this.item;
-          console.log('in evaluateSlot, item:', item);
+          // console.log('in evaluateSlot, item:', item);
 
           // if this comp is associated with an "item" (generally some object
           // from a list of things, e.g. dor parcels), pass the item itself
