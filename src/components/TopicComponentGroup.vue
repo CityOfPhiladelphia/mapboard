@@ -15,6 +15,7 @@
 <script>
   import generateUniqueId from '../util/unique-id';
   import Badge from './topic-components/Badge.vue';
+  import BadgeWithTable from './topic-components/BadgeWithTable';
   import Callout from './topic-components/Callout.vue';
   import CollectionSummary from './topic-components/CollectionSummary.vue';
   import HorizontalTable from './topic-components/HorizontalTable.vue';
@@ -27,6 +28,7 @@
     props: ['topicComponents', 'item', 'filterData'],
     components: {
       Badge,
+      BadgeWithTable,
       Callout,
       CollectionSummary,
       HorizontalTable,
