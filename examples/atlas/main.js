@@ -921,7 +921,17 @@ Mapboard.default({
       transform: function (value) {
         return value && value + ' sq ft';
       },
-    }
+    },
+    nowrap: {
+      transform: function (value) {
+        return '<span style="white-space: nowrap;">' + value + '</span>';
+      },
+    },
+    bold: {
+      transform: function (value) {
+        return '<strong>' + value + '</strong>';
+      },
+    },
   },
   greeting:{
     initialMessage: '\
