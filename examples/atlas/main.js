@@ -2049,56 +2049,191 @@ Mapboard.default({
           }
         },
         {
-          type: 'badge',
+          type: 'collection-summary',
           options: {
-            titleBackground: '#58c04d'
+            descriptor: 'parcel',
+            // this will include zero quantities
+            // includeZeroes: true,
+            getValue: function(item) {
+              return item.properties.STATUS;
+            },
+            context: {
+              singular: function(list){ return 'There is ' + list + ' at this address.'},
+              plural: function(list){ return 'There are ' + list + ' at this address.'}
+            },
+            types: [
+              {
+                value: 1,
+                label: 'active parcel'
+              },
+              {
+                value: 2,
+                label: 'inactive parcel'
+              },
+              {
+                value: 3,
+                label: 'remainder parcel'
+              }
+            ]
           },
           slots: {
-            title: 'Base District',
-            value: function(state) {
-              return state.geocode.data.properties.zoning;
-            },
-            description: function(state) {
-              var code = state.geocode.data.properties.zoning;
-              return ZONING_CODE_MAP[code];
-            },
+            items: function(state) {
+              // return state.dorParcels.data;
+              return state.parcels.dor.data;
+            }
           }
         },
         {
-          type: 'horizontal-table',
+          type: 'tab-group',
           options: {
-            topicKey: 'zoning',
-            id: 'zoningOverlay',
-            // limit: 100,
-            fields: [
+            getKey: function(item) {
+              return item.properties.OBJECTID;
+            },
+            getTitle: function(item) {
+              return item.properties.MAPREG;
+            },
+            getAddress: function(item) {
+              var address = concatDorAddress(item);
+              return address;
+            },
+            // components for the content pane. this essentially a topic body.
+            components: [
               {
-                label: 'Name',
-                value: function(state, item){
-                  return item.properties.OVERLAY_NAME
-                }
-              },
+                type: 'badge-custom',
+                options: {
+                  titleBackground: '#58c04d',
+                  components: [
+                    {
+                      type: 'horizontal-table',
+                      options: {
+                        topicKey: 'zoning',
+                        shouldShowHeaders: false,
+                        id: 'baseZoning',
+                        // defaultIncrement: 10,
+                        // showAllRowsOnFirstClick: true,
+                        // showOnlyIfData: true,
+                        fields: [
+                          {
+                            label: 'code',
+                            value: function(state, item) {
+                              return item.long_code;
+                            },
+                            transforms: [
+                              'nowrap',
+                              'bold'
+                            ]
+                          },
+                          {
+                            label: 'definition',
+                            value: function(state, item) {
+                              return ZONING_CODE_MAP[item.long_code];
+                            },
+                          },
+                        ], // end fields
+                        // sort: {
+                        //   // this should return the val to sort on
+                        //   getValue: function(item) {
+                        //     return item.long_code;
+                        //   },
+                        //   // asc or desc
+                        //   order: 'asc'
+                        // }
+                      },
+                      slots: {
+                        // title: 'Base Zoning',
+                        items: function(state, item) {
+                          // console.log('state.sources:', state.sources['zoningBase'].data.rows);
+                          var id = item.properties.OBJECTID,
+                              target = state.sources.zoningBase.targets[id] || {},
+                              data = target.data || {};
+                          // console.log('zoningbase target:', target);
+                          return data.rows || [];
+                          // if (target) {
+                          //   return target.data;
+                          // } else {
+                          //   return [];
+                          // }
+                        },
+
+
+                          // var data = state.sources['zoningBase'].data.rows;
+                          // var rows = data.map(function(row){
+                          //   var itemRow = row;
+                          //   return itemRow;
+                          // });
+                          // return rows;
+                        // },
+                      }, // end slots
+                    }, // end table
+
+                  ],
+                },
+                slots: {
+                  title: 'Base District',
+                  data: function(state) {
+                    return state.sources.zoningBase.data.rows;
+                  },
+                  // value: function(state) {
+                  //   return state.sources.zoningBase.data.rows;
+                  // },
+                  // description: function(state) {
+                  //   var code = state.sources.zoningBase.data.rows;
+                  //   return ZONING_CODE_MAP[code];
+                  // },
+                },
+              }, // end of badge-custom
               {
-                label: 'Code Section',
-                value: function(state, item){
-                  // return item.properties.CODE_SECTION
-                  return "<a target='_blank' href='"+item.properties.CODE_SECTION_LINK+"'>"+item.properties.CODE_SECTION+" <i class='fa fa-external-link'></i></a>"
-                }
+                type: 'horizontal-table',
+                options: {
+                  topicKey: 'zoning',
+                  id: 'zoningOverlay',
+                  // limit: 100,
+                  fields: [
+                    {
+                      label: 'Name',
+                      value: function(state, item){
+                        return item.overlay_name
+                      }
+                    },
+                    {
+                      label: 'Code Section',
+                      value: function(state, item){
+                        return "<a target='_blank' href='"+item.code_section_link+"'>"+item.code_section+" <i class='fa fa-external-link'></i></a>"
+                      }
+                    },
+                  ],
+                },
+                slots: {
+                  title: 'Overlays',
+                  items: function(state, item) {
+                    // console.log('state.sources:', state.sources['zoningBase'].data.rows);
+                    var id = item.properties.OBJECTID,
+                        target = state.sources.zoningOverlay.targets[id] || {},
+                        data = target.data || {};
+                    // console.log('zoningbase target:', target);
+                    return data.rows || [];
+                  },
+                },
+
+
+                  // items: function(state) {
+                  //   var data = state.sources['zoningOverlay'].data.rows
+                  //   var rows = data.map(function(row){
+                  //     var itemRow = row;
+                  //     // var itemRow = Object.assign({}, row);
+                  //     //itemRow.DISTANCE = 'TODO';
+                  //     return itemRow;
+                  //   });
+                  //   return rows;
+                  // },
               },
-            ],
+            ], // end of tab-group components
           },
           slots: {
-            title: 'Overlays',
-            items: function(state) {
-              var data = state.sources['zoningOverlay'].data
-              var rows = data.map(function(row){
-                var itemRow = row;
-                // var itemRow = Object.assign({}, row);
-                //itemRow.DISTANCE = 'TODO';
-                return itemRow;
-              });
-              // console.log('rows', rows);
-              return rows;
-            },
+            items: function (state) {
+              // return state.dorParcels.data;
+              return state.parcels.dor.data;
+            }
           },
         },
         {
