@@ -523,9 +523,8 @@ Mapboard.default({
       options: {
         params: {
           q: function(feature, state){
-            console.log(state.parcels.dor.data[0].properties, 'mapreg', state.parcels.dor.data[0].properties.MAPREG);
             return "select * from condominium where mapref = '" + state.parcels.dor.data[0].properties.MAPREG + "'"
-          },// + "' or addresskey = '" + feature.properties.li_address_key.toString() + "'",
+          },
         }
       }
     },
@@ -540,21 +539,17 @@ Mapboard.default({
         },
       },
       url: '//gis.phila.gov/arcgis/rest/services/DOR/rtt_service/MapServer/0/query',
-      // url: '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/MASTERMAPINDEX/FeatureServer/0/query',
-      // url: 'https://phl.carto.com/api/v2/sql',
       options: {
         params: {
           where: function(feature, state) {
             // METHOD 1: via address
             var parcelBaseAddress = concatDorAddress(feature);
             var geocode = state.geocode.data.properties;
-            console.log('parcelBaseAddress', parcelBaseAddress)
 
             // REVIEW if the parcel has no address, we don't want to query
             // WHERE ADDRESS = 'null' (doesn't make sense), so use this for now
             if (!parcelBaseAddress || parcelBaseAddress === 'null'){
               var where = "MATCHED_REGMAP = '" + state.parcels.dor.data[0].properties.BASEREG + "'";
-              console.log('DOR Parcel BASEREG', state.parcels.dor.data[0].properties.BASEREG);
             } else {
               // TODO make these all camel case
               var props = state.geocode.data.properties,
@@ -649,52 +644,14 @@ Mapboard.default({
         params: {}
       }
     },
-    // vacantLand: {
-    //   type: 'esri',
-    //   url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Land/FeatureServer/0',
-    //   options: {
-    //     relationship: 'contains',
-    //   },
-    //   // params: {
-    //   //   query: feature => L.esri.query({url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Land/FeatureServer/0'}).contains(feature)
-    //   // },
-    //   success: function(data) {
-    //     return data;
-    //   }
-    // },
-    // vacantBuilding: {
-    //   type: 'esri',
-    //   url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Bldg/FeatureServer/0',
-    //   options: {
-    //     relationship: 'contains',
-    //   },
-    //   // params: {
-    //   //   query: feature => L.esri.query({url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Bldg/FeatureServer/0'}).contains(feature)
-    //   // },
-    //   success: function(data) {
-    //     return data;
-    //   }
-    // },
     vacantIndicatorsPoints: {
       type: 'esri-nearby',
       url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Points/FeatureServer/0',
       options: {
         geometryServerUrl: '//gis.phila.gov/arcgis/rest/services/Geometry/GeometryServer/',
         calculateDistance: true,
-        distances: 150,
+        distances: 500,
       },
-    },
-    zoningOverlay: {
-      type: 'esri',
-      // url: 'https://gis.phila.gov/arcgis/rest/services/PhilaGov/ZoningMap/MapServer/1/',
-      url: 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Zoning_Overlays/FeatureServer/0/',
-      options: {
-        relationship: 'contains',
-        returnGeometry: false,
-      },
-      success: function(data) {
-        return data;
-      }
     },
     // TODO call this opaCondoList or something to explain how it's different
     // from dorCondoList
@@ -740,8 +697,6 @@ Mapboard.default({
             // loop over parts (whether it's simple or multipart)
             parts.forEach(function (coordPairs) {
               coordPairs.forEach(function (coordPair) {
-                // console.log('coordPair', coordPair);
-
                 // if the polygon has a hole, it has another level of coord
                 // pairs, presumably one for the outer coords and another for
                 // inner. for simplicity, add them all.
