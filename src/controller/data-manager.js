@@ -153,15 +153,29 @@ class DataManager {
 
     // we always need a good geocode before we can get data, so return
     // if we don't have one yet.
-    if (!geocodeObj) {
-      // console.log('fetch data but no geocode yet, returning');
-      return;
-    }
+    // if (!geocodeObj) {
+    //   // console.log('fetch data but no geocode yet, returning');
+    //   return;
+    // }
 
-    const dataSources = this.config.dataSources || {};
+    let dataSources = this.config.dataSources || {};
+    let dataSourceKeys = Object.entries(dataSources);
+    // console.log('in fetchData, dataSources before filter:', dataSources, 'dataSourceKeys:', dataSourceKeys);
+
+    if (!geocodeObj) {
+      dataSourceKeys = dataSourceKeys.filter(dataSourceKey => {
+        if (dataSourceKey[1].dependent) {
+          if (dataSourceKey[1].dependent === 'parcel') {
+            return true;
+          }
+        }
+      })
+    }
+    // console.log('in fetchData, dataSources after filter:', dataSources);
 
     // get "ready" data sources (ones whose deps have been met)
-    for (let [dataSourceKey, dataSource] of Object.entries(dataSources)) {
+    // for (let [dataSourceKey, dataSource] of Object.entries(dataSources)) {
+    for (let [dataSourceKey, dataSource] of dataSourceKeys) {
       const state = this.store.state;
       const type = dataSource.type;
       const targetsDef = dataSource.targets;
