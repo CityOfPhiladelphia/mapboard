@@ -2481,7 +2481,8 @@ Mapboard.default({
       key: 'nearby',
       icon: 'map-marker',
       label: 'Nearby',
-      dataSources: ['311Carto', 'crimeIncidents', 'nearbyZoningAppeals', 'vacantIndicatorsPoints'],
+      dataSources: ['311Carto', 'crimeIncidents', 'nearbyZoningAppeals'],
+      // dataSources: ['311Carto', 'crimeIncidents', 'nearbyZoningAppeals', 'vacantIndicatorsPoints'],
       // dataSources: ['vacantLand', 'vacantBuilding', '311Carto', 'crimeIncidents', 'nearbyZoningAppeals'],
       basemap: 'pwd',
       // featureLayers: [
