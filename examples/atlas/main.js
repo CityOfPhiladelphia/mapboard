@@ -7,15 +7,30 @@
         \/               \/     \/
 */
 
+// import mapboard from '@cityofphiladelphia/mapboard';
+// import accounting from 'accounting';
+// import moment from 'moment';
+
+// styles
+// TODO move all styles here (that have a npm package)
+// import 'leaflet/dist/leaflet.css';
+// import 'leaflet-easybutton/src/easy-button.css';
+// import 'leaflet-measure/dist/leaflet-measure.css';
+// REVIEW not sure why the hard path is necessary for vector icon
+// REVIEW the vector icons seem to be working without this - why?
+// import '../node_modules/@cityofphiladelphia/mapboard/node_modules/leaflet-vector-icon/dist/leaflet-vector-icon.css';
+
 // turn off console logging in production
 // TODO come up with better way of doing this with webpack + env vars
 if (location.hostname !== 'localhost') {
-  // console.log = console.info = console.debug = console.error = function () {};
+  console.log = console.info = console.debug = console.error = function () {};
 }
 
 var GATEKEEPER_KEY = '82fe014b6575b8c38b44235580bc8b11';
+
 // var BASE_CONFIG_URL = '//raw.githubusercontent.com/rbrtmrtn/mapboard-base-config/develop/config.js';
-var BASE_CONFIG_URL = 'https://rawgit.com/rbrtmrtn/mapboard-base-config/e45803b240e14717fb452805fa90c134870eb14b/config.js';
+// var BASE_CONFIG_URL = '//rawgit.com/rbrtmrtn/mapboard-base-config/e45803b240e14717fb452805fa90c134870eb14b/config.js';
+var BASE_CONFIG_URL = 'https://cdn.rawgit.com/rbrtmrtn/mapboard-base-config/e45803b240e14717fb452805fa90c134870eb14b/config.js';
 
 var ZONING_CODE_MAP = {
   'RSD-1': 'Residential Single Family Detached-1',
