@@ -1669,11 +1669,11 @@ Mapboard.default({
             ] // end parcel tab content comps
           }, // end parcel tab options
           slots: {
-            items: function(state) {
+            items: function (state) {
               // return state.dorParcels.data;
               return state.parcels.dor.data;
             }
-          }
+          },
         }, // end dor parcel tab group comp
         {
           type: 'callout',
