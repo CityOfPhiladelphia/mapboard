@@ -53,6 +53,7 @@ var ZONING_CODE_MAP = {
   'SPINS': 'Institutional Development',
   'SPSTA': 'Stadium',
   'SPPOA': 'Recreation',
+  'SP-PO-A': 'Recreation',
   'SPPOP': 'Recreation',
 };
 
