@@ -2039,7 +2039,7 @@ Mapboard.default({
       icon: 'university',
       label: 'Zoning',
       dataSources: [
-        'zoningOverlay'
+        'zoningOverlay', 'zoningBase'
       ],
       components: [
         {
