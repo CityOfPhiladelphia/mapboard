@@ -15,7 +15,6 @@
 <script>
   import generateUniqueId from '../util/unique-id';
   import Badge from './topic-components/Badge.vue';
-  import BadgeWithTable from './topic-components/BadgeWithTable';
   import Callout from './topic-components/Callout.vue';
   import CollectionSummary from './topic-components/CollectionSummary.vue';
   import HorizontalTable from './topic-components/HorizontalTable.vue';
@@ -28,7 +27,6 @@
     props: ['topicComponents', 'item', 'filterData'],
     components: {
       Badge,
-      BadgeWithTable,
       Callout,
       CollectionSummary,
       HorizontalTable,
@@ -42,6 +40,7 @@
       // reference issue in webpack. so register the component here.
       this.$options.components.TabGroup = require('./topic-components/TabGroup.vue');
       this.$options.components.TableGroup = require('./topic-components/TableGroup.vue');
+      this.$options.components.BadgeCustom = require('./topic-components/BadgeCustom.vue');
     },
     data() {
       return {
