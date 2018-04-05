@@ -1549,7 +1549,7 @@ Mapboard.default({
                   }
                 },
                 slots: {
-                  title: 'Condominiums',
+                  title: 'Deeded Condominiums',
                   items: function (state, item) {
                     var id = item.properties.OBJECTID;
 
