@@ -94,8 +94,7 @@ function cleanDorAttribute(attr) {
 
 // TODO put this in base config transforms
 function concatDorAddress(parcel, includeUnit) {
-  console.log('concatDorAddress is running with parcel:', parcel, 'includeUnit:', includeUnit);
-  includeUnit = typeof includeUnit !== 'undefined' ? includeUnit: true;
+  includeUnit = !!includeUnit;
   var STREET_FIELDS = ['STDIR', 'STNAM', 'STDES', 'STDESSUF'];
   var props = parcel.properties;
 
@@ -166,14 +165,14 @@ Mapboard.default({
   geolocation: {
     enabled: false
   },
-  // rootStyle: {
-  //   position: 'absolute',
-  //   bottom: 0,
-  //   // top: '78px',
-  //   top: '118px',
-  //   left: 0,
-  //   right: 0,
-  // },
+  rootStyle: {
+    position: 'absolute',
+    bottom: 0,
+    // top: '78px',
+    top: '118px',
+    left: 0,
+    right: 0,
+  },
   map: {
     // possibly should move to base config
     defaultBasemap: 'pwd',
