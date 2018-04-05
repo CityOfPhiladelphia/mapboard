@@ -1722,16 +1722,17 @@ Mapboard.default({
         'liPermits',
         'liInspections',
         'liViolations',
-        'liBusinessLicenses'
+        'liBusinessLicenses',
+        'zoningDocs'
       ],
       components: [
         {
           type: 'callout',
           slots: {
             text: '\
-              Licenses, inspections, permits, and property maintenance \
-              violations at your search address. Source: Department of \
-              Licenses & Inspections\
+              Licenses, inspections, permits, property maintenance \
+              violations, and zoning permit documents at your search address. \
+              Source: Department of Licenses & Inspections\
             '
           }
         },
