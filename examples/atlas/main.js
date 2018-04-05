@@ -742,7 +742,7 @@ Mapboard.default({
           }
 
           // construct geometry
-          var bounds = L.latLngBounds([
+          var bounds = Leaflet.latLngBounds([
             [yMin, xMin],
             [yMax, xMax]
           ]);
@@ -859,27 +859,28 @@ Mapboard.default({
       // a list of global objects this transform depends on
       globals: ['accounting'],
       // this is the function that gets called to perform the transform
-      transform: function(value, globals) {
-        var accounting = globals.accounting;
+      transform: function (value, globals) {
+        // var accounting = globals.accounting;
+        // console.log('gonna format some money!!', accounting);
         return accounting.formatMoney(value);
       }
     },
     date: {
       globals: ['moment'],
-      transform: function(value, globals) {
-        var moment = globals.moment;
+      transform: function (value, globals) {
+        // var moment = globals.moment;
         return moment(value).format('MM/DD/YYYY');
-      }
+      },
     },
     phoneNumber: {
-      transform: function(value) {
+      transform: function (value) {
         var s2 = (""+value).replace(/\D/g, '');
         var m = s2.match(/^(\d{3})(\d{3})(\d{4})$/);
         return (!m) ? null : "(" + m[1] + ") " + m[2] + "-" + m[3];
       }
     },
     rcoPrimaryContact: {
-      transform: function(value) {
+      transform: function (value) {
         var PHONE_NUMBER_PAT = /\(?(\d{3})\)?( |-)?(\d{3})(-| )?(\d{4})/g;
         var m = PHONE_NUMBER_PAT.exec(value);
 
