@@ -6,18 +6,18 @@ Vue.use(Vuex);
 
 // this grabs horizontal table ids from an array of topic components,
 // recursively
-function getTableIdsFromComps(comps = []) {
-  // const topics = config.topics;
+function getHorizontalTableIdsFromComps(comps = []) {
+  // console.log('getHorizontalTableIdsFromComps is running, comps:', comps);
 
   let tableIds = [];
 
   for (let comp of comps) {
     const options = comp.options || {};
-    const innerComps = options.components;
+    const innerComps = options.components || options.tables;
 
     // if this is a "group" component, recurse
     if (innerComps) {
-      const innerTableIds = getTableIdsFromComps(innerComps);
+      const innerTableIds = getHorizontalTableIdsFromComps(innerComps);
       tableIds = tableIds.concat(innerTableIds);
       continue;
     }
@@ -42,64 +42,77 @@ function createFilteredData(config) {
 
   for (let topic of topics) {
     const comps = topic.components;
-    const compTableIds = getTableIdsFromComps(comps);
+    const compTableIds = getHorizontalTableIdsFromComps(comps);
     tableIds = tableIds.concat(compTableIds);
   }
 
-  const filteredData = tableIds.reduce((acc, tableId) => {
-    acc[tableId] = [];
-    return acc;
-  }, {});
+  console.log('createFilteredData is running, tableIds:', tableIds);
+
+  // const filteredData = tableIds.reduce((acc, tableId) => {
+  //   acc[tableId] = [];
+  //   return acc;
+  // }, {});
+
+  let filteredData = {}
+  for (let index=0; index < tableIds.length; index++) {
+    filteredData[tableIds[index]] = [];
+  }
 
   return filteredData;
 }
 
 // this grabs table group ids from an array of topic components
-function getTableGroupIdFromComps(comps = []) {
-
+function getHorizontalTableGroupIdsFromComps(comps = []) {
+  // console.log('getHorizontalTableGroupIdsFromComps is running, comps:', comps);
   let tableGroupId;
 
   for (let comp of comps) {
     const options = comp.options || {};
-    const innerComps = options.components;
+    const innerComps = options.components || options.tables;
+
+    // console.log('getHorizontalTableGroupIdsFromComps, comp:', comp);
 
     // if this is a "group" component, recurse
     if (!innerComps) {
       continue;
     }
 
+    // console.log('getTableGroupIdsFromComps, comp.type:', comp.type);
+
     // skip comps that aren't horizontal tables
-    if (comp.type !== 'table-group') {
+    if (comp.type !== 'horizontal-table-group') {
       continue;
     }
 
     tableGroupId = comp._id;
+    // console.log('getHorizontalTableGroupIdsFromComps, tableGroupId:', tableGroupId);
   }
 
   return tableGroupId;
 }
 
-// this makes the empty tableGroups object given a list of topics.
-function createTableGroups(config) {
+// this makes the empty horizontalTableGroups object given a list of topics.
+function createHorizontalTableGroups(config) {
   const topics = config.topics;
 
   let tableGroupIds = [];
 
   for (let topic of topics) {
     const comps = topic.components;
-    const compTableGroupId = getTableGroupIdFromComps(comps);
+    const compTableGroupId = getHorizontalTableGroupIdsFromComps(comps);
     if (compTableGroupId) tableGroupIds.push(compTableGroupId);
   }
+  // console.log('createHorizontalTableGroups is running, config:', config, 'tableGroupIds:', tableGroupIds);
 
-  let tableGroups = {};
+  let horizontalTableGroups = {};
 
   for (let tableGroupId of tableGroupIds) {
-    tableGroups[tableGroupId] = {
+    horizontalTableGroups[tableGroupId] = {
       activeTable: null,
       activeTableId: null
     };
   }
-  return tableGroups;
+  return horizontalTableGroups;
 }
 
 function createStore(config) {
@@ -251,11 +264,11 @@ function createStore(config) {
         zoom: config.map.zoom
       }
     },
-    tables: {
+    horizontalTables: {
       // table id => filtered rows
       filteredData: createFilteredData(config),
     },
-    tableGroups: createTableGroups(config),
+    horizontalTableGroups: createHorizontalTableGroups(config),
     activeFeature: {
       featureId: null,
       tableId: null
@@ -267,8 +280,8 @@ function createStore(config) {
     state: initialState,
     // getters: {
     //   topicTables: (state, getters) => (activeTopicKey) => {
-    //     console.log(state.tables);
-    //     return state.tables.filter(table => table.key === activeTopicKey);
+    //     console.log(state.horizontalTables);
+    //     return state.horizontalTables.filter(table => table.key === activeTopicKey);
     //   }
     // },
     getters: {
@@ -284,14 +297,14 @@ function createStore(config) {
         const activeTopicConfig = (config.topics.filter(topic => topic.key === activeTopic) || [])[0];
         const comps = activeTopicConfig.components;
 
-        const compTableGroup = getTableGroupIdFromComps(comps);
+        const compTableGroup = getHorizontalTableGroupIdsFromComps(comps);
         if (compTableGroup) {
           // even though there is only 1 value, it has to be in array form in the state
           const array = [];
-          array.push(state.tableGroups[compTableGroup].activeTableId);
+          array.push(state.horizontalTableGroups[compTableGroup].activeTableId);
           return array;
         } else {
-          const compTables = getTableIdsFromComps(comps);
+          const compTables = getHorizontalTableIdsFromComps(comps);
           return compTables;
         }
       }
@@ -313,20 +326,21 @@ function createStore(config) {
       setClickCoords(state, payload) {
         state.clickCoords = payload;
       },
-      setTables(state, payload) {
-        state.tables = payload;
+      // setHorizontalTables(state, payload) {
+      //   state.horizontalTables = payload;
+      // },
+      setHorizontalTableGroupActiveTable(state, payload) {
+        // console.log('setHorizontalTableGroupActiveTable, payload:', payload);
+        state.horizontalTableGroups[payload.tableGroupId].activeTableId = payload.activeTableId;
+        state.horizontalTableGroups[payload.tableGroupId].activeTable = payload.activeTable;
       },
-      setTableGroupActiveTable(state, payload) {
-        state.tableGroups[payload.tableGroupId].activeTableId = payload.activeTableId;
-        state.tableGroups[payload.tableGroupId].activeTable = payload.activeTable;
-      },
-      setTableFilteredData(state, payload) {
+      setHorizontalTableFilteredData(state, payload) {
         const { tableId, data } = payload;
 
         // check for not-null table id
         if (!tableId) return;
 
-        state.tables.filteredData[tableId] = data;
+        state.horizontalTables.filteredData[tableId] = data;
       },
       setActiveTopic(state, payload) {
         state.activeTopic = payload;
@@ -535,6 +549,7 @@ function createStore(config) {
       //   state.cyclomedia.surfaceCursorOn = payload;
       // },
       setActiveFeature(state, payload) {
+        // console.log('store setActiveFeature is running');
         const { featureId, tableId } = payload || {};
         const nextActiveFeature = { featureId, tableId };
         state.activeFeature = nextActiveFeature;

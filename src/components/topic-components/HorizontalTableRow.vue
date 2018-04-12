@@ -1,7 +1,5 @@
 <template>
-  <tr :class="{ active: item._featureId === activeFeature.featureId &&
-                        tableId === activeFeature.tableId
-             }"
+  <tr :class="{ active: this.isActive }"
       @mouseover="handleRowMouseover"
       @click="handleRowClick"
       @mouseout="handleRowMouseout"
@@ -23,7 +21,7 @@
         return this.$store.state.activeFeature;
       },
       isActive() {
-        return this.activeFeature.featureId === this.$props.item._featureId;
+        return this.activeFeature.featureId === this.$props.item._featureId && this.$props.tableId === this.activeFeature.tableId;
       },
       isMobileOrTablet() {
         return this.$store.state.isMobileOrTablet;
@@ -34,6 +32,7 @@
         if (value === true) {
           const el = this.$el;
           const visible = this.isElementInViewport(el);
+          // console.log('horizontaltablerow WATCH isActive is firing, el:', el, 'visible:', visible);
 
           // console.log('visible?', visible ? 'YES' : 'NO');
 
