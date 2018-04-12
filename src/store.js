@@ -46,6 +46,8 @@ function createFilteredData(config) {
     tableIds = tableIds.concat(compTableIds);
   }
 
+  // console.log('createFilteredData is running, tableIds:', tableIds);
+
   const filteredData = tableIds.reduce((acc, tableId) => {
     acc[tableId] = [];
     return acc;
@@ -535,6 +537,7 @@ function createStore(config) {
       //   state.cyclomedia.surfaceCursorOn = payload;
       // },
       setActiveFeature(state, payload) {
+        // console.log('store setActiveFeature is running');
         const { featureId, tableId } = payload || {};
         const nextActiveFeature = { featureId, tableId };
         state.activeFeature = nextActiveFeature;

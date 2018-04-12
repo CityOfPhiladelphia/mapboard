@@ -151,13 +151,16 @@
     mixins: [TopicComponent],
     data() {
       const filters = this.options.filters || [];
+      const filtersKeys = Object.keys(filters);
       const defaultFilterSelections = Object.keys(filters).reduce((acc, i) =>
                                       {
+                                        // console.log('in reduce, i:', i, 'acc:', acc);
                                         const key = `filter-${i}`;
                                         acc[key] = {};
                                         return acc;
                                       }, {});
 
+      // console.log('in horiz table data, filters:', filters, 'filtersKeys:', filtersKeys, 'defaultFilterSelections:', defaultFilterSelections);
       let sortFields;
       if (this.options.sort){
         sortFields = this.options.sort.sortFields || [];

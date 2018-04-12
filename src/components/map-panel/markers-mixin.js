@@ -102,9 +102,11 @@ export default {
       // get visible tables based on active topic
       const tableIds = this.$store.getters.visibleTableIds;
 
+      // console.log('filteredData:', filteredData, 'tableIds:', tableIds);
+
       for (let tableId of tableIds) {
         const tableConfig = this.getConfigForTable(tableId) || {};
-        console.log('tableConfig:', tableConfig);
+        // console.log('tableId:', tableId, 'tableConfig:', tableConfig);
         const mapOverlay = (tableConfig.options || {}).mapOverlay;
 
         if (!mapOverlay || mapOverlay.marker !== 'circle') {
@@ -121,7 +123,7 @@ export default {
 
         // go through rows
         for (let item of items) {
-          console.log('tableId', tableId)
+          // console.log('tableId', tableId)
           let latlng;
 
           // TODO - get geometry field name from config
@@ -336,7 +338,7 @@ export default {
       // }
     },
     updateMarkerFillColor(marker) {
-      // console.log('marker:', marker);
+      // console.log('updateMarkerFillColor, marker:', marker);
       // get next fill color
       const { featureId, tableId } = marker.options.data;
       const nextFillColor = this.fillColorForCircleMarker(featureId, tableId);
