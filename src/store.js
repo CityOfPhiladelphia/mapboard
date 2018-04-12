@@ -278,12 +278,6 @@ function createStore(config) {
   // TODO standardize how payloads are passed around/handled
   return new Vuex.Store({
     state: initialState,
-    // getters: {
-    //   topicTables: (state, getters) => (activeTopicKey) => {
-    //     console.log(state.horizontalTables);
-    //     return state.horizontalTables.filter(table => table.key === activeTopicKey);
-    //   }
-    // },
     getters: {
       visibleTableIds(state) {
         // get active topic
@@ -326,9 +320,6 @@ function createStore(config) {
       setClickCoords(state, payload) {
         state.clickCoords = payload;
       },
-      // setHorizontalTables(state, payload) {
-      //   state.horizontalTables = payload;
-      // },
       setHorizontalTableGroupActiveTable(state, payload) {
         // console.log('setHorizontalTableGroupActiveTable, payload:', payload);
         state.horizontalTableGroups[payload.tableGroupId].activeTableId = payload.activeTableId;
