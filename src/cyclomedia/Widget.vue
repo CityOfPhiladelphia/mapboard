@@ -186,8 +186,10 @@
           viewerType: viewerType,
           srs: 'EPSG:2272',
           // srs: 'EPSG:4326',
-          closable: false,
-          maximizable: false,
+          panoramaViewer: {
+            closable: false,
+            maximizable: false,
+          }
         }).then (
           function(result) {
             // console.log('StreetSmartApi2, result:', result);
@@ -198,6 +200,8 @@
                 if(result[i].getType() === StreetSmartApi.ViewerType.PANORAMA) window.panoramaViewer = result[i];
               }
               widget.sendOrientationToStore();
+
+              // StreetSmartApi.removeOverlay()
               window.panoramaViewer.toggleNavbarExpanded(widget.navBarOpen);
               // if (widget.isMobileOrTablet) {
               // console.log('about to remove surfaceCursorLayer');
