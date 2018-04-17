@@ -261,22 +261,35 @@
       <!-- custom components seem to have to be wrapped like this to work
            with v-once
       -->
-      <div v-once>
+      <!-- <div v-once> -->
         <control position="topleft">
           <div class="mb-search-control-container">
-            <form @submit.prevent="handleSearchFormSubmit">
+            <form @submit.prevent="handleSearchFormSubmit"
+                  autocomplete="off"
+            >
+            <!-- id="search-form" -->
+              <div class="form-group">
                 <input class="mb-search-control-input"
                        placeholder="Search the map"
                        :value="this.$config.defaultAddress"
+                       @keyup="didType"
                 />
                 <!-- :style="{ background: !!this.$store.state.error ? '#ffcece' : '#fff'}" -->
                 <button class="mb-search-control-button">
                   <i class="fa fa-search fa-lg"></i>
                 </button>
+                <div class="list-group">
+                  <a v-for="addressCandidate in candidates"
+                     class="list-group-item list-group-item-action"
+                  >
+                    {{ addressCandidate }}
+                  </a>
+                </div>
+              </div>
             </form>
           </div>
         </control>
-      </div>
+      <!-- </div> -->
 
       <cyclomedia-recording-circle v-for="recording in cyclomediaRecordings"
                                    v-if="cyclomediaActive"
@@ -355,6 +368,13 @@
       LegendControl,
       BasemapTooltip,
       ControlCorner,
+    },
+    data() {
+      return {
+        // candidates: ["default3", "default4"],
+        candidates: [],
+        // searchInput: '',
+      };
     },
     created() {
       // if there's a default address, navigate to it
@@ -588,6 +608,40 @@
       }
     },
     methods: {
+      didType(e) {
+        console.log('didType is running, e:', e);
+        const { value } = e.target;
+        this.getCandidates(value);
+      },
+      getCandidates(address) {
+        console.log('getCandidates is running, address:', address);
+
+        // axios.get(AUTOCOMPLETE_ENDPOINT, {
+        axios.get('https://cqvfg1pm72.execute-api.us-east-1.amazonaws.com/dev/first-api-test/', {
+          params: {
+            address,
+          },
+        })
+          .then(this.didGetCandidates)
+          .catch(this.didGetCandidatesError);
+      },
+      didGetCandidates(res) {
+        console.log('didGetCandidates is running, res:', res);
+
+        const { matches } = res.data;
+        // console.log('matches:', matches, 'matches map:', matches.map(x => x.address));
+        // this.$nextTick(() => {
+        // this.$store.commit('setAddressCandidates', matches.map(x => x.address));
+        const matchesArray = matches.map(x => x.address);
+        // this.candidates = matches.map(x => x.address)
+        this.candidates = matchesArray;
+        console.log('didGetCandidates end - candidates:', this.candidates);
+        // })
+      },
+      didGetCandidatesError(err) {
+        console.log('error getting candidates', err);
+      },
+
       setMapToBounds() {
         // console.log('setMapToBounds is running');
         let featureArray = []
