@@ -1,7 +1,7 @@
 {
   "name": "@cityofphiladelphia/mapboard",
   "description": "A Vue.js component for data-rich web mapping",
-  "version": "1.2.33",
+  "version": "1.2.34",
   "author": "City of Philadelphia <maps@phila.gov>",
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --hot",
