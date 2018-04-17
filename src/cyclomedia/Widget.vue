@@ -185,8 +185,10 @@
           viewerType: viewerType,
           srs: 'EPSG:2272',
           // srs: 'EPSG:4326',
-          closable: false,
-          maximizable: false,
+          panoramaViewer: {
+            closable: false,
+            maximizable: false,
+          }
         }).then (
           function(result) {
             // console.log('StreetSmartApi2, result:', result);
