@@ -1065,7 +1065,7 @@ Mapboard.default({
                 }
               },
               {
-                label: 'Assessed Value ' + new Date().getFullYear(),
+                label: 'Assessed Value',// + new Date().getFullYear(),
                 value: function(state) {
                   var data = state.sources.opa.data;
                   // return data.market_value;
@@ -1824,21 +1824,21 @@ Mapboard.default({
               },
               {
                 label: 'ID',
-                value: function(state, item){
-                  return "<a target='_blank' href='//www.phila.gov/zoningarchive/Preview.aspx?address="
-                          + item.address
-                          + "&&docType="
-                          + item.doc_type
-                          + "&numofPages="
-                          + item.num_pages
-                          + "&docID="
-                          + item.app_doc_id
-                          + "&app="
-                          + item.app_id
-                          +"'>"
-                          // + item.app_id + '-'
-                          + item.doc_id + ' '
-                          + "<i class='fa fa-external-link'></i></a>"
+                value: function (state, item) {
+                  console.log('zoning doc', item);
+
+                  var appId = item.app_id;
+
+                  if (appId.length < 3) {
+                    appId = '0' + appId;
+                  }
+
+                  return '<a target="_blank" class="external" href="//s3.amazonaws.com/lni-zoning-pdfs/'
+                          + item.doc_id
+                          + '.pdf">'
+                          + item.doc_id
+                          // + '<i class='fa fa-external-link'></i></a>'
+                          + '</a>'
                   // return item.appid + '-' + item.docid
                 }
               },
@@ -2259,9 +2259,9 @@ Mapboard.default({
                 },
                 slots: {
                   title: 'Base District',
-                  data: function(state) {
-                    return state.sources.zoningBase.data.rows;
-                  },
+                  // data: function(state) {
+                  //   return state.sources.zoningBase.data.rows;
+                  // },
                   // value: function(state) {
                   //   return state.sources.zoningBase.data.rows;
                   // },
@@ -2585,8 +2585,8 @@ Mapboard.default({
                   sort: {
                     select: true,
                     sortFields: [
+                      'distance',
                       'date',
-                      'distance'
                     ],
                     getValue: function(item, sortField) {
                       var val;
@@ -2719,8 +2719,8 @@ Mapboard.default({
                   sort: {
                     select: true,
                     sortFields: [
+                      'distance',
                       'date',
-                      'distance'
                     ],
                     getValue: function(item, sortField) {
                       var val;
@@ -2842,8 +2842,8 @@ Mapboard.default({
                   sort: {
                     select: true,
                     sortFields: [
+                      'distance',
                       'date',
-                      'distance'
                     ],
                     getValue: function(item, sortField) {
                       var val;
