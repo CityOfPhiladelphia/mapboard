@@ -74,22 +74,34 @@
         return this.topic.dataSources || [];
       },
       hasData() {
-        return this.dataSources.every(dataSource => {
-          const targetsFn = this.$config.dataSources[dataSource].targets
+        // console.log(this.topicKey, '-', 'hasData?', this.dataSources);
+
+        // make sure the following is true for all data sources
+        const hasData = this.dataSources.every(dataSource => {
+          const targetsFn = this.$config.dataSources[dataSource].targets;
+
+          // if the data source is configured for targets
           if (targetsFn) {
             const targetsMap = this.$store.state.sources[dataSource].targets;
             const targets = Object.values(targetsMap);
-            // console.log('topic has data targets:', targets);
+
+            // but there are no targets for this address, return false
             if (targets.length === 0) {
-              // console.log('targets doesnt exist');
               return false;
             }
+
+            // if there are targets for this address, make sure none of them
+            // are "waiting"
             return targets.every(target => target.status !== 'waiting');
+
+          // if the data source is not configured for targets, just check that
+          // it has data
           } else {
-            return this.$store.state.sources[dataSource].data;
+            return !!this.$store.state.sources[dataSource].data;
           }
         });
-        // }
+
+        return hasData;
       },
       shouldShowBody() {
         const succeeded = this.status === 'success';
@@ -132,7 +144,7 @@
         }
       },
       shouldShowError() {
-        return (
+        const shouldShowError = (
           // topic must be active and
           this.isActive && (
             // there either has to be an error or
@@ -141,6 +153,9 @@
             (this.status !== 'waiting' && !this.hasData)
           )
         );
+        shouldShowError && console.log('BINGO BINGO BINGO:', this.topicKey);
+        console.log(this.$props.topicKey, 'shouldShowError:', shouldShowError, 'status:', this.status, 'hasData:', this.hasData);
+        return shouldShowError;
       },
       errorMessage() {
         if (this.topic.errorMessage) {
@@ -163,24 +178,40 @@
           }
 
           let topicStatus;
-
           const sourceStatuses = dataSources.map(dataSource => {
-            // this is what should be observed. when it changes,
-            // it's not causing this to re-evaluate.
-            return this.$store.state.sources[dataSource].status;
+            const targetsFn = this.$config.dataSources[dataSource].targets;
+
+            // if the data source is configured for targets
+            if (targetsFn) {
+              const targetsMap = this.$store.state.sources[dataSource].targets;
+              const targets = Object.values(targetsMap);
+
+              // but there are no targets for this address, return false
+              if (targets.length === 0) {
+                return;
+              }
+
+              // if there are targets for this address, make sure none of them
+              // are "waiting"
+              return targets.map(target => {
+                return target.status
+              });
+
+            // if the data source is not configured for targets, just check that
+            // it has data
+            } else {
+              return [this.$store.state.sources[dataSource].status];
+            }
           });
+          // console.log(this.$props.topicKey, 'sourceStatuses:', sourceStatuses);
 
           // if any sources are still waiting, return waiting
-          if (sourceStatuses.some(x => x === 'waiting')) {
+          if (sourceStatuses.some(x => x.includes('waiting'))) {
             topicStatus = 'waiting';
-          }
-
           // if any sources have errors, return error
-          else if (sourceStatuses.some(x => x === 'error')) {
+          } else if (sourceStatuses.some(x => x.includes('error'))) {
             topicStatus = 'error';
-          }
-
-          else {
+          } else {
             topicStatus = 'success';
           }
 

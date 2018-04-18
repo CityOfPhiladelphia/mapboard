@@ -21,9 +21,10 @@
   import Image_ from './topic-components/Image.vue';
   import VerticalTable from './topic-components/VerticalTable.vue';
   import OverlayToggleGroup from './topic-components/OverlayToggleGroup.vue';
-  import List from './topic-components/List.vue'
+  import List from './topic-components/List.vue';
 
   export default {
+    name: 'TopicComponentGroup',
     props: ['topicComponents', 'item', 'filterData'],
     components: {
       Badge,
@@ -33,13 +34,14 @@
       Image_,
       VerticalTable,
       OverlayToggleGroup,
-      List
+      List,
     },
     beforeCreate() {
       // TabGroup imports TopicComponentGroup, which causes a circular
       // reference issue in webpack. so register the component here.
       this.$options.components.TabGroup = require('./topic-components/TabGroup.vue');
       this.$options.components.TableGroup = require('./topic-components/TableGroup.vue');
+      this.$options.components.BadgeCustom = require('./topic-components/BadgeCustom.vue');
     },
     data() {
       return {

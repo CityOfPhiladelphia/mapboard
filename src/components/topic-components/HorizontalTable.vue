@@ -6,7 +6,9 @@
     </button> -->
     <div v-if="shouldShowTable">
       <!-- controls -->
-      <div class="mb-horizontal-table-controls">
+      <div class="mb-horizontal-table-controls"
+           v-if="shouldShowHeaders"
+      >
         <div v-if="!!options.filters"
              class="vertically-centered"
         >
@@ -74,7 +76,7 @@
         </div>
       </div> <!-- end of mb-horizontal-table-controls block -->
 
-      <div class="mb-horizontal-table-body">
+      <div :class="{ 'mb-horizontal-table-body': true, 'no-padding': !shouldShowHeaders }">
         <div v-if="slots.title">
           <h4 style="display:inline-block">
             {{ evaluateSlot(slots.title) }} {{ countText }}
@@ -91,7 +93,7 @@
         </div>
 
         <table role="grid" class="stack">
-          <thead>
+          <thead v-if="shouldShowHeaders !== false">
             <tr>
               <th v-for="field in fields">{{ evaluateSlot(field.label) }}</th>
             </tr>
@@ -108,9 +110,10 @@
         </table>
 
         <!-- external link (aka "see more")-->
-        <div class="external-link">
-          <a v-if="options.externalLink && shouldShowExternalLink"
-             :href="externalLinkHref"
+        <div class="external-link"
+             v-if="options.externalLink && shouldShowExternalLink"
+        >
+          <a :href="externalLinkHref"
              class="external"
              target="_blank"
           >
@@ -148,13 +151,16 @@
     mixins: [TopicComponent],
     data() {
       const filters = this.options.filters || [];
+      const filtersKeys = Object.keys(filters);
       const defaultFilterSelections = Object.keys(filters).reduce((acc, i) =>
                                       {
+                                        // console.log('in reduce, i:', i, 'acc:', acc);
                                         const key = `filter-${i}`;
                                         acc[key] = {};
                                         return acc;
                                       }, {});
 
+      // console.log('in horiz table data, filters:', filters, 'filtersKeys:', filtersKeys, 'defaultFilterSelections:', defaultFilterSelections);
       let sortFields;
       if (this.options.sort){
         sortFields = this.options.sort.sortFields || [];
@@ -211,6 +217,13 @@
       }
     },
     computed: {
+      shouldShowHeaders() {
+        if (typeof this.options.shouldShowHeaders === 'undefined') {
+          return true;
+        } else {
+          return this.options.shouldShowHeaders;
+        }
+      },
       shouldShowDownloadButton() {
         let downloadButton = false;
         if (this.options.downloadButton) {
@@ -579,6 +592,7 @@
         this.searchText = "";
       },
       filterItems(items, filters, filterSelections) {
+        // console.log('typeof items:', typeof items);
         // console.log('FILTER ITEMS is running, items:', items, 'filters:', filters, 'filterSelections:', filterSelections);
         let itemsFiltered = items.slice();
 
@@ -807,6 +821,12 @@
 
   .mb-horizontal-table-body {
     padding-top: 1rem;
+    padding-bottom: 0.35rem;
+  }
+
+  .no-padding {
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   .center-button {

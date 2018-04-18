@@ -74,12 +74,13 @@
       <esri-dynamic-map-layer v-for="(item, key) in this.imageOverlayItems"
                               v-if="shouldShowImageOverlay(item.properties.RECMAP)"
                               :key="key"
-                              :url="'//gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/'"
-                              :layers="[29]"
-                              :layerDefs="'29:NAME=\'g' + item.properties.RECMAP.toLowerCase() + '.tif\''"
+                              :url="'//gis.phila.gov/arcgis/rest/services/Atlas/RegMaps/MapServer'"
+                              :layers="[0]"
+                              :layerDefs="'0:NAME=\'g' + item.properties.RECMAP.toLowerCase() + '.tif\''"
                               :transparent="true"
                               :opacity="0.5"
       />
+      <!-- :url="'//gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/'" -->
       <!-- :url="this.imageOverlayInfo.url"
       :opacity="this.imageOverlayInfo.opacity" -->
 

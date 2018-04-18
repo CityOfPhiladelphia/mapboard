@@ -49,7 +49,9 @@
     },
     created() {
       if (this.options.filters) {
+        // console.log('horizontalTableGroup created, if this.options.filters is running:', this.options.filters, this.options.filters.entries());
         for (let [index, filter] of this.options.filters.entries()) {
+          // console.log('for loop, index:', index, 'filter:', filter);
           const defaultTableName = filter.values[0].value || {};
 
           // add activeTable to local data
