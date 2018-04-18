@@ -10,13 +10,13 @@
 // turn off console logging in production
 // TODO come up with better way of doing this with webpack + env vars
 if (location.hostname !== 'localhost') {
-  console.log = console.info = console.debug = console.error = function () {};
+  // console.log = console.info = console.debug = console.error = function () {};
 }
 
 var GATEKEEPER_KEY = '6c5f564b450f91deca224249a6a36033';
 // var BASE_CONFIG_URL = '//raw.githubusercontent.com/rbrtmrtn/mapboard-base-config/develop/config.js';
-// var BASE_CONFIG_URL = 'https://cdn.rawgit.com/rbrtmrtn/mapboard-base-config/e45803b240e14717fb452805fa90c134870eb14b/config.js';
-var BASE_CONFIG_URL = 'https://cdn.rawgit.com/Alexander-M-Waldman/mapboard-base-config/e446a4ddbef74c22281c42d4d0dc5d34f7ba1abd/config.js';
+var BASE_CONFIG_URL = 'https://cdn.rawgit.com/rbrtmrtn/mapboard-base-config/e45803b240e14717fb452805fa90c134870eb14b/config.js';
+// var BASE_CONFIG_URL = 'https://cdn.rawgit.com/Alexander-M-Waldman/mapboard-base-config/e446a4ddbef74c22281c42d4d0dc5d34f7ba1abd/config.js';
 
 var ZONING_CODE_MAP = {
   'RSD-1': 'Residential Single Family Detached-1',
@@ -677,7 +677,7 @@ Mapboard.default({
     // from dorCondoList
     condoList: {
       type: 'http-get',
-      url: '//api.phila.gov/ais_dev/v1/search/',
+      url: '//api.phila.gov/ais/v1/search/',
       options: {
         params: {
           urlAddition: function (feature) {
