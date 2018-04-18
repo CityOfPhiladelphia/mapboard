@@ -446,32 +446,43 @@ Mapboard.default({
             //          + "select * from total where overlap_area >= 0.01"
             var mapreg = feature.properties.MAPREG,
                 stmt = "\
-                  WITH all_zoning AS \
-                    ( \
-                      SELECT * \
-                      FROM   phl.zoning_overlays \
-                    ), \
-                  parcel AS \
-                    ( \
-                      SELECT * \
-                      FROM   phl.dor_parcel \
-                      WHERE  dor_parcel.mapreg = '" + mapreg + "' \
-                    ), \
-                  zp AS \
-                    ( \
-                      SELECT all_zoning.* \
-                      FROM all_zoning, parcel \
-                      WHERE st_intersects(parcel.the_geom, all_zoning.the_geom) \
-                    ), \
-                  total AS \
-                    ( \
-                      SELECT zp.*, st_area(St_intersection(zp.the_geom, parcel.the_geom)) / st_area(parcel.the_geom) AS overlap_area \
-                      FROM   zp, parcel \
-                    ) \
-                  SELECT * \
-                  FROM total \
-                  WHERE overlap_area >= 0.01 \
-                ";
+                WITH all_zoning AS \
+                  ( \
+                    SELECT * \
+                    FROM   phl.zoning_overlays \
+                  ), \
+                parcel AS \
+                  ( \
+                    SELECT * \
+                    FROM   phl.dor_parcel \
+                    WHERE  dor_parcel.mapreg = '" + mapreg + "' \
+                  ), \
+                zp AS \
+                  ( \
+                    SELECT all_zoning.* \
+                    FROM all_zoning, parcel \
+                    WHERE st_intersects(parcel.the_geom, all_zoning.the_geom) \
+                  ), \
+                total AS \
+                  ( \
+                    SELECT zp.*, st_area(St_intersection(zp.the_geom, parcel.the_geom)) / st_area(parcel.the_geom) AS overlap_area \
+                    FROM   zp, parcel \
+                  ) \
+                SELECT cartodb_id, \
+                      code_section, \
+                      code_section_link, \
+                      objectid, \
+                      overlap_area, \
+                      overlay_name, \
+                      overlay_symbol, \
+                      pending, \
+                      pendingbill, \
+                      pendingbillurl, \
+                      sunset_date, \
+                      type \
+                FROM total \
+                WHERE overlap_area >= 0.01 \
+              ";
             return stmt;
           }
         }
@@ -599,6 +610,7 @@ Mapboard.default({
       url: 'http://ase.phila.gov/arcgis/rest/services/GSG/GIS311_365DAYS/MapServer/0',
       options: {
         geometryServerUrl: 'http://ase.phila.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer/',
+        distances: 500,
         calculateDistance: true,
       },
     },

@@ -484,7 +484,18 @@ Mapboard.default({
                       SELECT zp.*, st_area(St_intersection(zp.the_geom, parcel.the_geom)) / st_area(parcel.the_geom) AS overlap_area \
                       FROM   zp, parcel \
                     ) \
-                  SELECT * \
+                  SELECT cartodb_id, \
+                        code_section, \
+                        code_section_link, \
+                        objectid, \
+                        overlap_area, \
+                        overlay_name, \
+                        overlay_symbol, \
+                        pending, \
+                        pendingbill, \
+                        pendingbillurl, \
+                        sunset_date, \
+                        type \
                   FROM total \
                   WHERE overlap_area >= 0.01 \
                 ";
