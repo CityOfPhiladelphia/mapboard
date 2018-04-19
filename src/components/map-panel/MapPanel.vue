@@ -270,23 +270,38 @@
                   id="search-form"
             >
               <div class="form-group">
-                <input class="mb-search-control-input"
+                <input class="mb-search-control-input form-control"
                        placeholder="Search the map"
                        :value="this.addressEntered"
                        @keyup="didType"
                 />
+                <!-- type="text" -->
                 <!-- :value="this.$config.defaultAddress" -->
                 <!-- :style="{ background: !!this.$store.state.error ? '#ffcece' : '#fff'}" -->
                 <button class="mb-search-control-button">
                   <i class="fa fa-search fa-lg"></i>
                 </button>
-                <div class="list-group">
-                  <a v-for="addressCandidate in candidates"
-                     class="list-group-item list-group-item-action"
-                  >
-                    {{ addressCandidate }}
-                  </a>
+                <div class="list-group"
+                     v-show="this.shouldShowAutocomplete"
+                >
+                  <ul>
+                    <li v-for="addressCandidate in candidates">
+                      <div class="list-group-item list-group-item-action">
+                        <a :href="'#/' + addressCandidate + '/property'"
+                           @click="closeAutocomplete(addressCandidate)"
+                        >
+                        <!-- @click="this.shouldShowAutocomplete = true" -->
+                          {{ addressCandidate }}
+                        </a>
+                      </div>
+                    </li>
+                  </ul>
                 </div>
+
+                <!-- <button class="mb-search-control-button">
+                  <i class="fa fa-search fa-lg"></i>
+                </button> -->
+
               </div>
             </form>
           </div>
@@ -340,6 +355,8 @@
   import BasemapTooltip from '../BasemapTooltip.vue';
   import ControlCorner from '../../leaflet/ControlCorner.vue';
 
+  import debounce from 'debounce';
+
   export default {
     mixins: [
       markersMixin,
@@ -373,11 +390,9 @@
     },
     data() {
       return {
-        // candidates: ["default3", "default4"],
-        timeout: null,
+        shouldShowAutocomplete: false,
         addressEntered: null,
         candidates: [],
-        // searchInput: '',
       };
     },
     created() {
@@ -612,22 +627,20 @@
       }
     },
     methods: {
-      didType(e) {
-        console.log('didType is running, e:', e, 'this', this);
-        const { value } = e.target;
-
-        let this2 = this;
-        clearTimeout(this.timeout);
-        this.timeout = setTimeout(function(this2) {
-          console.log('this2:', this2);
-          this2.addressEntered = value;
-          this2.getCandidates(value);
-        }, 500);
-
+      closeAutocomplete(addressCandidate) {
+        console.log('closeAutocomplete, addressCandidate:', addressCandidate);
+        this.addressEntered = addressCandidate;
+        this.shouldShowAutocomplete = false;
       },
+      didType: debounce(function (e) {
+        // console.log('debounce is running, e:', e, 'this:', this);
+        const { value } = e.target;
+        this.addressEntered = value;
+        this.getCandidates(value);
+        this.shouldShowAutocomplete = true;
+      }, 300),
       getCandidates(address) {
-        console.log('getCandidates is running, address:', address);
-
+        // console.log('getCandidates is running, address:', address);
         // axios.get(AUTOCOMPLETE_ENDPOINT, {
         axios.get('https://cqvfg1pm72.execute-api.us-east-1.amazonaws.com/dev/first-api-test/', {
           params: {
@@ -640,16 +653,14 @@
       didGetCandidates(res) {
         const { matches } = res.data;
         // console.log('matches:', matches, 'matches map:', matches.map(x => x.address));
-
         const matchesArray = matches.map(x => x.address);
-        console.log('didGetCandidates is running, res:', res, 'matchesArray:', matchesArray);
+        // console.log('didGetCandidates is running, res:', res, 'matchesArray:', matchesArray);
         this.candidates = matchesArray;
-        // console.log('didGetCandidates end - candidates:', this.candidates);
       },
       didGetCandidatesError(err) {
         console.log('error getting candidates', err);
+        this.candidates = null;
       },
-
       setMapToBounds() {
         // console.log('setMapToBounds is running');
         let featureArray = []
@@ -786,6 +797,34 @@
     font-family: 'Montserrat', 'Tahoma', sans-serif;
     font-size: 16px;
     width: 275px;
+  }
+
+  .list-group {
+    height: 300px;
+    overflow: auto;
+  }
+
+  ul {
+    list-style-type: none;
+  }
+
+  .list-group-item {
+    /* display: 'block'; */
+    /* height: 48px; */
+    width: 325px;
+    border-radius: 2px;
+    box-shadow:0 2px 4px rgba(0,0,0,0.2),0 -1px 0px rgba(0,0,0,0.02);
+    border: 2;
+    background-color: white;
+    /*height: 48px !important;*/
+    /*line-height: 48px;*/
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 15px;
+    /* padding-right: 15px; */
+    font-family: 'Montserrat', 'Tahoma', sans-serif;
+    font-size: 16px;
+    width: 293px;
   }
 
   .mb-map-with-widget {
