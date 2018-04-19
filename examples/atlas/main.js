@@ -1834,6 +1834,24 @@ Mapboard.default({
                 ]
               },
               {
+                label: 'Permit Number',
+                value: function(state, item){
+                  return item.permit_number
+                }
+              },
+              // {
+              //   label: 'Type',
+              //   value: function(state, item){
+              //     return item.doc_type
+              //   }
+              // },
+              {
+                label: '# Pages',
+                value: function(state, item){
+                  return item.num_pages
+                }
+              },
+              {
                 label: 'ID',
                 value: function (state, item) {
                   console.log('zoning doc', item);
@@ -1851,18 +1869,6 @@ Mapboard.default({
                           // + '<i class='fa fa-external-link'></i></a>'
                           + '</a>'
                   // return item.appid + '-' + item.docid
-                }
-              },
-              {
-                label: 'Type',
-                value: function(state, item){
-                  return item.doc_type
-                }
-              },
-              {
-                label: '# Pages',
-                value: function(state, item){
-                  return item.num_pages
                 }
               },
               // {
