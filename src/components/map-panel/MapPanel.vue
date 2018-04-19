@@ -267,14 +267,15 @@
           <div class="mb-search-control-container">
             <form @submit.prevent="handleSearchFormSubmit"
                   autocomplete="off"
+                  id="search-form"
             >
-            <!-- id="search-form" -->
               <div class="form-group">
                 <input class="mb-search-control-input"
                        placeholder="Search the map"
-                       :value="this.$config.defaultAddress"
+                       :value="this.addressEntered"
                        @keyup="didType"
                 />
+                <!-- :value="this.$config.defaultAddress" -->
                 <!-- :style="{ background: !!this.$store.state.error ? '#ffcece' : '#fff'}" -->
                 <button class="mb-search-control-button">
                   <i class="fa fa-search fa-lg"></i>
@@ -373,6 +374,8 @@
     data() {
       return {
         // candidates: ["default3", "default4"],
+        timeout: null,
+        addressEntered: null,
         candidates: [],
         // searchInput: '',
       };
@@ -610,9 +613,17 @@
     },
     methods: {
       didType(e) {
-        console.log('didType is running, e:', e);
+        console.log('didType is running, e:', e, 'this', this);
         const { value } = e.target;
-        this.getCandidates(value);
+
+        let this2 = this;
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(function(this2) {
+          console.log('this2:', this2);
+          this2.addressEntered = value;
+          this2.getCandidates(value);
+        }, 500);
+
       },
       getCandidates(address) {
         console.log('getCandidates is running, address:', address);
@@ -627,17 +638,13 @@
           .catch(this.didGetCandidatesError);
       },
       didGetCandidates(res) {
-        console.log('didGetCandidates is running, res:', res);
-
         const { matches } = res.data;
         // console.log('matches:', matches, 'matches map:', matches.map(x => x.address));
-        // this.$nextTick(() => {
-        // this.$store.commit('setAddressCandidates', matches.map(x => x.address));
+
         const matchesArray = matches.map(x => x.address);
-        // this.candidates = matches.map(x => x.address)
+        console.log('didGetCandidates is running, res:', res, 'matchesArray:', matchesArray);
         this.candidates = matchesArray;
-        console.log('didGetCandidates end - candidates:', this.candidates);
-        // })
+        // console.log('didGetCandidates end - candidates:', this.candidates);
       },
       didGetCandidatesError(err) {
         console.log('error getting candidates', err);
