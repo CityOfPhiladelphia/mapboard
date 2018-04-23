@@ -48,15 +48,18 @@
       // computed props aren't accessible here, so evaluate slot separately
       const items = this.evaluateSlot(this.slots.items);
       return {
-        activeItem: this.keyForItem(items[0]),
-        activeMapreg: this.titleForItem(items[0]),
-        activeAddress: this.addressForItem(items[0])
+        activeItem: this.activeItemFromState,// || this.keyForItem(items[0]),
+        activeMapreg: this.activeMapregFromState,// || this.titleForItem(items[0]),
+        activeAddress: this.activeAddressFromState,// || this.addressForItem(items[0])
       };
     },
-    // mounted() {
+    mounted() {
     //   // REVIEW globals. also is this still needed?
     //   // $(document).foundation();
-    // },
+      this.$data.activeItem = this.activeItemFromState;
+      this.$data.activeMapreg = this.activeMapregFromState;
+      this.$data.activeAddress = this.activeAddressFromState;
+    },
     // props: [],
     computed: {
       items() {
@@ -73,6 +76,15 @@
       },
       comps() {
         return this.options.components;
+      },
+      activeItemFromState() {
+        return this.$store.state.parcels.dor.activeParcel;
+      },
+      activeMapregFromState() {
+        return this.$store.state.parcels.dor.activeMapreg;
+      },
+      activeAddressFromState() {
+        return this.$store.state.parcels.dor.activeAddress;
       }
     },
     watch: {

@@ -76,7 +76,7 @@
         </div>
       </div> <!-- end of mb-horizontal-table-controls block -->
 
-      <div class="mb-horizontal-table-body">
+      <div :class="{ 'mb-horizontal-table-body': true, 'no-padding': !shouldShowHeaders }">
         <div v-if="slots.title">
           <h4 style="display:inline-block">
             {{ evaluateSlot(slots.title) }} {{ countText }}
@@ -223,7 +223,11 @@
     },
     computed: {
       shouldShowHeaders() {
-        return this.options.shouldShowHeaders
+        if (typeof this.options.shouldShowHeaders === 'undefined') {
+          return true;
+        } else {
+          return this.options.shouldShowHeaders;
+        }
       },
       shouldShowDownloadButton() {
         let downloadButton = false;
@@ -594,7 +598,8 @@
         this.searchText = "";
       },
       filterItems(items, filters, filterSelections) {
-        console.log('FILTER ITEMS is running, items:', items, 'filters:', filters, 'filterSelections:', filterSelections);
+        // console.log('typeof items:', typeof items);
+        // console.log('FILTER ITEMS is running, items:', items, 'filters:', filters, 'filterSelections:', filterSelections);
         let itemsFiltered = items.slice();
 
         if (filters) {
@@ -829,7 +834,13 @@
   }
 
   .mb-horizontal-table-body {
-    /* padding-top: 1rem; */
+    padding-top: 1rem;
+    padding-bottom: 0.35rem;
+  }
+
+  .no-padding {
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   .center-button {
