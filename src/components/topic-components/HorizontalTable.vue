@@ -858,6 +858,7 @@
   }
 
   table {
+    table-layout: fixed;
     margin: 0;
   }
 
