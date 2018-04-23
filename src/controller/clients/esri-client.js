@@ -183,7 +183,7 @@ class EsriClient extends BaseClient {
 
           // TODO make distance units an option. for now, just hard code to ft.
           const distFeet = parseInt(dist * 5280);
-          console.log('distFeet:', distFeet);
+          // console.log('distFeet:', distFeet);
 
           feature._distance = distFeet;
 

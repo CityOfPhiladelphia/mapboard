@@ -28,6 +28,7 @@
   // console.log('in TopicComponentGroup.vue script, Badge:', Badge, 'TabGroup:', TabGroup, 'Callout:', Callout, 'CollectionSummary:', CollectionSummary, 'HorizontalTable:', HorizontalTable);
 
   export default {
+    name: 'TopicComponentGroup',
     props: ['topicComponents', 'item', 'filterData'],
     components: {
       Badge,
