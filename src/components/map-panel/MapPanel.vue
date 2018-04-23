@@ -262,22 +262,47 @@
       <!-- custom components seem to have to be wrapped like this to work
            with v-once
       -->
-      <div v-once>
-        <control position="topleft">
-          <div class="mb-search-control-container">
-            <form @submit.prevent="handleSearchFormSubmit">
-                <input class="mb-search-control-input"
-                       placeholder="Search the map"
-                       :value="this.$config.defaultAddress"
-                />
-                <!-- :style="{ background: !!this.$store.state.error ? '#ffcece' : '#fff'}" -->
-                <button class="mb-search-control-button">
-                  <i class="fa fa-search fa-lg"></i>
-                </button>
-            </form>
-          </div>
-        </control>
-      </div>
+      <!-- <div v-once> -->
+      <control position="topleft">
+        <div class="mb-search-control-container">
+          <form @submit.prevent="handleSearchFormSubmit"
+                autocomplete="off"
+                id="search-form"
+          >
+            <div class="form-group">
+              <input class="mb-search-control-input form-control"
+                     placeholder="Search the map"
+                     :value="this.addressEntered"
+                     @keyup="didType"
+                     tabindex="0"
+              />
+              <button class="mb-search-control-button"
+                      tabindex="-1"
+              >
+                <i class="fa fa-search fa-lg"></i>
+              </button>
+              <div class="list-group"
+                   v-show="this.shouldShowAutocomplete"
+              >
+                <ul>
+                  <li v-for="(candidate, i) in candidates">
+                      <a :href="'#/' + candidate + '/property'"
+                         @click="closeAutocomplete(candidate)"
+                         class="list-group-item"
+                         tabindex="-1"
+                         :id="'autocomplete-list-' + i"
+                         @keydown="maybeUsedArrow"
+                      >
+                        {{ candidate }}
+                      </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </form>
+        </div>
+      </control>
+      <!-- </div> -->
 
       <cyclomedia-recording-circle v-for="recording in cyclomediaRecordings"
                                    v-if="cyclomediaActive"
@@ -327,6 +352,8 @@
   import BasemapTooltip from '../BasemapTooltip.vue';
   import ControlCorner from '../../leaflet/ControlCorner.vue';
 
+  import debounce from 'debounce';
+
   export default {
     mixins: [
       markersMixin,
@@ -357,6 +384,13 @@
       LegendControl,
       BasemapTooltip,
       ControlCorner,
+    },
+    data() {
+      return {
+        shouldShowAutocomplete: false,
+        addressEntered: null,
+        candidates: [],
+      };
     },
     created() {
       // if there's a default address, navigate to it
@@ -584,6 +618,66 @@
       }
     },
     methods: {
+      maybeUsedArrow(e) {
+        const id = e.target.id;
+        const index = parseInt(id.substring(id.lastIndexOf('-') + 1));
+        let indexUp, indexDown;
+        if (index < this.candidates.length - 1) {
+          indexUp = index + 1;
+        } else (
+          indexUp = index
+        )
+        if (index !== 0) {
+          indexDown = index - 1;
+        } else {
+          indexDown = 0
+        }
+        console.log('maybeUsedArrow running, e:', e, 'index:', index, 'indexUp:', indexUp, 'indexDown:', indexDown);
+        if (e.key === "ArrowDown") {
+          document.getElementById('autocomplete-list-' + indexUp).focus();
+        }
+        if (e.key === "ArrowUp") {
+          document.getElementById('autocomplete-list-' + indexDown).focus();
+        }
+      },
+      closeAutocomplete(addressCandidate) {
+        console.log('closeAutocomplete, addressCandidate:', addressCandidate);
+        this.addressEntered = addressCandidate;
+        this.shouldShowAutocomplete = false;
+      },
+      didType: debounce(function (e) {
+        // console.log('debounce is running, e:', e, 'this:', this);
+        if (e.key === "ArrowDown") {
+          document.getElementById('autocomplete-list-0').focus();
+          return;
+        }
+        const { value } = e.target;
+        this.addressEntered = value;
+        this.getCandidates(value);
+        this.shouldShowAutocomplete = true;
+      }, 300),
+      getCandidates(address) {
+        // console.log('getCandidates is running, address:', address);
+        // axios.get(AUTOCOMPLETE_ENDPOINT, {
+        axios.get('https://cqvfg1pm72.execute-api.us-east-1.amazonaws.com/dev/first-api-test/', {
+          params: {
+            address,
+          },
+        })
+          .then(this.didGetCandidates)
+          .catch(this.didGetCandidatesError);
+      },
+      didGetCandidates(res) {
+        const { matches } = res.data;
+        // console.log('matches:', matches, 'matches map:', matches.map(x => x.address));
+        const matchesArray = matches.map(x => x.address);
+        // console.log('didGetCandidates is running, res:', res, 'matchesArray:', matchesArray);
+        this.candidates = matchesArray;
+      },
+      didGetCandidatesError(err) {
+        console.log('error getting candidates', err);
+        this.candidates = null;
+      },
       setMapToBounds() {
         // console.log('setMapToBounds is running');
         let featureArray = []
@@ -715,6 +809,35 @@
     font-family: 'Montserrat', 'Tahoma', sans-serif;
     font-size: 16px;
     width: 275px;
+  }
+
+  .list-group {
+    height: 300px;
+    overflow: auto;
+  }
+
+  ul {
+    list-style-type: none;
+  }
+
+  .list-group-item {
+    display: block;
+    width: 293px;
+    border-radius: 2px;
+    box-shadow:0 2px 4px rgba(0,0,0,0.2),0 -1px 0px rgba(0,0,0,0.02);
+    border: 2;
+    background-color: white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    font-family: 'Montserrat', 'Tahoma', sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+  }
+
+  .list-group-item:hover {
+    background-color: #ffefa2;
+    font-weight: bold;
   }
 
   .mb-map-with-widget {

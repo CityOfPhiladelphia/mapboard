@@ -31,6 +31,7 @@ isn't there?
 
             // keep clicks from hitting the map
             L.DomEvent.disableClickPropagation(el);
+            L.DomEvent.disableScrollPropagation(el);
 
             return el;
           }
