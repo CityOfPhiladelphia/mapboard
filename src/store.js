@@ -213,6 +213,9 @@ function createStore(config) {
       imageOverlayOpacity: null,
       filters: [],
       watchPositionOn: false,
+      shouldShowAddressCandidateList: false,
+      candidates: [],
+      addressEntered: null,
       // features: {
       //   markers: [
       //     // {
@@ -576,6 +579,15 @@ function createStore(config) {
       // setCircleMarkers(state, payload) {
       //   state.map.circleMarkers.push(payload);
       // }
+      setShouldShowAddressCandidateList(state, payload) {
+        state.map.shouldShowAddressCandidateList = payload;
+      },
+      setCandidates(state, payload) {
+        state.map.candidates = payload;
+      },
+      setAddressEntered(state, payload) {
+        state.map.addressEntered = payload;
+      }
     }
   });
 }

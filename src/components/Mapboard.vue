@@ -72,6 +72,7 @@
     created() {
       // check if mobile or tablet
       this.$store.commit('setIsMobileOrTablet', this.isMobileOrTabletMethod());
+      window.addEventListener('click', this.closeAddressCandidateList);
       window.addEventListener('resize', this.handleWindowResize);
       this.handleWindowResize();
     },
@@ -190,6 +191,9 @@
         const isMobileOrTablet = mobileOrTabletRegexA.test(userAgent) || mobileOrTabletRegexB.test(userAgent.substr(0,4));
 
         return isMobileOrTablet;
+      },
+      closeAddressCandidateList() {
+        this.$store.state.map.shouldShowAddressCandidateList = false;
       },
       handleWindowResize() {
         // this only actually affects the size if it is set to "plugin mode"

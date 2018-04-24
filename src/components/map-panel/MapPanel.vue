@@ -194,6 +194,11 @@
       >
       </control-corner>
 
+      <control-corner :vSide="'top'"
+                      :hSide="'almostleft'"
+      >
+      </control-corner>
+
       <!-- <basemap-tooltip :position="'topright'"
       /> -->
 
@@ -257,52 +262,11 @@
       >
       </scale-control> -->
 
+      <div v-once>
+        <AddressInput position="topalmostleft" />
+      </div>
+      <AddressCandidateList position="topalmostleft" />
 
-      <!-- search control -->
-      <!-- custom components seem to have to be wrapped like this to work
-           with v-once
-      -->
-      <!-- <div v-once> -->
-      <control position="topleft">
-        <div class="mb-search-control-container">
-          <form @submit.prevent="handleSearchFormSubmit"
-                autocomplete="off"
-                id="search-form"
-          >
-            <div class="form-group">
-              <input class="mb-search-control-input form-control"
-                     placeholder="Search the map"
-                     :value="this.addressEntered"
-                     @keyup="didType"
-                     tabindex="0"
-              />
-              <button class="mb-search-control-button"
-                      tabindex="-1"
-              >
-                <i class="fa fa-search fa-lg"></i>
-              </button>
-              <div class="list-group"
-                   v-show="this.shouldShowAutocomplete"
-              >
-                <ul>
-                  <li v-for="(candidate, i) in candidates">
-                      <a :href="'#/' + candidate + '/property'"
-                         @click="closeAutocomplete(candidate)"
-                         class="list-group-item"
-                         tabindex="-1"
-                         :id="'autocomplete-list-' + i"
-                         @keydown="maybeUsedArrow"
-                      >
-                        {{ candidate }}
-                      </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </form>
-        </div>
-      </control>
-      <!-- </div> -->
 
       <cyclomedia-recording-circle v-for="recording in cyclomediaRecordings"
                                    v-if="cyclomediaActive"
@@ -329,6 +293,8 @@
   // vue doesn't like it when you import this as Map (reserved-ish word)
   import Map_ from '../../leaflet/Map.vue';
   import Control from '../../leaflet/Control.vue';
+  import AddressInput from '../AddressInput.vue';
+  import AddressCandidateList from '../AddressCandidateList.vue';
   import EsriTiledMapLayer from '../../esri-leaflet/TiledMapLayer.vue';
   import EsriTiledOverlay from '../../esri-leaflet/TiledOverlay.vue';
   import EsriDynamicMapLayer from '../../esri-leaflet/DynamicMapLayer.vue';
@@ -363,6 +329,8 @@
     components: {
       Map_,
       Control,
+      AddressInput,
+      AddressCandidateList,
       EsriTiledMapLayer,
       EsriTiledOverlay,
       EsriDynamicMapLayer,
@@ -384,13 +352,6 @@
       LegendControl,
       BasemapTooltip,
       ControlCorner,
-    },
-    data() {
-      return {
-        shouldShowAutocomplete: false,
-        addressEntered: null,
-        candidates: [],
-      };
     },
     created() {
       // if there's a default address, navigate to it
@@ -415,6 +376,9 @@
       this.$controller.appDidLoad();
     },
     computed: {
+      // shouldShowAddressCandidateList() {
+      //   return this.$store.state.map.shouldShowAddressCandidateList;
+      // },
       measureControlEnabled() {
         if (this.$config.measureControlEnabled === false) {
           return false;
@@ -615,69 +579,9 @@
       },
       markers() {
         this.setMapToBounds();
-      }
+      },
     },
     methods: {
-      maybeUsedArrow(e) {
-        const id = e.target.id;
-        const index = parseInt(id.substring(id.lastIndexOf('-') + 1));
-        let indexUp, indexDown;
-        if (index < this.candidates.length - 1) {
-          indexUp = index + 1;
-        } else (
-          indexUp = index
-        )
-        if (index !== 0) {
-          indexDown = index - 1;
-        } else {
-          indexDown = 0
-        }
-        console.log('maybeUsedArrow running, e:', e, 'index:', index, 'indexUp:', indexUp, 'indexDown:', indexDown);
-        if (e.key === "ArrowDown") {
-          document.getElementById('autocomplete-list-' + indexUp).focus();
-        }
-        if (e.key === "ArrowUp") {
-          document.getElementById('autocomplete-list-' + indexDown).focus();
-        }
-      },
-      closeAutocomplete(addressCandidate) {
-        console.log('closeAutocomplete, addressCandidate:', addressCandidate);
-        this.addressEntered = addressCandidate;
-        this.shouldShowAutocomplete = false;
-      },
-      didType: debounce(function (e) {
-        // console.log('debounce is running, e:', e, 'this:', this);
-        if (e.key === "ArrowDown") {
-          document.getElementById('autocomplete-list-0').focus();
-          return;
-        }
-        const { value } = e.target;
-        this.addressEntered = value;
-        this.getCandidates(value);
-        this.shouldShowAutocomplete = true;
-      }, 300),
-      getCandidates(address) {
-        // console.log('getCandidates is running, address:', address);
-        // axios.get(AUTOCOMPLETE_ENDPOINT, {
-        axios.get('https://cqvfg1pm72.execute-api.us-east-1.amazonaws.com/dev/first-api-test/', {
-          params: {
-            address,
-          },
-        })
-          .then(this.didGetCandidates)
-          .catch(this.didGetCandidatesError);
-      },
-      didGetCandidates(res) {
-        const { matches } = res.data;
-        // console.log('matches:', matches, 'matches map:', matches.map(x => x.address));
-        const matchesArray = matches.map(x => x.address);
-        // console.log('didGetCandidates is running, res:', res, 'matchesArray:', matchesArray);
-        this.candidates = matchesArray;
-      },
-      didGetCandidatesError(err) {
-        console.log('error getting candidates', err);
-        this.candidates = null;
-      },
       setMapToBounds() {
         // console.log('setMapToBounds is running');
         let featureArray = []
@@ -779,67 +683,6 @@
     position: relative;
   }
 
-  /*@media (max-width: 749px) {
-    .mb-panel-map {
-      height: 600px;
-    }
-  }*/
-
-  .mb-search-control-container {
-    height: 48px;
-    border-radius: 2px;
-    box-shadow:0 2px 4px rgba(0,0,0,0.2),0 -1px 0px rgba(0,0,0,0.02);
-  }
-
-  .mb-search-control-button {
-    color: #fff;
-    width: 50px;
-    background: #2176d2;
-    line-height: 48px;
-    padding: 0px;
-  }
-
-  .mb-search-control-input {
-    border: 0;
-    /*height: 48px !important;*/
-    /*line-height: 48px;*/
-    padding: 15px;
-    /*padding-left: 15px;
-    padding-right: 15px;*/
-    font-family: 'Montserrat', 'Tahoma', sans-serif;
-    font-size: 16px;
-    width: 275px;
-  }
-
-  .list-group {
-    height: 300px;
-    overflow: auto;
-  }
-
-  ul {
-    list-style-type: none;
-  }
-
-  .list-group-item {
-    display: block;
-    width: 293px;
-    border-radius: 2px;
-    box-shadow:0 2px 4px rgba(0,0,0,0.2),0 -1px 0px rgba(0,0,0,0.02);
-    border: 2;
-    background-color: white;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 10px;
-    font-family: 'Montserrat', 'Tahoma', sans-serif;
-    font-size: 14px;
-    font-weight: normal;
-  }
-
-  .list-group-item:hover {
-    background-color: #ffefa2;
-    font-weight: bold;
-  }
-
   .mb-map-with-widget {
     height: 50%;
   }
@@ -867,13 +710,6 @@
     left: 40%;
   }
 
-  /*small*/
-  @media screen and (max-width: 39.9375em) {
-    .mb-search-control-input {
-      width: 200px;
-    }
-  }
-
   /*small retina*/
   /*@media
   (-webkit-min-device-pixel-ratio: 2),
@@ -883,4 +719,5 @@
       max-width: 250px;
     }
   }*/
+
 </style>

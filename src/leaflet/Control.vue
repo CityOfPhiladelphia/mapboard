@@ -20,6 +20,7 @@ isn't there?
     props: ['position'],
     methods: {
       createLeafletElement(L) {
+        // console.log('Control.vue createLeafletElement is running')
         // subclass Control to accept an el which gets mounted to the map
         class ControlParent extends L.Control {
           constructor(el, options) {
@@ -38,14 +39,17 @@ isn't there?
         }
 
         const el = this.$el;
+        // console.log('Control.vue el:', el);
         return new ControlParent(el, {
           position: this.position
         });
       },
       parentMounted(parent, props) {
+        // console.log('Control.vue parentMounted is running, parent:', parent, 'props:', props);
         const leafletElement = this.createLeafletElement(L);
         this.$leafletElement = leafletElement;
         const map = parent.$leafletElement;
+        // console.log('Control.vue parentMounted is calling addTo(map)');
         leafletElement.addTo(map);
       }
     }
