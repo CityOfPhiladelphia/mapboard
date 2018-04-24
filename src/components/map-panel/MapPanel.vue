@@ -654,9 +654,6 @@
           this.$store.commit('setCyclomediaLatLngFromMap', [lat, lng]);
         }
       },
-      handleSearchFormSubmit(e) {
-        this.$controller.handleSearchFormSubmit(e);
-      },
       fillColorForCircleMarker(markerId, tableId) {
         // get map overlay style and hover style for table
         const tableConfig = this.getConfigForTable(tableId);

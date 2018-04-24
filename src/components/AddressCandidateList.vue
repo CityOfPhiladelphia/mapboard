@@ -36,7 +36,7 @@
     },
     watch: {
       shouldShowAddressCandidateList(nextValue) {
-        // console.log('AddressCandidateList.vue watch shouldShowAddressCandidateList is running, nextValue:', nextValue);
+        console.log('AddressCandidateList.vue watch shouldShowAddressCandidateList is running, nextValue:', nextValue);
         if (nextValue === true) {
           this.createControl();
         }
@@ -65,7 +65,6 @@
         const el = this.$el;
         return new ControlParent(el, {
           position: this.position
-          // position: 'topleft'
         });
       },
       createControl() {

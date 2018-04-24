@@ -3,27 +3,29 @@
     <form @submit.prevent="handleSearchFormSubmit"
           autocomplete="off"
           id="search-form"
+          class="mb-search-control-form"
     >
-      <div class="form-group">
+      <!-- <div class="form-group"> -->
         <input :class="this.inputClass"
                placeholder="Search the map"
                :value="this.addressEntered"
                @keyup="didType"
                tabindex="0"
         />
-        <button class="mb-search-control-button"
-                v-if="this.addressEntered != '' && this.addressEntered != null"
-                @click="handleFormX"
-        >
-          <i class="fa fa-times fa-lg"></i>
-        </button>
-        <button class="mb-search-control-button"
-                tabindex="-1"
-        >
-          <i class="fa fa-search fa-lg"></i>
-        </button>
-      </div>
+      <!-- </div> -->
     </form>
+    <button class="mb-search-control-button"
+            v-if="this.addressEntered != '' && this.addressEntered != null"
+            @click="handleFormX"
+    >
+      <i class="fa fa-times fa-lg"></i>
+    </button>
+    <button class="mb-search-control-button"
+            tabindex="-1"
+            @click="this.handleSearchFormSubmit"
+    >
+      <i class="fa fa-search fa-lg"></i>
+    </button>
   </div>
 </template>
 
@@ -81,7 +83,7 @@
         leafletElement.addTo(map);
       },
       didType: debounce(function (e) {
-          // console.log('debounce is running, e:', e, 'this:', this);
+          console.log('debounce is running, e:', e, 'this:', this);
           if (e.key === "ArrowDown") {
             document.getElementById('address-candidate-list-0').focus();
             return;
@@ -89,7 +91,9 @@
           const { value } = e.target;
           this.getCandidates(value);
           this.$store.commit('setAddressEntered', value);
-          this.$store.commit('setShouldShowAddressCandidateList', true);
+          if (e.key !== "Enter") {
+            this.$store.commit('setShouldShowAddressCandidateList', true);
+          }
         }, 300
       ),
       getCandidates(address) {
@@ -115,6 +119,13 @@
       handleFormX() {
         this.$store.commit('setAddressEntered', '');
       },
+      handleSearchFormSubmit() {
+        // const value = e.target[0].value;
+        const value = this.addressEntered;
+        this.$controller.handleSearchFormSubmit(value);
+        // this.$store.commit('setAddressEntered', value);
+        this.$store.commit('setShouldShowAddressCandidateList', false);
+      },
     }
   };
 </script>
@@ -127,7 +138,12 @@
   box-shadow:0 2px 4px rgba(0,0,0,0.2),0 -1px 0px rgba(0,0,0,0.02);
 }
 
+.mb-search-control-form {
+  display: inline-block;
+}
+
 .mb-search-control-button {
+  display: inline-block;
   color: #fff;
   width: 50px;
   background: #2176d2;
@@ -136,6 +152,7 @@
 }
 
 .mb-search-control-input {
+  display: inline-block;
   border: 0;
   padding: 15px;
   font-family: 'Montserrat', 'Tahoma', sans-serif;
