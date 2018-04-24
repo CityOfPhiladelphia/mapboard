@@ -171,6 +171,7 @@
         get() {
           // get the status of each source
           const dataSources = this.topic.dataSources || [];
+          // console.log('dataSources:', dataSources);
 
           // if no sources, return success
           if (dataSources.length === 0) {
@@ -206,6 +207,7 @@
           // console.log(this.$props.topicKey, 'sourceStatuses:', sourceStatuses);
 
           // if any sources are still waiting, return waiting
+          // console.log('sourceStatuses:', sourceStatuses);
           if (sourceStatuses.some(x => x.includes('waiting'))) {
             topicStatus = 'waiting';
           // if any sources have errors, return error
