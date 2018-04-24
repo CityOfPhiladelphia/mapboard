@@ -21,7 +21,7 @@
     "debounce": "^1.1.0",
     "jquery": "^3.2.1",
     "jquery-ui": "^1.12.1",
-    "leaflet": "https://github.com/CityOfPhiladelphia/Leaflet#e8abb15619a81792b7bd9360e39d71ea13d93a5d",
+    "leaflet": "https://github.com/Leaflet/Leaflet",
     "leaflet-easybutton": "^2.2.2",
     "leaflet-measure": "https://github.com/CityOfPhiladelphia/leaflet-measure#c91eedea328e02a50b7849ef6e2b3adab3a55e49",
     "leaflet-rotatedmarker": "^0.2.0",
