@@ -1,7 +1,7 @@
 {
   "name": "@cityofphiladelphia/mapboard",
   "description": "A Vue.js component for data-rich web mapping",
-  "version": "1.2.37",
+  "version": "1.2.38-0",
   "author": "City of Philadelphia <maps@phila.gov>",
   "scripts": {
     "build": "rollup -c rollup.config.js",
