@@ -10,11 +10,7 @@
   },
   "main": "./dist/mapboard.js",
   "dependencies": {
-    "@turf/area": "^6.0.0",
-    "@turf/distance": "^6.0.0",
-    "@turf/explode": "^5.1.5",
-    "@turf/helpers": "^6.0.1",
-    "@turf/nearest-point": "^6.0.1",
+    "@turf/turf": "^5.1.6",
     "axios": "^0.18.0",
     "blueimp-md5-es6": "https://github.com/gunins/JavaScript-MD5",
     "debounce": "^1.1.0",

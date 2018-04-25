@@ -1,8 +1,9 @@
 import axios from 'axios';
-import { point, polygon } from '@turf/helpers';
-import distance from '@turf/distance';
-import '@turf/explode';
-import '@turf/nearest-point';
+import * as turf from '@turf/turf';
+// import { point, polygon } from '@turf/helpers';
+// import distance from '@turf/distance';
+// import '@turf/explode';
+// import '@turf/nearest-point';
 import proj4 from 'proj4';
 import * as L from 'leaflet';
 import { query as Query } from 'esri-leaflet';
@@ -161,7 +162,7 @@ class EsriClient extends BaseClient {
       // calculate distance
       if (calculateDistancePt) {
         console.log('if calculateDistancePt is true is running');
-        const from = point(calculateDistancePt);
+        const from = turf.point(calculateDistancePt);
         console.log('from:', from);
 
         features = features.map(feature => {
@@ -171,14 +172,15 @@ class EsriClient extends BaseClient {
           let dist;
           if (Array.isArray(featureCoords[0])) {
             // console.log('featureCoords is array of coords:', featureCoords[0]);
-            let polygon = polygon([featureCoords[0]]);
-            const vertices = explode(polygon)
-            const closestVertex = nearest(from, vertices);
+            let polygon = turf.polygon([featureCoords[0]]);
+            const vertices = turf.explode(polygon)
+            const closestVertex = turf.nearest(from, vertices);
             // console.log('closestVertex', closestVertex);
-            dist = distance(from, closestVertex, 'miles')
+            dist = turf.distance(from, closestVertex, { units: 'miles' })
           } else {
-            const to = point(featureCoords);
-            dist = distance(from, to, 'miles');
+            const to = turf.point(featureCoords);
+            console.log('to:', to);
+            dist = turf.distance(from, to, { units: 'miles' });
           }
 
           // TODO make distance units an option. for now, just hard code to ft.
