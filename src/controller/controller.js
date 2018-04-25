@@ -39,15 +39,18 @@ class Controller {
     this.dataManager.fetchMoreData(dataSource, highestPageRetrieved);
   }
 
-  handleSearchFormSubmit(e) {
-    console.log('handle search form submit', e, this);
+  handleSearchFormSubmit() {
+    const input = this.store.state.map.addressEntered;
+    // console.log('handle search form submit', e, this);
 
-    const input = e.target[0].value;
+    // const input = e.target[0].value;
 
     this.store.commit('setLastSearchMethod', 'geocode');
     this.store.commit('setClickCoords', null);
     this.store.commit('setGeocodeStatus', null);
     this.store.commit('setGeocodeInput', input);
+    // this.store.commit('setShouldShowAddressCandidateList', false);
+
 
     // clear out state
     const parcelLayers = Object.keys(this.config.parcels || {});

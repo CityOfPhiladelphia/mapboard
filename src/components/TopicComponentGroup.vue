@@ -23,9 +23,12 @@
   import OverlayToggleGroup from './topic-components/OverlayToggleGroup.vue';
   import List from './topic-components/List.vue';
   import TabGroup from './topic-components/TabGroup.vue';
-  import TableGroup from './topic-components/TableGroup.vue';
+  import HorizontalTableGroup from './topic-components/HorizontalTableGroup.vue';
+  import BadgeCustom from './topic-components/BadgeCustom.vue';
+  // console.log('in TopicComponentGroup.vue script, Badge:', Badge, 'TabGroup:', TabGroup, 'Callout:', Callout, 'CollectionSummary:', CollectionSummary, 'HorizontalTable:', HorizontalTable);
 
   export default {
+    name: 'TopicComponentGroup',
     props: ['topicComponents', 'item', 'filterData'],
     components: {
       Badge,
@@ -37,7 +40,14 @@
       OverlayToggleGroup,
       List,
       TabGroup,
-      TableGroup,
+      HorizontalTableGroup,
+      BadgeCustom,
+    },
+    beforeCreate() {
+      // console.log('TopicComponentGroup beforeCreate is running');
+    },
+    created() {
+      // console.log('TopicComponentGroup.vue created is running, Badge:', Badge, 'topicComponents:', this.$props.topicComponents);
     },
     data() {
       return {

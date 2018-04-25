@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { point, polygon } from '@turf/helpers';
-import '@turf/distance';
+import distance from '@turf/distance';
 import '@turf/explode';
 import '@turf/nearest-point';
 import proj4 from 'proj4';
@@ -41,6 +41,7 @@ class EsriClient extends BaseClient {
   }
 
   fetchNearby(feature, dataSource, dataSourceKey) {
+    // console.log('esri fetchNearby running, dataSource:', dataSource, 'dataSourceKey:', dataSourceKey);
     const projection4326 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
     const projection2272 = "+proj=lcc +lat_1=40.96666666666667 +lat_2=39.93333333333333 +lat_0=39.33333333333334 +lon_0=-77.75 +x_0=600000 +y_0=0 +ellps=GRS80 +datum=NAD83 +to_meter=0.3048006096012192 +no_defs";
 
@@ -58,6 +59,7 @@ class EsriClient extends BaseClient {
     // TODO get some of these values from map, etc.
     const coords = feature.geometry.coordinates;
     const coords2272 = proj4(projection4326, projection2272, [coords[0], coords[1]]);
+    // console.log('coords:', coords, 'coords2272:', coords2272);
     const params = {
       // geometries: feature => '[' + feature.geometry.coordinates[0] + ', ' + feature.geometry.coordinates[1] + ']',
       geometries: `[${coords2272.join(', ')}]`,
@@ -73,13 +75,15 @@ class EsriClient extends BaseClient {
       geodesic: false,
       f: 'json',
     };
-    // console.debug('esri nearby params', params);
+    // console.log('esri nearby params', params);
 
     // get buffer polygon
     const bufferUrl = geometryServerUrl.replace(/\/$/, '') + '/buffer';
+    // console.log('bufferUrl:', bufferUrl);
 
     axios.get(bufferUrl, { params }).then(response => {
       const data = response.data;
+      // console.log('axios in esri fetchNearby is running, data:', data);
 
       // console.log('did get esri nearby buffer', data);
 
@@ -106,7 +110,7 @@ class EsriClient extends BaseClient {
 
       //this is a space holder
       const parameters = {};
-
+      console.log('about to call fetchBySpatialQuery');
       this.fetchBySpatialQuery(dataSourceKey,
                                dataSourceUrl,
                                'within',
@@ -123,7 +127,7 @@ class EsriClient extends BaseClient {
   }
 
   fetchBySpatialQuery(dataSourceKey, url, relationship, targetGeom, parameters = {}, options = {}, calculateDistancePt) {
-    // console.log('fetch esri spatial query, dataSourceKey:', dataSourceKey, 'url:', url, 'relationship:', relationship, 'targetGeom:', targetGeom, 'parameters:', parameters, 'options:', options);
+    console.log('fetch esri spatial query, dataSourceKey:', dataSourceKey, 'url:', url, 'relationship:', relationship, 'targetGeom:', targetGeom, 'parameters:', parameters, 'options:', options);
 
     let query;
     if (relationship === 'where') {
@@ -149,14 +153,16 @@ class EsriClient extends BaseClient {
     }, query);
 
     query.run((error, featureCollection, response) => {
-      // console.log('did get esri spatial query', response, error);
+      console.log('did get esri spatial query', response, error);
 
       let features = (featureCollection || {}).features;
       const status = error ? 'error' : 'success';
 
       // calculate distance
       if (calculateDistancePt) {
+        console.log('if calculateDistancePt is true is running');
         const from = point(calculateDistancePt);
+        console.log('from:', from);
 
         features = features.map(feature => {
           // console.log('feat', feature);
@@ -177,6 +183,7 @@ class EsriClient extends BaseClient {
 
           // TODO make distance units an option. for now, just hard code to ft.
           const distFeet = parseInt(dist * 5280);
+          // console.log('distFeet:', distFeet);
 
           feature._distance = distFeet;
 

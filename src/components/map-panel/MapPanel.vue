@@ -74,12 +74,13 @@
       <esri-dynamic-map-layer v-for="(item, key) in this.imageOverlayItems"
                               v-if="shouldShowImageOverlay(item.properties.RECMAP)"
                               :key="key"
-                              :url="'//gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/'"
-                              :layers="[29]"
-                              :layerDefs="'29:NAME=\'g' + item.properties.RECMAP.toLowerCase() + '.tif\''"
+                              :url="'//gis.phila.gov/arcgis/rest/services/Atlas/RegMaps/MapServer'"
+                              :layers="[0]"
+                              :layerDefs="'0:NAME=\'g' + item.properties.RECMAP.toLowerCase() + '.tif\''"
                               :transparent="true"
                               :opacity="0.5"
       />
+      <!-- :url="'//gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/'" -->
       <!-- :url="this.imageOverlayInfo.url"
       :opacity="this.imageOverlayInfo.opacity" -->
 
@@ -193,6 +194,11 @@
       >
       </control-corner>
 
+      <control-corner :vSide="'top'"
+                      :hSide="'almostleft'"
+      >
+      </control-corner>
+
       <!-- <basemap-tooltip :position="'topright'"
       /> -->
 
@@ -256,27 +262,11 @@
       >
       </scale-control> -->
 
-
-      <!-- search control -->
-      <!-- custom components seem to have to be wrapped like this to work
-           with v-once
-      -->
       <div v-once>
-        <control position="topleft">
-          <div class="mb-search-control-container">
-            <form @submit.prevent="handleSearchFormSubmit">
-                <input class="mb-search-control-input"
-                       placeholder="Search the map"
-                       :value="this.$config.defaultAddress"
-                />
-                <!-- :style="{ background: !!this.$store.state.error ? '#ffcece' : '#fff'}" -->
-                <button class="mb-search-control-button">
-                  <i class="fa fa-search fa-lg"></i>
-                </button>
-            </form>
-          </div>
-        </control>
+        <AddressInput position="topalmostleft" />
       </div>
+      <AddressCandidateList position="topalmostleft" />
+
 
       <cyclomedia-recording-circle v-for="recording in cyclomediaRecordings"
                                    v-if="cyclomediaActive"
@@ -303,6 +293,8 @@
   // vue doesn't like it when you import this as Map (reserved-ish word)
   import Map_ from '../../leaflet/Map.vue';
   import Control from '../../leaflet/Control.vue';
+  import AddressInput from '../AddressInput.vue';
+  import AddressCandidateList from '../AddressCandidateList.vue';
   import EsriTiledMapLayer from '../../esri-leaflet/TiledMapLayer.vue';
   import EsriTiledOverlay from '../../esri-leaflet/TiledOverlay.vue';
   import EsriDynamicMapLayer from '../../esri-leaflet/DynamicMapLayer.vue';
@@ -326,6 +318,8 @@
   import BasemapTooltip from '../BasemapTooltip.vue';
   import ControlCorner from '../../leaflet/ControlCorner.vue';
 
+  import debounce from 'debounce';
+
   export default {
     mixins: [
       markersMixin,
@@ -335,6 +329,8 @@
     components: {
       Map_,
       Control,
+      AddressInput,
+      AddressCandidateList,
       EsriTiledMapLayer,
       EsriTiledOverlay,
       EsriDynamicMapLayer,
@@ -380,6 +376,9 @@
       this.$controller.appDidLoad();
     },
     computed: {
+      // shouldShowAddressCandidateList() {
+      //   return this.$store.state.map.shouldShowAddressCandidateList;
+      // },
       measureControlEnabled() {
         if (this.$config.measureControlEnabled === false) {
           return false;
@@ -580,7 +579,7 @@
       },
       markers() {
         this.setMapToBounds();
-      }
+      },
     },
     methods: {
       setMapToBounds() {
@@ -655,9 +654,6 @@
           this.$store.commit('setCyclomediaLatLngFromMap', [lat, lng]);
         }
       },
-      handleSearchFormSubmit(e) {
-        this.$controller.handleSearchFormSubmit(e);
-      },
       fillColorForCircleMarker(markerId, tableId) {
         // get map overlay style and hover style for table
         const tableConfig = this.getConfigForTable(tableId);
@@ -682,38 +678,6 @@
   .mb-panel-map {
     /*this allows the loading mask to fill the div*/
     position: relative;
-  }
-
-  /*@media (max-width: 749px) {
-    .mb-panel-map {
-      height: 600px;
-    }
-  }*/
-
-  .mb-search-control-container {
-    height: 48px;
-    border-radius: 2px;
-    box-shadow:0 2px 4px rgba(0,0,0,0.2),0 -1px 0px rgba(0,0,0,0.02);
-  }
-
-  .mb-search-control-button {
-    color: #fff;
-    width: 50px;
-    background: #2176d2;
-    line-height: 48px;
-    padding: 0px;
-  }
-
-  .mb-search-control-input {
-    border: 0;
-    /*height: 48px !important;*/
-    /*line-height: 48px;*/
-    padding: 15px;
-    /*padding-left: 15px;
-    padding-right: 15px;*/
-    font-family: 'Montserrat', 'Tahoma', sans-serif;
-    font-size: 16px;
-    width: 275px;
   }
 
   .mb-map-with-widget {
@@ -743,13 +707,6 @@
     left: 40%;
   }
 
-  /*small*/
-  @media screen and (max-width: 39.9375em) {
-    .mb-search-control-input {
-      width: 200px;
-    }
-  }
-
   /*small retina*/
   /*@media
   (-webkit-min-device-pixel-ratio: 2),
@@ -759,4 +716,5 @@
       max-width: 250px;
     }
   }*/
+
 </style>

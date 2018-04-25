@@ -3,42 +3,48 @@ export default {
     activeFeature(nextActiveFeature, prevActiveFeature) {
       // console.log('WATCH active feature', prevActiveFeature, '=>', nextActiveFeature);
 
-      let updateFeature;
-
-      if (nextActiveFeature && nextActiveFeature.tableId && nextActiveFeature.featureId) {
-        updateFeature = nextActiveFeature;
-      } else {
-        updateFeature = prevActiveFeature;
-      }
-
-      const featureId = updateFeature.featureId;
-      const tableId = updateFeature.tableId;
-
-      // get marker
       const layerMap = this.$store.state.map.map._layers;
       const layers = Object.values(layerMap);
-      // console.log('layerMap:', layerMap, 'layers:', layers);
 
-      const matchingLayer = layers.filter(layer => {
-        const options = layer.options || {};
-        const data = options.data;
-        // console.log('options:', options, 'data:', data);
+      let updateFeaturePrev,
+          updateFeatureNext,
+          tableId,
+          featureIdPrev,
+          featureIdNext,
+          matchingLayerNext,
+          matchingLayerPrev;
 
-        if (!data) return;
+      if (prevActiveFeature && prevActiveFeature.tableId && prevActiveFeature.featureId) {
+        updateFeaturePrev = prevActiveFeature;
+        tableId = updateFeaturePrev.tableId
+        featureIdPrev = updateFeaturePrev.featureId;
+        matchingLayerPrev = layers.filter(layer => {
+          const options = layer.options || {};
+          const data = options.data;
+          if (!data) return;
+          const layerFeatureId = data.featureId;
+          const layerTableId = data.tableId;
+          return layerFeatureId === featureIdPrev && layerTableId === tableId;
+        })[0];
+        this.updateMarkerFillColor(matchingLayerPrev);
+      }
 
-        const layerFeatureId = data.featureId;
-        const layerTableId = data.tableId;
+      if (nextActiveFeature && nextActiveFeature.tableId && nextActiveFeature.featureId) {
+        updateFeatureNext = nextActiveFeature;
+        tableId = updateFeatureNext.tableId
+        featureIdNext = updateFeatureNext.featureId;
+        matchingLayerNext = layers.filter(layer => {
+          const options = layer.options || {};
+          const data = options.data;
+          if (!data) return;
+          const layerFeatureId = data.featureId;
+          const layerTableId = data.tableId;
+          return layerFeatureId === featureIdNext && layerTableId === tableId;
+        })[0];
+        this.updateMarkerFillColor(matchingLayerNext);
+        this.bringMarkerToFront(matchingLayerNext);
+      }
 
-        return layerFeatureId === featureId && layerTableId === tableId;
-      })[0];
-
-
-      // if (!matchingLayer) return;
-      // console.log('matchingLayer:', matchingLayer);
-      this.updateMarkerFillColor(matchingLayer);
-
-      // bring to front
-      this.bringMarkerToFront(matchingLayer);
     },
   },
   computed: {
@@ -96,15 +102,18 @@ export default {
       return markers;
     },
     circleMarkers() {
-      const filteredData = this.$store.state.tables.filteredData;
+      const filteredData = this.$store.state.horizontalTables.filteredData;
+      // const filteredData = this.filteredData;
       let circleMarkers = [];
 
       // get visible tables based on active topic
       const tableIds = this.$store.getters.visibleTableIds;
 
+      // console.log('computed circleMarkers is rerunning, filteredData:', filteredData, 'tableIds:', tableIds);
+
       for (let tableId of tableIds) {
         const tableConfig = this.getConfigForTable(tableId) || {};
-        console.log('tableConfig:', tableConfig);
+        // console.log('tableId:', tableId, 'tableConfig:', tableConfig);
         const mapOverlay = (tableConfig.options || {}).mapOverlay;
 
         if (!mapOverlay || mapOverlay.marker !== 'circle') {
@@ -121,7 +130,7 @@ export default {
 
         // go through rows
         for (let item of items) {
-          console.log('tableId', tableId)
+          // console.log('tableId', tableId)
           let latlng;
 
           // TODO - get geometry field name from config
@@ -216,7 +225,7 @@ export default {
     reactiveGeojsonFeatures() {
       const features = [];
 
-      const filteredData = this.$store.state.tables.filteredData;
+      const filteredData = this.$store.state.horizontalTables.filteredData;
       // get visible tables based on active topic
       const tableIds = this.$store.getters.visibleTableIds;
 
@@ -285,7 +294,7 @@ export default {
         for (let comp of comps) {
           const options = comp.options || {};
 
-          const innerComps = options.components || [];
+          const innerComps = options.components || options.tables || [];
 
           if (innerComps.length > 0) {
             const innerTable = this.getTableFromComps(innerComps, tableId);
@@ -336,7 +345,7 @@ export default {
       // }
     },
     updateMarkerFillColor(marker) {
-      // console.log('marker:', marker);
+      // console.log('updateMarkerFillColor, marker:', marker);
       // get next fill color
       const { featureId, tableId } = marker.options.data;
       const nextFillColor = this.fillColorForCircleMarker(featureId, tableId);

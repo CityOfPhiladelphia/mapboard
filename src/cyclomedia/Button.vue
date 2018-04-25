@@ -46,15 +46,16 @@
         // if the cyclo viewer is off screen when it loads imagery, it won't
         // show anything even once it's on screen. use this to trigger an
         // update.
-        const viewer = this.$store.state.cyclomedia.viewer;
+        
+        // const viewer = this.$store.state.cyclomedia.viewer;
+        //
+        // if (willBeActive && viewer) {
+        //   this.$nextTick(() => {
+        //     viewer.forceUpdate();
+        //   });
+        // }
 
-        if (willBeActive && viewer) {
-          this.$nextTick(() => {
-            viewer.forceUpdate();
-          });
-        }
-
-        this.$emit('click');
+        // this.$emit('click');
       },
       // setNewLocation(latlng) {
       //   const viewer = this.$store.state.cyclomedia.viewer;

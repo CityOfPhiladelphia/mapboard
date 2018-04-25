@@ -6,6 +6,7 @@ import uglify from 'rollup-plugin-uglify';
 import analyzer from 'rollup-analyzer-plugin';
 import builtins from 'rollup-plugin-node-builtins';
 import globals from 'rollup-plugin-node-globals';
+import replace from 'rollup-plugin-replace';
 
 // check if we're in development mode (i.e. rollup is running with watch)
 const dev = !!process.env.ROLLUP_WATCH;
@@ -81,5 +82,9 @@ export default {
     !dev && uglify(),
     // analyze if dev
     dev && analyzer(),
+
+    // replace({
+    //   'process.env.NODE_ENV': JSON.stringify( 'development' )
+    // })
   ],
 };

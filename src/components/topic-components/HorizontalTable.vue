@@ -4,9 +4,11 @@
     >
       Text
     </button> -->
-    <div v-if="shouldShowTable">
+    <!-- <div v-if="shouldShowTable"> -->
       <!-- controls -->
-      <div class="mb-horizontal-table-controls">
+      <div class="mb-horizontal-table-controls"
+           v-if="shouldShowHeaders !== false"
+      >
         <div v-if="!!options.filters"
              class="vertically-centered"
         >
@@ -74,7 +76,7 @@
         </div>
       </div> <!-- end of mb-horizontal-table-controls block -->
 
-      <div class="mb-horizontal-table-body">
+      <div :class="{ 'mb-horizontal-table-body': true, 'no-padding': !shouldShowHeaders }">
         <div v-if="slots.title">
           <h4 style="display:inline-block">
             {{ evaluateSlot(slots.title) }} {{ countText }}
@@ -91,7 +93,7 @@
         </div>
 
         <table role="grid" class="stack">
-          <thead>
+          <thead v-if="shouldShowHeaders !== false">
             <tr>
               <th v-for="field in fields">{{ evaluateSlot(field.label) }}</th>
             </tr>
@@ -108,9 +110,10 @@
         </table>
 
         <!-- external link (aka "see more")-->
-        <div class="external-link">
-          <a v-if="options.externalLink && shouldShowExternalLink"
-             :href="externalLinkHref"
+        <div class="external-link"
+             v-if="options.externalLink && shouldShowExternalLink"
+        >
+          <a :href="externalLinkHref"
              class="external"
              target="_blank"
           >
@@ -129,32 +132,40 @@
         </span>
       </a>
 
-    </div>
+    <!-- </div> -->
   </div>
 </template>
 
 <script>
   import TopicComponent from './TopicComponent.vue';
   import HorizontalTableRow from './HorizontalTableRow.vue';
+  import moment from 'moment';
   // import json2csv from 'json2csv';
   // import fs from 'fs';
 
   const DEFAULT_SORT_FIELDS = [
+    'distance',
     'date',
-    'distance'
   ];
 
   export default {
     mixins: [TopicComponent],
     data() {
       const filters = this.options.filters || [];
-      const defaultFilterSelections = Object.keys(filters).reduce((acc, i) =>
-                                      {
-                                        const key = `filter-${i}`;
-                                        acc[key] = {};
-                                        return acc;
-                                      }, {});
-
+      const filtersKeys = Object.keys(filters);
+      // console.log('in horiz table data, filters:', filters, 'filtersKeys:', filtersKeys);
+      // const defaultFilterSelections = Object.keys(filters).reduce((acc, i) =>
+      //                                 {
+      //                                   const key = `filter-${i}`;
+      //                                   console.log('in reduce, i:', i, 'acc:', acc, 'key:', key, 'acc[key]:', acc[key]);
+      //                                   acc[key] = {};
+      //                                   return acc;
+      //                                 }, {});
+      let defaultFilterSelections = {}
+      for (let index=0; index < filters.length; index++) {
+        defaultFilterSelections['filter-' + index] = filters[index].values[0];
+      }
+      console.log('in horiz table data, filters:', filters, 'filtersKeys:', filtersKeys, 'defaultFilterSelections:', defaultFilterSelections);
       let sortFields;
       if (this.options.sort){
         sortFields = this.options.sort.sortFields || [];
@@ -193,7 +204,7 @@
       // const data = this.itemsAfterSearch;
       // const tableId = this.options.tableId;
 
-      // this.$store.commit('setTableFilteredData', {
+      // this.$store.commit('setHorizontalTableFilteredData', {
       //   tableId,
       //   data
       // });
@@ -211,6 +222,13 @@
       }
     },
     computed: {
+      shouldShowHeaders() {
+        if (typeof this.options.shouldShowHeaders === 'undefined') {
+          return true;
+        } else {
+          return this.options.shouldShowHeaders;
+        }
+      },
       shouldShowDownloadButton() {
         let downloadButton = false;
         if (this.options.downloadButton) {
@@ -221,26 +239,26 @@
       secondaryStatus() {
         return this.$store.state.sources[this.options.id].secondaryStatus;
       },
-      shouldShowTable() {
-        let result = true;
-
-        // if the table is in a tab group or table group, it will have an "item" in props
-        if (this.item) {
-          // if it is in a table group, the item will contain an "activeTable" for the group
-          if (this.item.activeTable) {
-            const id = this.options.id;
-            if (this.item.activeTable != id) {
-              result = false
-            }
-          }
-        }
-        // if there is no data, and the table should not show at all if it is empty
-        if (this.$props.options.showOnlyIfData && this.items.length === 0) {
-          result = false;
-        }
-
-        return result;
-      },
+      // shouldShowTable() {
+      //   let result = true;
+      //
+      //   // if the table is in a tab group or table group, it will have an "item" in props
+      //   if (this.item) {
+      //     // if it is in a table group, the item will contain an "activeTable" for the group
+      //     if (this.item.activeTable) {
+      //       const id = this.options.id;
+      //       if (this.item.activeTable != id) {
+      //         result = false
+      //       }
+      //     }
+      //   }
+      //   // if there is no data, and the table should not show at all if it is empty
+      //   if (this.$props.options.showOnlyIfData && this.items.length === 0) {
+      //     result = false;
+      //   }
+      //
+      //   return result;
+      // },
       shouldShowRetrieveButton() {
         return this.highestRowRetrieved < this.count;
       },
@@ -346,7 +364,7 @@
       },
       // this takes itemsAfterSearch and applies selected filters
       itemsAfterFilters() {
-        // console.log('itemsAfterFilters is running');
+        console.log('itemsAfterFilters is running, this.filters:', this.filters, 'this.filterSelections:', this.filterSelections);
         const itemsAfterSearch = this.itemsAfterSearch;
         const items = this.filterItems(itemsAfterSearch,
                                        this.filters,
@@ -549,7 +567,7 @@
         this.sortField = value;
       },
       handleFilterValueChange(e) {
-        // console.log('handle filter value change', e);
+        console.log('handle filter value change', e);
 
         const target = e.target;
         const slug = target.value;
@@ -580,16 +598,23 @@
         this.searchText = "";
       },
       filterItems(items, filters, filterSelections) {
+        // console.log('typeof items:', typeof items);
         // console.log('FILTER ITEMS is running, items:', items, 'filters:', filters, 'filterSelections:', filterSelections);
         let itemsFiltered = items.slice();
 
         if (filters) {
-          for (let [index, filter] of filters.entries()) {
-            const key = `filter-${index}`;
+          // console.log('in filterItems, filters:', filters, 'filters.length', filters.length, 'filters.entries():', filters.entries(), 'filters.keys():', filters.keys());
+          // for (let [index, filter] of filters.entries()) {
+          for (let index=0; index < filters.length; index++) {
+            const key = 'filter-' + index;
+            // const key = `filter-${index}`;
             const data = filterSelections[key];
-            const {type, getValue} = filter;
+            // console.log('index:', index, 'key:', key, 'data:', data, 'filters:', filters[index]);
+            const {type, getValue} = filters[index];
             const {unit, value} = data;
             const direction = data.direction || 'subtract';
+
+            // console.log('type:', type);
 
             // TODO put these in separate methods
             switch(type) {
@@ -602,7 +627,7 @@
                 // });
                 break;
               case 'time':
-                // console.log('TIME FILTER direction', direction);
+                console.log('TIME FILTER direction', direction, 'value:', value, 'unit:', unit);
                 let min, max;
 
                 if (direction === 'subtract') {
@@ -616,10 +641,12 @@
                   throw `Invalid time direction: ${direction}`;
                 }
 
+                // console.log('in case time, itemsFiltered:', itemsFiltered);
                 itemsFiltered = itemsFiltered.filter(item => {
                   const itemValue = getValue(item);
                   const itemMoment = moment(itemValue);
                   const isBetween = itemMoment.isBetween(min, max)
+                  // console.log('itemValue:', itemValue, 'itemMoment:', itemMoment, 'min:', min, 'max:', max, 'isBetween:', isBetween);
                   return isBetween;
                 });
                 // console.log('ITEMS FILTERED BY TIME FILTER', itemsFiltered);
@@ -717,13 +744,13 @@
       },
       // this updates the global state that stores filtered table rows
       updateTableFilteredData() {
-        // console.log('update table filtered data');
+        console.log('update table filtered data is running, options:', this.options);
 
         // get table id
         const { tableId } = this.options;
 
         // update global state
-        this.$store.commit('setTableFilteredData', {
+        this.$store.commit('setHorizontalTableFilteredData', {
           tableId,
           data: this.itemsAfterFilters
         });
@@ -808,6 +835,12 @@
 
   .mb-horizontal-table-body {
     padding-top: 1rem;
+    padding-bottom: 0.35rem;
+  }
+
+  .no-padding {
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   .center-button {
@@ -825,6 +858,7 @@
   }
 
   table {
+    table-layout: fixed;
     margin: 0;
   }
 

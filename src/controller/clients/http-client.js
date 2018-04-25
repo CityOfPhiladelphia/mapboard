@@ -100,6 +100,8 @@ class HttpClient extends BaseClient {
     const dateMinType = options.dateMinType || null;
     const dateField = options.dateField || null;
     const successFn = options.success;
+    const distances = options.distances || 250;
+    // console.log('fetchNearby distances:', distances);
 
     const distQuery = "ST_Distance(the_geom::geography, ST_SetSRID(ST_Point("
                     + feature.geometry.coordinates[0]
@@ -114,7 +116,7 @@ class HttpClient extends BaseClient {
     const select = "*, " + distQuery + 'as distance,' + latQuery + 'as lat, ' + lngQuery + 'as lng';
     // }
 
-    params['q'] = "select" + select + " from " + table + " where " + distQuery + " < 250";
+    params['q'] = "select" + select + " from " + table + " where " + distQuery + " < " + distances;
 
     if (dateMinNum) {
       params['q'] = params['q'] + " and " + dateField + " > '" + moment().subtract(dateMinNum, dateMinType).format('YYYY-MM-DD') + "'"
