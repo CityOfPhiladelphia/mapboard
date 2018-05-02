@@ -1,0 +1,39 @@
+.greeting > h2 {
+  margin-bottom: 30px;
+}
+
+.greeting > .callout {
+  border-color: #58c04d;
+  background: #fff;
+  /*margin: 0 0 1rem 0;*/
+  padding: 1rem;
+}
+
+.greeting > .callout > ul {
+  margin: 0 0 0 1.42857rem;
+  padding: 0 0 0 1.42857rem;
+}
+
+#application .site-header, #application .app-footer {
+	background: #2176d2;
+}
+
+#application .site-header .page-title-container h1 {
+	font-size: 2.14286rem;
+}
+
+/*this fixes an issue with the topic panel scrolling over the footer padding*/
+#application .app-footer {
+	position: relative;
+}
+
+/*small*/
+@media screen and (max-width: 39.9375em) {
+	.logo {
+		float: left;
+	}
+
+	.page-title-container {
+		float: right;
+	}
+}
