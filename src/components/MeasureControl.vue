@@ -1,6 +1,6 @@
 <script>
   import MeasureControl from 'leaflet-measure';
-  import 'leaflet-measure/dist/leaflet-measure.css';
+  // import 'leaflet-measure/dist/leaflet-measure.css';
 
   export default {
     props: ['position'],
@@ -16,7 +16,7 @@
     methods: {
       createLeafletElement() {
         const { position } = this.$props;
-        
+
         return new MeasureControl({
   				position,
   				primaryLengthUnit: 'feet',
