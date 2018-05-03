@@ -9,7 +9,7 @@ import globals from 'rollup-plugin-node-globals';
 import replace from 'rollup-plugin-replace';
 
 // check if we're in development mode (i.e. rollup is running with watch)
-const dev = !!process.env.ROLLUP_WATCH;
+const dev = !!process.env.ROLLUP_WATCH || process.env.NODE_ENV === 'development';
 
 // get module names of dependencies (we want to treat these as externals so
 // they don't get bundled)
