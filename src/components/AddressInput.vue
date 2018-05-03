@@ -14,13 +14,14 @@
         />
       <!-- </div> -->
     </form>
-    <button class="mb-search-control-button"
+    <button class="mb-search-clear-button"
             v-if="this.addressEntered != '' && this.addressEntered != null"
             @click="handleFormX"
     >
       <i class="fa fa-times fa-lg"></i>
     </button>
     <button class="mb-search-control-button"
+            name="mb-search-control-button"
             tabindex="-1"
             @click="this.handleSearchFormSubmit"
     >
@@ -140,6 +141,15 @@
 
 .mb-search-control-form {
   display: inline-block;
+}
+
+.mb-search-clear-button {
+  display: inline-block;
+  color: #fff;
+  width: 50px;
+  background: #2176d2;
+  line-height: 48px;
+  padding: 0px;
 }
 
 .mb-search-control-button {
