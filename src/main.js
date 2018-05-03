@@ -79,7 +79,9 @@ function initMapboard(clientConfig) {
 
     // parse raw js. yes, it's ok to use eval :)
     // http://stackoverflow.com/a/87260/676001
-    const baseConfig = eval(data);
+    const baseConfigFn = eval(data);
+    const { gatekeeperKey } = clientConfig;
+    const baseConfig = baseConfigFn({ gatekeeperKey });
 
     // deep merge base config and client config
     //const config = mergeDeep(clientConfig, baseConfig);
