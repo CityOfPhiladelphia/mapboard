@@ -6,7 +6,8 @@
   "scripts": {
     "build": "rollup -c rollup.config.js",
     "dev": "yarn build -w",
-    "e2e": "node test/e2e/runner.js"
+    "e2e": "node test/e2e/runner.js",
+    "example": "webpack-serve ./example/webpack.config.js"
   },
   "main": "./dist/mapboard.js",
   "dependencies": {
@@ -42,7 +43,9 @@
     "rollup-plugin-uglify": "^3.0.0",
     "rollup-plugin-vue": "^3.0.0",
     "selenium-server": "^3.11.0",
-    "vue-template-compiler": "^2.5.13"
+    "vue-template-compiler": "^2.5.13",
+    "webpack": "^4.6.0",
+    "webpack-serve": "^0.3.2"
   },
   "publishConfig": {
     "access": "public"

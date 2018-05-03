@@ -1,30 +1,14 @@
-
-// forms the url for the atlas example on the dev server
-function getAtlasExampleUrl(browser) {
-  const { devServerUrl } = browser.globals;
-  return `${devServerUrl}/examples/cityatlas`;
-}
-
-// partial function to bootstrap an atlas test
-// function testAtlas(browser, callback) {
-//   browser
-//     .url(getAtlasExampleUrl(browser))
-//     .waitForElementVisible('#mb-root', 5000);
-//
-//   callback()
-//
-//   end();''
-// }
-
 module.exports = {
   // waitForConditionTimeout: 5000,
   // TODO replace this with more meaningful tests
-  '[Atlas] Basic Test': browser => {
+  'Basic Test': browser => {
     browser
-      .url(getAtlasExampleUrl(browser))
+      .url(browser.globals.devServerUrl)
       .waitForElementVisible('#mb-root')
       .setValue('.mb-search-control-input', '1234 mkt')
-      .click('.mb-search-control-button')
+      .waitForElementVisible(`button[name="mb-search-control-button"]`)
+      .click(`button[name="mb-search-control-button"]`)
+      // .click('.mb-search-control-button')
       .waitForElementVisible('.topic-panel-content')
 
 
