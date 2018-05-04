@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mb-horizontal-table">
     <!-- <button v-if="shouldShowButton"
     >
       Text
