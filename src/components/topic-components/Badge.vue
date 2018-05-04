@@ -12,7 +12,7 @@
 </template>
 
 <script>
-  console.log('in Badge.vue script');
+  // console.log('in Badge.vue script');
   import TopicComponent from './TopicComponent.vue';
 
   export default {
