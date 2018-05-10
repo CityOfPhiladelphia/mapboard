@@ -50,6 +50,7 @@
   import PictometryWidget from '../pictometry/Widget.vue';
   import Layer from '../pictometry/Layer.vue';
   import PngMarker from '../pictometry/PngMarker.vue';
+  import ViewCone from '../pictometry/ViewCone.vue';
 
   export default {
     components: {
@@ -58,7 +59,8 @@
       CyclomediaWidget,
       PictometryWidget,
       Layer,
-      PngMarker
+      PngMarker,
+      ViewCone
     },
     data() {
       const data = {
