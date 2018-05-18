@@ -4,7 +4,7 @@
     >
       Text
     </button> -->
-    <!-- <div v-if="shouldShowTable"> -->
+    <div v-if="shouldShowTable">
       <!-- controls -->
       <div class="mb-horizontal-table-controls"
            v-if="shouldShowFilters !== false"
@@ -132,7 +132,7 @@
         </span>
       </a>
 
-    <!-- </div> -->
+    </div>
   </div>
 </template>
 
@@ -246,26 +246,26 @@
       secondaryStatus() {
         return this.$store.state.sources[this.options.id].secondaryStatus;
       },
-      // shouldShowTable() {
-      //   let result = true;
-      //
-      //   // if the table is in a tab group or table group, it will have an "item" in props
-      //   if (this.item) {
-      //     // if it is in a table group, the item will contain an "activeTable" for the group
-      //     if (this.item.activeTable) {
-      //       const id = this.options.id;
-      //       if (this.item.activeTable != id) {
-      //         result = false
-      //       }
-      //     }
-      //   }
-      //   // if there is no data, and the table should not show at all if it is empty
-      //   if (this.$props.options.showOnlyIfData && this.items.length === 0) {
-      //     result = false;
-      //   }
-      //
-      //   return result;
-      // },
+      shouldShowTable() {
+        let result = true;
+
+        // if the table is in a tab group or table group, it will have an "item" in props
+        // if (this.item) {
+        //   // if it is in a table group, the item will contain an "activeTable" for the group
+        //   if (this.item.activeTable) {
+        //     const id = this.options.id;
+        //     if (this.item.activeTable != id) {
+        //       result = false
+        //     }
+        //   }
+        // }
+        // if there is no data, and the table should not show at all if it is empty
+        if (this.$props.options.showOnlyIfData && this.items.length === 0) {
+          result = false;
+        }
+
+        return result;
+      },
       shouldShowRetrieveButton() {
         return this.highestRowRetrieved < this.count;
       },
