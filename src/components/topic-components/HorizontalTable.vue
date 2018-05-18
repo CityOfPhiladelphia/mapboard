@@ -865,7 +865,7 @@
   }
 
   table {
-    table-layout: fixed;
+    /* table-layout: fixed; */
     margin: 0;
   }
 
