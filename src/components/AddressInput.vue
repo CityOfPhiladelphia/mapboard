@@ -14,12 +14,12 @@
         />
       <!-- </div> -->
     </form>
-    <button class="mb-search-clear-button"
+    <!-- <button class="mb-search-clear-button"
             v-if="this.addressEntered != '' && this.addressEntered != null"
             @click="handleFormX"
     >
       <i class="fa fa-times fa-lg"></i>
-    </button>
+    </button> -->
     <button class="mb-search-control-button"
             name="mb-search-control-button"
             tabindex="-1"
@@ -44,11 +44,12 @@
         return this.$store.state.map.addressEntered;
       },
       inputClass() {
-        if (this.addressEntered === '' || this.addressEntered === null) {
-          return 'mb-search-control-input';
-        } else {
-          return 'mb-search-control-input-full';
-        }
+        return 'mb-search-control-input';
+        // if (this.addressEntered === '' || this.addressEntered === null) {
+        //   return 'mb-search-control-input';
+        // } else {
+        //   return 'mb-search-control-input-full';
+        // }
       },
     },
     methods: {

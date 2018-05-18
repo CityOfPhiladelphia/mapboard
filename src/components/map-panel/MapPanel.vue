@@ -265,7 +265,7 @@
       <div v-once>
         <AddressInput position="topalmostleft" />
       </div>
-      <AddressCandidateList position="topalmostleft" />
+      <!-- <AddressCandidateList position="topalmostleft" /> -->
 
 
       <cyclomedia-recording-circle v-for="recording in cyclomediaRecordings"
