@@ -7,7 +7,7 @@
     <!-- <div v-if="shouldShowTable"> -->
       <!-- controls -->
       <div class="mb-horizontal-table-controls"
-           v-if="shouldShowHeaders !== false"
+           v-if="shouldShowFilters !== false"
       >
         <div v-if="!!options.filters"
              class="vertically-centered"
@@ -76,7 +76,7 @@
         </div>
       </div> <!-- end of mb-horizontal-table-controls block -->
 
-      <div :class="{ 'mb-horizontal-table-body': true, 'no-padding': !shouldShowHeaders }">
+      <div :class="{ 'mb-horizontal-table-body': true, 'no-padding': !shouldShowFilters }">
         <div v-if="slots.title">
           <h4 style="display:inline-block">
             {{ evaluateSlot(slots.title) }} {{ countText }}
@@ -222,6 +222,13 @@
       }
     },
     computed: {
+      shouldShowFilters() {
+        if (typeof this.options.shouldShowFilters === 'undefined') {
+          return true;
+        } else {
+          return this.options.shouldShowFilters;
+        }
+      },
       shouldShowHeaders() {
         if (typeof this.options.shouldShowHeaders === 'undefined') {
           return true;
