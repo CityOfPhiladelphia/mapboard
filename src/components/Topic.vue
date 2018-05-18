@@ -207,10 +207,18 @@
 
           // if any sources are still waiting, return waiting
           // console.log('sourceStatuses:', sourceStatuses);
-          if (sourceStatuses.some(x => x.includes('waiting'))) {
+          if (sourceStatuses.some(x => {
+            if (x) {
+              x.includes('waiting')
+            }
+          })) {
             topicStatus = 'waiting';
           // if any sources have errors, return error
-          } else if (sourceStatuses.some(x => x.includes('error'))) {
+          } else if (sourceStatuses.some(x => {
+            if (x) {
+              x.includes('error')
+            }
+          })) {
             topicStatus = 'error';
           } else {
             topicStatus = 'success';
