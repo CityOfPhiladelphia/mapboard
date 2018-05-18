@@ -39,8 +39,9 @@ class Controller {
     this.dataManager.fetchMoreData(dataSource, highestPageRetrieved);
   }
 
-  handleSearchFormSubmit() {
-    const input = this.store.state.map.addressEntered;
+  handleSearchFormSubmit(value) {
+    const input = value
+    // const input = this.store.state.map.addressEntered;
     // console.log('handle search form submit', e, this);
 
     // const input = e.target[0].value;

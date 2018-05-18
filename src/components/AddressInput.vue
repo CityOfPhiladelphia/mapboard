@@ -9,9 +9,9 @@
         <input :class="this.inputClass"
                placeholder="Search the map"
                :value="this.addressEntered"
-               @keyup="didType"
                tabindex="0"
         />
+        <!-- @keyup="didType" -->
       <!-- </div> -->
     </form>
     <!-- <button class="mb-search-clear-button"
@@ -84,20 +84,20 @@
         const map = this.map;
         leafletElement.addTo(map);
       },
-      didType: debounce(function (e) {
-          console.log('debounce is running, e:', e, 'this:', this);
-          if (e.key === "ArrowDown") {
-            document.getElementById('address-candidate-list-0').focus();
-            return;
-          }
-          const { value } = e.target;
-          this.getCandidates(value);
-          this.$store.commit('setAddressEntered', value);
-          if (e.key !== "Enter") {
-            this.$store.commit('setShouldShowAddressCandidateList', true);
-          }
-        }, 300
-      ),
+      // didType: debounce(function (e) {
+      //     console.log('debounce is running, e:', e, 'this:', this);
+      //     if (e.key === "ArrowDown") {
+      //       document.getElementById('address-candidate-list-0').focus();
+      //       return;
+      //     }
+      //     const { value } = e.target;
+      //     this.getCandidates(value);
+      //     this.$store.commit('setAddressEntered', value);
+      //     if (e.key !== "Enter") {
+      //       this.$store.commit('setShouldShowAddressCandidateList', true);
+      //     }
+      //   }, 300
+      // ),
       getCandidates(address) {
         // console.log('getCandidates is running, address:', address);
         axios.get('https://cqvfg1pm72.execute-api.us-east-1.amazonaws.com/dev/first-api-test/', {
@@ -121,12 +121,12 @@
       handleFormX() {
         this.$store.commit('setAddressEntered', '');
       },
-      handleSearchFormSubmit() {
-        // const value = e.target[0].value;
-        const value = this.addressEntered;
+      handleSearchFormSubmit(e) {
+        const value = e.target[0].value;
+        // const value = this.addressEntered;
         this.$controller.handleSearchFormSubmit(value);
-        // this.$store.commit('setAddressEntered', value);
-        this.$store.commit('setShouldShowAddressCandidateList', false);
+        this.$store.commit('setAddressEntered', value);
+        // this.$store.commit('setShouldShowAddressCandidateList', false);
       },
     }
   };
