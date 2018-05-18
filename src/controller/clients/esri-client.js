@@ -167,25 +167,19 @@ class EsriClient extends BaseClient {
 
       // calculate distance
       if (calculateDistancePt) {
-        console.log('if calculateDistancePt is true is running');
         const from = point(calculateDistancePt);
-        console.log('from:', from);
 
         features = features.map(feature => {
-          // console.log('feat', feature);
           const featureCoords = feature.geometry.coordinates;
-          // console.log('featureCoords:', featureCoords);
           let dist;
           if (Array.isArray(featureCoords[0])) {
             // console.log('featureCoords is array of coords:', featureCoords[0]);
             let polygon = polygon([featureCoords[0]]);
             const vertices = explode(polygon)
             const closestVertex = nearest(from, vertices);
-            // console.log('closestVertex', closestVertex);
             dist = distance(from, closestVertex, { units: 'miles' })
           } else {
             const to = point(featureCoords);
-            console.log('to:', to);
             dist = distance(from, to, { units: 'miles' });
           }
 
