@@ -176,7 +176,7 @@ export default {
         props.weight = 2;
         props.opacity = 1;
         props.fillOpacity = 0.3;
-        props.key = geojson.properties.PARCELID;
+        props.key = props.geojson.properties.PARCELID;
         features.push(props);
 
       // dor parcel
