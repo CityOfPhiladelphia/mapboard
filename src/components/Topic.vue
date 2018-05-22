@@ -153,8 +153,7 @@
             (this.status !== 'waiting' && !this.hasData)
           )
         );
-        shouldShowError && console.log('BINGO BINGO BINGO:', this.topicKey);
-        console.log(this.$props.topicKey, 'shouldShowError:', shouldShowError, 'status:', this.status, 'hasData:', this.hasData);
+        shouldShowError && console.log('BINGO BINGO BINGO:', this.topicKey, 'shouldShowError:', shouldShowError, 'status:', this.status, 'hasData:', this.hasData);
         return shouldShowError;
       },
       errorMessage() {
@@ -170,7 +169,6 @@
         get() {
           // get the status of each source
           const dataSources = this.topic.dataSources || [];
-          // console.log('dataSources:', dataSources);
 
           // if no sources, return success
           if (dataSources.length === 0) {
@@ -203,27 +201,23 @@
               return [this.$store.state.sources[dataSource].status];
             }
           });
-          // console.log(this.$props.topicKey, 'sourceStatuses:', sourceStatuses);
 
-          // if any sources are still waiting, return waiting
-          // console.log('sourceStatuses:', sourceStatuses);
-          if (sourceStatuses.some(x => {
-            if (x) {
-              x.includes('waiting')
+          let flatArray = []
+          for (let sourceStatus of sourceStatuses) {
+            if (sourceStatus) {
+              for (let sourceStatusValue of sourceStatus) {
+                flatArray.push(sourceStatusValue);
+              }
             }
-          })) {
+          }
+
+          if (flatArray.includes('waiting')) {
             topicStatus = 'waiting';
-          // if any sources have errors, return error
-          } else if (sourceStatuses.some(x => {
-            if (x) {
-              x.includes('error')
-            }
-          })) {
+          } else if (flatArray.includes('error')) {
             topicStatus = 'error';
           } else {
             topicStatus = 'success';
           }
-
           return topicStatus;
         }
       },
