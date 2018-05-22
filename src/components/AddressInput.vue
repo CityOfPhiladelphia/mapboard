@@ -170,7 +170,7 @@
   padding: 15px;
   font-family: 'Montserrat', 'Tahoma', sans-serif;
   font-size: 16px;
-  width: 300px;
+  width: 250px;
 }
 
 .mb-search-control-input-full {
