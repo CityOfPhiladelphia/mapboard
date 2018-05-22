@@ -8,7 +8,7 @@ navigation events.
 import * as L from 'leaflet';
 import { query as Query } from 'esri-leaflet';
 // import * as turf from '@turf/turf';
-import { polygon } from '@turf/helpers';
+import { point, polygon } from '@turf/helpers';
 import distance from '@turf/distance';
 import area from '@turf/area';
 import {
@@ -722,7 +722,21 @@ class DataManager {
     for (let featureSorted of featuresSorted) {
       // const turfPolygon = polygon(featureSorted.geometry.coordinates);
       const turfPolygon = polygon(featureSorted.geometry.coordinates);
+      let turfCoordinates = []
+      for (let coordinate of featureSorted.geometry.coordinates[0]) {
+        // console.log('coordinate:', coordinate);
+        turfCoordinates.push(point(coordinate));
+      }
+
+      let distances = []
+      for (let i=0; i<turfCoordinates.length - 1; i++) {
+        distances[i] = distance(turfCoordinates[i], turfCoordinates[i+1], {units: 'feet'})
+      }
+
+      // console.log('coordinates:', featureSorted.geometry.coordinates, 'turfCoordinates:', turfCoordinates, 'distances:', distances);
+
       // turf area is returned in square meters - conversion is to square feet
+      featureSorted.properties.TURF_PERIMETER = distances.reduce(function(acc, val) { return acc + val; });
       featureSorted.properties.TURF_AREA = area(turfPolygon) * 10.7639;
     }
 
