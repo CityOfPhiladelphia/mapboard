@@ -121,9 +121,11 @@
       handleFormX() {
         this.$store.commit('setAddressEntered', '');
       },
-      handleSearchFormSubmit(e) {
-        const value = e.target[0].value;
+      handleSearchFormSubmit() {
+        // const value = e.target[0].value;
         // const value = this.addressEntered;
+        const value = $('.mb-search-control-input').val();
+        // console.log('handleSearchFormSubmit value:', value);
         this.$controller.handleSearchFormSubmit(value);
         this.$store.commit('setAddressEntered', value);
         // this.$store.commit('setShouldShowAddressCandidateList', false);
