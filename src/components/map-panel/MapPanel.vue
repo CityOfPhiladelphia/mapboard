@@ -210,7 +210,7 @@
       </div>
 
       <div v-once>
-        <basemap-select-control :position="'topalmostright'" />
+        <basemap-select-control :position="this.basemapSelectControlPosition" />
       </div>
 
       <div v-once>
@@ -263,9 +263,11 @@
       </scale-control> -->
 
       <div v-once>
-        <AddressInput position="topalmostleft" />
+        <AddressInput :position="this.addressInputPosition" />
       </div>
-      <!-- <AddressCandidateList position="topalmostleft" /> -->
+      <AddressCandidateList v-show="this.addressAutocompleteEnabled"
+                            :position="this.addressInputPosition"
+      />
 
 
       <cyclomedia-recording-circle v-for="recording in cyclomediaRecordings"
@@ -376,9 +378,30 @@
       this.$controller.appDidLoad();
     },
     computed: {
-      // shouldShowAddressCandidateList() {
-      //   return this.$store.state.map.shouldShowAddressCandidateList;
-      // },
+      addressAutocompleteEnabled() {
+        if (this.$config.addressAutocomplete.enabled === true) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      addressInputPosition() {
+        // if (this.isMobileOrTablet) {
+        //   return 'topleft'
+        // } else {
+          return 'topalmostleft'
+        // }
+      },
+      basemapSelectControlPosition() {
+        if (this.isMobileOrTablet) {
+          return 'topright'
+        } else {
+          return 'topalmostright'
+        }
+      },
+      shouldShowAddressCandidateList() {
+        return this.$store.state.map.shouldShowAddressCandidateList;
+      },
       measureControlEnabled() {
         if (this.$config.measureControlEnabled === false) {
           return false;
