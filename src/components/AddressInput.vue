@@ -7,6 +7,7 @@
     >
       <!-- <div class="form-group"> -->
         <input :class="this.inputClass"
+               id="mb-search-control-input"
                placeholder="Search the map"
                :value="this.addressEntered"
                tabindex="0"
@@ -162,8 +163,9 @@
         if (this.addressAutocompleteEnabled){
           value = this.$store.state.map.addressEntered;
         } else {
-          value = $('.mb-search-control-input').val();
+          value = $('#mb-search-control-input').val();
         }
+        console.log('handleSearchFormSubmit is running, value:', value);
         // console.log('handleSearchFormSubmit value:', value);
         this.$controller.handleSearchFormSubmit(value);
         this.$store.commit('setAddressEntered', value);
