@@ -4,7 +4,7 @@
   >
     <ul>
       <li v-for="(candidate, i) in candidates">
-        <a :href="'#/' + candidate + '/property'"
+        <a :href="'#/' + candidate + '/' + activeTopic"
            @click="closeAddressCandidateList(candidate)"
            class="list-group-item"
            tabindex="-1"
@@ -33,6 +33,9 @@
       shouldShowAddressCandidateList() {
         return this.$store.state.map.shouldShowAddressCandidateList;
       },
+      activeTopic() {
+        return this.$store.state.activeTopic;
+      }
     },
     watch: {
       shouldShowAddressCandidateList(nextValue) {
@@ -101,6 +104,7 @@
       },
       closeAddressCandidateList(addressCandidate) {
         // console.log('closeAddressCandidateList, addressCandidate:', addressCandidate);
+        this.$controller.handleSearchFormSubmit(addressCandidate);
         this.$store.commit('setAddressEntered', addressCandidate);
         this.$store.commit('setShouldShowAddressCandidateList', false);
       },
