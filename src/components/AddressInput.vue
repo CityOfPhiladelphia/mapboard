@@ -10,17 +10,17 @@
                placeholder="Search the map"
                :value="this.addressEntered"
                tabindex="0"
+               @keyup="didType"
         />
-        <!-- @keyup="didType" -->
       <!-- </div> -->
     </form>
-    <!-- <button class="mb-search-clear-button"
-            v-if="this.addressEntered != '' && this.addressEntered != null"
+    <button :class="this.buttonClass"
+            v-if="this.addressAutocompleteEnabled && this.addressEntered != '' && this.addressEntered != null"
             @click="handleFormX"
     >
       <i class="fa fa-times fa-lg"></i>
-    </button> -->
-    <button class="mb-search-control-button"
+    </button>
+    <button :class="this.buttonClass"
             name="mb-search-control-button"
             tabindex="-1"
             @click="this.handleSearchFormSubmit"
@@ -44,12 +44,44 @@
         return this.$store.state.map.addressEntered;
       },
       inputClass() {
-        return 'mb-search-control-input';
-        // if (this.addressEntered === '' || this.addressEntered === null) {
-        //   return 'mb-search-control-input';
-        // } else {
-        //   return 'mb-search-control-input-full';
-        // }
+        if (this.isMobileOrTablet) {
+          if (this.addressAutocompleteEnabled) {
+            if (this.addressEntered === '' || this.addressEntered === null) {
+              return 'mb-search-control-input-mobile';
+            } else {
+              return 'mb-search-control-input-mobile-full';
+            }
+          } else {
+            return 'mb-search-control-input-mobile';
+          }
+        } else {
+          if (this.addressAutocompleteEnabled) {
+            if (this.addressEntered === '' || this.addressEntered === null) {
+              return 'mb-search-control-input';
+            } else {
+              return 'mb-search-control-input-full';
+            }
+          } else {
+            return 'mb-search-control-input';
+          }
+        }
+      },
+      buttonClass() {
+        if (this.isMobileOrTablet) {
+          return 'mb-search-control-button-mobile'
+        } else {
+          return 'mb-search-control-button'
+        }
+      },
+      addressAutocompleteEnabled() {
+        if (this.$config.addressAutocomplete.enabled === true) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      isMobileOrTablet() {
+        return this.$store.state.isMobileOrTablet;
       },
     },
     methods: {
@@ -84,20 +116,22 @@
         const map = this.map;
         leafletElement.addTo(map);
       },
-      // didType: debounce(function (e) {
-      //     console.log('debounce is running, e:', e, 'this:', this);
-      //     if (e.key === "ArrowDown") {
-      //       document.getElementById('address-candidate-list-0').focus();
-      //       return;
-      //     }
-      //     const { value } = e.target;
-      //     this.getCandidates(value);
-      //     this.$store.commit('setAddressEntered', value);
-      //     if (e.key !== "Enter") {
-      //       this.$store.commit('setShouldShowAddressCandidateList', true);
-      //     }
-      //   }, 300
-      // ),
+      didType: debounce(function (e) {
+          if (this.addressAutocompleteEnabled) {
+            console.log('debounce is running, e:', e, 'this:', this);
+            if (e.key === "ArrowDown") {
+              document.getElementById('address-candidate-list-0').focus();
+              return;
+            }
+            const { value } = e.target;
+            this.getCandidates(value);
+            this.$store.commit('setAddressEntered', value);
+            if (e.key !== "Enter") {
+              this.$store.commit('setShouldShowAddressCandidateList', true);
+            }
+          }
+        }, 300
+      ),
       getCandidates(address) {
         // console.log('getCandidates is running, address:', address);
         axios.get('https://cqvfg1pm72.execute-api.us-east-1.amazonaws.com/dev/first-api-test/', {
@@ -124,7 +158,12 @@
       handleSearchFormSubmit() {
         // const value = e.target[0].value;
         // const value = this.addressEntered;
-        const value = $('.mb-search-control-input').val();
+        let value;
+        if (this.addressAutocompleteEnabled){
+          value = this.$store.state.map.addressEntered;
+        } else {
+          value = $('.mb-search-control-input').val();
+        }
         // console.log('handleSearchFormSubmit value:', value);
         this.$controller.handleSearchFormSubmit(value);
         this.$store.commit('setAddressEntered', value);
@@ -137,7 +176,7 @@
 <style scoped>
 
 .mb-search-control-container {
-  height: 48px;
+  height: 38px;
   border-radius: 2px;
   box-shadow:0 2px 4px rgba(0,0,0,0.2),0 -1px 0px rgba(0,0,0,0.02);
 }
@@ -146,14 +185,14 @@
   display: inline-block;
 }
 
-.mb-search-clear-button {
+/* .mb-search-clear-button {
   display: inline-block;
   color: #fff;
   width: 50px;
   background: #2176d2;
   line-height: 48px;
   padding: 0px;
-}
+} */
 
 .mb-search-control-button {
   display: inline-block;
@@ -162,6 +201,17 @@
   background: #2176d2;
   line-height: 48px;
   padding: 0px;
+}
+
+.mb-search-control-button-mobile {
+  display: inline-block;
+  color: #fff;
+  width: 38px;
+  height: 38px;
+  background: #2176d2;
+  line-height: 38px;
+  padding: 0px;
+  padding-top: 1px;
 }
 
 .mb-search-control-input {
@@ -178,7 +228,26 @@
   padding: 15px;
   font-family: 'Montserrat', 'Tahoma', sans-serif;
   font-size: 16px;
-  width: 247px;
+  width: 197px;
+}
+
+.mb-search-control-input-mobile {
+  display: inline-block;
+  border: 0;
+  padding: 15px;
+  font-family: 'Montserrat', 'Tahoma', sans-serif;
+  font-size: 16px;
+  width: 250px;
+  height: 38px;
+}
+
+.mb-search-control-input-mobile-full {
+  border: 0;
+  padding: 15px;
+  font-family: 'Montserrat', 'Tahoma', sans-serif;
+  font-size: 16px;
+  width: 197px;
+  height: 38px;
 }
 
 /*small*/
@@ -187,8 +256,16 @@
     width: 200px;
   }
 
+  .mb-search-control-input-mobile {
+    width: 200px;
+  }
+
   .mb-search-control-input-full {
     width: 147px;
+  }
+
+  .mb-search-control-input-mobile-full {
+    width: 158px;
   }
 
 }
