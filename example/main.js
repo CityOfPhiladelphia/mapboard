@@ -136,6 +136,9 @@ mapboard({
   geolocation: {
     enabled: false
   },
+  addressAutocomplete: {
+    enabled: false
+  },
   rootStyle: {
     position: 'absolute',
     bottom: 0,
