@@ -4,10 +4,8 @@
   />
 </template> -->
 <script>
-  import L from 'leaflet';
-  // import OpacitySlider from '../leaflet/OpacitySlider';
-  // TODO look into a cleaner way of importing from esri-leaflet
-  const EsriFeatureLayer = L.esri.featureLayer;
+  import * as L from 'leaflet';
+  import { featureLayer as FeatureLayer } from 'esri-leaflet';
 
   // min and max zooms are not handled by esri leaflet, but are handled by vue
   export default {
@@ -48,7 +46,7 @@
         delete props.style_;
         props.style = style_;
 
-        return new EsriFeatureLayer(props);
+        return new FeatureLayer(props);
       },
       parentMounted(parent) {
         const map = parent.$leafletElement;

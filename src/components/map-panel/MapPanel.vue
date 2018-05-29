@@ -74,12 +74,13 @@
       <esri-dynamic-map-layer v-for="(item, key) in this.imageOverlayItems"
                               v-if="shouldShowImageOverlay(item.properties.RECMAP)"
                               :key="key"
-                              :url="'//gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/'"
-                              :layers="[29]"
-                              :layerDefs="'29:NAME=\'g' + item.properties.RECMAP.toLowerCase() + '.tif\''"
+                              :url="'//gis.phila.gov/arcgis/rest/services/Atlas/RegMaps/MapServer'"
+                              :layers="[0]"
+                              :layerDefs="'0:NAME=\'g' + item.properties.RECMAP.toLowerCase() + '.tif\''"
                               :transparent="true"
                               :opacity="0.5"
       />
+      <!-- :url="'//gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/'" -->
       <!-- :url="this.imageOverlayInfo.url"
       :opacity="this.imageOverlayInfo.opacity" -->
 
@@ -193,6 +194,11 @@
       >
       </control-corner>
 
+      <control-corner :vSide="'top'"
+                      :hSide="'almostleft'"
+      >
+      </control-corner>
+
       <!-- <basemap-tooltip :position="'topright'"
       /> -->
 
@@ -204,7 +210,7 @@
       </div>
 
       <div v-once>
-        <basemap-select-control :position="'topalmostright'" />
+        <basemap-select-control :position="this.basemapSelectControlPosition" />
       </div>
 
       <div v-once>
@@ -256,27 +262,13 @@
       >
       </scale-control> -->
 
-
-      <!-- search control -->
-      <!-- custom components seem to have to be wrapped like this to work
-           with v-once
-      -->
       <div v-once>
-        <control position="topleft">
-          <div class="mb-search-control-container">
-            <form @submit.prevent="handleSearchFormSubmit">
-                <input class="mb-search-control-input"
-                       placeholder="Search the map"
-                       :value="this.$config.defaultAddress"
-                />
-                <!-- :style="{ background: !!this.$store.state.error ? '#ffcece' : '#fff'}" -->
-                <button class="mb-search-control-button">
-                  <i class="fa fa-search fa-lg"></i>
-                </button>
-            </form>
-          </div>
-        </control>
+        <AddressInput :position="this.addressInputPosition" />
       </div>
+      <AddressCandidateList v-show="this.addressAutocompleteEnabled"
+                            :position="this.addressInputPosition"
+      />
+
 
       <cyclomedia-recording-circle v-for="recording in cyclomediaRecordings"
                                    v-if="cyclomediaActive"
@@ -295,6 +287,7 @@
 </template>
 
 <script>
+  import * as L from 'leaflet';
   // mixins
   import markersMixin from './markers-mixin';
   import cyclomediaMixin from '../../cyclomedia/map-panel-mixin';
@@ -302,6 +295,8 @@
   // vue doesn't like it when you import this as Map (reserved-ish word)
   import Map_ from '../../leaflet/Map.vue';
   import Control from '../../leaflet/Control.vue';
+  import AddressInput from '../AddressInput.vue';
+  import AddressCandidateList from '../AddressCandidateList.vue';
   import EsriTiledMapLayer from '../../esri-leaflet/TiledMapLayer.vue';
   import EsriTiledOverlay from '../../esri-leaflet/TiledOverlay.vue';
   import EsriDynamicMapLayer from '../../esri-leaflet/DynamicMapLayer.vue';
@@ -325,6 +320,8 @@
   import BasemapTooltip from '../BasemapTooltip.vue';
   import ControlCorner from '../../leaflet/ControlCorner.vue';
 
+  import debounce from 'debounce';
+
   export default {
     mixins: [
       markersMixin,
@@ -334,6 +331,8 @@
     components: {
       Map_,
       Control,
+      AddressInput,
+      AddressCandidateList,
       EsriTiledMapLayer,
       EsriTiledOverlay,
       EsriDynamicMapLayer,
@@ -379,6 +378,30 @@
       this.$controller.appDidLoad();
     },
     computed: {
+      addressAutocompleteEnabled() {
+        if (this.$config.addressAutocomplete.enabled === true) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      addressInputPosition() {
+        // if (this.isMobileOrTablet) {
+        //   return 'topleft'
+        // } else {
+          return 'topalmostleft'
+        // }
+      },
+      basemapSelectControlPosition() {
+        if (this.isMobileOrTablet) {
+          return 'topright'
+        } else {
+          return 'topalmostright'
+        }
+      },
+      shouldShowAddressCandidateList() {
+        return this.$store.state.map.shouldShowAddressCandidateList;
+      },
       measureControlEnabled() {
         if (this.$config.measureControlEnabled === false) {
           return false;
@@ -574,18 +597,12 @@
           this.$store.state.map.map.invalidateSize();
         })
       },
-      // boundsBasedOnShape() {
-      //   console.log('WATCH BOUNDSBASEDONSHAPE IS RUNNING SETMAPTOBOUNDS');
-      //   this.setMapToBounds();
-      // },
       geojsonFeatures() {
-        console.log('WATCH GEOJSONFEATURES IS RUNNING SETMAPTOBOUNDS');
         this.setMapToBounds();
       },
       markers() {
-        console.log('WATCH MARKERS IS FIRING SETMAPTOBOUNDS');
         this.setMapToBounds();
-      }
+      },
     },
     methods: {
       setMapToBounds() {
@@ -593,16 +610,12 @@
         let featureArray = []
         if (this.activeTopicConfig.zoomToShape) {
           if (this.activeTopicConfig.zoomToShape.includes('geojson')) {
-            console.log('if zoomToShape includes geojson is running, geojsonFeatures:', this.geojsonFeatures);
             for (let geojsonFeature of this.geojsonFeatures) {
-              console.log('looping geojsonFeatures:', geojsonFeature);
               featureArray.push(L.geoJSON(geojsonFeature.geojson))
             }
           }
           if (this.activeTopicConfig.zoomToShape.includes('marker')) {
-            console.log('if zoomToShape includes marker is running, markers:', this.markers);
             for (let marker of this.markers) {
-              console.log('looping markers:', marker);
               if (marker.markerType === 'overlay') {
                 featureArray.push(L.marker(marker.latlng))
               }
@@ -610,7 +623,6 @@
           }
           const group = new L.featureGroup(featureArray);
           const bounds = group.getBounds();
-          console.log('MAP PANEL SETMAPTOBOUNDS IS RUNNING, group:', group, 'bounds:', bounds);
           this.$store.commit('setMapBounds', bounds);
         }
       },
@@ -665,9 +677,6 @@
           this.$store.commit('setCyclomediaLatLngFromMap', [lat, lng]);
         }
       },
-      handleSearchFormSubmit(e) {
-        this.$controller.handleSearchFormSubmit(e);
-      },
       fillColorForCircleMarker(markerId, tableId) {
         // get map overlay style and hover style for table
         const tableConfig = this.getConfigForTable(tableId);
@@ -692,38 +701,6 @@
   .mb-panel-map {
     /*this allows the loading mask to fill the div*/
     position: relative;
-  }
-
-  /*@media (max-width: 749px) {
-    .mb-panel-map {
-      height: 600px;
-    }
-  }*/
-
-  .mb-search-control-container {
-    height: 48px;
-    border-radius: 2px;
-    box-shadow:0 2px 4px rgba(0,0,0,0.2),0 -1px 0px rgba(0,0,0,0.02);
-  }
-
-  .mb-search-control-button {
-    color: #fff;
-    width: 50px;
-    background: #2176d2;
-    line-height: 48px;
-    padding: 0px;
-  }
-
-  .mb-search-control-input {
-    border: 0;
-    /*height: 48px !important;*/
-    /*line-height: 48px;*/
-    padding: 15px;
-    /*padding-left: 15px;
-    padding-right: 15px;*/
-    font-family: 'Montserrat', 'Tahoma', sans-serif;
-    font-size: 16px;
-    width: 275px;
   }
 
   .mb-map-with-widget {
@@ -753,13 +730,6 @@
     left: 40%;
   }
 
-  /*small*/
-  @media screen and (max-width: 39.9375em) {
-    .mb-search-control-input {
-      width: 200px;
-    }
-  }
-
   /*small retina*/
   /*@media
   (-webkit-min-device-pixel-ratio: 2),
@@ -769,4 +739,5 @@
       max-width: 250px;
     }
   }*/
+
 </style>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+  <head>
+    <!-- Google Tag Manager [CityGeo] -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-NKCTSVS');</script>
+    <!-- End Google Tag Manager -->
+
+    <meta charset="UTF-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mapboard | phila.gov</title>
+    <link rel="canonical" href="">
+    <meta name="description" content="">
+    <link rel="shortcut icon" type="image/x-icon" href="http://standards.phila.gov/img/favicon.png">
+
+    <!--
+      open graph/twitter card. this makes links to atlas.phila.gov look nice on
+      social media.
+    -->
+    <meta name="twitter:card" content="summary">
+    <meta property="og:title" content="Mapboard | phila.gov">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="http://atlas.phila.gov/src/assets/screenshot.png">
+    <meta property="og:url" content="http://atlas.phila.gov/">
+    <meta property="og:description" content="Explore the City's property data in one place, including deeds, zoning, permits, and more.">
+    <meta property="og:site_name" content="phila.gov">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.css">
+    <link rel="stylesheet" href="//unpkg.com/phila-standards@0.12.0/dist/css/phila-app.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//unpkg.com/Leaflet.vector-markers@0.0.6/dist/leaflet-vector-markers.css">
+
+    <link rel="stylesheet" href="//cdn.rawgit.com/CityOfPhiladelphia/leaflet-measure/b70886af342f19597dc2937d79d64bad6bab07c6/dist/leaflet-measure.css">
+    <link rel="stylesheet" href="//unpkg.com/leaflet@1.3.1/dist/leaflet.css">
+    <link rel="stylesheet" href="//unpkg.com/leaflet-easybutton@2.3.0/src/easy-button.css">
+
+
+    <link rel="stylesheet" href="styles.css">
+  </head>
+
+  <body>
+    <!-- Google Tag Manager (noscript) [GIS Services Group] -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NKCTSVS"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <!-- Google Tag Manager [phila.gov] -->
+    <!-- <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MC6CR2"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-MC6CR2');</script> -->
+    <!-- End Google Tag Manager -->
+
+    <div class="grid-y medium-grid-frame" id="application">
+      <!-- demo alert -->
+<!--       <div id="alpha-alert">
+          <div class="row">
+              <div class="large-16 columns">
+                  <p>
+                      We value your
+                      <a class="external" href="//philagsg.typeform.com/to/v0xlIR" target="_blank">feedback<span class="accessible">Opens in new window</span></a>.
+                      Please let us know how we can improve this application.
+                  </p>
+              </div>
+          </div>
+      </div>
+ -->
+      <!-- Begin header -->
+      <header class="site-header app group">
+        <div class="row expanded">
+          <div class="columns">
+            <a href="//beta.phila.gov" class="logo">
+              <img src="http://standards.phila.gov/img/logo/city-of-philadelphia-yellow-white.png" alt="City of Philadelphia">
+            </a>
+            <div class="app-divide"></div>
+            <div class="page-title-container">
+              <a href="#/">
+                <h1 class="page-title">Mapboard</h1>
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Mapboard -->
+      <div id="mapboard"></div>
+
+      <!-- Footer -->
+      <div class="app-footer">
+        <!-- remove the anchor class if you want to handle footer placement yourself, otherwise it will be postion: fixed -->
+        <footer>
+          <div class="row expanded">
+            <div class="columns">
+              <nav>
+                <ul class="inline-list">
+                  <li>
+                    <a href="//bit.ly/phl-atlas-feedback">Feedback</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </footer>
+      </div>
+
+    </div><!-- end of application div -->
+
+    <!-- JS: Foundation -->
+    <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+    <!-- JS: Mapboard dependencies -->
+    <!-- TODO these should be included in the vendor bundle instead of being
+         loaded here
+    -->
+    <script src="//unpkg.com/axios@0.18.0/dist/axios.min.js"></script>
+    <!-- <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
+            integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
+            crossorigin="">
+    </script> -->
+    <!-- <script src="measure/leaflet-measure.js"></script> -->
+
+    <!-- JS: Cyclomedia (optional) -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/react/15.6.1/react.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/react/15.6.1/react-dom.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/ol3/4.1.0/ol.js"></script>
+    <script src="//streetsmart.cyclomedia.com/api/v18.4/StreetSmartApi.js"></script>
+
+    <!-- JS: Pictometry (optional) -->
+    <!-- <script src="//unpkg.com/blueimp-md5@2.10.0/js/md5.min.js"></script> -->
+
+    <!-- JS: Local -->
+    <script src="//unpkg.com/accounting@0.4.1/accounting.js"></script>
+    <script src="//unpkg.com/moment@2.22.1/moment.js"></script>
+
+
+    <!-- Sentry -->
+    <!-- TODO bundle sentry? -->
+    <script src="//cdn.ravenjs.com/3.19.1/raven.min.js" crossorigin="anonymous"></script>
+    <script>Raven.config('https://0e97477faf4b4693a88eb87604a42b27@sentry.io/211586').install()</script>
+
+    <!-- Mapboard -->
+    <!-- <script src="//unpkg.com/@cityofphiladelphia/mapboard@1.2.30/dist/build.js"></script> -->
+
+    <!-- TEMP -->
+    <!-- <script src="gatekeeper-shim.js"></script> -->
+
+    <!-- <script src="vendor.js"></script>
+    <script src="mapboard.js"></script>
+    <script src="app.js"></script> -->
+    <script src="bundle.js"></script>
+  </body>
+</html>

@@ -1,5 +1,6 @@
 <script>
-  import L from 'leaflet';
+  import MeasureControl from 'leaflet-measure';
+  // import 'leaflet-measure/dist/leaflet-measure.css';
 
   export default {
     props: ['position'],
@@ -14,12 +15,13 @@
     },
     methods: {
       createLeafletElement() {
-        const MeasureTool = new L.Control.Measure({
-  				position: this.$props.position,
+        const { position } = this.$props;
+
+        return new MeasureControl({
+  				position,
   				primaryLengthUnit: 'feet',
   				primaryAreaUnit: 'sqfeet',
   			});
-        return MeasureTool;
       },
       parentMounted(parent) {
         const map = parent.$leafletElement;

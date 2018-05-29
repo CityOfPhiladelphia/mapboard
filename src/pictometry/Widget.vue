@@ -8,12 +8,11 @@
     >
       <i class="fa fa-external-link fa popout-icon"></i>
     </div>
-    <!-- <div id="iframe-div"> -->
-    <iframe
-      id="pictometry-ipa"
-      src="#"
-      ref="pictometryIpa"
-    />
+    <iframe id="pictometry-ipa"
+            src="#"
+            ref="pictometryIpa"
+    >
+    </iframe>
     <!-- </div> -->
     <div>
       <slot />
@@ -22,6 +21,9 @@
 </template>
 
 <script>
+  import $ from 'jquery';
+  import md5 from 'blueimp-md5';
+
   export default {
     props: [
       'apiKey',
@@ -85,7 +87,7 @@
         }
       },
       cyclomediaActive(nextStatus) {
-        if (nextStatus === true) {
+        if (nextStatus) {
           // console.log('pict: cyclo on');
           this.$ipa.showDashboard({
             zoom: false,
@@ -183,99 +185,8 @@
         })
       },
     }, // end of methods
-
-
-      //     didActivateTopic: function (topic) {
-      //       console.log('didActivateTopic is firing with topic: ', topic);
-      //       switch (topic) {
-      //         case 'deeds':
-      //           // turn on DOR Parcels
-      //           ipa.showLayer({
-      //             id: 114828,
-      //             visible: true,
-      //           })
-      //           break;
-      //         case 'zoning':
-      //           // turn on zoning
-      //           ipa.showLayer({
-      //             id: 112230,
-      //             visible: true,
-      //           });
-      //           break;
-      //         case 'water':
-      //           // turn on water Parcels
-      //           ipa.showLayer({
-      //             id: 108982,
-      //             visible: true,
-      //           })
-      //           break;
-      //
-      //         default:
-      //           // turn off DOR parcels
-      //           ipa.showLayer({
-      //             id: 113478,
-      //             visible: false,
-      //           });
-      //           // turn off zoning
-      //           ipa.showLayer({
-      //             id: 112230,
-      //             visible: false,
-      //           });
-      //       }
-      //     },
-      //
-      //     didDeactivateTopic: function (topic) {
-      //       switch (topic) {
-      //         case 'deeds':
-      //           // turn off DOR parcels
-      //           ipa.showLayer({
-      //             id: 114828,
-      //             visible: false,
-      //           });
-      //           break;
-      //
-      //         case 'zoning':
-      //           // turn on zoning
-      //           ipa.showLayer({
-      //             id: 112230,
-      //             visible: false,
-      //           });
-      //           break;
-      //
-      //         case 'water':
-      //           // turn off water
-      //           ipa.showLayer({
-      //             id: 108982,
-      //             visible: false,
-      //           })
-      //
-      //         default:
-      //           // turn off DOR parcels
-      //           ipa.showLayer({
-      //             id: 113478,
-      //             visible: false,
-      //           });
-      //           // turn off zoning
-      //           ipa.showLayer({
-      //             id: 112230,
-      //             visible: false,
-      //           });
-      //       }
-      //     },
-      //
-      //     shapeIds : [],
-      //     circleIds : [],
-      //     cameraIds : [],
-      //
-      //
-      //    }//end of return
-      // })();
-
-
   }; // end of export
-
 </script>
-
 
 <style scoped>
 
@@ -387,25 +298,17 @@ header.site-header > .row:last-of-type {
 
 .data-row table th, .data-row table td {
     font-size: 15px;
-}
+    margin-left: 8.5px;
+  }
 
-.data-row table tr th {
-    text-align: left;
-    vertical-align: top;
-}
+  #pict-container {
+    padding: 0px;
+    height: 50%;
+    position: relative;
+  }
 
-#map {
-    height: 100%;
-}
-
-ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-img { max-width: inherit; }
-
+  /*#iframe-div {
+  }*/
 
 
 </style>

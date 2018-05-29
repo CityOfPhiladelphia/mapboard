@@ -49,8 +49,8 @@
   import CyclomediaWidget from '../cyclomedia/Widget.vue';
   import PictometryWidget from '../pictometry/Widget.vue';
   import Layer from '../pictometry/Layer.vue';
-  import ViewCone from '../pictometry/ViewCone.vue';
   import PngMarker from '../pictometry/PngMarker.vue';
+  import ViewCone from '../pictometry/ViewCone.vue';
 
   export default {
     components: {
@@ -59,8 +59,8 @@
       CyclomediaWidget,
       PictometryWidget,
       Layer,
-      ViewCone,
-      PngMarker
+      PngMarker,
+      ViewCone
     },
     data() {
       const data = {
@@ -74,30 +74,9 @@
     created() {
       // check if mobile or tablet
       this.$store.commit('setIsMobileOrTablet', this.isMobileOrTabletMethod());
+      window.addEventListener('click', this.closeAddressCandidateList);
       window.addEventListener('resize', this.handleWindowResize);
       this.handleWindowResize();
-      // if (IS_MOBILE_OR_TABLET === true) { this.$store.commit('setCyclomediaSurfaceCursorOn', false) }
-    //   console.log('MAPBOARD.VUE CREATED', this.$config);
-    //   let tables = {};
-    //   for (let topic of this.$config.topics) {
-    //     for (let component of topic.components) {
-    //       if (component.type === 'horizontal-table') {
-    //         // console.log('topic:', topic.label, component.type, component.slots.title);
-    //         const tableName = topic.key + '_' + component.options.id
-    //         tables[tableName] = null
-    //       }
-    //       else if (component.type === 'tab-group' || component.type === 'table-group') {
-    //         for (let innerComponent of component.options.components) {
-    //           if (innerComponent.type === 'horizontal-table') {
-    //             // console.log('topic:', topic.label, component.type, innerComponent.type, innerComponent.slots.title);
-    //             const tableName = topic.key + '_' + innerComponent.options.id
-    //             tables[tableName] = null
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    //   this.$store.commit('setTables', tables);
     },
     computed: {
       rootClass() {
@@ -214,6 +193,9 @@
         const isMobileOrTablet = mobileOrTabletRegexA.test(userAgent) || mobileOrTabletRegexB.test(userAgent.substr(0,4));
 
         return isMobileOrTablet;
+      },
+      closeAddressCandidateList() {
+        this.$store.state.map.shouldShowAddressCandidateList = false;
       },
       handleWindowResize() {
         // this only actually affects the size if it is set to "plugin mode"

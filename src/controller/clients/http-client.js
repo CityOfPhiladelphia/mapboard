@@ -1,5 +1,5 @@
 import axios from 'axios';
-import proj4 from 'proj4';
+import moment from 'moment';
 import BaseClient from './base-client';
 
 class HttpClient extends BaseClient {
@@ -94,10 +94,14 @@ class HttpClient extends BaseClient {
     const options = dataSource.options;
     // const srid = options.srid || 4326;
     const table = options.table;
+    // TODO generalize these options into something like a `sql` param that
+    // returns a sql statement
     const dateMinNum = options.dateMinNum || null;
     const dateMinType = options.dateMinType || null;
     const dateField = options.dateField || null;
     const successFn = options.success;
+    const distances = options.distances || 250;
+    // console.log('fetchNearby distances:', distances);
 
     const distQuery = "ST_Distance(the_geom::geography, ST_SetSRID(ST_Point("
                     + feature.geometry.coordinates[0]
@@ -112,7 +116,7 @@ class HttpClient extends BaseClient {
     const select = "*, " + distQuery + 'as distance,' + latQuery + 'as lat, ' + lngQuery + 'as lng';
     // }
 
-    params['q'] = "select" + select + " from " + table + " where " + distQuery + " < 250";
+    params['q'] = "select" + select + " from " + table + " where " + distQuery + " < " + distances;
 
     if (dateMinNum) {
       params['q'] = params['q'] + " and " + dateField + " > '" + moment().subtract(dateMinNum, dateMinType).format('YYYY-MM-DD') + "'"

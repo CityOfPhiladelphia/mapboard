@@ -20,6 +20,8 @@
 </template>
 
 <script>
+  import proj4 from 'proj4';
+
   export default {
     data() {
       return {
@@ -92,7 +94,7 @@
         this.setDivWidth();
       },
       locForCyclo(newCoords) {
-        console.log('watch locForCyclo is firing, setNewLocation running with newCoords:', newCoords);
+        // console.log('watch locForCyclo is firing, setNewLocation running with newCoords:', newCoords);
         if (newCoords) {
           this.setNewLocation(newCoords);
         }
@@ -137,7 +139,6 @@
         () => {
           // get map center and set location
           const map = this.$store.state.map;
-          console.log('mounted is calling setNewLocation, map.center:', map.center);
           this.setNewLocation([map.center[1], map.center[0]]);
         },
         err => {
@@ -147,7 +148,7 @@
       window.addEventListener('resize', this.setDivWidth);
     },
     updated() {
-      console.log('cyclomedia updated running');
+      // console.log('cyclomedia updated running');
       // TODO find a better way to get the image to update and not be stretched
       // const viewer = this.$store.state.cyclomedia.viewer;
       if (this.cyclomediaActive) {
@@ -185,8 +186,10 @@
           viewerType: viewerType,
           srs: 'EPSG:2272',
           // srs: 'EPSG:4326',
-          closable: false,
-          maximizable: false,
+          panoramaViewer: {
+            closable: false,
+            maximizable: false,
+          }
         }).then (
           function(result) {
             // console.log('StreetSmartApi2, result:', result);
@@ -197,6 +200,8 @@
                 if(result[i].getType() === StreetSmartApi.ViewerType.PANORAMA) window.panoramaViewer = result[i];
               }
               widget.sendOrientationToStore();
+
+              // StreetSmartApi.removeOverlay()
               window.panoramaViewer.toggleNavbarExpanded(widget.navBarOpen);
               // if (widget.isMobileOrTablet) {
               // console.log('about to remove surfaceCursorLayer');

@@ -6,21 +6,24 @@ import mergeDeep from './util/merge-deep';
 import controllerMixin from './controller';
 import generateUniqueId from './util/unique-id';
 
-if (!global._babelPolyfill) {
-  require('babel-polyfill');
-}
-require('es6-promise').polyfill();
+// TODO can these be converted to es6?
+// if (!global._babelPolyfill) {
+//   require('babel-polyfill');
+// }
+// require('es6-promise').polyfill();
 
 // helper function to auto-assign ids to horizontal tables
 function assignTableIds(comps) {
+  // console.log('assignTableIds comps:', comps);
   for (let comp of comps) {
     const options = comp.options || {};
-    const innerComps = options.components;
+    // console.log('assignTableIds, comp:', comp);
+    const innerComps = options.components || options.tables;
 
     // if this is a "group" component, recurse
     if (innerComps) {
       assignTableIds(innerComps);
-      return;
+      // return;
     }
 
     // skip comps that aren't horizontal tables
@@ -36,10 +39,12 @@ function assignTableIds(comps) {
   }
 }
 
-function assignTableGroupIds(comps) {
+function assignHorizontalTableGroupIds(comps) {
+  // console.log('assignHorizontalTableGroupIds is running, comps:', comps);
   for (let comp of comps) {
     const options = comp.options || {};
-    const innerComps = options.components;
+    // const innerComps = options.components;
+    const innerComps = options.tables;
 
     // if this is a "group" component, recurse
     if (!innerComps) {
@@ -47,19 +52,21 @@ function assignTableGroupIds(comps) {
     }
 
     // skip comps that aren't horizontal table groups
-    if (comp.type !== 'table-group') {
+    if (comp.type !== 'horizontal-table-group') {
       continue;
     }
 
      const id = generateUniqueId();
+     // console.log('assignHorizontalTableGroupIds id:', id);
      comp._id = id;
      // the id also needs to get passed to the horizontal table component, so
      // use the options object.
-     comp.options.tableGroupId = id;
+     comp.options.horizontalTableGroupId = id;
   }
 }
 
-export default (clientConfig) => {
+function initMapboard(clientConfig) {
+  // console.log('clientConfig:', clientConfig);
   const baseConfigUrl = clientConfig.baseConfig;
 
   // create a global event bus used to proxy events to the mapboard host
@@ -72,16 +79,20 @@ export default (clientConfig) => {
 
     // parse raw js. yes, it's ok to use eval :)
     // http://stackoverflow.com/a/87260/676001
-    const baseConfig = eval(data);
+    const baseConfigFn = eval(data);
+    const { gatekeeperKey } = clientConfig;
+    const baseConfig = baseConfigFn({ gatekeeperKey });
 
     // deep merge base config and client config
     //const config = mergeDeep(clientConfig, baseConfig);
     const config = mergeDeep(baseConfig, clientConfig);
+    // console.log('config:', config);
 
     // assign table ids
     for (let topic of config.topics) {
+      // console.log('topic:', topic);
       assignTableIds(topic.components);
-      assignTableGroupIds(topic.components);
+      assignHorizontalTableGroupIds(topic.components);
     }
 
     // make config accessible from each component via this.$config
@@ -142,6 +153,9 @@ export default (clientConfig) => {
   }).catch(err => {
     console.error('Error loading base config:', err);
   });
-};
+}
 
+export default initMapboard;
+
+// also expose the vue component as a named export
 export { Mapboard };

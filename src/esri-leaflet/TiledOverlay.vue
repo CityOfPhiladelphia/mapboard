@@ -1,3 +1,6 @@
+<!-- REVIEW should this be merged with TiledMapLayer.vue and put the opacity
+slider in a slot? -->
+
 <template>
   <opacity-slider :layer="this.$leafletElement"
                   :position="'topleft'"
@@ -7,10 +10,9 @@
 </template>
 
 <script>
-  import L from 'leaflet';
-  // TODO look into a cleaner way of importing from esri-leaflet
+  import * as L from 'leaflet';
+  import { tiledMapLayer as TiledMapLayer } from 'esri-leaflet';
   import OpacitySlider from '../components/OpacitySlider.vue';
-  const EsriTiledMapLayer = L.esri.tiledMapLayer;
 
   export default {
     components: {
@@ -45,9 +47,8 @@
     methods: {
       createLeafletElement() {
         const props = Object.assign({}, this.$props);
-        const mapLayer = new EsriTiledMapLayer(props);
+        const mapLayer = new TiledMapLayer(props);
         return mapLayer;
-
       },
       parentMounted(parent) {
         const map = parent.$leafletElement;

@@ -4,12 +4,9 @@ import BaseClient from './base-client';
 // the high-level purpose of this is: take an address, geocode it, and put
 // the result in state.
 class GeocodeClient extends BaseClient {
-  // constructor(opts) {
-  //   this.config = opts.config;
-  //   this.store = opts.store;
-  // }
   fetch(input) {
-    console.log('geocode fetch is running, input:', input);
+    // console.log('geocode client fetch', input);
+
     const store = this.store;
 
     const geocodeConfig = this.config.geocoder;
@@ -31,7 +28,7 @@ class GeocodeClient extends BaseClient {
   }
 
   success(response) {
-    console.log('geocode success', response.config.url);
+    // console.log('geocode success', response.config.url);
 
     const store = this.store;
     const data = response.data;
@@ -41,7 +38,8 @@ class GeocodeClient extends BaseClient {
     // TODO handle multiple results
 
     if (!data.features || data.features.length < 1) {
-      console.log('geocode got no features', data);
+      // console.log('geocode got no features', data);
+
       return;
     }
 
@@ -66,8 +64,10 @@ class GeocodeClient extends BaseClient {
   }
 
   error(error) {
-    console.log('geocode error', error);
+    // console.log('geocode error', error);
+
     const store = this.store;
+    
     store.commit('setGeocodeStatus', 'error');
     store.commit('setGeocodeData', null);
     store.commit('setGeocodeRelated', null);

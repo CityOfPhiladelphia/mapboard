@@ -21,9 +21,14 @@
   import Image_ from './topic-components/Image.vue';
   import VerticalTable from './topic-components/VerticalTable.vue';
   import OverlayToggleGroup from './topic-components/OverlayToggleGroup.vue';
-  import List from './topic-components/List.vue'
+  import List from './topic-components/List.vue';
+  import TabGroup from './topic-components/TabGroup.vue';
+  import HorizontalTableGroup from './topic-components/HorizontalTableGroup.vue';
+  import BadgeCustom from './topic-components/BadgeCustom.vue';
+  // console.log('in TopicComponentGroup.vue script, Badge:', Badge, 'TabGroup:', TabGroup, 'Callout:', Callout, 'CollectionSummary:', CollectionSummary, 'HorizontalTable:', HorizontalTable);
 
   export default {
+    name: 'TopicComponentGroup',
     props: ['topicComponents', 'item', 'filterData'],
     components: {
       Badge,
@@ -33,13 +38,16 @@
       Image_,
       VerticalTable,
       OverlayToggleGroup,
-      List
+      List,
+      TabGroup,
+      HorizontalTableGroup,
+      BadgeCustom,
     },
     beforeCreate() {
-      // TabGroup imports TopicComponentGroup, which causes a circular
-      // reference issue in webpack. so register the component here.
-      this.$options.components.TabGroup = require('./topic-components/TabGroup.vue');
-      this.$options.components.TableGroup = require('./topic-components/TableGroup.vue');
+      // console.log('TopicComponentGroup beforeCreate is running');
+    },
+    created() {
+      // console.log('TopicComponentGroup.vue created is running, Badge:', Badge, 'topicComponents:', this.$props.topicComponents);
     },
     data() {
       return {

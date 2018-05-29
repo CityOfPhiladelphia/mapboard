@@ -2,6 +2,8 @@
 // https://github.com/iatkin/leaflet-svgicon
 // modified to support es6 imports
 
+import * as L from 'leaflet';
+
 const SvgIcon = L.DivIcon.extend({
     options: {
         "circleText": "",

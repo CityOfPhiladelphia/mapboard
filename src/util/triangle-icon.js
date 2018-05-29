@@ -23,7 +23,7 @@
 //     return new L.Marker.SVGMarker.noCircleMarker(latlng, options)
 // }
 
-import L from 'leaflet';
+import * as L from 'leaflet';
 import SvgIcon from './svg-icon';
 
 const TriangleIcon = SvgIcon.extend({

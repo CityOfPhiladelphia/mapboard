@@ -4,19 +4,19 @@
     <div class="mb-badge-header" :style="style">
       {{ evaluateSlot(slots.title) }}
     </div>
-    <div class="mb-badge-body">
-      <h1>{{ evaluateSlot(slots.value) }}</h1>
-      <strong>{{ evaluateSlot(slots.description) }}</strong>
-    </div>
+    <topic-component-group :topic-components="options.components" :item="item" />
   </div>
 </template>
 
 <script>
-  // console.log('in Badge.vue script');
   import TopicComponent from './TopicComponent.vue';
+  import TopicComponentGroup from '../TopicComponentGroup.vue';
 
   export default {
     mixins: [TopicComponent],
+    beforeCreate() {
+      this.$options.components.TopicComponentGroup = TopicComponentGroup;
+    },
     computed: {
       style() {
         const titleBackgroundValOrFn = (this.options || {}).titleBackground;
