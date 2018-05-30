@@ -5,7 +5,12 @@ and storing them in state.
 The router should own an instance of DataManager and make calls to it based on
 navigation events.
 */
-import L from 'leaflet';
+import * as L from 'leaflet';
+import { query as Query } from 'esri-leaflet';
+// import * as turf from '@turf/turf';
+import { point, polygon } from '@turf/helpers';
+import distance from '@turf/distance';
+import area from '@turf/area';
 import {
   GeocodeClient,
   HttpClient,
@@ -153,15 +158,29 @@ class DataManager {
 
     // we always need a good geocode before we can get data, so return
     // if we don't have one yet.
-    if (!geocodeObj) {
-      // console.log('fetch data but no geocode yet, returning');
-      return;
-    }
+    // if (!geocodeObj) {
+    //   // console.log('fetch data but no geocode yet, returning');
+    //   return;
+    // }
 
-    const dataSources = this.config.dataSources || {};
+    let dataSources = this.config.dataSources || {};
+    let dataSourceKeys = Object.entries(dataSources);
+    // console.log('in fetchData, dataSources before filter:', dataSources, 'dataSourceKeys:', dataSourceKeys);
+
+    if (!geocodeObj) {
+      dataSourceKeys = dataSourceKeys.filter(dataSourceKey => {
+        if (dataSourceKey[1].dependent) {
+          if (dataSourceKey[1].dependent === 'parcel') {
+            return true;
+          }
+        }
+      })
+    }
+    // console.log('in fetchData, dataSources after filter:', dataSources);
 
     // get "ready" data sources (ones whose deps have been met)
-    for (let [dataSourceKey, dataSource] of Object.entries(dataSources)) {
+    // for (let [dataSourceKey, dataSource] of Object.entries(dataSources)) {
+    for (let [dataSourceKey, dataSource] of dataSourceKeys) {
       const state = this.store.state;
       const type = dataSource.type;
       const targetsDef = dataSource.targets;
@@ -212,6 +231,8 @@ class DataManager {
         targets = [geocodeObj];
       }
 
+      // console.log('in fetchData, dataSourceKey:', dataSourceKey, 'targets:', targets);
+
       for (let target of targets) {
         // get id of target
         let targetId;
@@ -241,7 +262,7 @@ class DataManager {
         // TODO do this for all targets
         switch(type) {
           case 'http-get':
-            // console.log('http-get', dataSourceKey, targetIdFn);
+            // console.log('http-get, target:', target, 'dataSource:', dataSource, 'dataSourceKey:', dataSourceKey, 'targetIdFn:', targetIdFn);
             this.clients.http.fetch(target,
                                     dataSource,
                                     dataSourceKey,
@@ -482,7 +503,7 @@ class DataManager {
   }
 
   didGeocode(feature) {
-    console.log('DataManager.didGeocode:', feature);
+    // console.log('DataManager.didGeocode:', feature);
     this.controller.router.didGeocode();
 
     // emit event to event bus
@@ -496,7 +517,7 @@ class DataManager {
     const parcelLayers = Object.keys(this.config.parcels || {});
     const otherParcelLayers = Object.keys(this.config.parcels || {});
     otherParcelLayers.splice(otherParcelLayers.indexOf(activeParcelLayer), 1);
-    console.log('didGeocode - activeParcelLayer:', activeParcelLayer, 'parcelLayers:', parcelLayers, 'otherParcelLayers:', otherParcelLayers);
+    // console.log('didGeocode - activeParcelLayer:', activeParcelLayer, 'parcelLayers:', parcelLayers, 'otherParcelLayers:', otherParcelLayers);
 
     // if it is a dor parcel query, and the geocode fails, coordinates can still be used
     // to get dor parcels which are not in ais
@@ -504,7 +525,7 @@ class DataManager {
     let coords, lat, lng, latlng;
     // if geocode fails
     if (!feature) {
-      console.log('didGeocode - no geom', feature);
+      // console.log('didGeocode - no geom', feature);
       if (lastSearchMethod === 'reverseGeocode') {
         const clickCoords = this.store.state.clickCoords;
         coords = [clickCoords.lng, clickCoords.lat];
@@ -513,7 +534,7 @@ class DataManager {
       }
     // if geocode succeeds
     } else {
-      console.log('didGeocode - GEOM', feature);
+      // console.log('didGeocode - GEOM', feature);
       coords = feature.geometry.coordinates;
       [lng, lat] = coords;
       latlng = L.latLng(lat, lng);
@@ -529,7 +550,7 @@ class DataManager {
     // (unless it fails and you are allowed to get them by LatLng on failure)
     if (lastSearchMethod === 'geocode') {
       if (feature) {
-        console.log('didGeocode lastSearchMethod:', lastSearchMethod, '- attempting to get all parcel layers:', parcelLayers, ' by ID');
+        // console.log('didGeocode lastSearchMethod:', lastSearchMethod, '- attempting to get all parcel layers:', parcelLayers, ' by ID');
         // loop through the parcels, and get them by their ids
         for (let parcelLayer of parcelLayers) {
           const configForParcelLayer = this.config.parcels[parcelLayer];
@@ -539,7 +560,7 @@ class DataManager {
             this.getParcelsById(parcelId, parcelLayer);
           } else {
             if (configForParcelLayer.getByLatLngIfIdFails) {
-              console.log(parcelLayer, 'Id failed - had to get by LatLng')
+              // console.log(parcelLayer, 'Id failed - had to get by LatLng')
               this.getParcelsByLatLng(latlng, parcelLayer);
             }
           }
@@ -551,7 +572,7 @@ class DataManager {
     // and vice versa
     } else if (lastSearchMethod === 'reverseGeocode') {
       if (feature) {
-        console.log('didGeocode lastSearchMethod:', lastSearchMethod, 'feature', feature, '- getting other parcel layers by id or latlng')
+        // console.log('didGeocode lastSearchMethod:', lastSearchMethod, 'feature', feature, '- getting other parcel layers by id or latlng')
         for (let otherParcelLayer of otherParcelLayers) {
           const configForOtherParcelLayer = this.config.parcels[otherParcelLayer];
           const parcelIdInGeocoder = configForOtherParcelLayer.parcelIdInGeocoder
@@ -560,22 +581,22 @@ class DataManager {
             this.getParcelsById(parcelId, otherParcelLayer);
           } else {
             if (configForOtherParcelLayer.getByLatLngIfIdFails) {
-              console.log(otherParcelLayer, 'Id failed - had to get by LatLng')
+              // console.log(otherParcelLayer, 'Id failed - had to get by LatLng')
               this.getParcelsByLatLng(latlng, otherParcelLayer);
             }
           }
         }
       } else {
-        console.log('didGeocode lastSearchMethod:', lastSearchMethod, 'NO feature', feature)
+        // console.log('didGeocode lastSearchMethod:', lastSearchMethod, 'NO feature', feature)
         const geocodeFailAttemptParcel = configForActiveParcelLayer.geocodeFailAttemptParcel
         if (geocodeFailAttemptParcel) {
-          console.log('ran ais on a dor parcel and got no response - should try pwd parcel?', geocodeFailAttemptParcel);
+          // console.log('ran ais on a dor parcel and got no response - should try pwd parcel?', geocodeFailAttemptParcel);
           const otherParcel = this.store.state.parcels[geocodeFailAttemptParcel];
-          console.log('otherParcel:', otherParcel);
+          // console.log('otherParcel:', otherParcel);
           if (otherParcel) {
             const configForOtherParcelLayer = this.config.parcels[geocodeFailAttemptParcel];
             const geocodeField = configForOtherParcelLayer.geocodeField;
-            console.log('running ais again on the pwd parcel', otherParcel.properties[geocodeField]);
+            // console.log('running ais again on the pwd parcel', otherParcel.properties[geocodeField]);
             this.store.commit('setLastSearchMethod', 'reverseGeocode-secondAttempt')
             this.geocode(otherParcel.properties[geocodeField]);
           }
@@ -585,40 +606,44 @@ class DataManager {
 
     // console.log('in didGeocode, activeTopicConfig:', this.activeTopicConfig());
     const activeTopicConfig = this.activeTopicConfig();
-    console.log('activeTopicConfig.zoomToShape:', activeTopicConfig.zoomToShape);
-    const newShape = this.store.state.geocode.data.properties.opa_account_num;
+    // console.log('activeTopicConfig.zoomToShape:', activeTopicConfig.zoomToShape);
+    // const geocodeData = this.store.state.geocode.data || null;
+    // const geocodeProperties = geocodeData.properties || null;
+    // const newShape = geocodeProperties.opa_account_num || null;
 
     // only recenter the map on geocode
     if (lastSearchMethod === 'geocode' && this.store.state.geocode.status !== 'error') {
       if (!activeTopicConfig.zoomToShape) {
-        console.log('NO ZOOM TO SHAPE - NOW IT SHOULD NOT BE ZOOMING TO THE SHAPE ON GEOCODE');
+        // console.log('NO ZOOM TO SHAPE - NOW IT SHOULD NOT BE ZOOMING TO THE SHAPE ON GEOCODE');
         this.store.commit('setMapCenter', coords);
         this.store.commit('setMapZoom', 19);
       } else {
-        console.log('ZOOM TO SHAPE - NOW IT SHOULD BE ZOOMING TO THE SHAPE ON GEOCODE');
+        // console.log('ZOOM TO SHAPE - NOW IT SHOULD BE ZOOMING TO THE SHAPE ON GEOCODE');
         // this.store.commit('setMapBoundsBasedOnShape', newShape);
       }
 
     } else if (activeTopicConfig.zoomToShape && lastSearchMethod === 'reverseGeocode' && this.store.state.geocode.status !== 'error') {
-      console.log('ZOOM TO SHAPE - NOW IT SHOULD BE ZOOMING TO THE SHAPE ON REVERSE GEOCODE');
+      // console.log('ZOOM TO SHAPE - NOW IT SHOULD BE ZOOMING TO THE SHAPE ON REVERSE GEOCODE');
       // this.store.commit('setMapBoundsBasedOnShape', newShape);
     }
 
     // reset data only when not a rev geocode second attempt
     if (lastSearchMethod !== 'reverseGeocode-secondAttempt') {
+      // console.log('180405 in didGeocode, in if lastSearchMethod !== reverseGeocode-secondAttempt');
       this.resetData();
     }
 
-    // if it is not an intersection, fetch new data
+    // as long as it is not an intersection, fetch new data
     if (feature) {
+      console.log('if feature true')
       if (feature.street_address) {
         return;
       } else if (feature.properties.street_address) {
-        console.log('171111 data-manager.js line 571 - didGeocode - is calling fetchData on feature w address', feature.properties.street_address);
+        // console.log('180405 data-manager.js - didGeocode - is calling fetchData on feature w address', feature.properties.street_address);
         this.fetchData();
       }
     } else {
-      console.log('171111 data-manager.js line 575 - didGeocode - is calling fetchData, no feature');
+      // console.log('180405 data-manager.js - didGeocode - is calling fetchData, no feature');
       this.fetchData();
     }
   } // end didGeocode
@@ -629,7 +654,7 @@ class DataManager {
     const url = this.config.map.featureLayers[parcelLayer+'Parcels'].url;
     const configForParcelLayer = this.config.parcels[parcelLayer];
     const geocodeField = configForParcelLayer.geocodeField;
-    const parcelQuery = L.esri.query({ url });
+    const parcelQuery = Query({ url });
     parcelQuery.where(geocodeField + " = '" + id + "'");
     // console.log('parcelQuery:', parcelQuery);
     parcelQuery.run((function(error, featureCollection, response) {
@@ -643,18 +668,18 @@ class DataManager {
     // console.log('171111 getParcelsByLatLng', parcelLayer, 'fetch', fetch);
 
     const url = this.config.map.featureLayers[parcelLayer+'Parcels'].url;
-    const parcelQuery = L.esri.query({ url });
+    const parcelQuery = Query({ url });
     parcelQuery.contains(latlng);
     const test = 5;
     parcelQuery.run((function(error, featureCollection, response) {
-        console.log('171111 getParcelsByLatLng parcelQuery ran', test, 'fetch', fetch, 'response', response);
+        // console.log('171111 getParcelsByLatLng parcelQuery ran', test, 'fetch', fetch, 'response', response);
         this.didGetParcels(error, featureCollection, response, parcelLayer, fetch);
       }).bind(this)
     )
   }
 
   didGetParcels(error, featureCollection, response, parcelLayer, fetch) {
-    // console.log('171111 didGetParcels is running parcelLayer', parcelLayer, 'fetch', fetch, 'response', response);
+    // console.log('180405 didGetParcels is running parcelLayer', parcelLayer, 'fetch', fetch, 'response', response);
     const configForParcelLayer = this.config.parcels[parcelLayer];
     const multipleAllowed = configForParcelLayer.multipleAllowed;
     const geocodeField = configForParcelLayer.geocodeField;
@@ -665,7 +690,6 @@ class DataManager {
     // console.log('didGetParcels - parcelLayer:', parcelLayer, 'otherParcelLayers:', otherParcelLayers, 'configForParcelLayer:', configForParcelLayer);
 
     if (error) {
-      console.warn('didGetParcels error', parcelLayer, error);
       // update state
       if (configForParcelLayer.clearStateOnError) {
       // this.store.commit('setParcelData', { parcelLayer, [] });
@@ -675,14 +699,12 @@ class DataManager {
     }
 
     if (!featureCollection) {
-      console.warn('didGetParcel', parcelLayer, 'got no featureCollection');
       return;
     }
 
     const features = featureCollection.features;
 
     if (features.length === 0) {
-      console.warn('didGetParcels:', parcelLayer,' got a parcel but no features');
       return;
     }
 
@@ -691,30 +713,39 @@ class DataManager {
 
     if (!multipleAllowed) {
       feature = features[0];
-      if (features.length > 1) {
-        console.debug('got more than one', parcelLayer, 'parcel:', features);
-      }
     // dor
     } else {
       feature = featuresSorted[0];
     }
 
-    // console.log('didGetParcels, parcelLayer:', parcelLayer, 'multipleAllowed:', multipleAllowed, 'feature:', feature, 'featuresSorted:', featuresSorted);
-
-    // use TURFJS to get area and perimeter of all parcels returned
+    // use turf to get area and perimeter of all parcels returned
     for (let featureSorted of featuresSorted) {
-      const turfPolygon = turf.polygon(featureSorted.geometry.coordinates);
+      // const turfPolygon = polygon(featureSorted.geometry.coordinates);
+      const turfPolygon = polygon(featureSorted.geometry.coordinates);
+      let turfCoordinates = []
+      for (let coordinate of featureSorted.geometry.coordinates[0]) {
+        // console.log('coordinate:', coordinate);
+        turfCoordinates.push(point(coordinate));
+      }
+
+      let distances = []
+      for (let i=0; i<turfCoordinates.length - 1; i++) {
+        distances[i] = distance(turfCoordinates[i], turfCoordinates[i+1], {units: 'feet'})
+      }
+
+      // console.log('coordinates:', featureSorted.geometry.coordinates, 'turfCoordinates:', turfCoordinates, 'distances:', distances);
+
       // turf area is returned in square meters - conversion is to square feet
-      featureSorted.properties.TURF_AREA = turf.area(turfPolygon) * 10.7639;
-      // this formula for turf perimeter is returned in km - conversion is to feet
-      featureSorted.properties.TURF_PERIMETER = turf.lineDistance(turf.lineString(turfPolygon.geometry.coordinates[0])) * 3280.84;
+      featureSorted.properties.TURF_PERIMETER = distances.reduce(function(acc, val) { return acc + val; });
+      featureSorted.properties.TURF_AREA = area(turfPolygon) * 10.7639;
     }
 
     // at this point there is definitely a feature or features - put it in state
     this.setParcelsInState(parcelLayer, multipleAllowed, feature, featuresSorted);
 
-    // geocode
-    // console.log('didGetParcels activeParcelLayer:', activeParcelLayer, 'parcelLayer:', parcelLayer);
+    // shouldGeocode - true only if:
+    // 1. didGetParcels is running because the map was clicked (lastSearchMethod = reverseGeocode)
+    // 2. didGetParcels' parameter "parcelLayer" = activeParcelLayer
     const shouldGeocode = (
       activeParcelLayer === parcelLayer &&
       lastSearchMethod === 'reverseGeocode'
@@ -733,10 +764,10 @@ class DataManager {
 
       // console.log('didGetParcels is wiping out the', otherParcelLayers, 'parcels in state');
       for (let otherParcelLayer of otherParcelLayers) {
+        console.log('for let otherParcelLayer of otherParcelLayers is running');
         const configForOtherParcelLayer = this.config.parcels[otherParcelLayer];
         const otherMultipleAllowed = configForOtherParcelLayer.multipleAllowed;
         this.setParcelsInState(otherParcelLayer, otherMultipleAllowed, null, [])
-        console.log('171111 - line 680 running getParcelsByLatLng');
         this.getParcelsByLatLng(latlng, otherParcelLayer, 'noFetch')
       }
 
@@ -745,11 +776,11 @@ class DataManager {
       const id = props[geocodeField];
       if (id) this.controller.router.routeToAddress(id);
     } else {
-      console.log('171111 data-manager.js line 688 - didGetParcels - if shouldGeocode is NOT running');
+      // console.log('180405 data-manager.js didGetParcels - if shouldGeocode is NOT running');
       // if (lastSearchMethod != 'reverseGeocode-secondAttempt') {
       // if (fetch !== 'noFetch') {
       if (fetch !== 'noFetch' && lastSearchMethod != 'reverseGeocode-secondAttempt') {
-        console.log('171111 data-manager.js line 688 - didGetParcels - is calling fetchData() on feature w address', feature.properties.street_address);
+        // console.log('180405 data-manager.js - didGetParcels - is calling fetchData() on feature w address', feature.properties.street_address);
         this.fetchData();
       }
     }
@@ -772,7 +803,10 @@ class DataManager {
         data: featuresSorted,
         status: 'success',
         activeParcel: feature ? feature.id : null,
-        activeAddress: feature ? concatDorAddress(feature) : null,
+        // TODO apply concatDorAddress in client config - this global is no
+        // longer available
+        // activeAddress: feature ? concatDorAddress(feature) : null,
+        activeAddress: null,
         activeMapreg: feature ? feature.properties.MAPREG : null
       }
     }

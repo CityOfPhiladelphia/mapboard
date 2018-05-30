@@ -1,6 +1,12 @@
 <script>
   export default {
     props: ['slots', 'options', 'item'],
+    beforeCreate() {
+      // console.log('TopicComponent.vue beforeCreate is running, this:', this);
+    },
+    created() {
+      // console.log('TopicComponent.vue created is running, this.$props.slots:', this.$props.slots);
+    },
     computed: {
       nullValue() {
         const options = this.options || {};
@@ -28,6 +34,7 @@
           // const deps = depsText.map(eval);
 
           const item = this.item;
+          // console.log('in evaluateSlot, item:', item);
 
           // if this comp is associated with an "item" (generally some object
           // from a list of things, e.g. dor parcels), pass the item itself
@@ -36,6 +43,7 @@
             val = getter(state, item);
           } else {
             val = getter(state);
+            console.log('state:', state, 'val:', val);
           }
         } else {
           val = valOrGetter;

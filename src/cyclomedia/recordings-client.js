@@ -1,6 +1,5 @@
-import $ from 'jQuery';
+import $ from 'jquery';
 import axios from 'axios';
-
 
 class RecordingsClient {
 	constructor(baseUrl, username, password, srid = 3857, proxy) {

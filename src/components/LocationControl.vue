@@ -10,7 +10,7 @@
 
 <script>
   import Control from '../leaflet/Control.vue';
-  import L from 'leaflet';
+  import * as L from 'leaflet';
 
   const {props, methods} = Control;
 

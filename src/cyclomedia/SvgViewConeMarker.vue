@@ -4,7 +4,7 @@
 -->
 
 <script>
-  import L from 'leaflet';
+  import * as L from 'leaflet';
   // import DivIcon from 'leaflet';
   import TriangleIcon from '../util/triangle-icon';
 

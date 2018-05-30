@@ -6,7 +6,9 @@
       </h4>
       <a class="button overlay-toggle" href="#" v-for="item in items" :data-key="keyForItem(item)"
                 @click="handleClick"
-                :class="{'active': isActive(item)}">
+                @mouseover="handleMouseover(keyForItem(item))"
+                @mouseout="handleMouseout"
+                :class="{'active': isActive(item), 'mouseover': isMousedover(item)}">
         {{ keyForItem(item) }}
       </a>
     </div>
@@ -19,6 +21,11 @@
 
   export default {
     mixins: [TopicComponent],
+    data() {
+      return {
+        mouseover: null
+      }
+    },
     computed: {
       items() {
         return this.evaluateSlot(this.slots.items);
@@ -45,6 +52,20 @@
           this.$store.commit('setImageOverlay', nextImageOverlay);
         }
       },
+      handleMouseover(key) {
+        this.mouseover = key;
+      },
+      handleMouseout() {
+        this.mouseover = null;
+      },
+      isMousedover(item) {
+        const itemKey = this.keyForItem(item);
+        if (itemKey === this.mouseover) {
+          return true;
+        } else {
+          return false;
+        }
+      }
     }
   };
 </script>
@@ -61,13 +82,18 @@
   }
 
   .overlay-toggle {
-    border: 1px solid #f99300;
-    color: #f99300;
-    background: #fff;
+    border: 1px solid #f99300 !important;
+    color: #f99300 !important;
+    background: #fff !important;
+  }
+
+  .overlay-toggle.mouseover {
+    background: #444 !important;
+    color: white !important;
   }
 
   .overlay-toggle.active {
-    background: #f99300;
-    color: #fff;
+    background: #f99300 !important;
+    color: #fff !important;
   }
 </style>

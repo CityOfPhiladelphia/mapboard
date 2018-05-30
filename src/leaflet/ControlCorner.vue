@@ -1,5 +1,5 @@
 <script>
-  import L from 'leaflet';
+  import * as L from 'leaflet';
 
   export default {
     props: [
@@ -47,7 +47,7 @@
   .leaflet-almostleft {
     position: absolute;
     bottom: 0px;
-    left: 45px;
+    left: 30px;
     padding-bottom: 10px;
     z-index: 500;
   }
