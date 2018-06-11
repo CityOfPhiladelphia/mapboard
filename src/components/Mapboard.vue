@@ -192,6 +192,12 @@
         const userAgent = (navigator.userAgent || navigator.vendor || window.opera || '');
         const isMobileOrTablet = mobileOrTabletRegexA.test(userAgent) || mobileOrTabletRegexB.test(userAgent.substr(0,4));
 
+        if (!isMobileOrTablet) {
+          var cdnScript = document.createElement('script');
+          cdnScript.setAttribute('src','https://streetsmart.cyclomedia.com/api/v18.4/StreetSmartApi.js');
+          document.head.appendChild(cdnScript);
+        }
+
         return isMobileOrTablet;
       },
       closeAddressCandidateList() {

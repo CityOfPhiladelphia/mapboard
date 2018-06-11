@@ -46,6 +46,9 @@
         }
         return answer
       },
+      cyclomediaInitialized() {
+        return this.$store.state.cyclomedia.initialized;
+      },
       cyclomediaActive() {
         return this.$store.state.cyclomedia.active;
       },
@@ -101,17 +104,45 @@
       },
       latLngFromMap(newCoords) {
         // console.log('watch latLngFromMap is firing, setNewLocation running with newCoords:', newCoords);
-        if (Array.isArray(newCoords)) {
-          // console.log('it is an array');
-          this.setNewLocation([newCoords[1], newCoords[0]]);
-        } else {
-          // console.log('it is not an array');
-          this.setNewLocation([newCoords.lat, newCoords.lng]);
+        if (this.cyclomediaInitialized) {
+
+          if (Array.isArray(newCoords)) {
+            // console.log('it is an array');
+            this.setNewLocation([newCoords[1], newCoords[0]]);
+          } else {
+            // console.log('it is not an array');
+            this.setNewLocation([newCoords.lat, newCoords.lng]);
+          }
         }
       },
       // docWidthComp() {
       //   console.log('docWidth changed');
       // }
+      cyclomediaInitialized() {
+        StreetSmartApi.init({
+          targetElement: this.$refs.cycloviewer,
+          username: this.$config.cyclomedia.username,
+          password: this.$config.cyclomedia.password,
+          apiKey: this.$config.cyclomedia.apiKey,
+          // srs: 'EPSG:4326',
+          srs: 'EPSG:2272',
+          locale: 'en-us',
+          addressSettings: {
+            locale: 'en-us',
+            database: 'CMDatabase'
+          }
+        }).then (
+          () => {
+            // get map center and set location
+            const latLngFromMap = this.$store.state.cyclomedia.latLngFromMap;
+            this.setNewLocation([latLngFromMap[0], latLngFromMap[1]]);
+          },
+          err => {
+            // console.log('Api: init: failed. Error: ', err);
+          }
+        );
+        window.addEventListener('resize', this.setDivWidth);
+      },
       cyclomediaActive(newActiveStatus) {
         this.setDivWidth();
         if (newActiveStatus === true) {
@@ -121,31 +152,6 @@
       // pictometryActive() {
       //   this.setDivWidth();
       // }
-    },
-    mounted() {
-      StreetSmartApi.init({
-        targetElement: this.$refs.cycloviewer,
-        username: this.$config.cyclomedia.username,
-        password: this.$config.cyclomedia.password,
-        apiKey: this.$config.cyclomedia.apiKey,
-        // srs: 'EPSG:4326',
-        srs: 'EPSG:2272',
-        locale: 'en-us',
-        addressSettings: {
-          locale: 'en-us',
-          database: 'CMDatabase'
-        }
-      }).then (
-        () => {
-          // get map center and set location
-          const map = this.$store.state.map;
-          this.setNewLocation([map.center[1], map.center[0]]);
-        },
-        err => {
-          // console.log('Api: init: failed. Error: ', err);
-        }
-      );
-      window.addEventListener('resize', this.setDivWidth);
     },
     updated() {
       // console.log('cyclomedia updated running');
@@ -177,7 +183,7 @@
         // return width;
       },
       setNewLocation(coords) {
-        // console.log('setNewLocation is running using', coords);
+        console.log('cyclomedia setNewLocation is running using', coords);
         const viewerType = StreetSmartApi.ViewerType.PANORAMA;
         const coords2272 = proj4(this.projection4326, this.projection2272, [coords[1], coords[0]]);
         // StreetSmartApi.open(center.lng + ',' + center.lat, {
