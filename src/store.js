@@ -240,6 +240,7 @@ function createStore(config) {
     // pwdParcel: null,
     sources,
     cyclomedia: {
+      initialized: false,
       navBarOpen: false,
       // surfaceCursorOn: true,
       latLngFromMap: null,
@@ -307,6 +308,9 @@ function createStore(config) {
       }
     },
     mutations: {
+      setCyclomediaInitialized(state, payload) {
+        state.cyclomedia.initialized = payload;
+      },
       setIsMobileOrTablet(state, payload) {
         state.isMobileOrTablet = payload;
       },

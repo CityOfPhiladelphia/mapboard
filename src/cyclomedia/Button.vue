@@ -33,12 +33,18 @@
       );
     },
     computed: {
+      cyclomediaInitialized() {
+        return this.$store.state.cyclomedia.initialized;
+      },
       cyclomediaActive() {
         return this.$store.state.cyclomedia.active ? 'active' : 'inactive'
       }
     },
     methods: {
       handleButtonClick(e) {
+        if (!this.cyclomediaInitialized) {
+          this.$store.commit('setCyclomediaInitialized', true);
+        }
         const willBeActive = !this.$store.state.cyclomedia.active;
 
         this.$store.commit('setCyclomediaActive', willBeActive);
