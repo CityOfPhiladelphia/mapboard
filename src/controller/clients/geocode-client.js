@@ -22,6 +22,7 @@ class GeocodeClient extends BaseClient {
     const error = this.error.bind(this);
 
     // return a promise that can accept further chaining
+    console.log('axios is running in fetch in geocode-client.js');
     return axios.get(url, { params })
       .then(success)
       .catch(error);
@@ -67,7 +68,7 @@ class GeocodeClient extends BaseClient {
     // console.log('geocode error', error);
 
     const store = this.store;
-    
+
     store.commit('setGeocodeStatus', 'error');
     store.commit('setGeocodeData', null);
     store.commit('setGeocodeRelated', null);

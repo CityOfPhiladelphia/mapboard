@@ -7,6 +7,8 @@ import analyzer from 'rollup-analyzer-plugin';
 import builtins from 'rollup-plugin-node-builtins';
 import globals from 'rollup-plugin-node-globals';
 import replace from 'rollup-plugin-replace';
+import inject from 'rollup-plugin-inject';
+import axios from 'axios';
 
 // check if we're in development mode (i.e. rollup is running with watch)
 const dev = !!process.env.ROLLUP_WATCH || process.env.NODE_ENV === 'development';
@@ -68,15 +70,20 @@ export default {
     vue({
       css: true,
     }),
+    // handle commonjs modules, e.g. leaflet
+    // REVIEW is this needed?
+    commonjs(),
     // downgrade es6
     buble({
       transforms: {
         dangerousForOf: true,
       },
+      // objectAssign: 'YANKEEDOODLE',
     }),
-    // handle commonjs modules, e.g. leaflet
-    // REVIEW is this needed?
-    commonjs(),
+    inject({
+      'Object.assign': ['es6-object-assign', 'assign'],
+      // Promise: ['es6-promise', 'Promise'],
+    }),
     // minify if production
     !dev && uglify(),
     // analyze if dev

@@ -40,6 +40,7 @@ class HttpClient extends BaseClient {
     //if (params.urlAddition)
 
     // if the data is not dependent on other data
+    console.log('axios is running in fetch in http-client.js');
     axios.get(url, { params }).then(response => {
       // call success fn
       let data = response.data;
@@ -74,6 +75,7 @@ class HttpClient extends BaseClient {
     const successFn = options.success;
 
     // if the data is not dependent on other data
+    console.log('axios is running in fetchMore in http-client.js');
     axios.get(url, { params }).then(response => {
       // call success fn
       let data = response.data;
@@ -123,6 +125,7 @@ class HttpClient extends BaseClient {
     }
 
     // if the data is not dependent on other data
+    console.log('axios is running in FetchNearby in http-client.js');
     axios.get(url, { params }).then(response => {
       // call success fn
       let data = response.data.rows;

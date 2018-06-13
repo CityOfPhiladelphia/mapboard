@@ -135,6 +135,7 @@
       ),
       getCandidates(address) {
         // console.log('getCandidates is running, address:', address);
+        console.log('axios is running in getCandidates in AddressInput.vue')
         axios.get('https://cqvfg1pm72.execute-api.us-east-1.amazonaws.com/dev/first-api-test/', {
           params: {
             address,

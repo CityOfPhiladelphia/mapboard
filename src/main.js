@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import axios from 'axios';
 import createStore from './store';
 import configMixin from './util/config-mixin';
 import Mapboard from './components/Mapboard.vue';
@@ -74,6 +75,7 @@ function initMapboard(clientConfig) {
   Vue.prototype.$eventBus = eventBus;
 
   // get base config
+  // console.log('axios is running in initMapboard in mapboard main.js');
   return axios.get(baseConfigUrl).then(response => {
     const data = response.data;
 
