@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import isMobileDevice from './util/is-mobile-device';
 
 // when you load vuex from a script tag this seems to happen automatically
 Vue.use(Vuex);
@@ -167,7 +168,7 @@ function createStore(config) {
   }, {});
 
   const initialState = {
-    isMobileOrTablet: false,
+    isMobileOrTablet: isMobileDevice(),
     fullScreenMapEnabled: false,
 
     // this gets set to the parcel layer for the default (aka first) topic in
