@@ -5,7 +5,7 @@ export default function () {
   // get the user agent and test against both regex patterns
   const userAgent = (navigator.userAgent || navigator.vendor || window.opera || '');
   const isMobileOrTablet = (mobileOrTabletRegexA.test(userAgent) ||
-                            mobileOrTabletRegexB.test(userAgent.substr(0,4));
+                            mobileOrTabletRegexB.test(userAgent.substr(0,4)));
 
   return isMobileOrTablet;
 };
