@@ -1,6 +1,7 @@
 <template>
   <div class="leaflet-bar easy-button-container leaflet-control">
     <button :class="this.cyclomediaActive"
+            class="cyclomedia-button"
             @click.prevent="handleButtonClick"
     >
       <span class="button-state">
@@ -52,7 +53,7 @@
         // if the cyclo viewer is off screen when it loads imagery, it won't
         // show anything even once it's on screen. use this to trigger an
         // update.
-        
+
         // const viewer = this.$store.state.cyclomedia.viewer;
         //
         // if (willBeActive && viewer) {
