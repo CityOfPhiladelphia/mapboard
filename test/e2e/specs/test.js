@@ -81,17 +81,23 @@ module.exports = {
       .waitForElementVisible(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(2) .mb-horizontal-table-body`);
     browser.expect.element(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(2) h4`).text.to.contain('Overlays');
 
-    // check table "Appeals"
+    // check table "Pending Bills"
     browser
       .waitForElementVisible(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(3)`)
       .waitForElementVisible(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(3) .mb-horizontal-table-body`);
-    browser.expect.element(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(3) h4`).text.to.contain('Appeals');
+    browser.expect.element(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(3) h4`).text.to.contain('Pending Bills');
 
-    // check table "Registered Community Organizations"
-    browser
-      .waitForElementVisible(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(5)`)
-      .waitForElementVisible(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(5) .mb-horizontal-table-body`);
-    browser.expect.element(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(5) h4`).text.to.contain('Registered Community Organizations');
+    // check table "Appeals"
+    // browser
+    //   .waitForElementVisible(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(5)`)
+    //   .waitForElementVisible(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(5) .mb-horizontal-table-body`);
+    // browser.expect.element(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(5) h4`).text.to.contain('Appeals');
+    //
+    // // check table "Registered Community Organizations"
+    // browser
+    //   .waitForElementVisible(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(6)`)
+    //   .waitForElementVisible(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(6) .mb-horizontal-table-body`);
+    // browser.expect.element(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(6) h4`).text.to.contain('Registered Community Organizations');
 
 
 
