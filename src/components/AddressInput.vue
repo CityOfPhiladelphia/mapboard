@@ -76,11 +76,12 @@
         }
       },
       addressAutocompleteEnabled() {
-        if (this.$config.addressAutocomplete.enabled === true) {
-          return true;
-        } else {
+        // TODO this is temporarily disabled
+        // if (this.$config.addressAutocomplete.enabled === true) {
+        //   return true;
+        // } else {
           return false;
-        }
+        // }
       },
       isMobileOrTablet() {
         return this.$store.state.isMobileOrTablet;

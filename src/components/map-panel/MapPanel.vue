@@ -379,11 +379,12 @@
     },
     computed: {
       addressAutocompleteEnabled() {
-        if (this.$config.addressAutocomplete.enabled === true) {
-          return true;
-        } else {
+        // TODO tidy up the code
+        // if (this.$config.addressAutocomplete.enabled === true) {
+        //   return true;
+        // } else {
           return false;
-        }
+        // }
       },
       addressInputPosition() {
         // if (this.isMobileOrTablet) {
