@@ -34,6 +34,7 @@
 <script>
   import * as L from 'leaflet';
   import debounce from 'debounce';
+  import axios from 'axios';
 
   export default {
     props: ['position'],
