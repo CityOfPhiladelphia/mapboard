@@ -21,7 +21,7 @@ class DataManager {
   constructor(opts) {
     const store = this.store = opts.store;
     const config = this.config = opts.config;
-    this.eventBus = opts.eventBus;
+    // this.eventBus = opts.eventBus;
     this.controller = opts.controller;
 
     // create clients
@@ -507,7 +507,7 @@ class DataManager {
     this.controller.router.didGeocode();
 
     // emit event to event bus
-    this.eventBus.$emit('geocodeResult', feature);
+    // this.eventBus.$emit('geocodeResult', feature);
 
     const activeParcelLayer = this.store.state.activeParcelLayer;
     const lastSearchMethod = this.store.state.lastSearchMethod;

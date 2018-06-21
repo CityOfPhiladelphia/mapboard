@@ -65,8 +65,8 @@ function initMapboard(clientConfig) {
   const baseConfigUrl = clientConfig.baseConfig;
 
   // create a global event bus used to proxy events to the mapboard host
-  const eventBus = new Vue();
-  Vue.prototype.$eventBus = eventBus;
+  // const eventBus = new Vue();
+  // Vue.prototype.$eventBus = eventBus;
 
   // get base config
   return axios.get(baseConfigUrl).then(response => {
@@ -113,7 +113,8 @@ function initMapboard(clientConfig) {
     // Vue.use(routerMixin, { config, store, eventBus, dataManager });
 
     // mix in controller
-    Vue.use(controllerMixin, { config, store, eventBus });
+    Vue.use(controllerMixin, { config, store });
+    // Vue.use(controllerMixin, { config, store, eventBus });
 
     // mount main vue
     const vm = new Vue({
@@ -123,11 +124,11 @@ function initMapboard(clientConfig) {
     });
 
     // bind mapboard events to host app
-    const events = config.events || {};
-    for (let eventName of Object.keys(events)) {
-      const callback = events[eventName];
-      vm.$eventBus.$on(eventName, callback);
-    }
+    // const events = config.events || {};
+    // for (let eventName of Object.keys(events)) {
+    //   const callback = events[eventName];
+    //   vm.$eventBus.$on(eventName, callback);
+    // }
 
     // event api for host apps
     // this doesn't work now that we're getting the base config
