@@ -2326,10 +2326,6 @@ de-indent@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/de-indent/-/de-indent-1.0.2.tgz#b2038e846dc33baa5796128d0804b455b8c1e21d"
 
-debounce@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/debounce/-/debounce-1.1.0.tgz#6a1a4ee2a9dc4b7c24bb012558dbcdb05b37f408"
-
 debug@*, debug@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
@@ -4284,6 +4280,10 @@ lodash.create@3.1.1:
     lodash._baseassign "^3.0.0"
     lodash._basecreate "^3.0.0"
     lodash._isiterateecall "^3.0.0"
+
+lodash.debounce@^4.0.8:
+  version "4.0.8"
+  resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
 
 lodash.defaultsdeep@4.3.2:
   version "4.3.2"

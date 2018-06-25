@@ -33,7 +33,7 @@
 
 <script>
   import * as L from 'leaflet';
-  import debounce from 'debounce';
+  import _.debounce from 'lodash.debounce';
   import axios from 'axios';
 
   export default {
@@ -77,11 +77,11 @@
       },
       addressAutocompleteEnabled() {
         // TODO this is temporarily disabled
-        // if (this.$config.addressAutocomplete.enabled === true) {
-        //   return true;
-        // } else {
+        if (this.$config.addressAutocomplete.enabled === true) {
+          return true;
+        } else {
           return false;
-        // }
+        }
       },
       isMobileOrTablet() {
         return this.$store.state.isMobileOrTablet;
@@ -119,7 +119,8 @@
         const map = this.map;
         leafletElement.addTo(map);
       },
-      didType: debounce(function (e) {
+      didType: _.debounce(function (e) {
+          console.log('debounce is running');
           if (this.addressAutocompleteEnabled) {
             console.log('debounce is running, e:', e, 'this:', this);
             if (e.key === "ArrowDown") {

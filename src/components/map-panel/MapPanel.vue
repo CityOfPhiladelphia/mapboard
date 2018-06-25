@@ -320,7 +320,7 @@
   import BasemapTooltip from '../BasemapTooltip.vue';
   import ControlCorner from '../../leaflet/ControlCorner.vue';
 
-  import debounce from 'debounce';
+  // import debounce from 'debounce';
 
   export default {
     mixins: [
@@ -380,11 +380,11 @@
     computed: {
       addressAutocompleteEnabled() {
         // TODO tidy up the code
-        // if (this.$config.addressAutocomplete.enabled === true) {
-        //   return true;
-        // } else {
+        if (this.$config.addressAutocomplete.enabled === true) {
+          return true;
+        } else {
           return false;
-        // }
+        }
       },
       addressInputPosition() {
         // if (this.isMobileOrTablet) {
