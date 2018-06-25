@@ -33,7 +33,7 @@
 
 <script>
   import * as L from 'leaflet';
-  import _.debounce from 'lodash.debounce';
+  import debounce from 'lodash.debounce';
   import axios from 'axios';
 
   export default {
