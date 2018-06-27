@@ -265,7 +265,7 @@
       <div v-once>
         <AddressInput :position="this.addressInputPosition" />
       </div>
-      <AddressCandidateList v-show="this.addressAutocompleteEnabled"
+      <AddressCandidateList v-if="this.addressAutocompleteEnabled"
                             :position="this.addressInputPosition"
       />
 
@@ -387,11 +387,11 @@
         }
       },
       addressInputPosition() {
-        // if (this.isMobileOrTablet) {
-        //   return 'topleft'
-        // } else {
+        if (this.isMobileOrTablet) {
+          return 'topleft'
+        } else {
           return 'topalmostleft'
-        // }
+        }
       },
       basemapSelectControlPosition() {
         if (this.isMobileOrTablet) {
