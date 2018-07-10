@@ -265,7 +265,7 @@
       <div v-once>
         <AddressInput :position="this.addressInputPosition" />
       </div>
-      <AddressCandidateList v-show="this.addressAutocompleteEnabled"
+      <AddressCandidateList v-if="this.addressAutocompleteEnabled"
                             :position="this.addressInputPosition"
       />
 
@@ -320,7 +320,7 @@
   import BasemapTooltip from '../BasemapTooltip.vue';
   import ControlCorner from '../../leaflet/ControlCorner.vue';
 
-  import debounce from 'debounce';
+  // import debounce from 'debounce';
 
   export default {
     mixins: [
@@ -379,6 +379,7 @@
     },
     computed: {
       addressAutocompleteEnabled() {
+        // TODO tidy up the code
         if (this.$config.addressAutocomplete.enabled === true) {
           return true;
         } else {
@@ -386,11 +387,11 @@
         }
       },
       addressInputPosition() {
-        // if (this.isMobileOrTablet) {
-        //   return 'topleft'
-        // } else {
+        if (this.isMobileOrTablet) {
+          return 'topleft'
+        } else {
           return 'topalmostleft'
-        // }
+        }
       },
       basemapSelectControlPosition() {
         if (this.isMobileOrTablet) {

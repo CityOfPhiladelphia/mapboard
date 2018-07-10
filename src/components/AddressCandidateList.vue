@@ -1,5 +1,5 @@
 <template>
-  <div class="list-group"
+  <div :class="this.listGroupClass"
        v-show="this.shouldShowAddressCandidateList"
   >
     <ul>
@@ -35,6 +35,32 @@
       },
       activeTopic() {
         return this.$store.state.activeTopic;
+      },
+      isMobileOrTablet() {
+        return this.$store.state.isMobileOrTablet;
+      },
+      listGroupClass() {
+        if (this.isMobileOrTablet) {
+          if (this.addressAutocompleteEnabled) {
+            if (this.addressEntered === '' || this.addressEntered === null) {
+              return 'list-group-mobile';
+            } else {
+              return 'list-group-mobile-full';
+            }
+          } else {
+            return 'list-group-mobile';
+          }
+        } else {
+          if (this.addressAutocompleteEnabled) {
+            if (this.addressEntered === '' || this.addressEntered === null) {
+              return 'list-group';
+            } else {
+              return 'list-group-full';
+            }
+          } else {
+            return 'list-group';
+          }
+        }
       }
     },
     watch: {
@@ -116,6 +142,28 @@
 
 .list-group {
   height: 300px;
+  width: 250px;
+  overflow: auto;
+  margin-top: 1px !important;
+}
+
+.list-group-full {
+  height: 300px;
+  width: 197px;
+  overflow: auto;
+  margin-top: 1px !important;
+}
+
+.list-group-mobile {
+  height: 300px;
+  width: 250px;
+  overflow: auto;
+  margin-top: 1px !important;
+}
+
+.list-group-mobile-full {
+  height: 300px;
+  width: 197px;
   overflow: auto;
   margin-top: 1px !important;
 }
@@ -126,7 +174,7 @@ ul {
 }
 
 .list-group-item {
-  width: 300px;
+  /* width: 237px; */
   display: block;
   border-radius: 2px;
   box-shadow:0 2px 4px rgba(0,0,0,0.2),0 -1px 0px rgba(0,0,0,0.02);
@@ -147,8 +195,20 @@ ul {
 
 /*small*/
 @media screen and (max-width: 39.9375em) {
-  .list-group-item {
+  .list-group {
     width: 200px;
+  }
+
+  .list-group-mobile {
+    width: 200px;
+  }
+
+  .list-group-full {
+    width: 147px;
+  }
+
+  .list-group-mobile-full {
+    width: 158px;
   }
 }
 

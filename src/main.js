@@ -1,16 +1,11 @@
 import Vue from 'vue';
+import axios from 'axios';
 import createStore from './store';
 import configMixin from './util/config-mixin';
 import Mapboard from './components/Mapboard.vue';
 import mergeDeep from './util/merge-deep';
 import controllerMixin from './controller';
 import generateUniqueId from './util/unique-id';
-
-// TODO can these be converted to es6?
-// if (!global._babelPolyfill) {
-//   require('babel-polyfill');
-// }
-// require('es6-promise').polyfill();
 
 // helper function to auto-assign ids to horizontal tables
 function assignTableIds(comps) {
@@ -70,8 +65,8 @@ function initMapboard(clientConfig) {
   const baseConfigUrl = clientConfig.baseConfig;
 
   // create a global event bus used to proxy events to the mapboard host
-  const eventBus = new Vue();
-  Vue.prototype.$eventBus = eventBus;
+  // const eventBus = new Vue();
+  // Vue.prototype.$eventBus = eventBus;
 
   // get base config
   return axios.get(baseConfigUrl).then(response => {
@@ -118,7 +113,8 @@ function initMapboard(clientConfig) {
     // Vue.use(routerMixin, { config, store, eventBus, dataManager });
 
     // mix in controller
-    Vue.use(controllerMixin, { config, store, eventBus });
+    Vue.use(controllerMixin, { config, store });
+    // Vue.use(controllerMixin, { config, store, eventBus });
 
     // mount main vue
     const vm = new Vue({
@@ -128,11 +124,11 @@ function initMapboard(clientConfig) {
     });
 
     // bind mapboard events to host app
-    const events = config.events || {};
-    for (let eventName of Object.keys(events)) {
-      const callback = events[eventName];
-      vm.$eventBus.$on(eventName, callback);
-    }
+    // const events = config.events || {};
+    // for (let eventName of Object.keys(events)) {
+    //   const callback = events[eventName];
+    //   vm.$eventBus.$on(eventName, callback);
+    // }
 
     // event api for host apps
     // this doesn't work now that we're getting the base config

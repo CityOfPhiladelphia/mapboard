@@ -5,7 +5,7 @@ class Router {
     const config = this.config = opts.config;
     this.store = opts.store;
     this.controller = opts.controller;
-    this.eventBus = opts.eventBus;
+    // this.eventBus = opts.eventBus;
     this.dataManager = opts.dataManager;
     this.history = window.history;
 

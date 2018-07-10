@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-search-control-container">
+  <div :class="this.containerClass">
     <form @submit.prevent="handleSearchFormSubmit"
           autocomplete="off"
           id="search-form"
@@ -33,7 +33,8 @@
 
 <script>
   import * as L from 'leaflet';
-  import debounce from 'debounce';
+  import debounce from 'lodash.debounce';
+  import axios from 'axios';
 
   export default {
     props: ['position'],
@@ -43,6 +44,13 @@
       },
       addressEntered() {
         return this.$store.state.map.addressEntered;
+      },
+      containerClass() {
+        if (this.isMobileOrTablet) {
+          return 'mb-search-control-container-mobile';
+        } else {
+          return 'mb-search-control-container';
+        }
       },
       inputClass() {
         if (this.isMobileOrTablet) {
@@ -75,6 +83,7 @@
         }
       },
       addressAutocompleteEnabled() {
+        // TODO this is temporarily disabled
         if (this.$config.addressAutocomplete.enabled === true) {
           return true;
         } else {
@@ -117,7 +126,8 @@
         const map = this.map;
         leafletElement.addTo(map);
       },
-      didType: debounce(function (e) {
+      didType: _.debounce(function (e) {
+          console.log('debounce is running');
           if (this.addressAutocompleteEnabled) {
             console.log('debounce is running, e:', e, 'this:', this);
             if (e.key === "ArrowDown") {
@@ -178,6 +188,12 @@
 <style scoped>
 
 .mb-search-control-container {
+  height: 48px;
+  border-radius: 2px;
+  box-shadow:0 2px 4px rgba(0,0,0,0.2),0 -1px 0px rgba(0,0,0,0.02);
+}
+
+.mb-search-control-container-mobile {
   height: 38px;
   border-radius: 2px;
   box-shadow:0 2px 4px rgba(0,0,0,0.2),0 -1px 0px rgba(0,0,0,0.02);
@@ -248,7 +264,7 @@
   padding: 15px;
   font-family: 'Montserrat', 'Tahoma', sans-serif;
   font-size: 16px;
-  width: 197px;
+  width: 209px;
   height: 38px;
 }
 
