@@ -11,6 +11,7 @@
   },
   "main": "./dist/mapboard.js",
   "dependencies": {
+    "@cityofphiladelphia/phila-vue-mapping": "^0.0.2",
     "@turf/turf": "^5.1.6",
     "axios": "^0.18.0",
     "blueimp-md5": "^2.10.0",

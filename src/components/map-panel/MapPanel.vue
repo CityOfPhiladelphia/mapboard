@@ -294,10 +294,9 @@
   import pictometryMixin from '../../pictometry/map-panel-mixin';
   // vue doesn't like it when you import this as Map (reserved-ish word)
   import Map_ from '../../leaflet/Map.vue';
-  // import { Map_ } from '../vue-leaflet-esri.js';
   import Control from '../../leaflet/Control.vue';
-  // import vueleafletesri from '../vue-leaflet-esri.js';
-  // const Control = vuelefaletesri.Control;
+  // import philaVueLeaflet from '@cityofphiladelphia/phila-vue-leaflet';
+  // const Control = philaVueLeaflet.Control;
   import AddressInput from '../AddressInput.vue';
   import AddressCandidateList from '../AddressCandidateList.vue';
   import EsriTiledMapLayer from '../../esri-leaflet/TiledMapLayer.vue';
