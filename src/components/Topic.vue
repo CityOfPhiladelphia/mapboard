@@ -37,8 +37,9 @@
 </template>
 
 <script>
-  // import { mapMutations } from 'vuex';
+  import philaVueComps from '@cityofphiladelphia/phila-vue-comps';
 
+  // const TopicComponentGroup = philaVueComps.TopicComponentGroup;
   import TopicComponentGroup from './TopicComponentGroup.vue';
 
   export default {

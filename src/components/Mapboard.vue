@@ -44,13 +44,22 @@
 </template>
 
 <script>
+  import philaVueMapping from '@cityofphiladelphia/phila-vue-mapping';
+
   import TopicPanel from './TopicPanel.vue';
   import MapPanel from './map-panel/MapPanel.vue';
-  import CyclomediaWidget from '../cyclomedia/Widget.vue';
-  import PictometryWidget from '../pictometry/Widget.vue';
-  import Layer from '../pictometry/Layer.vue';
-  import PngMarker from '../pictometry/PngMarker.vue';
-  import ViewCone from '../pictometry/ViewCone.vue';
+
+  const CyclomediaWidget = philaVueMapping.CyclomediaWidget;
+  const PictometryWidget = philaVueMapping.PictometryWidget;
+  const Layer = philaVueMapping.PictometryLayer;
+  const ViewCone = philaVueMapping.PictometryViewCone;
+  const PngMarker = philaVueMapping.PictometryPngMarker;
+
+  // import CyclomediaWidget from '../cyclomedia/Widget.vue';
+  // import PictometryWidget from '../pictometry/Widget.vue';
+  // import Layer from '../pictometry/Layer.vue';
+  // import PngMarker from '../pictometry/PngMarker.vue';
+  // import ViewCone from '../pictometry/ViewCone.vue';
 
   export default {
     components: {
