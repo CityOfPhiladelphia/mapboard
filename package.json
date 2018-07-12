@@ -11,10 +11,12 @@
   },
   "main": "./dist/mapboard.js",
   "dependencies": {
+    "@cityofphiladelphia/phila-vue-comps": "^0.0.2",
+    "@cityofphiladelphia/phila-vue-mapping": "^0.0.5",
     "@turf/turf": "^5.1.6",
     "axios": "^0.18.0",
     "blueimp-md5": "^2.10.0",
-    "esri-leaflet": "^2.1.4",
+    "esri-leaflet": "2.1.4",
     "jquery": "^3.2.1",
     "jquery-ui": "^1.12.1",
     "leaflet": "^1.3.1",

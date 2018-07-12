@@ -288,39 +288,41 @@
 
 <script>
   import * as L from 'leaflet';
+  import philaVueMapping from '@cityofphiladelphia/phila-vue-mapping';
+  // console.log('philaVueMapping:', philaVueMapping);
+
   // mixins
   import markersMixin from './markers-mixin';
-  import cyclomediaMixin from '../../cyclomedia/map-panel-mixin';
-  import pictometryMixin from '../../pictometry/map-panel-mixin';
-  // vue doesn't like it when you import this as Map (reserved-ish word)
-  import Map_ from '../../leaflet/Map.vue';
-  import Control from '../../leaflet/Control.vue';
-  import AddressInput from '../AddressInput.vue';
-  import AddressCandidateList from '../AddressCandidateList.vue';
-  import EsriTiledMapLayer from '../../esri-leaflet/TiledMapLayer.vue';
-  import EsriTiledOverlay from '../../esri-leaflet/TiledOverlay.vue';
-  import EsriDynamicMapLayer from '../../esri-leaflet/DynamicMapLayer.vue';
-  import EsriFeatureLayer from '../../esri-leaflet/FeatureLayer.vue';
-  import Geojson from '../../leaflet/Geojson.vue';
-  import CircleMarker from '../../leaflet/CircleMarker.vue';
-  import OpacitySlider from '../OpacitySlider.vue';
-  import VectorMarker from '../VectorMarker.vue';
-  import PngMarker from '../PngMarker.vue';
-  import BasemapToggleControl from '../BasemapToggleControl.vue';
-  import BasemapSelectControl from '../BasemapSelectControl.vue';
-  import FullScreenMapToggleTab from '../FullScreenMapToggleTab.vue';
-  import LocationControl from '../LocationControl.vue';
-  import CyclomediaButton from '../../cyclomedia/Button.vue';
-  import PictometryButton from '../../pictometry/Button.vue';
-  import CyclomediaRecordingCircle from '../../cyclomedia/RecordingCircle.vue';
-  import CyclomediaRecordingsClient from '../../cyclomedia/recordings-client';
-  import SvgViewConeMarker from '../../cyclomedia/SvgViewConeMarker.vue';
-  import MeasureControl from '../MeasureControl.vue';
-  import LegendControl from '../LegendControl.vue';
-  import BasemapTooltip from '../BasemapTooltip.vue';
-  import ControlCorner from '../../leaflet/ControlCorner.vue';
+  const cyclomediaMixin = philaVueMapping.CyclomediaMixin;
+  const pictometryMixin = philaVueMapping.PictometryMixin;
 
-  // import debounce from 'debounce';
+  // vue doesn't like it when you import this as Map (reserved-ish word)
+  const Map_ = philaVueMapping.Map_;
+  const Control = philaVueMapping.Control;
+  const AddressInput = philaVueMapping.AddressInput;
+  const AddressCandidateList = philaVueMapping.AddressCandidateList;
+  const EsriTiledMapLayer = philaVueMapping.EsriTiledMapLayer;
+  const EsriTiledOverlay = philaVueMapping.EsriTiledOverlay;
+  const EsriDynamicMapLayer = philaVueMapping.EsriDynamicMapLayer;
+  const EsriFeatureLayer = philaVueMapping.EsriFeatureLayer;
+  const Geojson = philaVueMapping.Geojson;
+  const CircleMarker = philaVueMapping.CircleMarker;
+  const OpacitySlider = philaVueMapping.OpacitySlider;
+  const VectorMarker = philaVueMapping.VectorMarker;
+  const PngMarker = philaVueMapping.PngMarker;
+  const BasemapToggleControl = philaVueMapping.BasemapToggleControl;
+  const BasemapSelectControl = philaVueMapping.BasemapSelectControl;
+  const FullScreenMapToggleTab = philaVueMapping.FullScreenMapToggleTab;
+  const LocationControl = philaVueMapping.LocationControl;
+  const CyclomediaButton = philaVueMapping.CyclomediaButton;
+  const PictometryButton = philaVueMapping.PictometryButton;
+  const CyclomediaRecordingCircle = philaVueMapping.CyclomediaRecordingCircle;
+  const CyclomediaRecordingsClient = philaVueMapping.CyclomediaRecordingsClient;
+  const SvgViewConeMarker = philaVueMapping.SvgViewConeMarker;
+  const MeasureControl = philaVueMapping.MeasureControl;
+  const LegendControl = philaVueMapping.LegendControl;
+  const BasemapTooltip = philaVueMapping.BasemapTooltip;
+  const ControlCorner = philaVueMapping.ControlCorner;
 
   export default {
     mixins: [

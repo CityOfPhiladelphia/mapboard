@@ -2,6 +2,7 @@ import Vue from 'vue';
 import axios from 'axios';
 import createStore from './store';
 import configMixin from './util/config-mixin';
+// import philaVueMapping from '@cityofphiladelphia/phila-vue-mapping';
 import Mapboard from './components/Mapboard.vue';
 import mergeDeep from './util/merge-deep';
 import controllerMixin from './controller';
