@@ -39,8 +39,8 @@
 <script>
   import philaVueComps from '@cityofphiladelphia/phila-vue-comps';
 
-  // const TopicComponentGroup = philaVueComps.TopicComponentGroup;
-  import TopicComponentGroup from './TopicComponentGroup.vue';
+  const TopicComponentGroup = philaVueComps.TopicComponentGroup;
+  // import TopicComponentGroup from './TopicComponentGroup.vue';
 
   export default {
     props: ['topicKey'],
