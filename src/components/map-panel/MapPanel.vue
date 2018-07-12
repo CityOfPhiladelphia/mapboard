@@ -263,9 +263,10 @@
       </scale-control> -->
 
       <div v-once>
-        <AddressInput :position="this.addressInputPosition" />
+        <AddressInput v-if="this.shouldShowAddressInput"
+                      :position="this.addressInputPosition" />
       </div>
-      <AddressCandidateList v-if="this.addressAutocompleteEnabled"
+      <AddressCandidateList v-if="this.addressAutocompleteEnabled && this.shouldShowAddressInput"
                             :position="this.addressInputPosition"
       />
 
@@ -380,6 +381,13 @@
       this.$controller.appDidLoad();
     },
     computed: {
+      shouldShowAddressInput() {
+        if (this.$config.addressInputLocation == 'map') {
+          return true;
+        } else {
+          return false;
+        }
+      },
       addressAutocompleteEnabled() {
         // TODO tidy up the code
         if (this.$config.addressAutocomplete.enabled === true) {

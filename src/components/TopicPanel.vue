@@ -20,6 +20,9 @@
         <div class="topics-container cell medium-cell-block-y"
              :style="styleObject"
         >
+          <AddressInput v-if="this.shouldShowAddressInput" />
+          <AddressCandidateList v-if="this.addressAutocompleteEnabled && this.shouldShowAddressInput"/>
+
           <topic v-for="topic in this.$config.topics"
                  :topicKey="topic.key"
                  :key="topic.key"
@@ -33,10 +36,16 @@
   import Greeting from './Greeting.vue';
   import Topic from './Topic.vue';
 
+  import philaVueComps from '@cityofphiladelphia/phila-vue-comps';
+  const AddressInput = philaVueComps.AddressInput;
+  const AddressCandidateList = philaVueComps.AddressCandidateList;
+
   export default {
     components: {
       Greeting,
-      Topic
+      Topic,
+      AddressInput,
+      AddressCandidateList
     },
     data() {
       const data = {
@@ -55,6 +64,21 @@
     //   window.removeEventListener('resize', this.handleWindowResize);
     // },
     computed: {
+      shouldShowAddressInput() {
+        if (this.$config.addressInputLocation == 'topics') {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      addressAutocompleteEnabled() {
+        // TODO tidy up the code
+        if (this.$config.addressAutocomplete.enabled === true) {
+          return true;
+        } else {
+          return false;
+        }
+      },
       fullScreenMapEnabled() {
         return this.$store.state.fullScreenMapEnabled;
       },

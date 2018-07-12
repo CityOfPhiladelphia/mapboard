@@ -1,6 +1,9 @@
 <template>
   <div class="mb-panel-topics-greeting">
     <div class="columns medium-20 medium-centered">
+
+      <AddressInput v-if="this.shouldShowAddressInput" />
+      <AddressCandidateList v-if="this.addressAutocompleteEnabled && this.shouldShowAddressInput"/>
       <div v-if="!components && !hasError" class="greeting" v-html="initialMessage">
       </div>
 
@@ -20,15 +23,27 @@
 
 <script>
   import philaVueComps from '@cityofphiladelphia/phila-vue-comps';
-
-  const Image_ = philaVueComps.Image
+  const Image_ = philaVueComps.Image;
   // import Image_ from './topic-components/Image.vue';
+
+  const AddressInput = philaVueComps.AddressInput;
+  const AddressCandidateList = philaVueComps.AddressCandidateList;
+
 
   export default {
     components: {
-      Image_
+      Image_,
+      AddressInput,
+      AddressCandidateList
     },
     computed: {
+      shouldShowAddressInput() {
+        if (this.$config.addressInputLocation == 'topics') {
+          return true;
+        } else {
+          return false;
+        }
+      },
       components() {
         const greetingConfig = this.$config.greeting || {};
         return greetingConfig.components;
