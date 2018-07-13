@@ -20,8 +20,8 @@
         <div class="topics-container cell medium-cell-block-y"
              :style="styleObject"
         >
-          <AddressInput v-if="this.shouldShowAddressInput" />
-          <AddressCandidateList v-if="this.addressAutocompleteEnabled && this.shouldShowAddressInput"/>
+          <address-input v-if="this.shouldShowAddressInput" />
+          <address-candidate-list v-if="this.addressAutocompleteEnabled && this.shouldShowAddressInput" />
 
           <topic v-for="topic in this.$config.topics"
                  :topicKey="topic.key"

@@ -47,7 +47,7 @@
   import philaVueMapping from '@cityofphiladelphia/phila-vue-mapping';
 
   import TopicPanel from './TopicPanel.vue';
-  import MapPanel from './map-panel/MapPanel.vue';
+  import MapPanel from './MapPanel.vue';
 
   const CyclomediaWidget = philaVueMapping.CyclomediaWidget;
   const PictometryWidget = philaVueMapping.PictometryWidget;
