@@ -47,7 +47,7 @@ function createFilteredData(config) {
     tableIds = tableIds.concat(compTableIds);
   }
 
-  console.log('createFilteredData is running, tableIds:', tableIds);
+  // console.log('createFilteredData is running, tableIds:', tableIds);
 
   // const filteredData = tableIds.reduce((acc, tableId) => {
   //   acc[tableId] = [];
@@ -184,8 +184,6 @@ function createStore(config) {
       data: null,
       input: null,
       related: null,
-      // forwardStatus: null,
-      // reverseStatus: null,
     },
     lastSearchMethod: 'geocode',
     // the leaflet map object
@@ -208,37 +206,16 @@ function createStore(config) {
       basemap: '',
       imagery: 'imagery2017',
       shouldShowImagery: false,
-      // circleMarkers: [],
       // this is the key for the active overlay image (eg regmap)
       imageOverlay: null,
       imageOverlayOpacity: null,
       filters: [],
       watchPositionOn: false,
-      shouldShowAddressCandidateList: false,
-      candidates: [],
-      addressEntered: null,
-      // features: {
-      //   markers: [
-      //     // {
-      //     //   geometry: '',
-      //     //   // optional - mainly for symbology
-      //     //   options: {}
-      //     // }
-      //   ],
-      //   polygons: [
-      //
-      //   ]
-      // }
     },
+    shouldShowAddressCandidateList: false,
+    candidates: [],
+    addressEntered: null,
     parcels,
-    // dorParcels: {
-    //   data: [],
-    //   status: null
-    // },
-    // activeDorParcel: null,
-    // activeDorAddress: null,
-    // activeDorMapreg: null,
-    // pwdParcel: null,
     sources,
     cyclomedia: {
       initialized: false,
@@ -355,6 +332,7 @@ function createStore(config) {
         const targetId = payload.targetId;
 
         if (targetId) {
+          // console.log('store.js setSourceStatus, key:', key, 'status:', status, 'targetId:', targetId);
           state.sources[key].targets[targetId].status = status;
         } else {
           state.sources[key].status = status;
@@ -460,7 +438,7 @@ function createStore(config) {
         }
       },
       setActiveParcel(state, payload) {
-        console.log('store setActiveParcel:', payload)
+        // console.log('store setActiveParcel:', payload)
         const { parcelLayer, activeParcel, activeAddress, activeMapreg } = payload || {};
         state.parcels[parcelLayer].activeParcel = activeParcel;
         state.parcels[parcelLayer].activeAddress = activeAddress;
@@ -585,13 +563,13 @@ function createStore(config) {
       //   state.map.circleMarkers.push(payload);
       // }
       setShouldShowAddressCandidateList(state, payload) {
-        state.map.shouldShowAddressCandidateList = payload;
+        state.shouldShowAddressCandidateList = payload;
       },
       setCandidates(state, payload) {
-        state.map.candidates = payload;
+        state.candidates = payload;
       },
       setAddressEntered(state, payload) {
-        state.map.addressEntered = payload;
+        state.addressEntered = payload;
       }
     }
   });

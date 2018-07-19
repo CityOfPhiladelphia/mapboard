@@ -9,6 +9,7 @@
         <cyclomedia-widget v-if="this.shouldLoadCyclomediaWidget"
                            slot="cycloWidget"
                            v-show="cyclomediaActive"
+                           screen-percent="2"
         />
         <pictometry-widget v-if="this.shouldLoadPictometryWidget"
                            slot="pictWidget"

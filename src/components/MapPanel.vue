@@ -290,7 +290,6 @@
 <script>
   import * as L from 'leaflet';
   import philaVueMapping from '@cityofphiladelphia/phila-vue-mapping';
-  // console.log('philaVueMapping:', philaVueMapping);
 
   // mixins
   import markersMixin from './markers-mixin';
@@ -660,6 +659,8 @@
         return false;
       },
       handleMapClick(e) {
+        // console.log('MapPanel.vue handleMapClick e:', e);
+        // latLng = L.latLng(e.lat, e.lng)
         this.$controller.handleMapClick(e);
       },
 
