@@ -6,9 +6,8 @@ import Mapboard from './components/Mapboard.vue';
 import mergeDeep from './util/merge-deep';
 import generateUniqueId from './util/unique-id';
 
-// import controllerMixin from './controller';
-import controllerMixinShell from '@cityofphiladelphia/phila-vue-datafetch';
-const controllerMixin = controllerMixinShell.controllerMixin;
+import philaVueDatafetch from '@cityofphiladelphia/phila-vue-datafetch';
+const controllerMixin = philaVueDatafetch;
 
 // helper function to auto-assign ids to horizontal tables
 function assignTableIds(comps) {
