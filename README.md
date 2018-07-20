@@ -2,7 +2,7 @@
 
 Mapboard is a framework for building data-rich mapping applications for the City of Philadelphia.
 
-![Atlas](http://i.imgur.com/GcZpsgX.png)
+![Atlas](https://s3.amazonaws.com/mapboard-images/Mapboard.JPG)
 
 ## Usage
 Check out [the wiki](https://github.com/CityOfPhiladelphia/mapboard/wiki) for usage documentation.
