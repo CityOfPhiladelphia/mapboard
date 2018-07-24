@@ -33,10 +33,9 @@
 </template>
 
 <script>
-  import Greeting from './Greeting.vue';
-  import Topic from './Topic.vue';
-
   import philaVueComps from '@cityofphiladelphia/phila-vue-comps';
+  const Topic = philaVueComps.Topic;
+  const Greeting = philaVueComps.Greeting;
   const AddressInput = philaVueComps.AddressInput;
   const AddressCandidateList = philaVueComps.AddressCandidateList;
 
