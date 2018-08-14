@@ -72,7 +72,7 @@
       },
       addressAutocompleteEnabled() {
         // TODO tidy up the code
-        if (this.$config.addressAutocomplete.enabled === true) {
+        if (this.$config.addressInput.autocompleteEnabled === true) {
           return true;
         } else {
           return false;
