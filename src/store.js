@@ -259,7 +259,11 @@ function createStore(config) {
     activeFeature: {
       featureId: null,
       tableId: null
-    }
+    },
+
+    appData: {
+      propertyBalance: 0,
+    },
   };
 
   // TODO standardize how payloads are passed around/handled
@@ -584,7 +588,11 @@ function createStore(config) {
       },
       setAddressEntered(state, payload) {
         state.addressEntered = payload;
-      }
+      },
+
+      setPropertyBalance(state, payload) {
+        state.appData.propertyBalance = payload;
+      },
     }
   });
 }

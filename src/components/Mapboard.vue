@@ -6,7 +6,7 @@
       <topic-panel :class="this.shouldShowTopicPanel" />
 
       <map-panel :class="this.shouldShowMapPanel"
-                 v-show="this.shouldShowMapPanel === 'map-panel-true'"
+                 v-if="this.fullScreenTopicsOnly !== true"
       >
         <cyclomedia-widget v-if="this.shouldLoadCyclomediaWidget"
                            slot="cycloWidget"

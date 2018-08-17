@@ -6,15 +6,52 @@
                                    v-if="!this.fullScreenTopicsOnly"
     />
 
+    <!-- <div v-if="!shouldShowGreeting" class="topic-panel-content"> -->
+
+    <!-- address header -->
+    <div class="address-header cell small-24 medium-24"
+         v-if="this.fullScreenTopicsOnly"
+    >
+
+      <div :class="'address-container columns ' +  this.addressContainerClass"
+           :style="this.addressContainerStyle"
+      >
+
+        <h1 class="address-header-line-1">
+          <!-- <i class="fa fa-map-marker"></i> -->
+          {{ address }}
+        </h1>
+        <div class="address-header-line-2"
+             v-show="this.geocode"
+        >
+          PHILADELPHIA, PA {{ zipCode }}
+        </div>
+      </div>
+
+      <div class="address-input-container columns small-24 medium-12 large-12"
+           :style="this.addressInputContainerStyle"
+           v-if="this.fullScreenTopicsEnabled || this.fullScreenTopicsOnly"
+      >
+        <address-input :widthFromConfig="this.addressInputWidth"
+                       :placeholder="this.addressInputPlaceholder"
+        >
+          <address-candidate-list v-if="this.addressAutocompleteEnabled"
+                                  slot="address-candidates-slot"
+                                  :widthFromConfig="this.addressInputWidth"
+          />
+        />
+      </div>
+
+    </div>
+
     <!-- before search -->
     <greeting v-show="shouldShowGreeting" />
 
-    <!-- after search -->
     <div v-if="!shouldShowGreeting" class="topic-panel-content">
 
-
-      <!-- address header -->
-      <div class="address-header cell small-24 medium-24">
+      <div class="address-header cell small-24 medium-24"
+           v-if="!this.fullScreenTopicsOnly"
+      >
 
         <div :class="'address-container columns ' +  this.addressContainerClass"
              :style="this.addressContainerStyle"
@@ -42,6 +79,7 @@
         </div>
 
       </div>
+
 
       <!-- topics container -->
       <div class="topics-container cell medium-cell-block-y"
@@ -168,6 +206,9 @@
         const dorParcels = this.$store.state.parcels.dor.data;
         const activeDorAddress = this.$store.state.parcels.dor.activeAddress;
         let address;
+        if (this.$config.defaultAddressTextPlaceholder) {
+          address = this.$config.defaultAddressTextPlaceholder;
+        }
 
         if (geocode) {
           // TODO make this not ais-specific
