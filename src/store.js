@@ -169,7 +169,12 @@ function createStore(config) {
 
   const initialState = {
     isMobileOrTablet: isMobileDevice(),
+    fullScreen: {
+      mapOnly: false,
+      topicsOnly: false,
+    },
     fullScreenMapEnabled: false,
+    fullScreenTopicsEnabled: false,
 
     // this gets set to the parcel layer for the default (aka first) topic in
     // DataManager.resetGeocode, which is called by Router.hashChanged on app
@@ -292,8 +297,17 @@ function createStore(config) {
       setIsMobileOrTablet(state, payload) {
         state.isMobileOrTablet = payload;
       },
+      setMapOnly(state, payload) {
+        state.fullScreen.mapOnly = payload;
+      },
+      setTopicsOnly(state, payload) {
+        state.fullScreen.topicsOnly = payload;
+      },
       setFullScreenMapEnabled(state, payload) {
         state.fullScreenMapEnabled = payload;
+      },
+      setFullScreenTopicsEnabled(state, payload) {
+        state.fullScreenTopicsEnabled = payload;
       },
       setLocation(state, payload) {
         state.map.location.lat = payload.lat;
