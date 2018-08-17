@@ -263,10 +263,9 @@
       </scale-control> -->
 
       <div v-once>
-        <AddressInput v-if="this.shouldShowAddressInput"
-                      :position="this.addressInputPosition" />
+        <AddressInput :position="this.addressInputPosition" />
       </div>
-      <AddressCandidateList v-if="this.addressAutocompleteEnabled && this.shouldShowAddressInput"
+      <AddressCandidateList v-if="this.addressAutocompleteEnabled"
                             :position="this.addressInputPosition"
       />
 
@@ -380,13 +379,13 @@
       this.$controller.appDidLoad();
     },
     computed: {
-      shouldShowAddressInput() {
-        if (this.$config.addressInputLocation == 'map') {
-          return true;
-        } else {
-          return false;
-        }
-      },
+      // shouldShowAddressInput() {
+      //   if (this.$config.addressInputLocation == 'map') {
+      //     return true;
+      //   } else {
+      //     return false;
+      //   }
+      // },
       addressAutocompleteEnabled() {
         // TODO tidy up the code
         if (this.$config.addressInput.autocompleteEnabled === true) {
@@ -422,10 +421,17 @@
       fullScreenMapEnabled() {
         return this.$store.state.fullScreenMapEnabled;
       },
+      fullScreenTopicsEnabled() {
+        return this.$store.state.fullScreenTopicsEnabled;
+      },
       mapPanelContainerClass() {
         // return 'medium-12 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map'
         if (this.fullScreenMapEnabled) {
           return 'medium-24 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map'
+        } else if (this.fullScreenMapOnly) {
+          return 'medium-1 small-order-1 small-1 medium-order-2 mb-panel mb-panel-map'
+        } else if (this.fullScreenTopicsEnabled) {
+          return 'medium-1 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map'
         } else {
           return 'medium-12 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map'
         }
@@ -613,6 +619,11 @@
       markers() {
         this.setMapToBounds();
       },
+      fullScreenTopicsEnabled() {
+        this.$nextTick(() => {
+          this.$store.state.map.map.invalidateSize();
+        })
+      }
     },
     methods: {
       setMapToBounds() {
