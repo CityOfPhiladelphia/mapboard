@@ -82,13 +82,19 @@
 
 
       <!-- topics container -->
-      <div class="topics-container cell medium-cell-block-y"
+      <!-- <div class="topics-container cell medium-cell-block-y"
            :style="topicsContainerStyle"
       >
         <topic v-for="topic in this.$config.topics"
                :topicKey="topic.key"
                :key="topic.key"
         />
+      </div> -->
+      <div v-if="!shouldShowGreeting"
+           class="topics-container cell medium-cell-block-y"
+           :style="topicsContainerStyle"
+      >
+        <topic-component-group :topic-components="this.$config.components" />
       </div>
 
 
@@ -99,6 +105,7 @@
 <script>
   import philaVueComps from '@cityofphiladelphia/phila-vue-comps';
   const Topic = philaVueComps.Topic;
+  const TopicComponentGroup = philaVueComps.TopicComponentGroup;
   const Greeting = philaVueComps.Greeting;
   const AddressInput = philaVueComps.AddressInput;
   const AddressCandidateList = philaVueComps.AddressCandidateList;
@@ -108,6 +115,7 @@
   export default {
     components: {
       Greeting,
+      TopicComponentGroup,
       Topic,
       AddressInput,
       AddressCandidateList,
