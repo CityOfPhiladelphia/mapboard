@@ -11,7 +11,7 @@
   },
   "main": "./dist/mapboard.js",
   "dependencies": {
-    "@cityofphiladelphia/phila-vue-comps": "1.0.2",
+    "@cityofphiladelphia/phila-vue-comps": "https://github.com/CityOfPhiladelphia/phila-vue-comps/#92ddec7d744746f9a3482f2baaeecfa03a952058",
     "@cityofphiladelphia/phila-vue-datafetch": "0.0.9",
     "@cityofphiladelphia/phila-vue-mapping": "1.0.1",
     "@turf/turf": "^5.1.6",
