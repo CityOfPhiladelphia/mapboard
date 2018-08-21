@@ -289,7 +289,6 @@
 <script>
   import * as L from 'leaflet';
   import philaVueMapping from '@cityofphiladelphia/phila-vue-mapping';
-  // console.log('philaVueMapping:', philaVueMapping);
 
   // mixins
   import markersMixin from './markers-mixin';
@@ -380,9 +379,16 @@
       this.$controller.appDidLoad();
     },
     computed: {
+      // shouldShowAddressInput() {
+      //   if (this.$config.addressInputLocation == 'map') {
+      //     return true;
+      //   } else {
+      //     return false;
+      //   }
+      // },
       addressAutocompleteEnabled() {
         // TODO tidy up the code
-        if (this.$config.addressAutocomplete.enabled === true) {
+        if (this.$config.addressInput.autocompleteEnabled === true) {
           return true;
         } else {
           return false;
@@ -415,10 +421,17 @@
       fullScreenMapEnabled() {
         return this.$store.state.fullScreenMapEnabled;
       },
+      fullScreenTopicsEnabled() {
+        return this.$store.state.fullScreenTopicsEnabled;
+      },
       mapPanelContainerClass() {
         // return 'medium-12 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map'
         if (this.fullScreenMapEnabled) {
           return 'medium-24 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map'
+        } else if (this.fullScreenMapOnly) {
+          return 'medium-1 small-order-1 small-1 medium-order-2 mb-panel mb-panel-map'
+        } else if (this.fullScreenTopicsEnabled) {
+          return 'medium-1 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map'
         } else {
           return 'medium-12 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map'
         }
@@ -606,6 +619,11 @@
       markers() {
         this.setMapToBounds();
       },
+      fullScreenTopicsEnabled() {
+        this.$nextTick(() => {
+          this.$store.state.map.map.invalidateSize();
+        })
+      }
     },
     methods: {
       setMapToBounds() {
@@ -652,6 +670,8 @@
         return false;
       },
       handleMapClick(e) {
+        // console.log('MapPanel.vue handleMapClick e:', e);
+        // latLng = L.latLng(e.lat, e.lng)
         this.$controller.handleMapClick(e);
       },
 

@@ -1,14 +1,17 @@
 <template>
   <div id="mb-root"
        :class="rootClass"
-       :style="styleObject"
+       :style="mbRootStyle"
   >
-      <topic-panel :class="this.shouldShowTopicPanel"
-      />
-      <map-panel>
+      <topic-panel :class="this.shouldShowTopicPanel" />
+
+      <map-panel :class="this.shouldShowMapPanel"
+                 v-if="this.fullScreenTopicsOnly !== true"
+      >
         <cyclomedia-widget v-if="this.shouldLoadCyclomediaWidget"
                            slot="cycloWidget"
                            v-show="cyclomediaActive"
+                           screen-percent="2"
         />
         <pictometry-widget v-if="this.shouldLoadPictometryWidget"
                            slot="pictWidget"
@@ -47,19 +50,13 @@
   import philaVueMapping from '@cityofphiladelphia/phila-vue-mapping';
 
   import TopicPanel from './TopicPanel.vue';
-  import MapPanel from './map-panel/MapPanel.vue';
+  import MapPanel from './MapPanel.vue';
 
   const CyclomediaWidget = philaVueMapping.CyclomediaWidget;
   const PictometryWidget = philaVueMapping.PictometryWidget;
   const Layer = philaVueMapping.PictometryLayer;
   const ViewCone = philaVueMapping.PictometryViewCone;
   const PngMarker = philaVueMapping.PictometryPngMarker;
-
-  // import CyclomediaWidget from '../cyclomedia/Widget.vue';
-  // import PictometryWidget from '../pictometry/Widget.vue';
-  // import Layer from '../pictometry/Layer.vue';
-  // import PngMarker from '../pictometry/PngMarker.vue';
-  // import ViewCone from '../pictometry/ViewCone.vue';
 
   export default {
     components: {
@@ -74,13 +71,20 @@
     data() {
       const data = {
         // this will only affect the app size if the app is set to "plugin" mode
-        styleObject: {
+        mbRootStyle: {
           'height': '100px'
         }
       };
       return data;
     },
     created() {
+      if (this.$config.panels) {
+        if (!this.$config.panels.includes('map')) {
+          this.$store.commit('setTopicsOnly', true);
+        } else if (!this.$config.panels.includes('topics')) {
+          this.$store.commit('setMapOnly', true);
+        }
+      }
       window.addEventListener('click', this.closeAddressCandidateList);
       window.addEventListener('resize', this.handleWindowResize);
       this.handleWindowResize();
@@ -102,13 +106,33 @@
       shouldLoadPictometryWidget() {
         return this.$config.pictometry.enabled && !this.isMobileOrTablet;
       },
+      fullScreenMapOnly() {
+        return this.$store.state.fullScreen.mapOnly;
+      },
       fullScreenMapEnabled() {
         return this.$store.state.fullScreenMapEnabled;
       },
+      fullScreenTopicsOnly() {
+        return this.$store.state.fullScreen.topicsOnly;
+      },
+      fullScreenTopicsEnabled() {
+        return this.$store.state.fullScreenTopicsEnabled;
+      },
       shouldShowTopicPanel() {
-        let value = 'topic-panel-true';
-        if (this.fullScreenMapEnabled) {
+        let value;
+        if (!this.fullScreenMapEnabled && !this.fullScreenMapOnly) {
+          value = 'topic-panel-true';
+        } else {
           value = 'topic-panel-false';
+        }
+        return value;
+      },
+      shouldShowMapPanel() {
+        let value;
+        if (!this.fullScreenTopicsEnabled && !this.fullScreenTopicsOnly) {
+          value = 'map-panel-true';
+        } else {
+          value = 'map-panel-false';
         }
         return value;
       },
@@ -197,9 +221,9 @@
       handleWindowResize() {
         // this only actually affects the size if it is set to "plugin mode"
         if ($(window).width() >= 750) {
-          this.styleObject.height = '600px'
+          this.mbRootStyle.height = '600px'
         } else {
-          this.styleObject.height = 'auto';
+          this.mbRootStyle.height = 'auto';
         }
       }
     },
@@ -231,6 +255,10 @@
 
   @media screen and (min-width: 46.875em) {
     .topic-panel-false {
+      display: none;
+    }
+
+    .map-panel-false {
       display: none;
     }
   }
