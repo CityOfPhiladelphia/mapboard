@@ -1280,7 +1280,7 @@
   var BasemapTooltip = philaVueMapping.BasemapTooltip;
   var ControlCorner = philaVueMapping.ControlCorner;
 
-  var MapPanel = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:this.mapPanelContainerClass,attrs:{"id":"map-panel-container"}},[_vm._m(0),_vm._v(" "),_c('map_',{class:{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active },attrs:{"id":"map-tag","center":this.$store.state.map.center,"zoom":this.$store.state.map.zoom,"zoom-control-position":"bottomright","min-zoom":this.$config.map.minZoom,"max-zoom":this.$config.map.maxZoom},on:{"l-click":_vm.handleMapClick,"l-moveend":_vm.handleMapMove}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.isGeocoding),expression:"isGeocoding"}],staticClass:"mb-map-loading-mask"},[_c('div',{staticClass:"mb-map-loading-mask-inner"},[_c('i',{staticClass:"fa fa-spinner fa-4x spin"}),_vm._v(" "),_c('h1',[_vm._v("Finding address...")])])]),_vm._v(" "),_vm._l((this.$config.map.basemaps),function(basemap,key){return (_vm.activeBasemap === key)?_c('esri-tiled-map-layer',{key:key,attrs:{"url":basemap.url,"max-zoom":basemap.maxZoom,"attribution":basemap.attribution}}):_vm._e()}),_vm._v(" "),_vm._l((this.$config.map.tiledLayers),function(tiledLayer,key){return (_vm.tiledLayers.includes(key))?_c('esri-tiled-map-layer',{key:key,attrs:{"url":tiledLayer.url,"zIndex":tiledLayer.zIndex,"attribution":tiledLayer.attribution}}):_vm._e()}),_vm._v(" "),_vm._l((this.$config.map.tiledOverlays),function(tiledLayer,key){return (_vm.activeTiledOverlays.includes(key))?_c('esri-tiled-overlay',{key:key,attrs:{"url":tiledLayer.url,"zIndex":tiledLayer.zIndex,"opacity":tiledLayer.opacity}}):_vm._e()}),_vm._v(" "),_vm._l((this.$config.map.dynamicMapLayers),function(dynamicLayer,key){return (_vm.activeDynamicMaps.includes(key))?_c('esri-dynamic-map-layer',{key:key,attrs:{"url":dynamicLayer.url,"attribution":dynamicLayer.attribution,"transparent":true,"opacity":dynamicLayer.opacity}}):_vm._e()}),_vm._v(" "),_vm._l((this.$config.map.featureLayers),function(featureLayer,key){return (_vm.shouldShowFeatureLayer(key, featureLayer.minZoom))?_c('esri-feature-layer',{key:key,attrs:{"layerName":key,"url":featureLayer.url,"color":featureLayer.color,"fillColor":featureLayer.color,"fillOpacity":featureLayer.fillOpacity,"weight":featureLayer.weight,"style_":featureLayer.style}}):_vm._e()}),_vm._v(" "),_vm._l((this.imageOverlayItems),function(item,key){return (_vm.shouldShowImageOverlay(item.properties.RECMAP))?_c('esri-dynamic-map-layer',{key:key,attrs:{"url":'//gis.phila.gov/arcgis/rest/services/Atlas/RegMaps/MapServer',"layers":[0],"layerDefs":'0:NAME=\'g' + item.properties.RECMAP.toLowerCase() + '.tif\'',"transparent":true,"opacity":0.5}}):_vm._e()}),_vm._v(" "),_vm._l((_vm.markers),function(marker,index){return _c('vector-marker',{key:marker.key,attrs:{"latlng":marker.latlng,"markerColor":marker.color}})}),_vm._v(" "),(this.cyclomediaActive)?_c('png-marker',{attrs:{"icon":'../../src/assets/camera.png',"latlng":_vm.cycloLatlng,"rotationAngle":_vm.cycloRotationAngle}}):_vm._e(),_vm._v(" "),(this.cyclomediaActive)?_c('svg-view-cone-marker',{attrs:{"latlng":_vm.cycloLatlng,"rotationAngle":_vm.cycloRotationAngle,"hFov":_vm.cycloHFov}}):_vm._e(),_vm._v(" "),_vm._l((_vm.geojsonFeatures),function(geojsonFeature){return (_vm.shouldShowGeojson(geojsonFeature.key))?_c('geojson',{key:geojsonFeature.key,attrs:{"geojson":geojsonFeature.geojson,"fillColor":geojsonFeature.fillColor,"color":geojsonFeature.color,"weight":geojsonFeature.weight,"opacity":geojsonFeature.opacity,"fillOpacity":geojsonFeature.fillOpacity,"data":{
+  var MapPanel = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:this.mapPanelContainerClass,attrs:{"id":"map-panel-container"}},[_vm._m(0),_vm._v(" "),_c('map_',{class:{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active },attrs:{"id":"map-tag","center":this.$store.state.map.center,"zoom":this.$store.state.map.zoom,"zoom-control-position":"bottomright","min-zoom":this.$config.map.minZoom,"max-zoom":this.$config.map.maxZoom},on:{"l-click":_vm.handleMapClick,"l-moveend":_vm.handleMapMove}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.isGeocoding),expression:"isGeocoding"}],staticClass:"mb-map-loading-mask"},[_c('div',{staticClass:"mb-map-loading-mask-inner"},[_c('i',{staticClass:"fa fa-spinner fa-4x spin"}),_vm._v(" "),_c('h1',[_vm._v("Finding address...")])])]),_vm._v(" "),_vm._l((this.$config.map.basemaps),function(basemap,key){return (_vm.activeBasemap === key)?_c('esri-tiled-map-layer',{key:key,attrs:{"url":basemap.url,"max-zoom":basemap.maxZoom,"attribution":basemap.attribution}}):_vm._e()}),_vm._v(" "),_vm._l((this.$config.map.tiledLayers),function(tiledLayer,key){return (_vm.tiledLayers.includes(key))?_c('esri-tiled-map-layer',{key:key,attrs:{"url":tiledLayer.url,"zIndex":tiledLayer.zIndex,"attribution":tiledLayer.attribution}}):_vm._e()}),_vm._v(" "),_vm._l((this.$config.map.tiledOverlays),function(tiledLayer,key){return (_vm.activeTiledOverlays.includes(key))?_c('esri-tiled-overlay',{key:key,attrs:{"url":tiledLayer.url,"zIndex":tiledLayer.zIndex,"opacity":tiledLayer.opacity}}):_vm._e()}),_vm._v(" "),_vm._l((this.$config.map.dynamicMapLayers),function(dynamicLayer,key){return (_vm.activeDynamicMaps.includes(key))?_c('esri-dynamic-map-layer',{key:key,attrs:{"url":dynamicLayer.url,"attribution":dynamicLayer.attribution,"transparent":true,"opacity":dynamicLayer.opacity}}):_vm._e()}),_vm._v(" "),_vm._l((this.$config.map.featureLayers),function(featureLayer,key){return (_vm.shouldShowFeatureLayer(key, featureLayer.minZoom))?_c('esri-feature-layer',{key:key,attrs:{"layerName":key,"url":featureLayer.url,"color":featureLayer.color,"fillColor":featureLayer.color,"fillOpacity":featureLayer.fillOpacity,"weight":featureLayer.weight,"style_":featureLayer.style,"minZoom":featureLayer.minZoom,"maxZoom":featureLayer.maxZoom,"zIndex":featureLayer.zIndex,"markerType":featureLayer.markerType,"radius":featureLayer.radius}}):_vm._e()}),_vm._v(" "),_vm._l((this.imageOverlayItems),function(item,key){return (_vm.shouldShowImageOverlay(item.properties.RECMAP))?_c('esri-dynamic-map-layer',{key:key,attrs:{"url":'//gis.phila.gov/arcgis/rest/services/Atlas/RegMaps/MapServer',"layers":[0],"layerDefs":'0:NAME=\'g' + item.properties.RECMAP.toLowerCase() + '.tif\'',"transparent":true,"opacity":0.5}}):_vm._e()}),_vm._v(" "),_vm._l((_vm.markers),function(marker,index){return _c('vector-marker',{key:marker.key,attrs:{"latlng":marker.latlng,"markerColor":marker.color}})}),_vm._v(" "),(this.cyclomediaActive)?_c('png-marker',{attrs:{"icon":'../../src/assets/camera.png',"latlng":_vm.cycloLatlng,"rotationAngle":_vm.cycloRotationAngle}}):_vm._e(),_vm._v(" "),(this.cyclomediaActive)?_c('svg-view-cone-marker',{attrs:{"latlng":_vm.cycloLatlng,"rotationAngle":_vm.cycloRotationAngle,"hFov":_vm.cycloHFov}}):_vm._e(),_vm._v(" "),_vm._l((_vm.geojsonFeatures),function(geojsonFeature){return (_vm.shouldShowGeojson(geojsonFeature.key))?_c('geojson',{key:geojsonFeature.key,attrs:{"geojson":geojsonFeature.geojson,"fillColor":geojsonFeature.fillColor,"color":geojsonFeature.color,"weight":geojsonFeature.weight,"opacity":geojsonFeature.opacity,"fillOpacity":geojsonFeature.fillOpacity,"data":{
                  featureId: geojsonFeature.featureId,
                  tableId: geojsonFeature.tableId
                }}}):_vm._e()}),_vm._v(" "),_vm._l((_vm.reactiveGeojsonFeatures),function(geojsonFeature){return (_vm.shouldShowGeojson(geojsonFeature.key))?_c('geojson',{key:geojsonFeature.key,attrs:{"geojson":geojsonFeature.geojson,"fillColor":geojsonFeature.fillColor,"color":geojsonFeature.color,"weight":geojsonFeature.weight,"opacity":geojsonFeature.opacity,"fillOpacity":geojsonFeature.fillOpacity,"data":{
@@ -1322,6 +1322,7 @@
       ControlCorner: ControlCorner,
     },
     created: function created() {
+      console.log('MapPanel created, this.$config.map:', this.$config.map);
       // if there's a default address, navigate to it
       var defaultAddress = this.$config.defaultAddress;
       if (defaultAddress) {
@@ -1503,7 +1504,7 @@
         return this.imageryBasemaps.length > 0;
       },
       shouldShowImageryToggle: function shouldShowImageryToggle() {
-        return this.hasImageryBasemaps && this.$config.map.imagery.enabled;
+        return this.hasImageryBasemaps// && this.$config.map.imagery.enabled;
       },
       identifyFeature: function identifyFeature() {
         var configFeature;
@@ -1724,6 +1725,7 @@
       return data;
     },
     created: function created() {
+      console.log('MapBoard created, this.$config.map:', this.$config.map);
       if (this.$config.panels) {
         if (!this.$config.panels.includes('map')) {
           this.$store.commit('setTopicsOnly', true);
@@ -1961,10 +1963,12 @@
 
   function initMapboard(clientConfig) {
     var baseConfigUrl = clientConfig.baseConfig;
+    // console.log('baseConfigUrl:', baseConfigUrl);
 
     // get base config
     return axios.get(baseConfigUrl).then(function (response) {
       var data = response.data;
+      // const data = baseConfigUrl;
 
       // parse raw js. yes, it's ok to use eval :)
       // http://stackoverflow.com/a/87260/676001
@@ -1974,6 +1978,7 @@
 
       // deep merge base config and client config
       var config = mergeDeep(baseConfig, clientConfig);
+      // const config = mergeDeep(baseConfigUrl, clientConfig);
 
       // assign table ids
       for (var i = 0, list = config.topics; i < list.length; i += 1) {

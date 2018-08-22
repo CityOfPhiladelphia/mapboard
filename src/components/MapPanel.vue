@@ -68,6 +68,11 @@
                           :fillOpacity="featureLayer.fillOpacity"
                           :weight="featureLayer.weight"
                           :style_="featureLayer.style"
+                          :minZoom="featureLayer.minZoom"
+                          :maxZoom="featureLayer.maxZoom"
+                          :zIndex="featureLayer.zIndex"
+                          :markerType="featureLayer.markerType"
+                          :radius="featureLayer.radius"
       />
 
       <!-- regmaps -->
@@ -538,7 +543,7 @@
         return this.imageryBasemaps.length > 0;
       },
       shouldShowImageryToggle() {
-        return this.hasImageryBasemaps && this.$config.map.imagery.enabled;
+        return this.hasImageryBasemaps// && this.$config.map.imagery.enabled;
       },
       identifyFeature() {
         let configFeature;
