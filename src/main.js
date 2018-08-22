@@ -59,10 +59,12 @@ function assignHorizontalTableGroupIds(comps) {
 
 function initMapboard(clientConfig) {
   const baseConfigUrl = clientConfig.baseConfig;
+  // console.log('baseConfigUrl:', baseConfigUrl);
 
   // get base config
   return axios.get(baseConfigUrl).then(response => {
     const data = response.data;
+    // const data = baseConfigUrl;
 
     // parse raw js. yes, it's ok to use eval :)
     // http://stackoverflow.com/a/87260/676001
@@ -72,6 +74,7 @@ function initMapboard(clientConfig) {
 
     // deep merge base config and client config
     const config = mergeDeep(baseConfig, clientConfig);
+    // const config = mergeDeep(baseConfigUrl, clientConfig);
 
     // assign table ids
     for (let topic of config.topics) {

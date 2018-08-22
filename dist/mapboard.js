@@ -204,7 +204,16 @@
 
     var initialState = {
       isMobileOrTablet: isMobileDevice(),
+<<<<<<< HEAD
       fullScreenMapEnabled: false,
+=======
+      fullScreen: {
+        mapOnly: false,
+        topicsOnly: false,
+      },
+      fullScreenMapEnabled: false,
+      fullScreenTopicsEnabled: false,
+>>>>>>> origin/master
 
       // this gets set to the parcel layer for the default (aka first) topic in
       // DataManager.resetGeocode, which is called by Router.hashChanged on app
@@ -289,7 +298,15 @@
       activeFeature: {
         featureId: null,
         tableId: null
+<<<<<<< HEAD
       }
+=======
+      },
+
+      appData: {
+        propertyBalance: 0,
+      },
+>>>>>>> origin/master
     };
 
     // TODO standardize how payloads are passed around/handled
@@ -327,9 +344,24 @@
         setIsMobileOrTablet: function setIsMobileOrTablet(state, payload) {
           state.isMobileOrTablet = payload;
         },
+<<<<<<< HEAD
         setFullScreenMapEnabled: function setFullScreenMapEnabled(state, payload) {
           state.fullScreenMapEnabled = payload;
         },
+=======
+        setMapOnly: function setMapOnly(state, payload) {
+          state.fullScreen.mapOnly = payload;
+        },
+        setTopicsOnly: function setTopicsOnly(state, payload) {
+          state.fullScreen.topicsOnly = payload;
+        },
+        setFullScreenMapEnabled: function setFullScreenMapEnabled(state, payload) {
+          state.fullScreenMapEnabled = payload;
+        },
+        setFullScreenTopicsEnabled: function setFullScreenTopicsEnabled(state, payload) {
+          state.fullScreenTopicsEnabled = payload;
+        },
+>>>>>>> origin/master
         setLocation: function setLocation(state, payload) {
           state.map.location.lat = payload.lat;
           state.map.location.lng = payload.lng;
@@ -620,7 +652,15 @@
         },
         setAddressEntered: function setAddressEntered(state, payload) {
           state.addressEntered = payload;
+<<<<<<< HEAD
         }
+=======
+        },
+
+        setPropertyBalance: function setPropertyBalance(state, payload) {
+          state.appData.propertyBalance = payload;
+        },
+>>>>>>> origin/master
       }
     });
   }
@@ -636,6 +676,7 @@
     });
   }
 
+<<<<<<< HEAD
   (function(){ if(typeof document !== 'undefined'){ var head=document.head||document.getElementsByTagName('head')[0], style=document.createElement('style'), css=" .address-header[data-v-c37cf8b6] { background: #daedfe; color: #0f4d90; padding: 20px; /*this keeps the box shadow over the scrollable part of the panel*/ position: relative; z-index: 1; -webkit-box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.18); -moz-box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.18); box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.18); margin-bottom: 0px !important; } .address-header-line-1[data-v-c37cf8b6] { margin-bottom: 0; margin-top: 0; padding: 0px !important; } .address-header-line-2[data-v-c37cf8b6] { padding: 0px; } .topics-container[data-v-c37cf8b6] { padding: 20px; overflow-x: hidden; } @media screen and (min-width: 40em) { .topics-container[data-v-c37cf8b6] { /* height: 100%; */ /* height: calc(100vh - 210px); */ } } "; style.type='text/css'; if (style.styleSheet){ style.styleSheet.cssText = css; } else { style.appendChild(document.createTextNode(css)); } head.appendChild(style); } })();
   var Topic = philaVueComps.Topic;
   var Greeting = philaVueComps.Greeting;
@@ -654,11 +695,46 @@
         styleObject: {
           'overflow-y': 'auto',
           'height': '100px'
+=======
+  (function(){ if(typeof document !== 'undefined'){ var head=document.head||document.getElementsByTagName('head')[0], style=document.createElement('style'), css=" /*don't highlight any form elements*/ input[data-v-c37cf8b6]:focus, select[data-v-c37cf8b6]:focus, textarea[data-v-c37cf8b6]:focus, button[data-v-c37cf8b6]:focus { outline: none; } /* standards applies padding to buttons, which causes some weirdness with buttons on the map panel. override here. */ button[data-v-c37cf8b6] { padding: inherit; } .mb-panel-topics[data-v-c37cf8b6] { position: relative; } .address-header[data-v-c37cf8b6] { background: #daedfe; color: #0f4d90; /*this keeps the box shadow over the scrollable part of the panel*/ position: relative; z-index: 1; -webkit-box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.18); -moz-box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.18); box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.18); margin-bottom: 0px !important; display: inline-block; } .address-header-line-1[data-v-c37cf8b6] { margin-bottom: 0; margin-top: 0; padding: 0px !important; } .address-header-line-2[data-v-c37cf8b6] { padding: 0px; } .address-container[data-v-c37cf8b6] { height: 100%; display: flex; flex-direction: column; justify-content: center; padding-left: 20px; padding-top: 20px; padding-bottom: 20px; } .address-input-container[data-v-c37cf8b6] { height: 100%; display: flex; flex-direction: column; justify-content: center; padding-top: 20px; padding-bottom: 20px; } .topics-container[data-v-c37cf8b6] { padding: 26px; overflow-x: hidden; position: relative; } @media screen and (min-width: 40em) { .topics-container[data-v-c37cf8b6] { /* height: 100%; */ /* height: calc(100vh - 210px); */ } } "; style.type='text/css'; if (style.styleSheet){ style.styleSheet.cssText = css; } else { style.appendChild(document.createTextNode(css)); } head.appendChild(style); } })();
+  var Topic = philaVueComps.Topic;
+  var TopicComponentGroup = philaVueComps.TopicComponentGroup;
+  var Greeting = philaVueComps.Greeting;
+  var AddressInput = philaVueComps.AddressInput;
+  var AddressCandidateList = philaVueComps.AddressCandidateList;
+  var FullScreenTopicsToggleTab = philaVueComps.FullScreenTopicsToggleTab;
+
+
+  var TopicPanel = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:'mb-panel-topics cell ' + this.topicPanelContainerClass,attrs:{"id":"topic-panel-container"}},[(!this.fullScreenTopicsOnly)?_vm._m(0):_vm._e(),_vm._v(" "),(this.fullScreenTopicsOnly)?_c('div',{staticClass:"address-header cell small-24 medium-24"},[_c('div',{class:'address-container columns ' + this.addressContainerClass,style:(this.addressContainerStyle)},[_c('h1',{staticClass:"address-header-line-1"},[_vm._v(" "+_vm._s(_vm.address)+" ")]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(this.geocode),expression:"this.geocode"}],staticClass:"address-header-line-2"},[_vm._v(" PHILADELPHIA, PA "+_vm._s(_vm.zipCode)+" ")])]),_vm._v(" "),(this.fullScreenTopicsEnabled || this.fullScreenTopicsOnly)?_c('div',{staticClass:"address-input-container columns small-24 medium-12 large-12",style:(this.addressInputContainerStyle)},[_c('address-input',{attrs:{"widthFromConfig":this.addressInputWidth,"placeholder":this.addressInputPlaceholder}},[(this.addressAutocompleteEnabled)?_c('address-candidate-list',{attrs:{"slot":"address-candidates-slot","widthFromConfig":this.addressInputWidth},slot:"address-candidates-slot"}):_vm._e(),_vm._v(" /> ")],1)],1):_vm._e()]):_vm._e(),_vm._v(" "),_c('greeting',{directives:[{name:"show",rawName:"v-show",value:(_vm.shouldShowGreeting),expression:"shouldShowGreeting"}]}),_vm._v(" "),(!_vm.shouldShowGreeting)?_c('div',{staticClass:"topic-panel-content"},[(!this.fullScreenTopicsOnly)?_c('div',{staticClass:"address-header cell small-24 medium-24"},[_c('div',{class:'address-container columns ' + this.addressContainerClass,style:(this.addressContainerStyle)},[_c('h1',{staticClass:"address-header-line-1"},[_c('i',{staticClass:"fa fa-map-marker"}),_vm._v(" "+_vm._s(_vm.address)+" ")]),_vm._v(" "),_c('div',{staticClass:"address-header-line-2"},[_vm._v("PHILADELPHIA, PA "+_vm._s(_vm.zipCode))])]),_vm._v(" "),(this.fullScreenTopicsEnabled || this.fullScreenTopicsOnly)?_c('div',{staticClass:"address-input-container columns small-24 medium-12 large-12",style:(this.addressInputContainerStyle)},[_c('address-input',{attrs:{"widthFromConfig":this.addressInputWidth,"placeholder":this.addressInputPlaceholder}},[(this.addressAutocompleteEnabled)?_c('address-candidate-list',{attrs:{"slot":"address-candidates-slot","widthFromConfig":this.addressInputWidth},slot:"address-candidates-slot"}):_vm._e(),_vm._v(" /> ")],1)],1):_vm._e()]):_vm._e(),_vm._v(" "),(!_vm.shouldShowGreeting)?_c('div',{staticClass:"topics-container cell medium-cell-block-y",style:(_vm.topicsContainerStyle)},[_c('topic-component-group',{attrs:{"topic-components":this.$config.components}})],1):_vm._e()]):_vm._e()],1)},staticRenderFns: [function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('full-screen-topics-toggle-tab')}],_scopeId: 'data-v-c37cf8b6',
+    components: {
+      Greeting: Greeting,
+      TopicComponentGroup: TopicComponentGroup,
+      Topic: Topic,
+      AddressInput: AddressInput,
+      AddressCandidateList: AddressCandidateList,
+      FullScreenTopicsToggleTab: FullScreenTopicsToggleTab,
+    },
+    data: function data() {
+      var data = {
+        topicsContainerStyle: {
+          'overflow-y': 'auto',
+          'height': '100px',
+        },
+        addressContainerStyle: {
+          'height': '100%',
+          'padding-bottom:': '20px',
+        },
+        addressInputContainerStyle: {
+          'align-items': 'flex-start',
+          'height': '100%',
+          'padding-top': '20px',
+>>>>>>> origin/master
         }
       };
       return data;
     },
     mounted: function mounted() {
+<<<<<<< HEAD
       window.addEventListener('resize', this.handleWindowResize);
       this.handleWindowResize();
     },
@@ -673,6 +749,34 @@
           return false;
         }
       },
+=======
+      window.addEventListener('click', this.closeAddressCandidateList);
+      window.addEventListener('resize', this.handleWindowResize);
+      this.handleWindowResize();
+    },
+    computed: {
+      inputAlign: function inputAlign() {
+        if (this.$config.addressInput.position) {
+          var position = this.$config.addressInput.position;
+          switch(position) {
+            case 'left':
+              return 'flex-start';
+            case 'right':
+              return 'flex-end';
+            case 'center':
+              return 'center';
+          }
+        } else {
+          return 'flex-start';
+        }
+      },
+      addressInputWidth: function addressInputWidth() {
+        return this.$config.addressInput.width;
+      },
+      addressInputPlaceholder: function addressInputPlaceholder() {
+        return this.$config.addressInput.placeholder;
+      },
+>>>>>>> origin/master
       addressAutocompleteEnabled: function addressAutocompleteEnabled() {
         // TODO tidy up the code
         if (this.$config.addressInput.autocompleteEnabled === true) {
@@ -684,11 +788,34 @@
       fullScreenMapEnabled: function fullScreenMapEnabled() {
         return this.$store.state.fullScreenMapEnabled;
       },
+<<<<<<< HEAD
       topicPanelContainerClass: function topicPanelContainerClass() {
         if (this.fullScreenMapEnabled) {
           return 'cell medium-1 small-order-2 medium-order-1'
         } else {
           return 'cell medium-12 small-order-2 medium-order-1'
+=======
+      fullScreenTopicsEnabled: function fullScreenTopicsEnabled() {
+        return this.$store.state.fullScreenTopicsEnabled;
+      },
+      fullScreenTopicsOnly: function fullScreenTopicsOnly() {
+        return this.$store.state.fullScreen.topicsOnly;
+      },
+      topicPanelContainerClass: function topicPanelContainerClass() {
+        if (this.fullScreenTopicsEnabled || this.fullScreenTopicsOnly) {
+          return 'medium-24 small-order-2 medium-order-1';
+        } else if (this.fullScreenMapEnabled) {
+          return 'medium-1 small-order-2 medium-order-1';
+        } else {
+          return 'medium-12 small-order-2 medium-order-1';
+        }
+      },
+      addressContainerClass: function addressContainerClass() {
+        if (this.fullScreenTopicsEnabled || this.fullScreenTopicsOnly) {
+          return 'small-24 medium-12 large-12';
+        } else {
+          return 'small-24';
+>>>>>>> origin/master
         }
       },
       geocode: function geocode() {
@@ -706,6 +833,12 @@
         var dorParcels = this.$store.state.parcels.dor.data;
         var activeDorAddress = this.$store.state.parcels.dor.activeAddress;
         var address;
+<<<<<<< HEAD
+=======
+        if (this.$config.defaultAddressTextPlaceholder) {
+          address = this.$config.defaultAddressTextPlaceholder;
+        }
+>>>>>>> origin/master
 
         if (geocode) {
           // TODO make this not ais-specific
@@ -733,6 +866,12 @@
       },
     },
     methods: {
+<<<<<<< HEAD
+=======
+      closeAddressCandidateList: function closeAddressCandidateList() {
+        this.$store.state.shouldShowAddressCandidateList = false;
+      },
+>>>>>>> origin/master
       shouldShowTopic: function shouldShowTopic(topic) {
         var requiredSources = topic.dataSources || [];
 
@@ -745,20 +884,58 @@
         return requiredSources.every(function (key) { return sources[key].data; })
       },
       handleWindowResize: function handleWindowResize() {
+<<<<<<< HEAD
         // console.log('handleWindowResize is running');
         if ($(window).width() >= 750) {
           // console.log('if is running, window width is >= 750px');
+=======
+        if ($(window).width() >= 750) {
+          // console.log('handleWindowResize if is running, window width is >= 750px');
+          this.addressContainerStyle = {
+            'height': '100%',
+            'align-items': 'flex-start',
+            'padding-bottom': '20px',
+          };
+          this.addressInputContainerStyle = {
+            'height': '100%',
+            'align-items': this.inputAlign,
+            'padding-top': '25px',
+          };
+
+>>>>>>> origin/master
           var rootElement = document.getElementById('mb-root');
           var rootStyle = window.getComputedStyle(rootElement);
           var rootHeight = rootStyle.getPropertyValue('height');
           var rootHeightNum = parseInt(rootHeight.replace('px', ''));
           var topicsHeight = rootHeightNum - 103;
+<<<<<<< HEAD
           this.styleObject.height = topicsHeight.toString() + 'px';
           this.styleObject['overflow-y'] = 'auto';
         } else {
           // console.log('else is running, window width is < 750px');
           this.styleObject.height = 'auto';
           this.styleObject['overflow-y'] = 'hidden';
+=======
+
+          this.topicsContainerStyle.height = topicsHeight.toString() + 'px';
+          this.topicsContainerStyle['overflow-y'] = 'auto';
+
+
+        } else {
+          this.addressContainerStyle = {
+            'height': 'auto',
+            'align-items': 'center',
+            'padding-bottom': '20px',
+          };
+          this.addressInputContainerStyle = {
+            'height': 'auto',
+            'align-items': 'center',
+            'padding-top': '5px',
+          };
+          // console.log('handleWindowResize lse is running, window width is < 750px');
+          this.topicsContainerStyle.height = 'auto';
+          this.topicsContainerStyle['overflow-y'] = 'hidden';
+>>>>>>> origin/master
         }
       }
     }
@@ -1188,7 +1365,11 @@
   var BasemapTooltip = philaVueMapping.BasemapTooltip;
   var ControlCorner = philaVueMapping.ControlCorner;
 
+<<<<<<< HEAD
   var MapPanel = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:this.mapPanelContainerClass,attrs:{"id":"map-panel-container"}},[_vm._m(0),_vm._v(" "),_c('map_',{class:{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active },attrs:{"id":"map-tag","center":this.$store.state.map.center,"zoom":this.$store.state.map.zoom,"zoom-control-position":"bottomright","min-zoom":this.$config.map.minZoom,"max-zoom":this.$config.map.maxZoom},on:{"l-click":_vm.handleMapClick,"l-moveend":_vm.handleMapMove}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.isGeocoding),expression:"isGeocoding"}],staticClass:"mb-map-loading-mask"},[_c('div',{staticClass:"mb-map-loading-mask-inner"},[_c('i',{staticClass:"fa fa-spinner fa-4x spin"}),_vm._v(" "),_c('h1',[_vm._v("Finding address...")])])]),_vm._v(" "),_vm._l((this.$config.map.basemaps),function(basemap,key){return (_vm.activeBasemap === key)?_c('esri-tiled-map-layer',{key:key,attrs:{"url":basemap.url,"max-zoom":basemap.maxZoom,"attribution":basemap.attribution}}):_vm._e()}),_vm._v(" "),_vm._l((this.$config.map.tiledLayers),function(tiledLayer,key){return (_vm.tiledLayers.includes(key))?_c('esri-tiled-map-layer',{key:key,attrs:{"url":tiledLayer.url,"zIndex":tiledLayer.zIndex,"attribution":tiledLayer.attribution}}):_vm._e()}),_vm._v(" "),_vm._l((this.$config.map.tiledOverlays),function(tiledLayer,key){return (_vm.activeTiledOverlays.includes(key))?_c('esri-tiled-overlay',{key:key,attrs:{"url":tiledLayer.url,"zIndex":tiledLayer.zIndex,"opacity":tiledLayer.opacity}}):_vm._e()}),_vm._v(" "),_vm._l((this.$config.map.dynamicMapLayers),function(dynamicLayer,key){return (_vm.activeDynamicMaps.includes(key))?_c('esri-dynamic-map-layer',{key:key,attrs:{"url":dynamicLayer.url,"attribution":dynamicLayer.attribution,"transparent":true,"opacity":dynamicLayer.opacity}}):_vm._e()}),_vm._v(" "),_vm._l((this.$config.map.featureLayers),function(featureLayer,key){return (_vm.shouldShowFeatureLayer(key, featureLayer.minZoom))?_c('esri-feature-layer',{key:key,attrs:{"layerName":key,"url":featureLayer.url,"color":featureLayer.color,"fillColor":featureLayer.color,"fillOpacity":featureLayer.fillOpacity,"weight":featureLayer.weight,"style_":featureLayer.style}}):_vm._e()}),_vm._v(" "),_vm._l((this.imageOverlayItems),function(item,key){return (_vm.shouldShowImageOverlay(item.properties.RECMAP))?_c('esri-dynamic-map-layer',{key:key,attrs:{"url":'//gis.phila.gov/arcgis/rest/services/Atlas/RegMaps/MapServer',"layers":[0],"layerDefs":'0:NAME=\'g' + item.properties.RECMAP.toLowerCase() + '.tif\'',"transparent":true,"opacity":0.5}}):_vm._e()}),_vm._v(" "),_vm._l((_vm.markers),function(marker,index){return _c('vector-marker',{key:marker.key,attrs:{"latlng":marker.latlng,"markerColor":marker.color}})}),_vm._v(" "),(this.cyclomediaActive)?_c('png-marker',{attrs:{"icon":'../../src/assets/camera.png',"latlng":_vm.cycloLatlng,"rotationAngle":_vm.cycloRotationAngle}}):_vm._e(),_vm._v(" "),(this.cyclomediaActive)?_c('svg-view-cone-marker',{attrs:{"latlng":_vm.cycloLatlng,"rotationAngle":_vm.cycloRotationAngle,"hFov":_vm.cycloHFov}}):_vm._e(),_vm._v(" "),_vm._l((_vm.geojsonFeatures),function(geojsonFeature){return (_vm.shouldShowGeojson(geojsonFeature.key))?_c('geojson',{key:geojsonFeature.key,attrs:{"geojson":geojsonFeature.geojson,"fillColor":geojsonFeature.fillColor,"color":geojsonFeature.color,"weight":geojsonFeature.weight,"opacity":geojsonFeature.opacity,"fillOpacity":geojsonFeature.fillOpacity,"data":{
+=======
+  var MapPanel = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:this.mapPanelContainerClass,attrs:{"id":"map-panel-container"}},[_vm._m(0),_vm._v(" "),_c('map_',{class:{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active },attrs:{"id":"map-tag","center":this.$store.state.map.center,"zoom":this.$store.state.map.zoom,"zoom-control-position":"bottomright","min-zoom":this.$config.map.minZoom,"max-zoom":this.$config.map.maxZoom},on:{"l-click":_vm.handleMapClick,"l-moveend":_vm.handleMapMove}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.isGeocoding),expression:"isGeocoding"}],staticClass:"mb-map-loading-mask"},[_c('div',{staticClass:"mb-map-loading-mask-inner"},[_c('i',{staticClass:"fa fa-spinner fa-4x spin"}),_vm._v(" "),_c('h1',[_vm._v("Finding address...")])])]),_vm._v(" "),_vm._l((this.$config.map.basemaps),function(basemap,key){return (_vm.activeBasemap === key)?_c('esri-tiled-map-layer',{key:key,attrs:{"url":basemap.url,"max-zoom":basemap.maxZoom,"attribution":basemap.attribution}}):_vm._e()}),_vm._v(" "),_vm._l((this.$config.map.tiledLayers),function(tiledLayer,key){return (_vm.tiledLayers.includes(key))?_c('esri-tiled-map-layer',{key:key,attrs:{"url":tiledLayer.url,"zIndex":tiledLayer.zIndex,"attribution":tiledLayer.attribution}}):_vm._e()}),_vm._v(" "),_vm._l((this.$config.map.tiledOverlays),function(tiledLayer,key){return (_vm.activeTiledOverlays.includes(key))?_c('esri-tiled-overlay',{key:key,attrs:{"url":tiledLayer.url,"zIndex":tiledLayer.zIndex,"opacity":tiledLayer.opacity}}):_vm._e()}),_vm._v(" "),_vm._l((this.$config.map.dynamicMapLayers),function(dynamicLayer,key){return (_vm.activeDynamicMaps.includes(key))?_c('esri-dynamic-map-layer',{key:key,attrs:{"url":dynamicLayer.url,"attribution":dynamicLayer.attribution,"transparent":true,"opacity":dynamicLayer.opacity}}):_vm._e()}),_vm._v(" "),_vm._l((this.$config.map.featureLayers),function(featureLayer,key){return (_vm.shouldShowFeatureLayer(key, featureLayer.minZoom))?_c('esri-feature-layer',{key:key,attrs:{"layerName":key,"url":featureLayer.url,"color":featureLayer.color,"fillColor":featureLayer.color,"fillOpacity":featureLayer.fillOpacity,"weight":featureLayer.weight,"style_":featureLayer.style,"minZoom":featureLayer.minZoom,"maxZoom":featureLayer.maxZoom,"zIndex":featureLayer.zIndex,"markerType":featureLayer.markerType,"radius":featureLayer.radius}}):_vm._e()}),_vm._v(" "),_vm._l((this.imageOverlayItems),function(item,key){return (_vm.shouldShowImageOverlay(item.properties.RECMAP))?_c('esri-dynamic-map-layer',{key:key,attrs:{"url":'//gis.phila.gov/arcgis/rest/services/Atlas/RegMaps/MapServer',"layers":[0],"layerDefs":'0:NAME=\'g' + item.properties.RECMAP.toLowerCase() + '.tif\'',"transparent":true,"opacity":0.5}}):_vm._e()}),_vm._v(" "),_vm._l((_vm.markers),function(marker,index){return _c('vector-marker',{key:marker.key,attrs:{"latlng":marker.latlng,"markerColor":marker.color}})}),_vm._v(" "),(this.cyclomediaActive)?_c('png-marker',{attrs:{"icon":'../../src/assets/camera.png',"latlng":_vm.cycloLatlng,"rotationAngle":_vm.cycloRotationAngle}}):_vm._e(),_vm._v(" "),(this.cyclomediaActive)?_c('svg-view-cone-marker',{attrs:{"latlng":_vm.cycloLatlng,"rotationAngle":_vm.cycloRotationAngle,"hFov":_vm.cycloHFov}}):_vm._e(),_vm._v(" "),_vm._l((_vm.geojsonFeatures),function(geojsonFeature){return (_vm.shouldShowGeojson(geojsonFeature.key))?_c('geojson',{key:geojsonFeature.key,attrs:{"geojson":geojsonFeature.geojson,"fillColor":geojsonFeature.fillColor,"color":geojsonFeature.color,"weight":geojsonFeature.weight,"opacity":geojsonFeature.opacity,"fillOpacity":geojsonFeature.fillOpacity,"data":{
+>>>>>>> origin/master
                  featureId: geojsonFeature.featureId,
                  tableId: geojsonFeature.tableId
                }}}):_vm._e()}),_vm._v(" "),_vm._l((_vm.reactiveGeojsonFeatures),function(geojsonFeature){return (_vm.shouldShowGeojson(geojsonFeature.key))?_c('geojson',{key:geojsonFeature.key,attrs:{"geojson":geojsonFeature.geojson,"fillColor":geojsonFeature.fillColor,"color":geojsonFeature.color,"weight":geojsonFeature.weight,"opacity":geojsonFeature.opacity,"fillOpacity":geojsonFeature.fillOpacity,"data":{
@@ -1197,7 +1378,11 @@
                 }},on:{"l-mouseover":_vm.handleMarkerMouseover,"l-click":_vm.handleMarkerClick,"l-mouseout":_vm.handleMarkerMouseout}}):_vm._e()}),_vm._v(" "),(this.$store.state.map.location.lat != null)?_c('circle-marker',{key:Math.random(),attrs:{"latlng":this.locationMarker.latlng,"radius":this.locationMarker.radius,"fillColor":this.locationMarker.fillColor,"color":this.locationMarker.color,"weight":this.locationMarker.weight,"opacity":this.locationMarker.opacity,"fillOpacity":this.locationMarker.fillOpacity}}):_vm._e(),_vm._v(" "),_vm._l((_vm.circleMarkers),function(circleMarker){return _c('circle-marker',{key:Math.random(),attrs:{"latlng":circleMarker.latlng,"radius":circleMarker.radius,"fillColor":circleMarker.fillColor,"color":circleMarker.color,"weight":circleMarker.weight,"opacity":circleMarker.opacity,"fillOpacity":circleMarker.fillOpacity,"data":{
                        featureId: circleMarker.featureId,
                        tableId: circleMarker.tableId
+<<<<<<< HEAD
                      }},on:{"l-mouseover":_vm.handleMarkerMouseover,"l-click":_vm.handleMarkerClick,"l-mouseout":_vm.handleMarkerMouseout}})}),_vm._v(" "),_c('control-corner',{attrs:{"vSide":'top',"hSide":'almostright'}}),_vm._v(" "),_c('control-corner',{attrs:{"vSide":'top',"hSide":'almostleft'}}),_vm._v(" "),_vm._m(2),_vm._v(" "),_vm._m(3),_vm._v(" "),_vm._m(5),_vm._v(" "),_vm._m(7),_vm._v(" "),(this.measureControlEnabled)?_vm._m(8):_vm._e(),_vm._v(" "),_vm._m(9),_vm._v(" "),_vm._m(11),_vm._v(" "),_vm._m(12),_vm._v(" "),(this.addressAutocompleteEnabled && this.shouldShowAddressInput)?_c('AddressCandidateList',{attrs:{"position":this.addressInputPosition}}):_vm._e(),_vm._v(" "),_vm._l((_vm.cyclomediaRecordings),function(recording){return (_vm.cyclomediaActive)?_c('cyclomedia-recording-circle',{key:recording.imageId,attrs:{"imageId":recording.imageId,"latlng":[recording.lat, recording.lng],"size":1.2,"color":'#3388ff',"weight":1},on:{"l-click":_vm.handleCyclomediaRecordingClick}}):_vm._e()})],2),_vm._v(" "),_vm._t("cycloWidget"),_vm._v(" "),_vm._t("pictWidget")],2)},staticRenderFns: [function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('full-screen-map-toggle-tab')},function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('basemap-toggle-control',{attrs:{"position":'topright'}})},function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[(_vm.shouldShowImageryToggle)?_vm._m(1):_vm._e()],1)},function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('basemap-select-control',{attrs:{"position":this.basemapSelectControlPosition}})],1)},function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('pictometry-button',{attrs:{"position":'topright',"link":'pictometry',"imgSrc":'../../src/assets/pictometry.png'}})},function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[(this.shouldShowPictometryButton)?_vm._m(4):_vm._e()],1)},function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('cyclomedia-button',{attrs:{"position":'topright',"link":'cyclomedia',"imgSrc":'../../src/assets/cyclomedia.png'},on:{"click":_vm.handleCyclomediaButtonClick}})},function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[(this.shouldShowCyclomediaButton)?_vm._m(6):_vm._e()],1)},function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('measure-control',{attrs:{"position":'bottomleft'}})],1)},function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',_vm._l((Object.keys(_vm.legendControls)),function(legendControl){return _c('legend-control',{key:legendControl,attrs:{"position":'bottomleft',"options":_vm.legendControls[legendControl].options,"items":_vm.legendControls[legendControl].data}})}))},function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('location-control',{attrs:{"position":'bottomright'}})},function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[(this.geolocationEnabled)?_vm._m(10):_vm._e()],1)},function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[(this.shouldShowAddressInput)?_c('AddressInput',{attrs:{"position":this.addressInputPosition}}):_vm._e()],1)}],_scopeId: 'data-v-11a08c18',
+=======
+                     }},on:{"l-mouseover":_vm.handleMarkerMouseover,"l-click":_vm.handleMarkerClick,"l-mouseout":_vm.handleMarkerMouseout}})}),_vm._v(" "),_c('control-corner',{attrs:{"vSide":'top',"hSide":'almostright'}}),_vm._v(" "),_c('control-corner',{attrs:{"vSide":'top',"hSide":'almostleft'}}),_vm._v(" "),_vm._m(2),_vm._v(" "),_vm._m(3),_vm._v(" "),_vm._m(5),_vm._v(" "),_vm._m(7),_vm._v(" "),(this.measureControlEnabled)?_vm._m(8):_vm._e(),_vm._v(" "),_vm._m(9),_vm._v(" "),_vm._m(11),_vm._v(" "),_vm._m(12),_vm._v(" "),(this.addressAutocompleteEnabled)?_c('AddressCandidateList',{attrs:{"position":this.addressInputPosition}}):_vm._e(),_vm._v(" "),_vm._l((_vm.cyclomediaRecordings),function(recording){return (_vm.cyclomediaActive)?_c('cyclomedia-recording-circle',{key:recording.imageId,attrs:{"imageId":recording.imageId,"latlng":[recording.lat, recording.lng],"size":1.2,"color":'#3388ff',"weight":1},on:{"l-click":_vm.handleCyclomediaRecordingClick}}):_vm._e()})],2),_vm._v(" "),_vm._t("cycloWidget"),_vm._v(" "),_vm._t("pictWidget")],2)},staticRenderFns: [function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('full-screen-map-toggle-tab')},function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('basemap-toggle-control',{attrs:{"position":'topright'}})},function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[(_vm.shouldShowImageryToggle)?_vm._m(1):_vm._e()],1)},function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('basemap-select-control',{attrs:{"position":this.basemapSelectControlPosition}})],1)},function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('pictometry-button',{attrs:{"position":'topright',"link":'pictometry',"imgSrc":'../../src/assets/pictometry.png'}})},function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[(this.shouldShowPictometryButton)?_vm._m(4):_vm._e()],1)},function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('cyclomedia-button',{attrs:{"position":'topright',"link":'cyclomedia',"imgSrc":'../../src/assets/cyclomedia.png'},on:{"click":_vm.handleCyclomediaButtonClick}})},function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[(this.shouldShowCyclomediaButton)?_vm._m(6):_vm._e()],1)},function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('measure-control',{attrs:{"position":'bottomleft'}})],1)},function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',_vm._l((Object.keys(_vm.legendControls)),function(legendControl){return _c('legend-control',{key:legendControl,attrs:{"position":'bottomleft',"options":_vm.legendControls[legendControl].options,"items":_vm.legendControls[legendControl].data}})}))},function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('location-control',{attrs:{"position":'bottomright'}})},function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[(this.geolocationEnabled)?_vm._m(10):_vm._e()],1)},function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('AddressInput',{attrs:{"position":this.addressInputPosition}})],1)}],_scopeId: 'data-v-11a08c18',
+>>>>>>> origin/master
     mixins: [
       markersMixin,
       cyclomediaMixin,
@@ -1230,6 +1415,10 @@
       ControlCorner: ControlCorner,
     },
     created: function created() {
+<<<<<<< HEAD
+=======
+      console.log('MapPanel created, this.$config.map:', this.$config.map);
+>>>>>>> origin/master
       // if there's a default address, navigate to it
       var defaultAddress = this.$config.defaultAddress;
       if (defaultAddress) {
@@ -1252,6 +1441,7 @@
       this.$controller.appDidLoad();
     },
     computed: {
+<<<<<<< HEAD
       shouldShowAddressInput: function shouldShowAddressInput() {
         if (this.$config.addressInputLocation == 'map') {
           return true;
@@ -1259,6 +1449,15 @@
           return false;
         }
       },
+=======
+      // shouldShowAddressInput() {
+      //   if (this.$config.addressInputLocation == 'map') {
+      //     return true;
+      //   } else {
+      //     return false;
+      //   }
+      // },
+>>>>>>> origin/master
       addressAutocompleteEnabled: function addressAutocompleteEnabled() {
         // TODO tidy up the code
         if (this.$config.addressInput.autocompleteEnabled === true) {
@@ -1294,10 +1493,23 @@
       fullScreenMapEnabled: function fullScreenMapEnabled() {
         return this.$store.state.fullScreenMapEnabled;
       },
+<<<<<<< HEAD
+=======
+      fullScreenTopicsEnabled: function fullScreenTopicsEnabled() {
+        return this.$store.state.fullScreenTopicsEnabled;
+      },
+>>>>>>> origin/master
       mapPanelContainerClass: function mapPanelContainerClass() {
         // return 'medium-12 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map'
         if (this.fullScreenMapEnabled) {
           return 'medium-24 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map'
+<<<<<<< HEAD
+=======
+        } else if (this.fullScreenMapOnly) {
+          return 'medium-1 small-order-1 small-1 medium-order-2 mb-panel mb-panel-map'
+        } else if (this.fullScreenTopicsEnabled) {
+          return 'medium-1 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map'
+>>>>>>> origin/master
         } else {
           return 'medium-12 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map'
         }
@@ -1404,7 +1616,11 @@
         return this.imageryBasemaps.length > 0;
       },
       shouldShowImageryToggle: function shouldShowImageryToggle() {
+<<<<<<< HEAD
         return this.hasImageryBasemaps && this.$config.map.imagery.enabled;
+=======
+        return this.hasImageryBasemaps// && this.$config.map.imagery.enabled;
+>>>>>>> origin/master
       },
       identifyFeature: function identifyFeature() {
         var configFeature;
@@ -1487,6 +1703,16 @@
       markers: function markers() {
         this.setMapToBounds();
       },
+<<<<<<< HEAD
+=======
+      fullScreenTopicsEnabled: function fullScreenTopicsEnabled() {
+        var this$1 = this;
+
+        this.$nextTick(function () {
+          this$1.$store.state.map.map.invalidateSize();
+        });
+      }
+>>>>>>> origin/master
     },
     methods: {
       setMapToBounds: function setMapToBounds() {
@@ -1590,7 +1816,11 @@
     }, // end of methods
   }; //end of export
 
+<<<<<<< HEAD
   (function(){ if(typeof document !== 'undefined'){ var head=document.head||document.getElementsByTagName('head')[0], style=document.createElement('style'), css=" /*don't highlight any form elements*/ input:focus, select:focus, textarea:focus, button:focus { outline: none; } .mb-panel-topics-with-widget { height: 50%; } /* standards applies padding to buttons, which causes some weirdness with buttons on the map panel. override here. */ button { padding: inherit; } .topic-panel-false { /* display: none; */ } @media screen and (min-width: 46.875em) { .topic-panel-false { display: none; } } "; style.type='text/css'; if (style.styleSheet){ style.styleSheet.cssText = css; } else { style.appendChild(document.createTextNode(css)); } head.appendChild(style); } })();
+=======
+  (function(){ if(typeof document !== 'undefined'){ var head=document.head||document.getElementsByTagName('head')[0], style=document.createElement('style'), css=" /*don't highlight any form elements*/ input:focus, select:focus, textarea:focus, button:focus { outline: none; } .mb-panel-topics-with-widget { height: 50%; } /* standards applies padding to buttons, which causes some weirdness with buttons on the map panel. override here. */ button { padding: inherit; } .topic-panel-false { /* display: none; */ } @media screen and (min-width: 46.875em) { .topic-panel-false { display: none; } .map-panel-false { display: none; } } "; style.type='text/css'; if (style.styleSheet){ style.styleSheet.cssText = css; } else { style.appendChild(document.createTextNode(css)); } head.appendChild(style); } })();
+>>>>>>> origin/master
 
   var CyclomediaWidget = philaVueMapping.CyclomediaWidget;
   var PictometryWidget = philaVueMapping.PictometryWidget;
@@ -1598,7 +1828,11 @@
   var ViewCone = philaVueMapping.PictometryViewCone;
   var PngMarker$1 = philaVueMapping.PictometryPngMarker;
 
+<<<<<<< HEAD
   var Mapboard = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:_vm.rootClass,style:(_vm.styleObject),attrs:{"id":"mb-root"}},[_c('topic-panel',{class:this.shouldShowTopicPanel}),_vm._v(" "),_c('map-panel',[(this.shouldLoadCyclomediaWidget)?_c('cyclomedia-widget',{directives:[{name:"show",rawName:"v-show",value:(_vm.cyclomediaActive),expression:"cyclomediaActive"}],attrs:{"slot":"cycloWidget","screen-percent":"2"},slot:"cycloWidget"}):_vm._e(),_vm._v(" "),(this.shouldLoadPictometryWidget)?_c('pictometry-widget',{directives:[{name:"show",rawName:"v-show",value:(_vm.pictometryActive),expression:"pictometryActive"}],attrs:{"slot":"pictWidget","apiKey":this.ak,"secretKey":this.sk},slot:"pictWidget"},[(this.pictometryShowAddressMarker)?_c('png-marker',{attrs:{"latlng":[this.geocodeData.geometry.coordinates[1], this.geocodeData.geometry.coordinates[0]],"icon":'markers.png',"height":60,"width":40,"offsetX":0,"offsetY":0}}):_vm._e(),_vm._v(" "),(this.pictometryActive)?_c('layer'):_vm._e(),_vm._v(" "),(this.cyclomediaActive && this.pictometryActive)?_c('png-marker',{attrs:{"latlng":_vm.cycloLatlng,"icon":'camera2.png',"height":20,"width":30,"offsetX":-2,"offsetY":-2}}):_vm._e(),_vm._v(" "),(this.cyclomediaActive && this.pictometryActive)?_c('view-cone',{attrs:{"latlng":_vm.cycloLatlng,"rotationAngle":_vm.cycloRotationAngle,"hFov":_vm.cycloHFov}}):_vm._e()],1):_vm._e()],1)],1)},staticRenderFns: [],
+=======
+  var Mapboard = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:_vm.rootClass,style:(_vm.mbRootStyle),attrs:{"id":"mb-root"}},[_c('topic-panel',{class:this.shouldShowTopicPanel}),_vm._v(" "),(this.fullScreenTopicsOnly !== true)?_c('map-panel',{class:this.shouldShowMapPanel},[(this.shouldLoadCyclomediaWidget)?_c('cyclomedia-widget',{directives:[{name:"show",rawName:"v-show",value:(_vm.cyclomediaActive),expression:"cyclomediaActive"}],attrs:{"slot":"cycloWidget","screen-percent":"2"},slot:"cycloWidget"}):_vm._e(),_vm._v(" "),(this.shouldLoadPictometryWidget)?_c('pictometry-widget',{directives:[{name:"show",rawName:"v-show",value:(_vm.pictometryActive),expression:"pictometryActive"}],attrs:{"slot":"pictWidget","apiKey":this.ak,"secretKey":this.sk},slot:"pictWidget"},[(this.pictometryShowAddressMarker)?_c('png-marker',{attrs:{"latlng":[this.geocodeData.geometry.coordinates[1], this.geocodeData.geometry.coordinates[0]],"icon":'markers.png',"height":60,"width":40,"offsetX":0,"offsetY":0}}):_vm._e(),_vm._v(" "),(this.pictometryActive)?_c('layer'):_vm._e(),_vm._v(" "),(this.cyclomediaActive && this.pictometryActive)?_c('png-marker',{attrs:{"latlng":_vm.cycloLatlng,"icon":'camera2.png',"height":20,"width":30,"offsetX":-2,"offsetY":-2}}):_vm._e(),_vm._v(" "),(this.cyclomediaActive && this.pictometryActive)?_c('view-cone',{attrs:{"latlng":_vm.cycloLatlng,"rotationAngle":_vm.cycloRotationAngle,"hFov":_vm.cycloHFov}}):_vm._e()],1):_vm._e()],1):_vm._e()],1)},staticRenderFns: [],
+>>>>>>> origin/master
     components: {
       TopicPanel: TopicPanel,
       MapPanel: MapPanel,
@@ -1611,13 +1845,28 @@
     data: function data() {
       var data = {
         // this will only affect the app size if the app is set to "plugin" mode
+<<<<<<< HEAD
         styleObject: {
+=======
+        mbRootStyle: {
+>>>>>>> origin/master
           'height': '100px'
         }
       };
       return data;
     },
     created: function created() {
+<<<<<<< HEAD
+=======
+      console.log('MapBoard created, this.$config.map:', this.$config.map);
+      if (this.$config.panels) {
+        if (!this.$config.panels.includes('map')) {
+          this.$store.commit('setTopicsOnly', true);
+        } else if (!this.$config.panels.includes('topics')) {
+          this.$store.commit('setMapOnly', true);
+        }
+      }
+>>>>>>> origin/master
       window.addEventListener('click', this.closeAddressCandidateList);
       window.addEventListener('resize', this.handleWindowResize);
       this.handleWindowResize();
@@ -1639,16 +1888,48 @@
       shouldLoadPictometryWidget: function shouldLoadPictometryWidget() {
         return this.$config.pictometry.enabled && !this.isMobileOrTablet;
       },
+<<<<<<< HEAD
       fullScreenMapEnabled: function fullScreenMapEnabled() {
         return this.$store.state.fullScreenMapEnabled;
       },
       shouldShowTopicPanel: function shouldShowTopicPanel() {
         var value = 'topic-panel-true';
         if (this.fullScreenMapEnabled) {
+=======
+      fullScreenMapOnly: function fullScreenMapOnly() {
+        return this.$store.state.fullScreen.mapOnly;
+      },
+      fullScreenMapEnabled: function fullScreenMapEnabled() {
+        return this.$store.state.fullScreenMapEnabled;
+      },
+      fullScreenTopicsOnly: function fullScreenTopicsOnly() {
+        return this.$store.state.fullScreen.topicsOnly;
+      },
+      fullScreenTopicsEnabled: function fullScreenTopicsEnabled() {
+        return this.$store.state.fullScreenTopicsEnabled;
+      },
+      shouldShowTopicPanel: function shouldShowTopicPanel() {
+        var value;
+        if (!this.fullScreenMapEnabled && !this.fullScreenMapOnly) {
+          value = 'topic-panel-true';
+        } else {
+>>>>>>> origin/master
           value = 'topic-panel-false';
         }
         return value;
       },
+<<<<<<< HEAD
+=======
+      shouldShowMapPanel: function shouldShowMapPanel() {
+        var value;
+        if (!this.fullScreenTopicsEnabled && !this.fullScreenTopicsOnly) {
+          value = 'map-panel-true';
+        } else {
+          value = 'map-panel-false';
+        }
+        return value;
+      },
+>>>>>>> origin/master
       cyclomediaActive: function cyclomediaActive() {
         return this.$store.state.cyclomedia.active
       },
@@ -1734,9 +2015,15 @@
       handleWindowResize: function handleWindowResize() {
         // this only actually affects the size if it is set to "plugin mode"
         if ($(window).width() >= 750) {
+<<<<<<< HEAD
           this.styleObject.height = '600px';
         } else {
           this.styleObject.height = 'auto';
+=======
+          this.mbRootStyle.height = '600px';
+        } else {
+          this.mbRootStyle.height = 'auto';
+>>>>>>> origin/master
         }
       }
     },
@@ -1828,10 +2115,18 @@
 
   function initMapboard(clientConfig) {
     var baseConfigUrl = clientConfig.baseConfig;
+<<<<<<< HEAD
+=======
+    // console.log('baseConfigUrl:', baseConfigUrl);
+>>>>>>> origin/master
 
     // get base config
     return axios.get(baseConfigUrl).then(function (response) {
       var data = response.data;
+<<<<<<< HEAD
+=======
+      // const data = baseConfigUrl;
+>>>>>>> origin/master
 
       // parse raw js. yes, it's ok to use eval :)
       // http://stackoverflow.com/a/87260/676001
@@ -1841,6 +2136,10 @@
 
       // deep merge base config and client config
       var config = mergeDeep(baseConfig, clientConfig);
+<<<<<<< HEAD
+=======
+      // const config = mergeDeep(baseConfigUrl, clientConfig);
+>>>>>>> origin/master
 
       // assign table ids
       for (var i = 0, list = config.topics; i < list.length; i += 1) {
