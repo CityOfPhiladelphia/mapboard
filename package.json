@@ -13,7 +13,7 @@
   "dependencies": {
     "@cityofphiladelphia/phila-vue-comps": "1.0.3",
     "@cityofphiladelphia/phila-vue-datafetch": "0.0.9",
-    "@cityofphiladelphia/phila-vue-mapping": "1.0.2",
+    "@cityofphiladelphia/phila-vue-mapping": "https://github.com/CityOfPhiladelphia/phila-vue-mapping#ec8bc187b5918b286516e3ad796f00fa0b5f73f4",
     "@turf/turf": "^5.1.6",
     "axios": "^0.18.0",
     "blueimp-md5": "^2.10.0",
