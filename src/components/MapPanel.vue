@@ -415,7 +415,7 @@
         }
       },
       shouldShowAddressCandidateList() {
-        return this.$store.state.map.shouldShowAddressCandidateList;
+        return this.$store.state.shouldShowAddressCandidateList;
       },
       measureControlEnabled() {
         if (this.$config.measureControlEnabled === false) {
@@ -492,7 +492,7 @@
         }
       },
       imageOverlayInfo() {
-        console.log('config:', this.$config);
+        // console.log('config:', this.$config);
         return this.$config.map.dynamicMapLayers.regmaps;
       },
       activeBasemap() {
@@ -544,7 +544,7 @@
         return this.imageryBasemaps.length > 0;
       },
       shouldShowImageryToggle() {
-        return this.hasImageryBasemaps// && this.$config.map.imagery.enabled;
+        return this.hasImageryBasemaps && this.$config.map.imagery.enabled;
       },
       identifyFeature() {
         let configFeature;

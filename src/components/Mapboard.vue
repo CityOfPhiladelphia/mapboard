@@ -78,6 +78,7 @@
       return data;
     },
     created() {
+      console.log('this.$config:', this.$config);
       if (this.$config.panels) {
         if (!this.$config.panels.includes('map')) {
           this.$store.commit('setTopicsOnly', true);
@@ -216,7 +217,7 @@
     },
     methods: {
       closeAddressCandidateList() {
-        this.$store.state.map.shouldShowAddressCandidateList = false;
+        this.$store.commit('setShouldShowAddressCandidateList', false);
       },
       handleWindowResize() {
         // this only actually affects the size if it is set to "plugin mode"
