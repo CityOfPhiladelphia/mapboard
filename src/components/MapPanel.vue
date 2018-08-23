@@ -666,11 +666,8 @@
       shouldShowImageOverlay(key) {
         return key === this.imageOverlay;
       },
-      shouldShowFeatureLayer(key, minZoom) {
+      shouldShowFeatureLayer(key) {
         if (this.activeFeatureLayers.includes(key)) {
-          if (minZoom) {
-            return this.$store.state.map.zoom >= minZoom;
-          }
           return true;
         }
         return false;
