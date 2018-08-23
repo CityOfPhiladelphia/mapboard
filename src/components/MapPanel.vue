@@ -73,7 +73,7 @@
                           :zIndex="featureLayer.zIndex"
                           :markerType="featureLayer.markerType"
                           :radius="featureLayer.radius"
-                          :interactive = "featureLayer.interactive"
+                          :interactive="featureLayer.interactive"
       />
 
       <!-- regmaps -->
@@ -666,11 +666,8 @@
       shouldShowImageOverlay(key) {
         return key === this.imageOverlay;
       },
-      shouldShowFeatureLayer(key, minZoom) {
+      shouldShowFeatureLayer(key) {
         if (this.activeFeatureLayers.includes(key)) {
-          if (minZoom) {
-            return this.$store.state.map.zoom >= minZoom;
-          }
           return true;
         }
         return false;
