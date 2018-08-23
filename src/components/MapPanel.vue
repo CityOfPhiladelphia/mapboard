@@ -73,7 +73,7 @@
                           :zIndex="featureLayer.zIndex"
                           :markerType="featureLayer.markerType"
                           :radius="featureLayer.radius"
-                          :interactive = "featureLayer.interactive"
+                          :interactive="featureLayer.interactive"
       />
 
       <!-- regmaps -->
