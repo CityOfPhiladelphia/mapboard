@@ -491,7 +491,7 @@
         return this.$store.state.parcels.dor.activeParcel;
       },
       legendControls() {
-        return this.$config.legendControls;
+        return this.$config.legendControls || {};
       },
       imageOverlay() {
         return this.$store.state.map.imageOverlay;
