@@ -146,30 +146,46 @@
     },
     computed: {
       inputAlign() {
-        if (this.$config.addressInput.position) {
-          const position = this.$config.addressInput.position;
-          switch(position) {
-            case 'left':
+        if (this.$config.addressInput) {
+          if (this.$config.addressInput.position) {
+            const position = this.$config.addressInput.position;
+            switch(position) {
+              case 'left':
               return 'flex-start';
-            case 'right':
+              case 'right':
               return 'flex-end';
-            case 'center':
+              case 'center':
               return 'center';
+            }
+          } else {
+            return 'flex-start';
           }
         } else {
           return 'flex-start';
         }
       },
       addressInputWidth() {
-        return this.$config.addressInput.width;
+        if (this.$config.addressInput) {
+          return this.$config.addressInput.width;
+        } else {
+          return 415;
+        }
       },
       addressInputPlaceholder() {
-        return this.$config.addressInput.placeholder;
+        if (this.$config.addressInput) {
+          return this.$config.addressInput.placeholder;
+        } else {
+          return null
+        }
       },
       addressAutocompleteEnabled() {
         // TODO tidy up the code
-        if (this.$config.addressInput.autocompleteEnabled === true) {
-          return true;
+        if (this.$config.addressInput) {
+          if (this.$config.addressInput.autocompleteEnabled === true) {
+            return true;
+          } else {
+            return false;
+          }
         } else {
           return false;
         }

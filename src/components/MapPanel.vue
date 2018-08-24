@@ -269,7 +269,9 @@
       </scale-control> -->
 
       <div v-once>
-        <AddressInput :position="this.addressInputPosition" />
+        <AddressInput :position="this.addressInputPosition"
+                      :placeholder="this.addressInputPlaceholder"
+        />
       </div>
       <AddressCandidateList v-if="this.addressAutocompleteEnabled"
                             :position="this.addressInputPosition"
@@ -394,8 +396,12 @@
       // },
       addressAutocompleteEnabled() {
         // TODO tidy up the code
-        if (this.$config.addressInput.autocompleteEnabled === true) {
-          return true;
+        if (this.$config.addressInput) {
+          if (this.$config.addressInput.autocompleteEnabled === true) {
+            return true;
+          } else {
+            return false;
+          }
         } else {
           return false;
         }
@@ -405,6 +411,13 @@
           return 'topleft'
         } else {
           return 'topalmostleft'
+        }
+      },
+      addressInputPlaceholder() {
+        if (this.$config.addressInput) {
+          return this.$config.addressInput.placeholder;
+        } else {
+          return null
         }
       },
       basemapSelectControlPosition() {
@@ -467,7 +480,11 @@
         return this.$config.pictometry.enabled && !this.isMobileOrTablet;
       },
       geolocationEnabled() {
-        return this.$config.geolocation.enabled;
+        if (this.$config.geolocation) {
+          return this.$config.geolocation.enabled;
+        } else {
+          return false;
+        }
       },
       activeDorParcel() {
         // return this.$store.state.activeDorParcel;
@@ -544,7 +561,11 @@
         return this.imageryBasemaps.length > 0;
       },
       shouldShowImageryToggle() {
-        return this.hasImageryBasemaps && this.$config.map.imagery.enabled;
+        if (this.$config.map.imagery) {
+          return this.hasImageryBasemaps && this.$config.map.imagery.enabled;
+        } else {
+          return this.hasImageryBasemaps;
+        }
       },
       identifyFeature() {
         let configFeature;
