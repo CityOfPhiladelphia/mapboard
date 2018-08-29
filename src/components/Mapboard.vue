@@ -21,7 +21,7 @@
         >
           <png-marker v-if="this.pictometryShowAddressMarker"
                       :latlng="[this.geocodeData.geometry.coordinates[1], this.geocodeData.geometry.coordinates[0]]"
-                      :icon="'markers.png'"
+                      :icon="'images/markers.png'"
                       :height="60"
                       :width="40"
                       :offsetX="0"
@@ -30,7 +30,7 @@
           <layer v-if="this.pictometryActive" />
           <png-marker v-if="this.cyclomediaActive && this.pictometryActive"
                       :latlng="cycloLatlng"
-                      :icon="'camera2.png'"
+                      :icon="'images/camera2.png'"
                       :height="20"
                       :width="30"
                       :offsetX="-2"
