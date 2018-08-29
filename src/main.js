@@ -5,6 +5,8 @@ import configMixin from './util/config-mixin';
 import Mapboard from './components/Mapboard.vue';
 import mergeDeep from './util/merge-deep';
 import generateUniqueId from './util/unique-id';
+import '@cityofphiladelphia/phila-vue-mapping/dist/assets/camera.png'
+
 
 import philaVueDatafetch from '@cityofphiladelphia/phila-vue-datafetch';
 const controllerMixin = philaVueDatafetch;
