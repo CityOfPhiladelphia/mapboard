@@ -73,6 +73,7 @@
                           :zIndex="featureLayer.zIndex"
                           :markerType="featureLayer.markerType"
                           :radius="featureLayer.radius"
+                          :interactive="featureLayer.interactive"
       />
 
       <!-- regmaps -->
@@ -268,7 +269,9 @@
       </scale-control> -->
 
       <div v-once>
-        <AddressInput :position="this.addressInputPosition" />
+        <AddressInput :position="this.addressInputPosition"
+                      :placeholder="this.addressInputPlaceholder"
+        />
       </div>
       <AddressCandidateList v-if="this.addressAutocompleteEnabled"
                             :position="this.addressInputPosition"
@@ -393,8 +396,12 @@
       // },
       addressAutocompleteEnabled() {
         // TODO tidy up the code
-        if (this.$config.addressInput.autocompleteEnabled === true) {
-          return true;
+        if (this.$config.addressInput) {
+          if (this.$config.addressInput.autocompleteEnabled === true) {
+            return true;
+          } else {
+            return false;
+          }
         } else {
           return false;
         }
@@ -406,6 +413,13 @@
           return 'topalmostleft'
         }
       },
+      addressInputPlaceholder() {
+        if (this.$config.addressInput) {
+          return this.$config.addressInput.placeholder;
+        } else {
+          return null
+        }
+      },
       basemapSelectControlPosition() {
         if (this.isMobileOrTablet) {
           return 'topright'
@@ -414,7 +428,7 @@
         }
       },
       shouldShowAddressCandidateList() {
-        return this.$store.state.map.shouldShowAddressCandidateList;
+        return this.$store.state.shouldShowAddressCandidateList;
       },
       measureControlEnabled() {
         if (this.$config.measureControlEnabled === false) {
@@ -466,14 +480,18 @@
         return this.$config.pictometry.enabled && !this.isMobileOrTablet;
       },
       geolocationEnabled() {
-        return this.$config.geolocation.enabled;
+        if (this.$config.geolocation) {
+          return this.$config.geolocation.enabled;
+        } else {
+          return false;
+        }
       },
       activeDorParcel() {
         // return this.$store.state.activeDorParcel;
         return this.$store.state.parcels.dor.activeParcel;
       },
       legendControls() {
-        return this.$config.legendControls;
+        return this.$config.legendControls || {};
       },
       imageOverlay() {
         return this.$store.state.map.imageOverlay;
@@ -491,7 +509,7 @@
         }
       },
       imageOverlayInfo() {
-        console.log('config:', this.$config);
+        // console.log('config:', this.$config);
         return this.$config.map.dynamicMapLayers.regmaps;
       },
       activeBasemap() {
@@ -543,7 +561,11 @@
         return this.imageryBasemaps.length > 0;
       },
       shouldShowImageryToggle() {
-        return this.hasImageryBasemaps// && this.$config.map.imagery.enabled;
+        if (this.$config.map.imagery) {
+          return this.hasImageryBasemaps && this.$config.map.imagery.enabled;
+        } else {
+          return this.hasImageryBasemaps;
+        }
       },
       identifyFeature() {
         let configFeature;
@@ -665,11 +687,8 @@
       shouldShowImageOverlay(key) {
         return key === this.imageOverlay;
       },
-      shouldShowFeatureLayer(key, minZoom) {
+      shouldShowFeatureLayer(key) {
         if (this.activeFeatureLayers.includes(key)) {
-          if (minZoom) {
-            return this.$store.state.map.zoom >= minZoom;
-          }
           return true;
         }
         return false;
