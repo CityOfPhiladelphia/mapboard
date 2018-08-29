@@ -107,7 +107,7 @@
 
       <!-- marker using a png and ablility to rotate it -->
       <png-marker v-if="this.cyclomediaActive"
-                  :icon="'../../src/assets/camera.png'"
+                  :icon="'images/camera.png'"
                   :latlng="cycloLatlng"
                   :rotationAngle="cycloRotationAngle"
       />
@@ -224,7 +224,7 @@
                            v-once
                            :position="'topright'"
                            :link="'pictometry'"
-                           :imgSrc="'../../src/assets/pictometry.png'"
+                           :imgSrc="'images/pictometry.png'"
         />
       </div>
 
@@ -233,7 +233,7 @@
                            v-once
                            :position="'topright'"
                            :link="'cyclomedia'"
-                           :imgSrc="'../../src/assets/cyclomedia.png'"
+                           :imgSrc="'images/cyclomedia.png'"
                            @click="handleCyclomediaButtonClick"
         />
       </div>
