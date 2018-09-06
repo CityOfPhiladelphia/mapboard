@@ -269,12 +269,12 @@
       </scale-control> -->
 
       <div v-once>
-        <AddressInput :position="this.addressInputPosition"
-                      :placeholder="this.addressInputPlaceholder"
+        <address-input :position="this.addressInputPosition"
+                       :placeholder="this.addressInputPlaceholder"
         />
       </div>
-      <AddressCandidateList v-if="this.addressAutocompleteEnabled"
-                            :position="this.addressInputPosition"
+      <address-candidate-list v-if="this.addressAutocompleteEnabled"
+                              :position="this.addressInputPosition"
       />
 
 
@@ -314,7 +314,7 @@
   const EsriFeatureLayer = philaVueMapping.EsriFeatureLayer;
   const Geojson = philaVueMapping.Geojson;
   const CircleMarker = philaVueMapping.CircleMarker;
-  const OpacitySlider = philaVueMapping.OpacitySlider;
+  // const OpacitySlider = philaVueMapping.OpacitySlider;
   const VectorMarker = philaVueMapping.VectorMarker;
   const PngMarker = philaVueMapping.PngMarker;
   const BasemapToggleControl = philaVueMapping.BasemapToggleControl;
@@ -348,7 +348,7 @@
       EsriFeatureLayer,
       Geojson,
       CircleMarker,
-      OpacitySlider,
+      // OpacitySlider,
       VectorMarker,
       PngMarker,
       BasemapToggleControl,
