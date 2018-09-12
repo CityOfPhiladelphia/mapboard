@@ -21,7 +21,7 @@
         >
           <png-marker v-if="this.pictometryShowAddressMarker"
                       :latlng="[this.geocodeData.geometry.coordinates[1], this.geocodeData.geometry.coordinates[0]]"
-                      :icon="'markers.png'"
+                      :icon="'images/markers.png'"
                       :height="60"
                       :width="40"
                       :offsetX="0"
@@ -30,7 +30,7 @@
           <layer v-if="this.pictometryActive" />
           <png-marker v-if="this.cyclomediaActive && this.pictometryActive"
                       :latlng="cycloLatlng"
-                      :icon="'camera2.png'"
+                      :icon="'images/camera2.png'"
                       :height="20"
                       :width="30"
                       :offsetX="-2"
@@ -78,6 +78,7 @@
       return data;
     },
     created() {
+      console.log('this.$config:', this.$config);
       if (this.$config.panels) {
         if (!this.$config.panels.includes('map')) {
           this.$store.commit('setTopicsOnly', true);
@@ -216,7 +217,7 @@
     },
     methods: {
       closeAddressCandidateList() {
-        this.$store.state.map.shouldShowAddressCandidateList = false;
+        this.$store.commit('setShouldShowAddressCandidateList', false);
       },
       handleWindowResize() {
         // this only actually affects the size if it is set to "plugin mode"

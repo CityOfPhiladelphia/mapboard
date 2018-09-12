@@ -107,7 +107,7 @@
 
       <!-- marker using a png and ablility to rotate it -->
       <png-marker v-if="this.cyclomediaActive"
-                  :icon="'../../src/assets/camera.png'"
+                  :icon="'images/camera.png'"
                   :latlng="cycloLatlng"
                   :rotationAngle="cycloRotationAngle"
       />
@@ -224,7 +224,7 @@
                            v-once
                            :position="'topright'"
                            :link="'pictometry'"
-                           :imgSrc="'../../src/assets/pictometry.png'"
+                           :imgSrc="'images/pictometry.png'"
         />
       </div>
 
@@ -233,7 +233,7 @@
                            v-once
                            :position="'topright'"
                            :link="'cyclomedia'"
-                           :imgSrc="'../../src/assets/cyclomedia.png'"
+                           :imgSrc="'images/cyclomedia.png'"
                            @click="handleCyclomediaButtonClick"
         />
       </div>
@@ -269,7 +269,9 @@
       </scale-control> -->
 
       <div v-once>
-        <AddressInput :position="this.addressInputPosition" />
+        <AddressInput :position="this.addressInputPosition"
+                      :placeholder="this.addressInputPlaceholder"
+        />
       </div>
       <AddressCandidateList v-if="this.addressAutocompleteEnabled"
                             :position="this.addressInputPosition"
@@ -394,8 +396,12 @@
       // },
       addressAutocompleteEnabled() {
         // TODO tidy up the code
-        if (this.$config.addressInput.autocompleteEnabled === true) {
-          return true;
+        if (this.$config.addressInput) {
+          if (this.$config.addressInput.autocompleteEnabled === true) {
+            return true;
+          } else {
+            return false;
+          }
         } else {
           return false;
         }
@@ -407,6 +413,13 @@
           return 'topalmostleft'
         }
       },
+      addressInputPlaceholder() {
+        if (this.$config.addressInput) {
+          return this.$config.addressInput.placeholder;
+        } else {
+          return null
+        }
+      },
       basemapSelectControlPosition() {
         if (this.isMobileOrTablet) {
           return 'topright'
@@ -415,7 +428,7 @@
         }
       },
       shouldShowAddressCandidateList() {
-        return this.$store.state.map.shouldShowAddressCandidateList;
+        return this.$store.state.shouldShowAddressCandidateList;
       },
       measureControlEnabled() {
         if (this.$config.measureControlEnabled === false) {
@@ -467,14 +480,18 @@
         return this.$config.pictometry.enabled && !this.isMobileOrTablet;
       },
       geolocationEnabled() {
-        return this.$config.geolocation.enabled;
+        if (this.$config.geolocation) {
+          return this.$config.geolocation.enabled;
+        } else {
+          return false;
+        }
       },
       activeDorParcel() {
         // return this.$store.state.activeDorParcel;
         return this.$store.state.parcels.dor.activeParcel;
       },
       legendControls() {
-        return this.$config.legendControls;
+        return this.$config.legendControls || {};
       },
       imageOverlay() {
         return this.$store.state.map.imageOverlay;
@@ -492,7 +509,7 @@
         }
       },
       imageOverlayInfo() {
-        console.log('config:', this.$config);
+        // console.log('config:', this.$config);
         return this.$config.map.dynamicMapLayers.regmaps;
       },
       activeBasemap() {
@@ -544,7 +561,11 @@
         return this.imageryBasemaps.length > 0;
       },
       shouldShowImageryToggle() {
-        return this.hasImageryBasemaps// && this.$config.map.imagery.enabled;
+        if (this.$config.map.imagery) {
+          return this.hasImageryBasemaps && this.$config.map.imagery.enabled;
+        } else {
+          return this.hasImageryBasemaps;
+        }
       },
       identifyFeature() {
         let configFeature;

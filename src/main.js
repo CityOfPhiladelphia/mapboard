@@ -6,6 +6,7 @@ import Mapboard from './components/Mapboard.vue';
 import mergeDeep from './util/merge-deep';
 import generateUniqueId from './util/unique-id';
 
+
 import philaVueDatafetch from '@cityofphiladelphia/phila-vue-datafetch';
 const controllerMixin = philaVueDatafetch;
 
