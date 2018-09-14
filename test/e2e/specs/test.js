@@ -5,11 +5,11 @@ module.exports = {
     browser
       .url(browser.globals.devServerUrl)
       .waitForElementVisible('#mb-root')
-      .setValue('.mb-search-control-input', '1234 mkt')
-      .waitForElementVisible(`button[name="mb-search-control-button"]`)
+      .setValue('.pvm-search-control-input', '1234 mkt')
+      .waitForElementVisible(`button[name="pvm-search-control-button"]`)
       .pause(1000)
-      .click(`button[name="mb-search-control-button"]`)
-      // .click('.mb-search-control-button')
+      .click(`button[name="pvm-search-control-button"]`)
+      // .click('.pvm-search-control-button')
       .waitForElementVisible('.topic-panel-content')
 
 
@@ -25,8 +25,8 @@ module.exports = {
     // check table "Documents"
     browser
       .waitForElementVisible(`.topic-body[data-topic-key="deeds"] .tabs-content .topic-component:nth-of-type(4)`)
-      .waitForElementVisible(`.topic-body[data-topic-key="deeds"] .tabs-content .topic-component:nth-of-type(4) .mb-horizontal-table-body table`);
-    browser.expect.element(`.topic-body[data-topic-key="deeds"] .tabs-content .topic-component:nth-of-type(4) .mb-horizontal-table-body h4`).text.to.contain('Documents');
+      .waitForElementVisible(`.topic-body[data-topic-key="deeds"] .tabs-content .topic-component:nth-of-type(4) .pvc-horizontal-table-body table`);
+    browser.expect.element(`.topic-body[data-topic-key="deeds"] .tabs-content .topic-component:nth-of-type(4) .pvc-horizontal-table-body h4`).text.to.contain('Documents');
 
 
 
@@ -36,31 +36,31 @@ module.exports = {
       .click(`a[data-topic-key="li"]`)
     // check table "Permits"
       .waitForElementVisible(`.topic-body[data-topic-key="li"] .topic-component:nth-of-type(2)`)
-      .waitForElementVisible(`.topic-body[data-topic-key="li"] .topic-component:nth-of-type(2) .mb-horizontal-table-body`);
+      .waitForElementVisible(`.topic-body[data-topic-key="li"] .topic-component:nth-of-type(2) .pvc-horizontal-table-body`);
     browser.expect.element(`.topic-body[data-topic-key="li"] .topic-component:nth-of-type(2) h4`).text.to.contain('Permits');
 
     // check table "Zoning Permit Documents"
     browser
       .waitForElementVisible(`.topic-body[data-topic-key="li"] .topic-component:nth-of-type(3)`)
-      .waitForElementVisible(`.topic-body[data-topic-key="li"] .topic-component:nth-of-type(3) .mb-horizontal-table-body`);
+      .waitForElementVisible(`.topic-body[data-topic-key="li"] .topic-component:nth-of-type(3) .pvc-horizontal-table-body`);
     browser.expect.element(`.topic-body[data-topic-key="li"] .topic-component:nth-of-type(3) h4`).text.to.contain('Zoning Permit Documents');
 
     // check table "Inspections"
     browser
       .waitForElementVisible(`.topic-body[data-topic-key="li"] .topic-component:nth-of-type(4)`)
-      .waitForElementVisible(`.topic-body[data-topic-key="li"] .topic-component:nth-of-type(4) .mb-horizontal-table-body`);
+      .waitForElementVisible(`.topic-body[data-topic-key="li"] .topic-component:nth-of-type(4) .pvc-horizontal-table-body`);
     browser.expect.element(`.topic-body[data-topic-key="li"] .topic-component:nth-of-type(4) h4`).text.to.contain('Inspections');
 
     // check table "Violations"
     browser
       .waitForElementVisible(`.topic-body[data-topic-key="li"] .topic-component:nth-of-type(5)`)
-      .waitForElementVisible(`.topic-body[data-topic-key="li"] .topic-component:nth-of-type(5) .mb-horizontal-table-body`);
+      .waitForElementVisible(`.topic-body[data-topic-key="li"] .topic-component:nth-of-type(5) .pvc-horizontal-table-body`);
     browser.expect.element(`.topic-body[data-topic-key="li"] .topic-component:nth-of-type(5) h4`).text.to.contain('Violations');
 
     // check table "Business Licenses"
     browser
       .waitForElementVisible(`.topic-body[data-topic-key="li"] .topic-component:nth-of-type(6)`)
-      .waitForElementVisible(`.topic-body[data-topic-key="li"] .topic-component:nth-of-type(6) .mb-horizontal-table-body`);
+      .waitForElementVisible(`.topic-body[data-topic-key="li"] .topic-component:nth-of-type(6) .pvc-horizontal-table-body`);
     browser.expect.element(`.topic-body[data-topic-key="li"] .topic-component:nth-of-type(6) h4`).text.to.contain('Business Licenses');
 
 
@@ -78,25 +78,25 @@ module.exports = {
     // check table "Overlays"
     browser
       .waitForElementVisible(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(2)`)
-      .waitForElementVisible(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(2) .mb-horizontal-table-body`);
+      .waitForElementVisible(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(2) .pvc-horizontal-table-body`);
     browser.expect.element(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(2) h4`).text.to.contain('Overlays');
 
     // check table "Pending Bills"
     browser
       .waitForElementVisible(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(3)`)
-      .waitForElementVisible(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(3) .mb-horizontal-table-body`);
+      .waitForElementVisible(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(3) .pvc-horizontal-table-body`);
     browser.expect.element(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(3) h4`).text.to.contain('Pending Bills');
 
     // check table "Appeals"
     // browser
     //   .waitForElementVisible(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(5)`)
-    //   .waitForElementVisible(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(5) .mb-horizontal-table-body`);
+    //   .waitForElementVisible(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(5) .pvc-horizontal-table-body`);
     // browser.expect.element(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(5) h4`).text.to.contain('Appeals');
     //
     // // check table "Registered Community Organizations"
     // browser
     //   .waitForElementVisible(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(6)`)
-    //   .waitForElementVisible(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(6) .mb-horizontal-table-body`);
+    //   .waitForElementVisible(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(6) .pvc-horizontal-table-body`);
     // browser.expect.element(`.topic-body[data-topic-key="zoning"] .topic-component:nth-of-type(6) h4`).text.to.contain('Registered Community Organizations');
 
 
@@ -107,29 +107,29 @@ module.exports = {
       .click(`a[data-topic-key="nearby"]`)
 
       .waitForElementVisible(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2)`)
-      .waitForElementVisible(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2) .mb-horizontal-table:nth-of-type(2) .mb-horizontal-table-body:nth-of-type(2)`);
-    browser.expect.element(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2) .mb-horizontal-table:nth-of-type(2) .mb-horizontal-table-body:nth-of-type(2) h4`).text.to.contain('Nearby Service Requests');
+      .waitForElementVisible(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2) .pvc-horizontal-table:nth-of-type(2) .pvc-horizontal-table-body:nth-of-type(2)`);
+    browser.expect.element(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2) .pvc-horizontal-table:nth-of-type(2) .pvc-horizontal-table-body:nth-of-type(2) h4`).text.to.contain('Nearby Service Requests');
 
     browser
       .waitForElementVisible(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2) .mb-select:nth-of-type(1)`)
       .pause(2000)
       .setValue(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2) .mb-select:nth-of-type(1)`, 'Crime Incidents')
-      .waitForElementVisible(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2) .mb-horizontal-table:nth-of-type(3) .mb-horizontal-table-body:nth-of-type(2)`);
-    browser.expect.element(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2) .mb-horizontal-table:nth-of-type(3) .mb-horizontal-table-body:nth-of-type(2) h4`).text.to.contain('Crime Incidents');
+      .waitForElementVisible(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2) .pvc-horizontal-table:nth-of-type(3) .pvc-horizontal-table-body:nth-of-type(2)`);
+    browser.expect.element(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2) .pvc-horizontal-table:nth-of-type(3) .pvc-horizontal-table-body:nth-of-type(2) h4`).text.to.contain('Crime Incidents');
 
     browser
       .waitForElementVisible(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2) .mb-select:nth-of-type(1)`)
       .pause(2000)
       .setValue(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2) .mb-select:nth-of-type(1)`, 'Zoning Appeals')
-      .waitForElementVisible(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2) .mb-horizontal-table:nth-of-type(4) .mb-horizontal-table-body:nth-of-type(2)`);
-    browser.expect.element(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2) .mb-horizontal-table:nth-of-type(4) .mb-horizontal-table-body:nth-of-type(2) h4`).text.to.contain('Zoning Appeals');
+      .waitForElementVisible(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2) .pvc-horizontal-table:nth-of-type(4) .pvc-horizontal-table-body:nth-of-type(2)`);
+    browser.expect.element(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2) .pvc-horizontal-table:nth-of-type(4) .pvc-horizontal-table-body:nth-of-type(2) h4`).text.to.contain('Zoning Appeals');
 
     browser
       .waitForElementVisible(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2) .mb-select:nth-of-type(1)`)
       .pause(2000)
       .setValue(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2) .mb-select:nth-of-type(1)`, 'Vacant Properties')
-      .waitForElementVisible(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2) .mb-horizontal-table:nth-of-type(5) .mb-horizontal-table-body:nth-of-type(2)`);
-    browser.expect.element(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2) .mb-horizontal-table:nth-of-type(5) .mb-horizontal-table-body:nth-of-type(2) h4`).text.to.contain('Likely Vacant Properties');
+      .waitForElementVisible(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2) .pvc-horizontal-table:nth-of-type(5) .pvc-horizontal-table-body:nth-of-type(2)`);
+    browser.expect.element(`.topic-body[data-topic-key="nearby"] .topic-component:nth-of-type(2) .pvc-horizontal-table:nth-of-type(5) .pvc-horizontal-table-body:nth-of-type(2) h4`).text.to.contain('Likely Vacant Properties');
 
     browser
       .click(`.easy-button-container:nth-of-type(3)`)
