@@ -130,6 +130,14 @@ mapboard({
 // Mapboard.default({
   // DEV
   // defaultAddress: '1234 MARKET ST',
+  components: [
+    {
+      type: 'topic-set',
+      options: {
+        defaultTopic: 'property'
+      }
+    },
+  ],
   router: {
     enabled: true
   },
@@ -2411,6 +2419,77 @@ mapboard({
                   //   return rows;
                   // },
               },
+              {
+                type: 'horizontal-table',
+                options: {
+                  topicKey: 'zoning',
+                  // shouldShowFilters: false,
+                  id: 'baseZoning',
+                  // defaultIncrement: 10,
+                  // showAllRowsOnFirstClick: true,
+                  // showOnlyIfData: true,
+                  fields: [
+                    {
+                      label: 'Bill Type',
+                      value: function (state, item) {
+                        return item.billType;
+                      },
+                    },
+                    {
+                      label: 'Current Zoning',
+                      value: function(state, item) {
+                        return item.currentZoning;
+                      },
+                    },
+                    {
+                      label: 'Pending Bill',
+                      value: function (state, item) {
+                        return `<a target="_blank" href="${item.pendingbillurl}">${item.pendingbill} <i class="fa fa-external-link"></i></a>`;
+                      }
+                    },
+                  ], // end fields
+                },
+                slots: {
+                  title: 'Pending Bills',
+                  items: function(state, item) {
+                    // console.log('state.sources:', state.sources['zoningBase'].data.rows);
+                    var id = item.properties.OBJECTID,
+                        target = state.sources.zoningBase.targets[id] || {},
+                        data = target.data || {};
+
+                    // include only rows where pending is true
+                    const { rows=[] } = data;
+                    const rowsFiltered = rows.filter(row => row.pending === 'Yes');
+
+                    // give each pending zoning bill a type of "zoning"
+                    const rowsFilteredWithType = rowsFiltered.map((row) => {
+                      row.billType = 'Base District';
+                      row.currentZoning = row.long_code;
+                      return row;
+                    });
+
+                    let overlayRowsFilteredWithType = [];
+
+                    // append pending overlays
+                    if (state.sources.zoningOverlay.targets[id]) {
+                      const overlayRows = state.sources.zoningOverlay.targets[id].data.rows;
+                      const overlayRowsFiltered = overlayRows.filter(row => row.pending === 'Yes');
+                      overlayRowsFilteredWithType = overlayRowsFiltered.map((row) => {
+                        row.billType = 'Overlay';
+                        row.currentZoning = row.overlay_name;
+                        return row;
+                      });
+                    } else {
+                      overlayRowsFilteredWithType = [];
+                    }
+
+                    // combine pending zoning and overlays
+                    const zoningAndOverlays = rowsFilteredWithType.concat(overlayRowsFilteredWithType);
+
+                    return zoningAndOverlays;
+                  },
+                }, // end slots
+              }, // end table
             ], // end of tab-group components
           },
           slots: {
