@@ -22,6 +22,11 @@
           {{ address }}
         </h1>
         <div class="address-header-line-2"
+             v-show="!this.geocode"
+        >
+
+        </div>
+        <div class="address-header-line-2"
              v-show="this.geocode"
         >
           PHILADELPHIA, PA {{ zipCode }}
@@ -45,7 +50,12 @@
     </div>
 
     <!-- before search -->
-    <greeting v-show="shouldShowGreeting" />
+    <div v-if="shouldShowGreeting"
+         class="topics-container cell medium-cell-block-y"
+         :style="topicsContainerStyle"
+    >
+      <greeting v-show="shouldShowGreeting" />
+    </div>
 
     <div v-if="!shouldShowGreeting" class="topic-panel-content">
 
@@ -90,7 +100,8 @@
                :key="topic.key"
         />
       </div> -->
-      <div v-if="!shouldShowGreeting"
+      <!-- <div v-if="!shouldShowGreeting" -->
+      <div
            class="topics-container cell medium-cell-block-y"
            :style="topicsContainerStyle"
       >
@@ -126,16 +137,18 @@
         topicsContainerStyle: {
           'overflow-y': 'auto',
           'height': '100px',
+          'min-height': '100px',
         },
         addressContainerStyle: {
-          'height': '100%',
+          // 'height': '100%',
           'padding-bottom:': '20px',
         },
         addressInputContainerStyle: {
+          // 'height': '100%',
           'align-items': 'flex-start',
-          'height': '100%',
           'padding-top': '20px',
-        }
+        },
+        addressHeaderHeightNum: null,
       };
       return data;
     },
@@ -143,8 +156,21 @@
       window.addEventListener('click', this.closeAddressCandidateList);
       window.addEventListener('resize', this.handleWindowResize);
       this.handleWindowResize();
+      // this.handleWindowResize('add5');
+    },
+    watch: {
+      geocodeStatus() {
+        this.handleWindowResize();
+      }
     },
     computed: {
+      shouldShowAddressHeader() {
+        if (this.fullScreenTopicsOnly || this.shouldShowGreeting === false) {
+          return true;
+        } else {
+          return false;
+        }
+      },
       inputAlign() {
         if (this.$config.addressInput) {
           if (this.$config.addressInput.position) {
@@ -218,6 +244,9 @@
       geocode() {
         return this.$store.state.geocode.data;
       },
+      geocodeStatus() {
+        return this.$store.state.geocode.status;
+      },
       dorParcels() {
         return this.$store.state.parcels.dor.data.length > 0;
       },
@@ -274,43 +303,81 @@
         const sources = this.$store.state.sources;
         return requiredSources.every(key => sources[key].data)
       },
-      handleWindowResize() {
+      handleWindowResize(shouldAdd5) {
+        console.log('handleWindowResize is running');
+
+        const windowHeight = $(window).height();
+        const windowWidth = $(window).width();
+
+        const rootElement = document.getElementById('mb-root');
+        const rootStyle = window.getComputedStyle(rootElement);
+        const rootHeight = rootStyle.getPropertyValue('height');
+        const rootHeightNum = parseInt(rootHeight.replace('px', ''));
+
+        const siteHeader = document.getElementsByClassName('site-header')[0];
+        const siteHeaderStyle = window.getComputedStyle(siteHeader);
+        const siteHeaderHeight = siteHeaderStyle.getPropertyValue('height');
+        const siteHeaderHeightNum = parseInt(siteHeaderHeight.replace('px', ''));
+
+        const appFooter = document.getElementsByClassName('app-footer')[0];
+        const appFooterStyle = window.getComputedStyle(appFooter);
+        const appFooterHeight = appFooterStyle.getPropertyValue('height');
+        const appFooterHeightNum = parseInt(appFooterHeight.replace('px', ''));
+
+        let topicsHeight;
+
+        if (this.shouldShowAddressHeader) {
+          if (document.getElementsByClassName('address-header')[0]) {
+            const addressHeader = document.getElementsByClassName('address-header')[0];
+            const addressHeaderStyle = window.getComputedStyle(addressHeader);
+            const addressHeaderHeight = addressHeaderStyle.getPropertyValue('height');
+            let addressHeaderHeightNum = parseInt(addressHeaderHeight.replace('px', ''));
+            if (shouldAdd5 === 'add5') {
+              addressHeaderHeightNum = addressHeaderHeightNum + 5;
+            }
+            topicsHeight = windowHeight - siteHeaderHeightNum - appFooterHeightNum - addressHeaderHeightNum;
+            console.log('handleWindowResize, window-width:', windowWidth, 'window-height:', windowHeight, 'rootHeight:', rootHeightNum, 'SiteHeaderHeight:', siteHeaderHeightNum, 'addressHeaderHeight:', addressHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
+          } else {
+            topicsHeight = windowHeight - siteHeaderHeightNum - appFooterHeightNum - 103;
+            console.log('handleWindowResize, window-width:', windowWidth, 'window-height:', windowHeight, 'rootHeight:', rootHeightNum, 'SiteHeaderHeight:', siteHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
+          }
+        } else {
+          topicsHeight = windowHeight - siteHeaderHeightNum - appFooterHeightNum;
+          console.log('handleWindowResize, window-width:', windowWidth, 'window-height:', windowHeight, 'rootHeight:', rootHeightNum, 'SiteHeaderHeight:', siteHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
+        }
+
         if ($(window).width() >= 750) {
           // console.log('handleWindowResize if is running, window width is >= 750px');
           this.addressContainerStyle = {
-            'height': '100%',
+            // 'height': '100%',
             'align-items': 'flex-start',
             'padding-bottom': '20px',
           }
           this.addressInputContainerStyle = {
-            'height': '100%',
+            // 'height': '100%',
             'align-items': this.inputAlign,
             'padding-top': '25px',
           }
 
-          const rootElement = document.getElementById('mb-root');
-          const rootStyle = window.getComputedStyle(rootElement);
-          const rootHeight = rootStyle.getPropertyValue('height');
-          const rootHeightNum = parseInt(rootHeight.replace('px', ''));
-          const topicsHeight = rootHeightNum - 103;
-
           this.topicsContainerStyle.height = topicsHeight.toString() + 'px';
+          this.topicsContainerStyle['min-height'] = topicsHeight.toString() + 'px';
           this.topicsContainerStyle['overflow-y'] = 'auto';
 
 
         } else {
           this.addressContainerStyle = {
-            'height': 'auto',
+            // 'height': 'auto',
             'align-items': 'center',
             'padding-bottom': '20px',
           }
           this.addressInputContainerStyle = {
-            'height': 'auto',
+            // 'height': 'auto',
             'align-items': 'center',
             'padding-top': '5px',
           }
           // console.log('handleWindowResize lse is running, window width is < 750px');
           this.topicsContainerStyle.height = 'auto';
+          this.topicsContainerStyle['min-height'] = topicsHeight.toString() + 'px';
           this.topicsContainerStyle['overflow-y'] = 'hidden';
         }
       }
@@ -348,7 +415,7 @@
     -webkit-box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.18);
     -moz-box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.18);
     box-shadow: 0px 5px 7px -2px rgba(0,0,0,0.18);
-    margin-bottom: 0px !important;
+    margin-bottom: -5px !important;
     display: inline-block;
   }
 
@@ -377,8 +444,8 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 33px;
+    padding-bottom: 33px;
   }
 
   .topics-container {
