@@ -76,7 +76,7 @@
 
         <div class="address-input-container columns small-24 medium-12 large-12"
              :style="this.addressInputContainerStyle"
-             v-if="this.fullScreenTopicsEnabled || this.fullScreenTopicsOnly"
+             v-if="this.fullScreenTopicsEnabled && !this.stacked || this.fullScreenTopicsOnly"
         >
           <address-input :widthFromConfig="this.addressInputWidth"
                          :placeholder="this.addressInputPlaceholder"
@@ -148,7 +148,7 @@
           'align-items': 'flex-start',
           'padding-top': '20px',
         },
-        addressHeaderHeightNum: null,
+        stacked: false,
       };
       return data;
     },
@@ -347,6 +347,7 @@
         }
 
         if ($(window).width() >= 750) {
+          this.stacked = false;
           // console.log('handleWindowResize if is running, window width is >= 750px');
           this.addressContainerStyle = {
             // 'height': '100%',
@@ -365,6 +366,7 @@
 
 
         } else {
+          this.stacked = true;
           this.addressContainerStyle = {
             // 'height': 'auto',
             'align-items': 'center',
