@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@cityofphiladelphia/phila-vue-comps@1.0.6":
+"@cityofphiladelphia/phila-vue-comps@https://github.com/CityOfPhiladelphia/phila-vue-comps#e3ddd40eaf5a8fb7ff9996f79acd82bbf8e0834f":
   version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@cityofphiladelphia/phila-vue-comps/-/phila-vue-comps-1.0.6.tgz#76e840228ee77e966143085916c0465390eb63ad"
+  resolved "https://github.com/CityOfPhiladelphia/phila-vue-comps#e3ddd40eaf5a8fb7ff9996f79acd82bbf8e0834f"
   dependencies:
     axios "^0.18.0"
     escape-html "^1.0.3"
@@ -33,9 +33,9 @@
     vue "^2.5.16"
     vuex "^3.0.1"
 
-"@cityofphiladelphia/phila-vue-mapping@1.0.5":
+"@cityofphiladelphia/phila-vue-mapping@https://github.com/CityOfPhiladelphia/phila-vue-mapping#be63b59fd6b8cf7389e2565dd3a393b2a621e9a7":
   version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@cityofphiladelphia/phila-vue-mapping/-/phila-vue-mapping-1.0.5.tgz#e31ff0eb5c33b7c665b7d84d2d3172e514179d02"
+  resolved "https://github.com/CityOfPhiladelphia/phila-vue-mapping#be63b59fd6b8cf7389e2565dd3a393b2a621e9a7"
   dependencies:
     "@turf/turf" "^5.1.6"
     L-esri-WebMap "https://github.com/CityOfPhiladelphia/L.esri.WebMap#5849bfa6248a886d8675eeff98fa9dff4949f12a"
