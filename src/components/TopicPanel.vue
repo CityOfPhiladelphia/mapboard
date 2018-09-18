@@ -155,8 +155,7 @@
     mounted() {
       window.addEventListener('click', this.closeAddressCandidateList);
       window.addEventListener('resize', this.handleWindowResize);
-      this.handleWindowResize();
-      // this.handleWindowResize('add5');
+      this.handleWindowResize('add5');
     },
     watch: {
       geocodeStatus() {
