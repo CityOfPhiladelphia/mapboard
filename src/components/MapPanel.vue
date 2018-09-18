@@ -382,10 +382,6 @@
         );
       }
     },
-    mounted() {
-      // this.geofind();
-      this.$controller.appDidLoad();
-    },
     computed: {
       // shouldShowAddressInput() {
       //   if (this.$config.addressInputLocation == 'map') {
