@@ -90,6 +90,9 @@
       window.addEventListener('resize', this.handleWindowResize);
       this.handleWindowResize();
     },
+    mounted() {
+      this.$controller.appDidLoad();
+    },
     computed: {
       rootClass() {
         if (this.$config.plugin) {
