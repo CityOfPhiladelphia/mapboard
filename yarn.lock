@@ -33,9 +33,9 @@
     vue "^2.5.16"
     vuex "^3.0.1"
 
-"@cityofphiladelphia/phila-vue-mapping@https://github.com/CityOfPhiladelphia/phila-vue-mapping#8e86eaff3c7a2cebb6d31980aaeece19890e7618":
+"@cityofphiladelphia/phila-vue-mapping@https://github.com/CityOfPhiladelphia/phila-vue-mapping#be63b59fd6b8cf7389e2565dd3a393b2a621e9a7":
   version "1.0.5"
-  resolved "https://github.com/CityOfPhiladelphia/phila-vue-mapping#8e86eaff3c7a2cebb6d31980aaeece19890e7618"
+  resolved "https://github.com/CityOfPhiladelphia/phila-vue-mapping#be63b59fd6b8cf7389e2565dd3a393b2a621e9a7"
   dependencies:
     "@turf/turf" "^5.1.6"
     L-esri-WebMap "https://github.com/CityOfPhiladelphia/L.esri.WebMap#5849bfa6248a886d8675eeff98fa9dff4949f12a"
