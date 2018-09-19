@@ -1,4 +1,4 @@
-<template>
+pixelAdjustment<template>
   <div id="topic-panel-container"
        :class="'mb-panel-topics cell ' + this.topicPanelContainerClass"
   >
@@ -90,24 +90,12 @@
 
       </div>
 
-
-      <!-- topics container -->
-      <!-- <div class="topics-container cell medium-cell-block-y"
-           :style="topicsContainerStyle"
-      >
-        <topic v-for="topic in this.$config.topics"
-               :topicKey="topic.key"
-               :key="topic.key"
-        />
-      </div> -->
-      <!-- <div v-if="!shouldShowGreeting" -->
       <div
            class="topics-container cell medium-cell-block-y"
            :style="topicsContainerStyle"
       >
         <topic-component-group :topic-components="this.$config.components" />
       </div>
-
 
     </div>
   </div>
@@ -140,13 +128,17 @@
           'min-height': '100px',
         },
         addressContainerStyle: {
-          // 'height': '100%',
-          'padding-bottom:': '20px',
+          'height': '100%',
+          'align-items': 'flex-start',
+          'padding-left': '20px',
+          'padding-top': '20px',
+          'padding-bottom': '20px',
         },
         addressInputContainerStyle: {
-          // 'height': '100%',
-          'align-items': 'flex-start',
-          'padding-top': '20px',
+          'height': '100%',
+          'align-items': 'center',
+          'padding-top': '10px',
+          'padding-bottom': '10px',
         },
         stacked: false,
       };
@@ -155,7 +147,8 @@
     mounted() {
       window.addEventListener('click', this.closeAddressCandidateList);
       window.addEventListener('resize', this.handleWindowResize);
-      this.handleWindowResize('add5');
+      this.handleWindowResize(5);
+      // this.handleWindowResize();
     },
     watch: {
       geocodeStatus() {
@@ -302,81 +295,69 @@
         const sources = this.$store.state.sources;
         return requiredSources.every(key => sources[key].data)
       },
-      handleWindowResize(shouldAdd5) {
-        console.log('handleWindowResize is running');
+      handleWindowResize(pixelAdjustment) {
+        // this is called to run when:
+        // 1 - TopicPanel.vue mounted
+        // 2 - geocodeStatus change
+        // 3 - any resizing of the window
 
         const windowHeight = $(window).height();
-        const windowWidth = $(window).width();
-
-        const rootElement = document.getElementById('mb-root');
-        const rootStyle = window.getComputedStyle(rootElement);
-        const rootHeight = rootStyle.getPropertyValue('height');
-        const rootHeightNum = parseInt(rootHeight.replace('px', ''));
-
-        const siteHeader = document.getElementsByClassName('site-header')[0];
-        const siteHeaderStyle = window.getComputedStyle(siteHeader);
-        const siteHeaderHeight = siteHeaderStyle.getPropertyValue('height');
-        const siteHeaderHeightNum = parseInt(siteHeaderHeight.replace('px', ''));
-
-        const appFooter = document.getElementsByClassName('app-footer')[0];
-        const appFooterStyle = window.getComputedStyle(appFooter);
-        const appFooterHeight = appFooterStyle.getPropertyValue('height');
-        const appFooterHeightNum = parseInt(appFooterHeight.replace('px', ''));
-
+        const siteHeaderHeightNum = parseInt(window.getComputedStyle(document.getElementsByClassName('site-header')[0]).getPropertyValue('height').replace('px', ''));
+        const appFooterHeightNum = parseInt(window.getComputedStyle(document.getElementsByClassName('app-footer')[0]).getPropertyValue('height').replace('px', ''));
         let topicsHeight;
 
         if (this.shouldShowAddressHeader) {
           if (document.getElementsByClassName('address-header')[0]) {
-            const addressHeader = document.getElementsByClassName('address-header')[0];
-            const addressHeaderStyle = window.getComputedStyle(addressHeader);
-            const addressHeaderHeight = addressHeaderStyle.getPropertyValue('height');
-            let addressHeaderHeightNum = parseInt(addressHeaderHeight.replace('px', ''));
-            if (shouldAdd5 === 'add5') {
-              addressHeaderHeightNum = addressHeaderHeightNum + 5;
-            }
+            const addressHeaderHeightNum = parseInt(window.getComputedStyle(document.getElementsByClassName('address-header')[0]).getPropertyValue('height').replace('px', ''));
             topicsHeight = windowHeight - siteHeaderHeightNum - appFooterHeightNum - addressHeaderHeightNum;
-            console.log('handleWindowResize, window-width:', windowWidth, 'window-height:', windowHeight, 'rootHeight:', rootHeightNum, 'SiteHeaderHeight:', siteHeaderHeightNum, 'addressHeaderHeight:', addressHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
+            // console.log('handleWindowResize shouldShowAddressHeader and it was found, window-height:', windowHeight, 'SiteHeaderHeight:', siteHeaderHeightNum, 'addressHeaderHeight:', addressHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
+            if (typeof pixelAdjustment === 'number') {
+              // console.log('handleWindowResize if pixelAdjustment is true, window-height:', windowHeight, 'SiteHeaderHeight:', siteHeaderHeightNum, 'addressHeaderHeight:', addressHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight, 'pixelAdjustment:', pixelAdjustment);
+              topicsHeight = topicsHeight - pixelAdjustment;
+            }
           } else {
             topicsHeight = windowHeight - siteHeaderHeightNum - appFooterHeightNum - 103;
-            console.log('handleWindowResize, window-width:', windowWidth, 'window-height:', windowHeight, 'rootHeight:', rootHeightNum, 'SiteHeaderHeight:', siteHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
+            // console.log('handleWindowResize shouldShowAddressHeader but it was not found so it is using the hardcoded 103, window-height:', windowHeight, 'SiteHeaderHeight:', siteHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
           }
         } else {
           topicsHeight = windowHeight - siteHeaderHeightNum - appFooterHeightNum;
-          console.log('handleWindowResize, window-width:', windowWidth, 'window-height:', windowHeight, 'rootHeight:', rootHeightNum, 'SiteHeaderHeight:', siteHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
+          // console.log('handleWindowResize shouldShowAddressHeader is NOT true, window-height:', windowHeight, 'SiteHeaderHeight:', siteHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
         }
 
         if ($(window).width() >= 750) {
           this.stacked = false;
-          // console.log('handleWindowResize if is running, window width is >= 750px');
           this.addressContainerStyle = {
-            // 'height': '100%',
+            'height': '100%',
             'align-items': 'flex-start',
+            'padding-left': '20px',
+            'padding-top': '20px',
             'padding-bottom': '20px',
           }
           this.addressInputContainerStyle = {
-            // 'height': '100%',
+            'height': '100%',
             'align-items': this.inputAlign,
-            'padding-top': '25px',
+            'padding-top': '30px',
+            'padding-bottom': '30px',
           }
-
           this.topicsContainerStyle.height = topicsHeight.toString() + 'px';
           this.topicsContainerStyle['min-height'] = topicsHeight.toString() + 'px';
           this.topicsContainerStyle['overflow-y'] = 'auto';
 
-
         } else {
           this.stacked = true;
           this.addressContainerStyle = {
-            // 'height': 'auto',
+            'height': 'auto',
             'align-items': 'center',
-            'padding-bottom': '20px',
+            'padding-left': '0px',
+            'padding-top': '10px',
+            'padding-bottom': '10px',
           }
           this.addressInputContainerStyle = {
-            // 'height': 'auto',
+            'height': 'auto',
             'align-items': 'center',
-            'padding-top': '5px',
+            'padding-top': '10px',
+            'padding-bottom': '10px',
           }
-          // console.log('handleWindowResize lse is running, window width is < 750px');
           this.topicsContainerStyle.height = 'auto';
           this.topicsContainerStyle['min-height'] = topicsHeight.toString() + 'px';
           this.topicsContainerStyle['overflow-y'] = 'hidden';
@@ -431,35 +412,21 @@
   }
 
   .address-container {
-    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-left: 20px;
-    padding-top: 20px;
-    padding-bottom: 20px;
   }
 
   .address-input-container {
-    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-top: 33px;
-    padding-bottom: 33px;
   }
 
   .topics-container {
     padding: 26px;
-    overflow-x: hidden;
     position: relative;
-  }
-
-  @media screen and (min-width: 40em) {
-    .topics-container {
-      /* height: 100%; */
-      /* height: calc(100vh - 210px); */
-    }
+    overflow-x: hidden;
   }
 
 </style>
