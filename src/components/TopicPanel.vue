@@ -6,19 +6,19 @@
                                    v-if="!this.fullScreenTopicsOnly"
     />
 
-    <!-- <div v-if="!shouldShowGreeting" class="topic-panel-content"> -->
-
-    <!-- address header -->
+    <!-- address header - it only shows if the app is set to "fullScreenTopicsOnly" or there is a geocode -->
     <div class="address-header cell small-24 medium-24"
-         v-if="this.fullScreenTopicsOnly"
+         v-if="this.shouldShowAddressHeader"
     >
-
       <div :class="'address-container columns ' +  this.addressContainerClass"
            :style="this.addressContainerStyle"
       >
 
         <h1 class="address-header-line-1">
-          <!-- <i class="fa fa-map-marker"></i> -->
+        <!-- there is no map marker if there is no map -->
+          <i class="fa fa-map-marker"
+             v-if="!this.fullScreenTopicsOnly"
+          ></i>
           {{ address }}
         </h1>
         <div class="address-header-line-2"
@@ -57,47 +57,16 @@
       <greeting v-show="shouldShowGreeting" />
     </div>
 
+    <!-- after search -->
     <div v-if="!shouldShowGreeting" class="topic-panel-content">
-
-      <div class="address-header cell small-24 medium-24"
-           v-if="!this.fullScreenTopicsOnly"
-      >
-
-        <div :class="'address-container columns ' +  this.addressContainerClass"
-             :style="this.addressContainerStyle"
-        >
-
-          <h1 class="address-header-line-1">
-            <i class="fa fa-map-marker"></i>
-            {{ address }}
-          </h1>
-          <div class="address-header-line-2">PHILADELPHIA, PA {{ zipCode }}</div>
-        </div>
-
-        <div class="address-input-container columns small-24 medium-12 large-12"
-             :style="this.addressInputContainerStyle"
-             v-if="this.fullScreenTopicsEnabled && !this.stacked || this.fullScreenTopicsOnly"
-        >
-          <address-input :widthFromConfig="this.addressInputWidth"
-                         :placeholder="this.addressInputPlaceholder"
-          >
-            <address-candidate-list v-if="this.addressAutocompleteEnabled"
-                                    slot="address-candidates-slot"
-                                    :widthFromConfig="this.addressInputWidth"
-            />
-          />
-        </div>
-
-      </div>
-
       <div
            class="topics-container cell medium-cell-block-y"
            :style="topicsContainerStyle"
       >
         <topic-component-group :topic-components="this.$config.components" />
       </div>
-
     </div>
+
   </div>
 </template>
 
@@ -109,7 +78,6 @@
   const AddressInput = philaVueComps.AddressInput;
   const AddressCandidateList = philaVueComps.AddressCandidateList;
   const FullScreenTopicsToggleTab = philaVueComps.FullScreenTopicsToggleTab;
-
 
   export default {
     components: {
@@ -148,7 +116,6 @@
       window.addEventListener('click', this.closeAddressCandidateList);
       window.addEventListener('resize', this.handleWindowResize);
       this.handleWindowResize(5);
-      // this.handleWindowResize();
     },
     watch: {
       geocodeStatus() {
@@ -197,7 +164,6 @@
         }
       },
       addressAutocompleteEnabled() {
-        // TODO tidy up the code
         if (this.$config.addressInput) {
           if (this.$config.addressInput.autocompleteEnabled === true) {
             return true;
@@ -283,17 +249,6 @@
     methods: {
       closeAddressCandidateList() {
         this.$store.state.shouldShowAddressCandidateList = false;
-      },
-      shouldShowTopic(topic) {
-        const requiredSources = topic.dataSources || [];
-
-        // if there aren't any required topics, show it
-        if (requiredSources.length === 0) {
-          return true;
-        }
-
-        const sources = this.$store.state.sources;
-        return requiredSources.every(key => sources[key].data)
       },
       handleWindowResize(pixelAdjustment) {
         // this is called to run when:
