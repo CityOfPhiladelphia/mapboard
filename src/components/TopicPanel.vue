@@ -1,4 +1,4 @@
-pixelAdjustment<template>
+<template>
   <div id="topic-panel-container"
        :class="'mb-panel-topics cell ' + this.topicPanelContainerClass"
   >
