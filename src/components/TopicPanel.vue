@@ -35,7 +35,7 @@
 
       <div class="address-input-container columns small-24 medium-12 large-12"
            :style="this.addressInputContainerStyle"
-           v-if="this.fullScreenTopicsEnabled || this.fullScreenTopicsOnly"
+           v-if="this.fullScreenTopicsEnabled && !this.stacked || this.fullScreenTopicsOnly"
       >
         <address-input :widthFromConfig="this.addressInputWidth"
                        :placeholder="this.addressInputPlaceholder"
