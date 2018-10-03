@@ -43,11 +43,15 @@
           />
         </pictometry-widget>
       </map-panel>
+      <popover :html="popover"
+  						 v-if="popover.length > 0"
+  		/>
   </div>
 </template>
 
 <script>
   import philaVueMapping from '@cityofphiladelphia/phila-vue-mapping';
+  import philaVueComps from '@cityofphiladelphia/phila-vue-comps';
 
   import TopicPanel from './TopicPanel.vue';
   import MapPanel from './MapPanel.vue';
@@ -57,6 +61,8 @@
   const Layer = philaVueMapping.PictometryLayer;
   const ViewCone = philaVueMapping.PictometryViewCone;
   const PngMarker = philaVueMapping.PictometryPngMarker;
+  const Popover = philaVueComps.Popover;
+
 
   export default {
     components: {
@@ -66,7 +72,8 @@
       PictometryWidget,
       Layer,
       PngMarker,
-      ViewCone
+      ViewCone,
+      Popover,
     },
     data() {
       const data = {
@@ -211,7 +218,10 @@
         if (host === '10.8.101.67') {
           return this.$config.pictometryLocal.secretKey;
         }
-      }
+      },
+      popover() {
+        return this.$store.state.popover;
+      },
     },
     watch: {
       pictometryShowAddressMarker(nextValue) {

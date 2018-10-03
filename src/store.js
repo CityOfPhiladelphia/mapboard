@@ -176,6 +176,8 @@ function createStore(config) {
     fullScreenMapEnabled: false,
     fullScreenTopicsEnabled: false,
 
+    popover: '',
+
     // this gets set to the parcel layer for the default (aka first) topic in
     // DataManager.resetGeocode, which is called by Router.hashChanged on app
     // load.
@@ -593,6 +595,9 @@ function createStore(config) {
       setPropertyBalance(state, payload) {
         state.appData.propertyBalance = payload;
       },
+      setPopover(state, data) {
+  			state.popover = data;
+  		},
     }
   });
 }
