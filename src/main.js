@@ -7,7 +7,7 @@ import mergeDeep from './util/merge-deep';
 import generateUniqueId from './util/unique-id';
 
 import philaVueDatafetch from '@cityofphiladelphia/phila-vue-datafetch';
-const controllerMixin = philaVueDatafetch;
+const controllerMixin = philaVueDatafetch.controllerMixin;
 
 // helper function to auto-assign ids to horizontal tables
 function assignTableIds(comps) {
@@ -63,6 +63,7 @@ function initMapboard(clientConfig) {
 
   // get base config
   return axios.get(baseConfigUrl).then(response => {
+    console.log('in axios, clientConfig:', clientConfig);
     const data = response.data;
     // const data = baseConfigUrl;
 
