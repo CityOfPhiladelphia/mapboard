@@ -44,7 +44,7 @@
         </pictometry-widget>
       </map-panel>
       <popover :html="popover"
-  						 v-if="popover.length > 0"
+  						 v-if="popover && popover.length > 0"
   		/>
   </div>
 </template>
@@ -52,6 +52,7 @@
 <script>
   import philaVueMapping from '@cityofphiladelphia/phila-vue-mapping';
   import philaVueComps from '@cityofphiladelphia/phila-vue-comps';
+  console.log('in Mapboard.vue, philaVueComps:', philaVueComps);
 
   import TopicPanel from './TopicPanel.vue';
   import MapPanel from './MapPanel.vue';

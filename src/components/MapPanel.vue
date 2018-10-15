@@ -103,6 +103,7 @@
                      :latlng="marker.latlng"
                      :key="marker.key"
                      :markerColor="marker.color"
+                     :icon="marker.icon"
       />
 
       <!-- marker using a png and ablility to rotate it -->

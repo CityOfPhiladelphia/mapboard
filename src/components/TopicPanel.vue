@@ -16,7 +16,7 @@
 
         <h1 class="address-header-line-1">
         <!-- there is no map marker if there is no map -->
-          <i class="fa fa-map-marker"
+          <i class="fa fa-map-marker-alt"
              v-if="!this.fullScreenTopicsOnly"
           ></i>
           {{ address }}
