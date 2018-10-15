@@ -5,9 +5,8 @@ import configMixin from './util/config-mixin';
 import Mapboard from './components/Mapboard.vue';
 import mergeDeep from './util/merge-deep';
 import generateUniqueId from './util/unique-id';
-import { library } from '@fortawesome/pro-regular-svg-icons';
-console.log('library:', library);
-// import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import '@fortawesome/fontawesome-pro/js/all';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import philaVueDatafetch from '@cityofphiladelphia/phila-vue-datafetch';
 const controllerMixin = philaVueDatafetch.controllerMixin;
@@ -66,7 +65,7 @@ function initMapboard(clientConfig) {
 
   // get base config
   return axios.get(baseConfigUrl).then(response => {
-    console.log('in axios, clientConfig:', clientConfig);
+    // console.log('in axios, clientConfig:', clientConfig);
     const data = response.data;
     // const data = baseConfigUrl;
 
@@ -97,7 +96,7 @@ function initMapboard(clientConfig) {
     // Vue.use(controllerMixin, { config, store, eventBus });
 
     Vue.component('font-awesome-icon', FontAwesomeIcon)
-    Vue.config.productionTip = false
+    // Vue.config.productionTip = false
 
     // mount main vue
     const vm = new Vue({

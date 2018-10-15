@@ -3,17 +3,12 @@ import Vuex from 'vuex';
 import isMobileDevice from './util/is-mobile-device';
 import philaVueDatafetch from '@cityofphiladelphia/phila-vue-datafetch'
 import philaVueMapping from '@cityofphiladelphia/phila-vue-mapping';
-console.log('in store, philaVueMapping:', philaVueMapping);
 import philaVueComps from '@cityofphiladelphia/phila-vue-comps';
-console.log('in store, philaVueComps:', philaVueComps);
-
-
 import mergeDeep from './util/merge-deep';
 
 const pvdStore = philaVueDatafetch.pvdStore
 const pvmStore = philaVueMapping.pvmStore
 const pvcStore = philaVueComps.pvcStore
-console.log('pvcStore:', pvcStore);
 
 // when you load vuex from a script tag this seems to happen automatically
 Vue.use(Vuex);
@@ -157,6 +152,10 @@ function createStore(config) {
     appData: {
       propertyBalance: 0,
     },
+    modals: {
+      keys: config.modals,
+      open: '',
+    },
   };
 
   const mb = {
@@ -274,6 +273,12 @@ function createStore(config) {
       setPropertyBalance(state, payload) {
         state.appData.propertyBalance = payload;
       },
+      setDidToggleModal(state, name) {
+        // console.log('setDidToggleModal, name:', name, 'open:', open);
+        // console.log('setDidToggleModal, name:', name);
+        // state.modals[name].open = open === null ? !state.modals[name].open : open
+        state.modals.open = name;
+      },
     }
   }
 
@@ -289,7 +294,7 @@ function createStore(config) {
   // mergeStore.state.pictometry.enabled = config.pictometry.enabled;
   // mergeStore.state.cyclomedia.enabled = config.cyclomedia.enabled;
 
-  console.log('mergeStore:', mergeStore);
+  // console.log('mergeStore:', mergeStore);
 
   // TODO standardize how payloads are passed around/handled
   return new Vuex.Store({

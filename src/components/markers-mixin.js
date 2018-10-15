@@ -73,13 +73,24 @@ export default {
         const key = this.geocodeResult.properties.street_address;
         const color = '#2176d2';
         const markerType = 'geocode';
-        const addressMarker = {latlng, key, color, markerType};
+        // const icon = {
+        //   fa: 'fas',
+        //   icon: 'bug'
+        // }
+        const icon = {
+          prefix: 'fas',
+          // icon: 'bug',
+          icon: 'map-marker-alt',
+          shadow: true,
+          size: 50,
+        }
+        const addressMarker = {latlng, key, color, markerType, icon};
         markers.push(addressMarker);
       }
 
       // marker for topic from config
       const topicMarker = this.activeTopicConfig.marker;
-      // console.log('topicMarker', topicMarker);
+      console.log('this.activeTopicConfig:', this.activeTopicConfig, 'topicMarker', topicMarker);
       if (topicMarker) {
         const markerPath = topicMarker['path'];
         let path = this.$store.state.sources;
@@ -94,7 +105,8 @@ export default {
           const key = path[topicMarker.key];
           const color = topicMarker.color || 'green';
           const markerType = 'overlay';
-          const markerObject = {latlng, key, color, markerType};
+          const icon = topicMarker.icon;
+          const markerObject = {latlng, key, color, markerType, icon};
           markers.push(markerObject);
         }
       }
