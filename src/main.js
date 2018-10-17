@@ -6,7 +6,8 @@ import Mapboard from './components/Mapboard.vue';
 import mergeDeep from './util/merge-deep';
 import generateUniqueId from './util/unique-id';
 import '@fortawesome/fontawesome-pro/js/all';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import vueFontAwesome from '@fortawesome/vue-fontawesome';
+const FontAwesomeIcon = vueFontAwesome.FontAwesomeIcon;
 
 import philaVueDatafetch from '@cityofphiladelphia/phila-vue-datafetch';
 const controllerMixin = philaVueDatafetch.controllerMixin;
