@@ -46,7 +46,7 @@ export default {
       '@turf/helpers': 'turf',
       '@turf/distance': 'turf.distance',
       '@turf/area': 'turf.area',
-      '@fortawesome/vue-fontawesome':'FontAwesomeIcon'
+      '@fortawesome/vue-fontawesome':'vueFontAwesome'
     },
     sourcemap: true,
   },
