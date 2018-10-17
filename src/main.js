@@ -7,9 +7,7 @@ import mergeDeep from './util/merge-deep';
 import generateUniqueId from './util/unique-id';
 import '@fortawesome/fontawesome-pro/js/all';
 import vueFontAwesome from '@fortawesome/vue-fontawesome';
-console.log('vueFontAwesome:', vueFontAwesome);
 const FontAwesomeIcon = vueFontAwesome.FontAwesomeIcon;
-// import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import philaVueDatafetch from '@cityofphiladelphia/phila-vue-datafetch';
 const controllerMixin = philaVueDatafetch.controllerMixin;
