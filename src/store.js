@@ -156,7 +156,12 @@ function createStore(config) {
       keys: config.modals,
       open: '',
     },
+    map: {}
   };
+
+  if (config.map.initialImagery) {
+    initialState.map.imagery = config.map.initialImagery;
+  }
 
   const mb = {
     state: initialState,
@@ -282,9 +287,12 @@ function createStore(config) {
     }
   }
 
-  let mergeStore = mergeDeep(mb, pvdStore.store);
-  mergeStore = mergeDeep(mergeStore, pvmStore);
+  let mergeStore = mergeDeep(pvdStore.store, pvmStore);
   mergeStore = mergeDeep(mergeStore, pvcStore);
+  mergeStore = mergeDeep(mergeStore, mb);
+  // let mergeStore = mergeDeep(mb, pvdStore.store);
+  // mergeStore = mergeDeep(mergeStore, pvmStore);
+  // mergeStore = mergeDeep(mergeStore, pvcStore);
 
   // reset the map center and zoom based on the config
   mergeStore.state.map.center = config.map.center;
