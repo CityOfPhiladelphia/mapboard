@@ -52,7 +52,7 @@
 <script>
   import philaVueMapping from '@cityofphiladelphia/phila-vue-mapping';
   import philaVueComps from '@cityofphiladelphia/phila-vue-comps';
-  console.log('in Mapboard.vue, philaVueComps:', philaVueComps);
+  // console.log('in Mapboard.vue, philaVueComps:', philaVueComps);
 
   import TopicPanel from './TopicPanel.vue';
   import MapPanel from './MapPanel.vue';
