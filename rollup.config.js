@@ -49,7 +49,8 @@ export default {
       '@fortawesome/vue-fontawesome':'vueFontAwesome',
       '@cityofphiladelphia/phila-vue-comps': 'philaVueComps',
       '@cityofphiladelphia/phila-vue-mapping': 'philaVueMapping',
-      '@cityofphiladelphia/phila-vue-datafetch': 'philaVueDatafetch'
+      '@cityofphiladelphia/phila-vue-datafetch': 'philaVueDatafetch',
+      "lodash.debounce": "debounce"
     },
     sourcemap: true,
   },
