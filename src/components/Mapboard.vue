@@ -235,7 +235,8 @@
       },
       handleWindowResize() {
         // this only actually affects the size if it is set to "plugin mode"
-        if ($(window).width() >= 750) {
+        // if ($(window).width() >= 750) {
+        if (window.innerWidth >= 750) {
           this.mbRootStyle.height = '600px'
         } else {
           this.mbRootStyle.height = 'auto';

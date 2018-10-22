@@ -37,7 +37,6 @@ export default {
       moment: 'moment',
       'leaflet-measure': 'L.Control.Measure',
       'leaflet-vector-icon': 'leafletVectorIcon',
-      jquery: '$',
       axios: 'axios',
       vue: 'Vue',
       vuex: 'Vuex',
