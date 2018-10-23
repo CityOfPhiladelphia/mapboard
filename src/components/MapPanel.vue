@@ -666,9 +666,6 @@
       isGeocoding() {
         return this.$store.state.geocode.status === 'waiting';
       },
-      // compZoomToShape() {
-      //   return this.$data.zoomToShape;
-      // }
     },
     watch: {
       picOrCycloActive(value) {
@@ -679,7 +676,7 @@
       geojsonForTopic(nextGeojson) {
         let czts = this.activeTopicConfig.zoomToShape;
         let dzts = this.$data.zoomToShape;
-        if (!czts.includes('geojsonForTopic')) {
+        if (!czts || !czts.includes('geojsonForTopic')) {
           dzts.geojsonForTopic = [];
           return;
         } else {
@@ -692,7 +689,7 @@
       geojsonParcels(nextGeojson) {
         let czts = this.activeTopicConfig.zoomToShape;
         let dzts = this.$data.zoomToShape;
-        if (!czts.includes('geojsonParcels')) {
+        if (!czts || !czts.includes('geojsonParcels')) {
           dzts.geojsonParcels = [];
           return;
         } else {
@@ -705,7 +702,7 @@
       markersForAddress(nextMarkers) {
         let czts = this.activeTopicConfig.zoomToShape;
         let dzts = this.$data.zoomToShape;
-        if (!czts.includes('markersForAddress')) {
+        if (!czts || !czts.includes('markersForAddress')) {
           dzts.markersForAddress = [];
           return;
         } else {
@@ -721,7 +718,8 @@
       markersForTopic(nextMarkers) {
         let czts = this.activeTopicConfig.zoomToShape;
         let dzts = this.$data.zoomToShape;
-        if (!czts.includes('markersForTopic')) {
+        if (!czts || !czts.includes('markersForTopic')) {
+        // if (!czts.includes('markersForTopic')) {
           dzts.markersForTopic = [];
           return;
         } else {
@@ -731,29 +729,11 @@
         }
       },
 
-
       fullScreenTopicsEnabled() {
         this.$nextTick(() => {
           this.$store.state.map.map.invalidateSize();
         })
       },
-      // geocodeResult(nextGeocode) {
-      //   // console.log('MapPanel.vue watch geocodeResult is firing, nextGeocode:', nextGeocode, Object.keys(this.$data.zoomToShape));
-      //   for (let shape of Object.keys(this.$data.zoomToShape)) {
-      //     this.$data.zoomToShape[shape] = [];
-      //   }
-      // },
-      // activeTopicConfig(nextConfig) {
-      //   console.log('MapPanel.vue watch activeTopicConfig is firing, nextConfig:', nextConfig);
-      //   if (nextConfig.zoomToShape) {
-      //     console.log('MapPanel.vue watch activeTopicConfig, if is true');
-      //     for (let shape of nextConfig.zoomToShape) {
-      //       this.$data.zoomToShape[shape] = [];
-      //     }
-      //   } else {
-      //     this.$data.zoomToShape = {}
-      //   }
-      // }
     },
     methods: {
       checkBoundsChanges() {
