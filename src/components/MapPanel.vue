@@ -99,7 +99,15 @@
 
       <!-- NEW METHOD: try rendering markers generically based on marker type -->
       <!-- vector markers -->
-      <vector-marker v-for="(marker, index) in markers"
+      <vector-marker v-for="(marker, index) in markersForAddress"
+                     :latlng="marker.latlng"
+                     :key="marker.key"
+                     :markerColor="marker.color"
+                     :icon="marker.icon"
+      />
+
+      <!-- vector markers -->
+      <vector-marker v-for="(marker, index) in markersForTopic"
                      :latlng="marker.latlng"
                      :key="marker.key"
                      :markerColor="marker.color"
@@ -121,8 +129,24 @@
       />
 
 
-      <!-- non-reactive geojson features -->
-      <geojson v-for="geojsonFeature in geojsonFeatures"
+      <!-- non-reactive geojson parcels -->
+      <geojson v-for="geojsonFeature in geojsonParcels"
+               v-if="shouldShowGeojson(geojsonFeature.key)"
+               :geojson="geojsonFeature.geojson"
+               :fillColor="geojsonFeature.fillColor"
+               :color="geojsonFeature.color"
+               :weight="geojsonFeature.weight"
+               :opacity="geojsonFeature.opacity"
+               :fillOpacity="geojsonFeature.fillOpacity"
+               :key="geojsonFeature.key"
+               :data="{
+                 featureId: geojsonFeature.featureId,
+                 tableId: geojsonFeature.tableId
+               }"
+       />
+
+      <!-- non-reactive geojson features for topics -->
+      <geojson v-for="geojsonFeature in geojsonForTopic"
                v-if="shouldShowGeojson(geojsonFeature.key)"
                :geojson="geojsonFeature.geojson"
                :fillColor="geojsonFeature.fillColor"
@@ -364,6 +388,18 @@
       LegendControl,
       BasemapTooltip,
       ControlCorner,
+    },
+    // data: {
+    data() {
+      const data = {
+        zoomToShape: {
+          geojsonParcels: [],
+          geojsonForTopic: [],
+          markersForAddress: [],
+          markersForTopic: [],
+        },
+      };
+      return data;
     },
     created() {
       // if there's a default address, navigate to it
@@ -629,7 +665,10 @@
       },
       isGeocoding() {
         return this.$store.state.geocode.status === 'waiting';
-      }
+      },
+      // compZoomToShape() {
+      //   return this.$data.zoomToShape;
+      // }
     },
     watch: {
       picOrCycloActive(value) {
@@ -637,33 +676,132 @@
           this.$store.state.map.map.invalidateSize();
         })
       },
-      geojsonFeatures() {
-        this.setMapToBounds();
+      geojsonForTopic(nextGeojson) {
+        let czts = this.activeTopicConfig.zoomToShape;
+        let dzts = this.$data.zoomToShape;
+        if (!czts.includes('geojsonForTopic')) {
+          dzts.geojsonForTopic = [];
+          return;
+        } else {
+          dzts.geojsonForTopic = nextGeojson;
+          // console.log('exiting geojsonForTopic');
+          this.checkBoundsChanges();
+        }
       },
-      markers() {
-        this.setMapToBounds();
+
+      geojsonParcels(nextGeojson) {
+        let czts = this.activeTopicConfig.zoomToShape;
+        let dzts = this.$data.zoomToShape;
+        if (!czts.includes('geojsonParcels')) {
+          dzts.geojsonParcels = [];
+          return;
+        } else {
+          dzts.geojsonParcels = nextGeojson;
+          // console.log('exiting geojsonParcels');
+          this.checkBoundsChanges();
+        }
       },
+
+      markersForAddress(nextMarkers) {
+        let czts = this.activeTopicConfig.zoomToShape;
+        let dzts = this.$data.zoomToShape;
+        if (!czts.includes('markersForAddress')) {
+          dzts.markersForAddress = [];
+          return;
+        } else {
+          dzts.markersForAddress = nextMarkers;
+          // console.log('exiting markersForAddress')
+          this.checkBoundsChanges();
+        }
+      },
+
+      // watches computed markersForTopic, adds info to data zoomToShape.markersForTopic
+      // it does not update zoomToShape unless there is a change
+      // because the markers computed recalculates extremely often, this is needed
+      markersForTopic(nextMarkers) {
+        let czts = this.activeTopicConfig.zoomToShape;
+        let dzts = this.$data.zoomToShape;
+        if (!czts.includes('markersForTopic')) {
+          dzts.markersForTopic = [];
+          return;
+        } else {
+          dzts.markersForTopic = nextMarkers;
+          // console.log('exiting markersForTopic');
+          this.checkBoundsChanges();
+        }
+      },
+
+
       fullScreenTopicsEnabled() {
         this.$nextTick(() => {
           this.$store.state.map.map.invalidateSize();
         })
-      }
+      },
+      // geocodeResult(nextGeocode) {
+      //   // console.log('MapPanel.vue watch geocodeResult is firing, nextGeocode:', nextGeocode, Object.keys(this.$data.zoomToShape));
+      //   for (let shape of Object.keys(this.$data.zoomToShape)) {
+      //     this.$data.zoomToShape[shape] = [];
+      //   }
+      // },
+      // activeTopicConfig(nextConfig) {
+      //   console.log('MapPanel.vue watch activeTopicConfig is firing, nextConfig:', nextConfig);
+      //   if (nextConfig.zoomToShape) {
+      //     console.log('MapPanel.vue watch activeTopicConfig, if is true');
+      //     for (let shape of nextConfig.zoomToShape) {
+      //       this.$data.zoomToShape[shape] = [];
+      //     }
+      //   } else {
+      //     this.$data.zoomToShape = {}
+      //   }
+      // }
     },
     methods: {
+      checkBoundsChanges() {
+        let czts = this.activeTopicConfig.zoomToShape;
+        if (!czts) {
+          return;
+        }
+        let dzts = this.$data.zoomToShape;
+        // console.log('dzts:', dzts, 'czts:', czts);
+        let tf = [];
+        for (let shape of czts) {
+          if (dzts[shape] !== false && dzts[shape].length > 0) {
+            tf.push(true);
+          } else {
+            tf.push(false);
+          }
+        }
+        // console.log('MapPanel.vue checkBoundsChanges, tf:', tf);
+        if (tf.includes(false)) {
+          return;
+        } else {
+          this.setMapToBounds();
+        }
+      },
+
       setMapToBounds() {
         // console.log('setMapToBounds is running');
         let featureArray = []
-        if (this.activeTopicConfig.zoomToShape) {
-          if (this.activeTopicConfig.zoomToShape.includes('geojson')) {
-            for (let geojsonFeature of this.geojsonFeatures) {
+        let czts = this.activeTopicConfig.zoomToShape;
+        if (czts) {
+          if (czts.includes('geojsonParcels')) {
+            for (let geojsonFeature of this.geojsonParcels) {
               featureArray.push(L.geoJSON(geojsonFeature.geojson))
             }
           }
-          if (this.activeTopicConfig.zoomToShape.includes('marker')) {
-            for (let marker of this.markers) {
-              if (marker.markerType === 'overlay') {
-                featureArray.push(L.marker(marker.latlng))
-              }
+          if (czts.includes('geojsonForTopic')) {
+            for (let geojsonFeature of this.geojsonForTopic) {
+              featureArray.push(L.geoJSON(geojsonFeature.geojson))
+            }
+          }
+          if (czts.includes('markersForAddress')) {
+            for (let marker of this.markersForAddress) {
+              featureArray.push(L.marker(marker.latlng))
+            }
+          }
+          if (czts.includes('markersForTopic')) {
+            for (let marker of this.markersForTopic) {
+              featureArray.push(L.marker(marker.latlng))
             }
           }
           const group = new L.featureGroup(featureArray);
