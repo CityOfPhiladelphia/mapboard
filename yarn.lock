@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@cityofphiladelphia/phila-vue-comps@https://github.com/CityOfPhiladelphia/phila-vue-comps#b07f0050ec09cb2d315bfdc1e69ba692fa3f65f8":
-  version "1.0.10"
-  resolved "https://github.com/CityOfPhiladelphia/phila-vue-comps#b07f0050ec09cb2d315bfdc1e69ba692fa3f65f8"
+"@cityofphiladelphia/phila-vue-comps@1.0.11":
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/@cityofphiladelphia/phila-vue-comps/-/phila-vue-comps-1.0.11.tgz#2013dcd30fc85c2f43e1f117ba118dec8a27e20e"
   dependencies:
     axios "^0.18.0"
     escape-html "^1.0.3"
@@ -15,9 +15,9 @@
     vue "^2.5.16"
     vuex "^3.0.1"
 
-"@cityofphiladelphia/phila-vue-datafetch@https://github.com/CityOfPhiladelphia/phila-vue-datafetch#856b2767d6e335d00f3189dd0e050b67d4eaf876":
-  version "0.0.11"
-  resolved "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#856b2767d6e335d00f3189dd0e050b67d4eaf876"
+"@cityofphiladelphia/phila-vue-datafetch@0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@cityofphiladelphia/phila-vue-datafetch/-/phila-vue-datafetch-0.0.12.tgz#25af2a260c7badb4170a2cf7c8bffa3b43a880df"
   dependencies:
     "@turf/turf" "^5.1.6"
     axios "^0.18.0"
@@ -29,9 +29,9 @@
     vue "^2.5.16"
     vuex "^3.0.1"
 
-"@cityofphiladelphia/phila-vue-mapping@https://github.com/CityOfPhiladelphia/phila-vue-mapping#7f2bdce6096115d8d66845c6b72d1e4b17f0ce8d":
-  version "1.0.7"
-  resolved "https://github.com/CityOfPhiladelphia/phila-vue-mapping#7f2bdce6096115d8d66845c6b72d1e4b17f0ce8d"
+"@cityofphiladelphia/phila-vue-mapping@1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@cityofphiladelphia/phila-vue-mapping/-/phila-vue-mapping-1.0.8.tgz#44b1ff7188b47d70f8cd202d0a9523fabfa29779"
   dependencies:
     "@turf/turf" "^5.1.6"
     L-esri-WebMap "https://github.com/CityOfPhiladelphia/L.esri.WebMap#5849bfa6248a886d8675eeff98fa9dff4949f12a"
@@ -1309,9 +1309,9 @@
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/JSV/-/JSV-4.0.2.tgz#d077f6825571f82132f9dffaed587b4029feff57"
 
-"L-esri-WebMap@https://github.com/CityOfPhiladelphia/L.esri.WebMap#5849bfa6248a886d8675eeff98fa9dff4949f12a":
+"L-esri-WebMap@git+https://github.com/CityOfPhiladelphia/L.esri.WebMap.git#5849bfa6248a886d8675eeff98fa9dff4949f12a":
   version "0.4.0"
-  resolved "https://github.com/CityOfPhiladelphia/L.esri.WebMap#5849bfa6248a886d8675eeff98fa9dff4949f12a"
+  resolved "git+https://github.com/CityOfPhiladelphia/L.esri.WebMap.git#5849bfa6248a886d8675eeff98fa9dff4949f12a"
   dependencies:
     arcgis-to-geojson-utils "^1.0.1"
     esri-leaflet "^2.0.0"
@@ -4905,6 +4905,15 @@ leaflet-easybutton@^2.2.2:
   dependencies:
     leaflet "^1.0.1"
 
+"leaflet-measure@git+https://github.com/CityOfPhiladelphia/leaflet-measure.git#b70886af342f19597dc2937d79d64bad6bab07c6":
+  version "4.0.0"
+  resolved "git+https://github.com/CityOfPhiladelphia/leaflet-measure.git#b70886af342f19597dc2937d79d64bad6bab07c6"
+  dependencies:
+    "@turf/area" "^5.1.5"
+    "@turf/length" "^5.1.5"
+    leaflet "^1.3.1"
+    lodash "^4.17.5"
+
 "leaflet-measure@https://github.com/CityOfPhiladelphia/leaflet-measure#b70886af342f19597dc2937d79d64bad6bab07c6":
   version "4.0.0"
   resolved "https://github.com/CityOfPhiladelphia/leaflet-measure#b70886af342f19597dc2937d79d64bad6bab07c6"
@@ -4935,6 +4944,12 @@ leaflet-shape-markers@^1.0.4:
   resolved "https://registry.yarnpkg.com/leaflet-shape-markers/-/leaflet-shape-markers-1.0.6.tgz#d54056a4e533828120107a71a237b1efc1a07649"
   dependencies:
     leaflet "^1.0.0"
+
+"leaflet-vector-icon@git+https://github.com/CityOfPhiladelphia/leaflet-vector-icon.git#1836076bc5ede54ae2618f1e5f6d9df10769a001":
+  version "1.0.0"
+  resolved "git+https://github.com/CityOfPhiladelphia/leaflet-vector-icon.git#1836076bc5ede54ae2618f1e5f6d9df10769a001"
+  dependencies:
+    "@fortawesome/fontawesome-pro" "^5.4.0"
 
 "leaflet-vector-icon@https://github.com/CityOfPhiladelphia/leaflet-vector-icon#1836076bc5ede54ae2618f1e5f6d9df10769a001":
   version "1.0.0"
