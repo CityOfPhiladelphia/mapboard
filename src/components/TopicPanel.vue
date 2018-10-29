@@ -21,16 +21,31 @@
           ></i>
           {{ address }}
         </h1>
-        <div class="address-header-line-2"
+        <!-- <div class="address-header-line-2"
              v-show="!this.geocode"
         >
 
-        </div>
-        <div class="address-header-line-2"
-             v-show="this.geocode"
+        </div> -->
+        <div v-show="this.geocode"
+             class="address-header-line-2"
         >
           PHILADELPHIA, PA {{ zipCode }}
         </div>
+        <any-header v-if="this.addressHeaderAdditionalInfo"
+                    :options="this.addressHeaderAdditionalHeaderOptions"
+                    :slots="this.addressHeaderAdditionalHeaderSlots"
+        />
+          <!-- <div class="address-header-line-3"
+          >
+            {{ addressHeaderAdditionalInfo }}
+          </div> -->
+        <!-- </any-header> -->
+        <!-- <div class="address-header-line-3"
+             v-if="this.addressHeaderAdditionalInfo && !this.addressHeaderAdditionalHeaderOptions"
+        >
+          {{ addressHeaderAdditionalInfo }}
+        </div> -->
+
       </div>
 
       <div class="address-input-container columns small-24 medium-12 large-12"
@@ -74,6 +89,7 @@
   import philaVueComps from '@cityofphiladelphia/phila-vue-comps';
   const Topic = philaVueComps.Topic;
   const TopicComponentGroup = philaVueComps.TopicComponentGroup;
+  const AnyHeader = philaVueComps.AnyHeader;
   const Greeting = philaVueComps.Greeting;
   const AddressInput = philaVueComps.AddressInput;
   const AddressCandidateList = philaVueComps.AddressCandidateList;
@@ -84,6 +100,7 @@
       Greeting,
       TopicComponentGroup,
       Topic,
+      AnyHeader,
       AddressInput,
       AddressCandidateList,
       FullScreenTopicsToggleTab,
@@ -128,6 +145,43 @@
           return true;
         } else {
           return false;
+        }
+      },
+      // shouldShowAddressHeaderAdditionalInfo() {
+      //   if (this.addressHeaderAdditionalHeaderOptions.headerType) {
+      //     return 'anyHeader'
+      //   } else if (this.addressHeaderAdditionalHeaderOptions && !this.addressHeaderAdditionalHeaderOptions.headerType) {
+      //     return ''
+      //   }
+      // }
+      addressHeaderAdditionalHeaderOptions() {
+        if (this.$config.addressHeaderAdditionalInfo) {
+          const ahai = this.$config.addressHeaderAdditionalInfo;
+          if (ahai.options) {
+            if (!ahai.options.headerType) {
+              ahai.options.headerType = 'h4';
+            }
+            return ahai.options;
+          }
+        }
+      },
+      addressHeaderAdditionalHeaderSlots() {
+        return {
+          text: this.addressHeaderAdditionalInfo
+        }
+      },
+      addressHeaderAdditionalInfo() {
+        if (this.$config.addressHeaderAdditionalInfo) {
+          const geocode = this.geocode;
+          if (!geocode) return null;
+          const ahai = this.$config.addressHeaderAdditionalInfo;
+          let returned = [];
+          if (ahai.preText) {
+            returned.push(ahai.preText);
+          }
+          returned.push(geocode.properties[ahai.data]);
+          console.log('returned:', returned);
+          return returned.join(' ');
         }
       },
       inputAlign() {
@@ -368,6 +422,10 @@
   }
 
   .address-header-line-2 {
+    padding: 0px;
+  }
+
+  .address-header-line-3 {
     padding: 0px;
   }
 

@@ -61,11 +61,12 @@ export default {
       }
       return marker;
     },
+
     // returns map markers as simple object with a geometry property, key,
     // and optional properties for symbology
-    markers() {
+    markersForAddress() {
+      // console.log('markers-mixin.js markersForAddress computed is running');
       const markers = [];
-
       // geocoded address marker
       const geocodeGeom = this.geocodeGeom;
       if (this.identifyFeature === 'address-marker' && geocodeGeom) {
@@ -73,13 +74,8 @@ export default {
         const key = this.geocodeResult.properties.street_address;
         const color = '#2176d2';
         const markerType = 'geocode';
-        // const icon = {
-        //   fa: 'fas',
-        //   icon: 'bug'
-        // }
         const icon = {
           prefix: 'fas',
-          // icon: 'bug',
           icon: 'map-marker-alt',
           shadow: true,
           size: 50,
@@ -87,32 +83,46 @@ export default {
         const addressMarker = {latlng, key, color, markerType, icon};
         markers.push(addressMarker);
       }
-
-      // marker for topic from config
-      const topicMarker = this.activeTopicConfig.marker;
-      console.log('this.activeTopicConfig:', this.activeTopicConfig, 'topicMarker', topicMarker);
-      if (topicMarker) {
-        const markerPath = topicMarker['path'];
-        let path = this.$store.state.sources;
-        for (let level of markerPath) {
-          console.log('level:', level, 'path:', path);
-          if (path !== null && path !== undefined) {
-            path = path[level];
-          }
-        }
-        if (path !== null && path !== undefined) {
-          const latlng = [path[topicMarker.lat], path[topicMarker.lng]];
-          const key = path[topicMarker.key];
-          const color = topicMarker.color || 'green';
-          const markerType = 'overlay';
-          const icon = topicMarker.icon;
-          const markerObject = {latlng, key, color, markerType, icon};
-          markers.push(markerObject);
-        }
-      }
-
       return markers;
     },
+
+    markersForTopic() {
+      // console.log('markers-mixin.js markersForTopic computed is running');
+      const markers = [];
+
+      // marker for topic from config
+      const topicMarkers = this.activeTopicConfig.markersForTopic;
+      if (topicMarkers) {
+        const state = this.$store.state;
+        const topicData = topicMarkers.data(state);
+        if (topicData !== null) {
+          // if (Array.isArray(topicData)) {
+          //   for (let marker of topicData) {
+          //     console.log('topicData marker:', marker);
+          //     // }
+          //     // if (path !== null && path !== undefined) {
+          //     const latlng = [marker.lat, marker.lng];
+          //     const key = marker.key;
+          //     const color = marker.color || 'green';
+          //     const markerType = 'overlay';
+          //     const icon = marker.icon;
+          //     const markerObject = {latlng, key, color, markerType, icon};
+          //     markers.push(markerObject);
+          //   }
+          // } else {
+            const latlng = [topicData[topicMarkers.lat], topicData[topicMarkers.lng]];
+            const key = topicData[topicMarkers.key];
+            const color = topicMarkers.color || 'green';
+            const markerType = 'overlay';
+            const icon = topicMarkers.icon;
+            const markerObject = {latlng, key, color, markerType, icon};
+            markers.push(markerObject);
+          // }
+        }
+      }
+      return markers;
+    },
+
     circleMarkers() {
       const filteredData = this.$store.state.horizontalTables.filteredData;
       // const filteredData = this.filteredData;
@@ -170,9 +180,10 @@ export default {
       return circleMarkers;
     },
 
-    // returns all geojson features to be rendered on the map along with
+    // returns geojson parcels to be rendered on the map along with
     // necessary props.
-    geojsonFeatures() {
+    geojsonParcels() {
+      // console.log('markers-mixin.js geojsonParcels computed is running');
       const features = [];
 
       const identifyFeature = this.identifyFeature;
@@ -207,21 +218,18 @@ export default {
         });
         features.push.apply(features, dorParcelFeatures);
       }
+      return features;
+    },
 
-      // other geojson from config
-      const topicGeojson = this.activeTopicConfig.geojson;
+    // returns other geojson from config
+    geojsonForTopic() {
+      const features = [];
+      const topicGeojson = this.activeTopicConfig.geojsonForTopic;
       if (topicGeojson) {
-        console.log('topicGeojson exists:', topicGeojson);
-        const geojsonPath = topicGeojson['path'];
-        let path = this.$store.state.sources;
-        for (let level of geojsonPath) {
-          if (path !== null) {
-            path = path[level];
-          }
-        }
-        if (path !== null) {
-          console.log('path:', path);
-          for (let geojson of path) {
+        const state = this.$store.state;
+        const topicData = topicGeojson.data(state);
+        if (topicData !== null) {
+          for (let geojson of topicData) {
             let props = Object.assign({}, topicGeojson.style);
             props.key = geojson[topicGeojson.key];
             props.geojson = geojson
@@ -276,7 +284,7 @@ export default {
       const markers = [];
 
       markers.push.apply(markers, this.markers);
-      markers.push.apply(markers, this.geojsonFeatures);
+      markers.push.apply(markers, this.geojsonParcels);
 
       return markers;
     },
