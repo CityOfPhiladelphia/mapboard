@@ -14,7 +14,6 @@
     "@cityofphiladelphia/phila-vue-comps": "1.0.11",
     "@cityofphiladelphia/phila-vue-datafetch": "0.0.12",
     "@cityofphiladelphia/phila-vue-mapping": "1.0.8",
-    "@fortawesome/fontawesome-pro": "^5.4.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.5",
     "@fortawesome/vue-fontawesome": "^0.1.1",
     "@turf/turf": "^5.1.6",
