@@ -7,3 +7,4 @@ selenium-debug.log
 _bin/
 package-lock.json
 main_old.js
+.npmrc
