@@ -4,6 +4,7 @@ node_js:
 script: npm run build
 before_deploy:
   - rm -rf node_modules
+  - source ./.nmprc
   - source ./.travis/s3_utils.sh
   - S3_BUCKET=$(get_s3_bucket)
   - echo "Will push to S3 bucket $S3_BUCKET."
