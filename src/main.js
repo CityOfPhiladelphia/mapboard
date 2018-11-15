@@ -61,6 +61,8 @@ function assignHorizontalTableGroupIds(comps) {
 }
 
 function initMapboard(clientConfig) {
+  // const customComps = clientConfig.customComps;
+  // console.log('mapboard main.js, customComps:', customComps);
   const baseConfigUrl = clientConfig.baseConfig;
   // console.log('baseConfigUrl:', baseConfigUrl);
 
