@@ -3,49 +3,57 @@
        :class="rootClass"
        :style="mbRootStyle"
   >
-      <topic-panel :class="this.shouldShowTopicPanel" />
 
-      <map-panel :class="this.shouldShowMapPanel"
-                 v-if="this.fullScreenTopicsOnly !== true"
-      >
-        <cyclomedia-widget v-if="this.shouldLoadCyclomediaWidget"
-                           slot="cycloWidget"
-                           v-show="cyclomediaActive"
-                           screen-percent="2"
-        />
-        <pictometry-widget v-if="this.shouldLoadPictometryWidget"
-                           slot="pictWidget"
-                           v-show="pictometryActive"
-                           :apiKey="this.ak"
-                           :secretKey="this.sk"
+    <header-comp v-if="shouldShowHeader" />
+
+    <!-- <div id="mb-root"
+         :class="rootClass"
+         :style="mbRootStyle"
+    > -->
+        <topic-panel :class="this.shouldShowTopicPanel" />
+
+        <map-panel :class="this.shouldShowMapPanel"
+                   v-if="this.fullScreenTopicsOnly !== true"
         >
-          <png-marker v-if="this.pictometryShowAddressMarker"
-                      :latlng="[this.geocodeData.geometry.coordinates[1], this.geocodeData.geometry.coordinates[0]]"
-                      :icon="'images/markers.png'"
-                      :height="60"
-                      :width="40"
-                      :offsetX="0"
-                      :offsetY="0"
+          <cyclomedia-widget v-if="this.shouldLoadCyclomediaWidget"
+                             slot="cycloWidget"
+                             v-show="cyclomediaActive"
+                             screen-percent="2"
           />
-          <layer v-if="this.pictometryActive" />
-          <png-marker v-if="this.cyclomediaActive && this.pictometryActive"
-                      :latlng="cycloLatlng"
-                      :icon="'images/camera2.png'"
-                      :height="20"
-                      :width="30"
-                      :offsetX="-2"
-                      :offsetY="-2"
-          />
-          <view-cone v-if="this.cyclomediaActive && this.pictometryActive"
-                     :latlng="cycloLatlng"
-                     :rotationAngle="cycloRotationAngle"
-                     :hFov="cycloHFov"
-          />
-        </pictometry-widget>
-      </map-panel>
-      <popover :html="popover"
-  						 v-if="popover && popover.length > 0"
-  		/>
+          <pictometry-widget v-if="this.shouldLoadPictometryWidget"
+                             slot="pictWidget"
+                             v-show="pictometryActive"
+                             :apiKey="this.ak"
+                             :secretKey="this.sk"
+          >
+            <png-marker v-if="this.pictometryShowAddressMarker"
+                        :latlng="[this.geocodeData.geometry.coordinates[1], this.geocodeData.geometry.coordinates[0]]"
+                        :icon="'images/markers.png'"
+                        :height="60"
+                        :width="40"
+                        :offsetX="0"
+                        :offsetY="0"
+            />
+            <layer v-if="this.pictometryActive" />
+            <png-marker v-if="this.cyclomediaActive && this.pictometryActive"
+                        :latlng="cycloLatlng"
+                        :icon="'images/camera2.png'"
+                        :height="20"
+                        :width="30"
+                        :offsetX="-2"
+                        :offsetY="-2"
+            />
+            <view-cone v-if="this.cyclomediaActive && this.pictometryActive"
+                       :latlng="cycloLatlng"
+                       :rotationAngle="cycloRotationAngle"
+                       :hFov="cycloHFov"
+            />
+          </pictometry-widget>
+        </map-panel>
+        <popover :html="popover"
+    						 v-if="popover && popover.length > 0"
+    		/>
+    <!-- </div> -->
   </div>
 </template>
 
@@ -54,6 +62,7 @@
   import philaVueComps from '@cityofphiladelphia/phila-vue-comps';
   // console.log('in Mapboard.vue, philaVueComps:', philaVueComps);
 
+  import HeaderComp from './HeaderComp.vue';
   import TopicPanel from './TopicPanel.vue';
   import MapPanel from './MapPanel.vue';
 
@@ -67,6 +76,7 @@
 
   export default {
     components: {
+      HeaderComp,
       TopicPanel,
       MapPanel,
       CyclomediaWidget,
@@ -102,6 +112,13 @@
       this.$controller.appDidLoad();
     },
     computed: {
+      shouldShowHeader() {
+        if (this.$config.header) {
+          return this.$config.header.enabled;
+        } else {
+          return false;
+        }
+      },
       rootClass() {
         if (this.$config.plugin) {
           return 'grid-x';

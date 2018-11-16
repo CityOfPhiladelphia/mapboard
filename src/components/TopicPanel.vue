@@ -89,6 +89,7 @@
   import philaVueComps from '@cityofphiladelphia/phila-vue-comps';
   const Topic = philaVueComps.Topic;
   const TopicComponentGroup = philaVueComps.TopicComponentGroup;
+  // console.log('TopicComponentGroup:', TopicComponentGroup);
   const AnyHeader = philaVueComps.AnyHeader;
   const Greeting = philaVueComps.Greeting;
   const AddressInput = philaVueComps.AddressInput;
@@ -129,6 +130,11 @@
       };
       return data;
     },
+    // created() {
+    //   console.log('TopicPanel created, this.$config:', this.$config);
+    //   TopicComponentGroup.components.PropertyCallout = this.$config.customComps.propertyCallout;
+    //   console.log('TopicPanel created, TopicComponentGroup:', TopicComponentGroup);
+    // },
     mounted() {
       window.addEventListener('click', this.closeAddressCandidateList);
       window.addEventListener('resize', this.handleWindowResize);
@@ -418,7 +424,10 @@
   .address-header-line-1 {
     margin-bottom: 0;
     margin-top: 0;
-    padding: 0px !important;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    padding-right: 8px !important;
+    padding-left: 8px !important;
   }
 
   .address-header-line-2 {
