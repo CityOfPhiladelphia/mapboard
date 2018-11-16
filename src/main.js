@@ -61,8 +61,6 @@ function assignHorizontalTableGroupIds(comps) {
 }
 
 function initMapboard(clientConfig) {
-  // const customComps = clientConfig.customComps;
-  // console.log('mapboard main.js, customComps:', customComps);
   const baseConfigUrl = clientConfig.baseConfig;
   // console.log('baseConfigUrl:', baseConfigUrl);
 
@@ -98,8 +96,15 @@ function initMapboard(clientConfig) {
     Vue.use(controllerMixin, { config, store });
     // Vue.use(controllerMixin, { config, store, eventBus });
 
-    Vue.component('font-awesome-icon', FontAwesomeIcon)
+    Vue.component('font-awesome-icon', FontAwesomeIcon);
     // Vue.config.productionTip = false
+
+    const customComps = clientConfig.customComps;
+    const propertyCallout = customComps.propertyCallout;
+    console.log('mapboard main.js, customComps:', customComps);
+    for (let key of Object.keys(customComps)) {
+      Vue.component(key, customComps[key]);
+    }
 
     // mount main vue
     const vm = new Vue({
