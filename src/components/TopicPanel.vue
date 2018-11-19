@@ -14,6 +14,12 @@
            :style="this.addressContainerStyle"
       >
 
+        <div v-if="!this.address"
+             class="default-address-text"
+             :style="this.defaultAddressTextPlaceholderStyle"
+        >
+          {{ this.$config.defaultAddressTextPlaceholder.text }}
+        </div>
         <h1 class="address-header-line-1">
         <!-- there is no map marker if there is no map -->
           <i class="fa fa-map-marker-alt"
@@ -108,6 +114,7 @@
     },
     data() {
       const data = {
+        defaultAddressTextPlaceholderStyle: {},
         topicsContainerStyle: {
           'overflow-y': 'auto',
           'height': '100px',
@@ -277,9 +284,9 @@
         const dorParcels = this.$store.state.parcels.dor.data;
         const activeDorAddress = this.$store.state.parcels.dor.activeAddress;
         let address;
-        if (this.$config.defaultAddressTextPlaceholder) {
-          address = this.$config.defaultAddressTextPlaceholder;
-        }
+        // if (this.$config.defaultAddressTextPlaceholder) {
+        //   address = this.$config.defaultAddressTextPlaceholder.text;
+        // }
 
         if (geocode) {
           // TODO make this not ais-specific
@@ -346,6 +353,7 @@
         // if ($(window).width() >= 750) {
         if (window.innerWidth >= 750) {
           this.stacked = false;
+          this.defaultAddressTextPlaceholderStyle = this.$config.defaultAddressTextPlaceholder.wideStyle
           this.addressContainerStyle = {
             'height': '100%',
             'align-items': 'flex-start',
@@ -365,6 +373,7 @@
 
         } else {
           this.stacked = true;
+          this.defaultAddressTextPlaceholderStyle = this.$config.defaultAddressTextPlaceholder.narrowStyle
           this.addressContainerStyle = {
             'height': 'auto',
             'align-items': 'center',
@@ -454,6 +463,16 @@
     padding: 26px;
     position: relative;
     overflow-x: hidden;
+  }
+
+  .default-address-text {
+    font-size: 30px;
+    line-height: 26px;
+    font-family: 'Montserrat', 'Tahoma', sans-serif;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    padding-right: 8px !important;
+    padding-left: 8px !important;
   }
 
 </style>

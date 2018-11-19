@@ -36,7 +36,8 @@
       const data = {
         // this will only affect the app size if the app is set to "plugin" mode
         mbHeaderStyle: {
-          'font-size': '30px'
+          'font-size': '30px',
+          'line-height': '30px'
         }
       };
       return data;
@@ -58,9 +59,15 @@
       handleWindowResize() {
         // this only actually affects the size if it is set to "plugin mode"
         if (window.innerWidth >= 750) {
-          this.mbHeaderStyle['font-size'] = '30px'
+          this.mbHeaderStyle = {
+            'font-size': '30px',
+            'line-height': '30px'
+          }
         } else {
-          this.mbHeaderStyle['font-size'] = '25px';
+          this.mbHeaderStyle = {
+            'font-size': '22px',
+            'line-height': '22px'
+          }
         }
       }
     }
@@ -69,5 +76,12 @@
 </script>
 
 <style>
+
+  .page-title {
+    padding-top: 6px;
+    /* padding-bottom: 0px !important;
+    padding-right: 8px !important;
+    padding-left: 8px !important; */
+  }
 
 </style>
