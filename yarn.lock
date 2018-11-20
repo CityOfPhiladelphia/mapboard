@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@cityofphiladelphia/phila-vue-comps@https://github.com/CityOfPhiladelphia/phila-vue-comps#544fc7c26ada055a1b47cd9602fdc84ac05ed90f":
+"@cityofphiladelphia/phila-vue-comps@https://github.com/CityOfPhiladelphia/phila-vue-comps#ab6bc3e3b8bb16a3f97f149339dd7ad02811c7b1":
   version "1.0.14"
-  resolved "https://github.com/CityOfPhiladelphia/phila-vue-comps#544fc7c26ada055a1b47cd9602fdc84ac05ed90f"
+  resolved "https://github.com/CityOfPhiladelphia/phila-vue-comps#ab6bc3e3b8bb16a3f97f149339dd7ad02811c7b1"
   dependencies:
     axios "^0.18.0"
     escape-html "^1.0.3"
