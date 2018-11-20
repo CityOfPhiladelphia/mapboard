@@ -353,7 +353,9 @@
         // if ($(window).width() >= 750) {
         if (window.innerWidth >= 750) {
           this.stacked = false;
-          this.defaultAddressTextPlaceholderStyle = this.$config.defaultAddressTextPlaceholder.wideStyle
+          if (this.$config.defaultAddressTextPlaceholder) {
+            this.defaultAddressTextPlaceholderStyle = this.$config.defaultAddressTextPlaceholder.wideStyle;
+          }
           this.addressContainerStyle = {
             'height': '100%',
             'align-items': 'flex-start',
@@ -373,7 +375,9 @@
 
         } else {
           this.stacked = true;
-          this.defaultAddressTextPlaceholderStyle = this.$config.defaultAddressTextPlaceholder.narrowStyle
+          if (this.$config.defaultAddressTextPlaceholder) {
+            this.defaultAddressTextPlaceholderStyle = this.$config.defaultAddressTextPlaceholder.narrowStyle;
+          }
           this.addressContainerStyle = {
             'height': 'auto',
             'align-items': 'center',
