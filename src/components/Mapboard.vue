@@ -50,9 +50,13 @@
             />
           </pictometry-widget>
         </map-panel>
-        <popover :html="popover"
-    						 v-if="popover && popover.length > 0"
-    		/>
+
+        <popover
+                 v-if="popoverOpen"
+                 :options="this.popoverOptions"
+                 :slots="{'text': this.popoverText}"
+        />
+        <!-- v-if="popoverOpen && popoverText.length > 0" -->
     <!-- </div> -->
   </div>
 </template>
@@ -110,6 +114,13 @@
     },
     mounted() {
       this.$controller.appDidLoad();
+      if (this.$config.initialPopover && window.location.hash == '') {
+        this.$store.commit('setPopoverOpen', true);
+        this.$store.commit('setPopoverOptions', this.$config.initialPopover.options);
+        if (this.$config.initialPopover.slots) {
+          this.$store.commit('setPopoverText', this.$config.initialPopover.slots.text);
+        }
+      }
     },
     computed: {
       shouldShowHeader() {
@@ -237,9 +248,15 @@
           return this.$config.pictometryLocal.secretKey;
         }
       },
-      popover() {
-        return this.$store.state.popover;
+      popoverOpen() {
+        return this.$store.state.popover.open;
       },
+      popoverText() {
+        return this.$store.state.popover.text;
+      },
+      popoverOptions() {
+        return this.$store.state.popover.options;
+      }
     },
     watch: {
       pictometryShowAddressMarker(nextValue) {

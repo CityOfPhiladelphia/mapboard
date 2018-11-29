@@ -75,7 +75,10 @@
          class="topics-container cell medium-cell-block-y"
          :style="topicsContainerStyle"
     >
-      <greeting v-show="shouldShowGreeting" />
+      <greeting v-show="shouldShowGreeting"
+                :message="greetingText"
+                :options="greetingOptions"
+      />
     </div>
 
     <!-- after search -->
@@ -153,6 +156,12 @@
       }
     },
     computed: {
+      greetingText() {
+        return this.$config.greeting.message;
+      },
+      greetingOptions() {
+        return this.$config.greeting.options;
+      },
       shouldShowAddressHeader() {
         if (this.fullScreenTopicsOnly || this.shouldShowGreeting === false) {
           return true;
