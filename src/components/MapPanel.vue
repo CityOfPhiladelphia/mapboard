@@ -323,7 +323,8 @@
 
 <script>
   // import * as L from 'leaflet';
-  import { geoJson, marker, featureGroup } from 'leaflet';
+  import { geoJSON, featureGroup } from 'leaflet';
+  import { marker as Lmarker } from 'leaflet';
   import philaVueMapping from '@cityofphiladelphia/phila-vue-mapping';
 
   // mixins
@@ -788,13 +789,13 @@
           }
           if (czts.includes('markersForAddress')) {
             for (let marker of this.markersForAddress) {
-              featureArray.push(marker(marker.latlng))
+              featureArray.push(Lmarker(marker.latlng))
               // featureArray.push(L.marker(marker.latlng))
             }
           }
           if (czts.includes('markersForTopic')) {
             for (let marker of this.markersForTopic) {
-              featureArray.push(marker(marker.latlng))
+              featureArray.push(Lmarker(marker.latlng))
               // featureArray.push(L.marker(marker.latlng))
             }
           }
