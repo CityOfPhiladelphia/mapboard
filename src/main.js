@@ -6,10 +6,22 @@ import Mapboard from './components/Mapboard.vue';
 import mergeDeep from './util/merge-deep';
 import generateUniqueId from './util/unique-id';
 
+// Font Awesome Icons
 import { library } from '@fortawesome/fontawesome-svg-core'
-// import { faMapMarkerAlt, faCaretLeft, faCaretRight, faSearch, faExternalLink, faSpinner, faHome, faBook, faWrench, faUniversity, faGavel } from '@fortawesome/pro-solid-svg-icons';
-import { faMapMarkerAlt, faExternalLink, faSpinner, faHome, faBook, faWrench, faUniversity, faGavel } from '@fortawesome/pro-solid-svg-icons';
-library.add(faMapMarkerAlt, faExternalLink, faSpinner, faHome, faBook, faWrench, faUniversity, faGavel );
+// import { faMapMarkerAlt } from '@fortawesome/pro-solid-svg-icons/faMapMarkerAlt';
+// import { faExternalLink } from '@fortawesome/pro-solid-svg-icons/faExternalLink';
+import { faSpinner } from '@fortawesome/pro-solid-svg-icons/faSpinner';
+import { faHome } from '@fortawesome/pro-solid-svg-icons/faHome';
+import { faBook } from '@fortawesome/pro-solid-svg-icons/faBook';
+import { faWrench } from '@fortawesome/pro-solid-svg-icons/faWrench';
+import { faUniversity } from '@fortawesome/pro-solid-svg-icons/faUniversity';
+import { faGavel } from '@fortawesome/pro-solid-svg-icons/faGavel';
+import { faUsdCircle } from '@fortawesome/pro-solid-svg-icons/faUsdCircle';
+import { faAsterisk } from '@fortawesome/pro-solid-svg-icons/faAsterisk';
+import { faCircle } from '@fortawesome/pro-solid-svg-icons/faCircle';
+
+// library.add(faMapMarkerAlt, faExternalLink, faSpinner, faHome, faBook, faWrench, faUniversity, faGavel );
+library.add(faSpinner, faHome, faBook, faWrench, faUniversity, faGavel);
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import philaVueDatafetch from '@cityofphiladelphia/phila-vue-datafetch';

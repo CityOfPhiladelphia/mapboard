@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@cityofphiladelphia/phila-vue-comps@https://github.com/CityOfPhiladelphia/phila-vue-comps#2134d4ca8229d1b5bd1987feda0a54590bf00d80":
+"@cityofphiladelphia/phila-vue-comps@https://github.com/CityOfPhiladelphia/phila-vue-comps#245967e9d00e9bb74dcf45f210ade4959ce50485":
   version "1.0.14"
-  resolved "https://github.com/CityOfPhiladelphia/phila-vue-comps#2134d4ca8229d1b5bd1987feda0a54590bf00d80"
+  resolved "https://github.com/CityOfPhiladelphia/phila-vue-comps#245967e9d00e9bb74dcf45f210ade4959ce50485"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.8"
     "@fortawesome/pro-light-svg-icons" "^5.5.0"
@@ -36,9 +36,9 @@
     vue "^2.5.16"
     vuex "^3.0.1"
 
-"@cityofphiladelphia/phila-vue-mapping@https://github.com/CityOfPhiladelphia/phila-vue-mapping#d4f57a617a2319d53eb693af6507a21efc91c5c8":
+"@cityofphiladelphia/phila-vue-mapping@https://github.com/CityOfPhiladelphia/phila-vue-mapping#3e175aea42690bed6c338a4d8bc2b189547fef7a":
   version "1.0.11"
-  resolved "https://github.com/CityOfPhiladelphia/phila-vue-mapping#d4f57a617a2319d53eb693af6507a21efc91c5c8"
+  resolved "https://github.com/CityOfPhiladelphia/phila-vue-mapping#3e175aea42690bed6c338a4d8bc2b189547fef7a"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.8"
     "@fortawesome/pro-light-svg-icons" "^5.5.0"
