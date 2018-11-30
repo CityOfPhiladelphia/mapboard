@@ -135,7 +135,7 @@ function createStore(config) {
       topicsOnly: false,
     },
     fullScreenMapEnabled: false,
-    fullScreenTopicsEnabled: false,
+    // fullScreenTopicsEnabled: false,
     candidates: [],
     addressEntered: null,
     parcels,
@@ -204,9 +204,9 @@ function createStore(config) {
       setFullScreenMapEnabled(state, payload) {
         state.fullScreenMapEnabled = payload;
       },
-      setFullScreenTopicsEnabled(state, payload) {
-        state.fullScreenTopicsEnabled = payload;
-      },
+      // setFullScreenTopicsEnabled(state, payload) {
+      //   state.fullScreenTopicsEnabled = payload;
+      // },
       setLocation(state, payload) {
         state.map.location.lat = payload.lat;
         state.map.location.lng = payload.lng;

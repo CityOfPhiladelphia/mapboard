@@ -22,9 +22,12 @@
         </div>
         <h1 class="address-header-line-1">
         <!-- there is no map marker if there is no map -->
-          <i class="fa fa-map-marker-alt"
+          <font-awesome-icon icon="map-marker-alt"
+                             v-if="!this.fullScreenTopicsOnly"
+          />
+          <!-- <i class="fa fa-map-marker-alt"
              v-if="!this.fullScreenTopicsOnly"
-          ></i>
+          ></i> -->
           {{ address }}
         </h1>
         <!-- <div class="address-header-line-2"

@@ -296,10 +296,12 @@
       <div v-once>
         <address-input :position="this.addressInputPosition"
                        :placeholder="this.addressInputPlaceholder"
+                       :widthFromConfig="this.addressInputWidth"
         />
       </div>
       <address-candidate-list v-if="this.addressAutocompleteEnabled"
                               :position="this.addressInputPosition"
+                              :widthFromConfig="this.addressInputWidth"
       />
 
 
@@ -320,7 +322,8 @@
 </template>
 
 <script>
-  import * as L from 'leaflet';
+  // import * as L from 'leaflet';
+  import { geoJson, marker, featureGroup } from 'leaflet';
   import philaVueMapping from '@cityofphiladelphia/phila-vue-mapping';
 
   // mixins
@@ -444,6 +447,13 @@
           return 'topleft'
         } else {
           return 'topalmostleft'
+        }
+      },
+      addressInputWidth() {
+        if (this.$config.addressInput) {
+          return this.$config.addressInput.mapWidth;
+        } else {
+          return 415;
         }
       },
       addressInputPlaceholder() {
@@ -766,25 +776,30 @@
         if (czts) {
           if (czts.includes('geojsonParcels')) {
             for (let geojsonFeature of this.geojsonParcels) {
-              featureArray.push(L.geoJSON(geojsonFeature.geojson))
+              featureArray.push(geoJSON(geojsonFeature.geojson))
+              // featureArray.push(L.geoJSON(geojsonFeature.geojson))
             }
           }
           if (czts.includes('geojsonForTopic')) {
             for (let geojsonFeature of this.geojsonForTopic) {
-              featureArray.push(L.geoJSON(geojsonFeature.geojson))
+              featureArray.push(geoJSON(geojsonFeature.geojson))
+              // featureArray.push(L.geoJSON(geojsonFeature.geojson))
             }
           }
           if (czts.includes('markersForAddress')) {
             for (let marker of this.markersForAddress) {
-              featureArray.push(L.marker(marker.latlng))
+              featureArray.push(marker(marker.latlng))
+              // featureArray.push(L.marker(marker.latlng))
             }
           }
           if (czts.includes('markersForTopic')) {
             for (let marker of this.markersForTopic) {
-              featureArray.push(L.marker(marker.latlng))
+              featureArray.push(marker(marker.latlng))
+              // featureArray.push(L.marker(marker.latlng))
             }
           }
-          const group = new L.featureGroup(featureArray);
+          const group = new featureGroup(featureArray);
+          // const group = new L.featureGroup(featureArray);
           const bounds = group.getBounds();
           this.$store.commit('setMapBounds', bounds);
         }

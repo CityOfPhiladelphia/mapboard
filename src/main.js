@@ -5,9 +5,12 @@ import configMixin from './util/config-mixin';
 import Mapboard from './components/Mapboard.vue';
 import mergeDeep from './util/merge-deep';
 import generateUniqueId from './util/unique-id';
-import '@fortawesome/fontawesome-pro/js/all';
-import vueFontAwesome from '@fortawesome/vue-fontawesome';
-const FontAwesomeIcon = vueFontAwesome.FontAwesomeIcon;
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+// import { faMapMarkerAlt, faCaretLeft, faCaretRight, faSearch, faExternalLink, faSpinner, faHome, faBook, faWrench, faUniversity, faGavel } from '@fortawesome/pro-solid-svg-icons';
+import { faMapMarkerAlt, faExternalLink, faSpinner, faHome, faBook, faWrench, faUniversity, faGavel } from '@fortawesome/pro-solid-svg-icons';
+library.add(faMapMarkerAlt, faExternalLink, faSpinner, faHome, faBook, faWrench, faUniversity, faGavel );
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import philaVueDatafetch from '@cityofphiladelphia/phila-vue-datafetch';
 const controllerMixin = philaVueDatafetch.controllerMixin;
