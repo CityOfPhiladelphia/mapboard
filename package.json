@@ -24,7 +24,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-3": "^6.24.1",
     "blueimp-md5": "^2.10.0",
-    "esri-leaflet": "2.2.3",
+    "esri-leaflet": "^2.2.3",
     "leaflet": "^1.4.0",
     "leaflet-easybutton": "^2.2.2",
     "leaflet-measure": "https://github.com/CityOfPhiladelphia/leaflet-measure#b70886af342f19597dc2937d79d64bad6bab07c6",
