@@ -4,7 +4,7 @@
        :style="mbRootStyle"
   >
 
-    <header-comp v-if="shouldShowHeader" />
+    <!-- <header-comp v-if="shouldShowHeader" /> -->
 
     <!-- <div id="mb-root"
          :class="rootClass"
@@ -26,7 +26,7 @@
                              :apiKey="this.ak"
                              :secretKey="this.sk"
           >
-            <png-marker v-if="this.pictometryShowAddressMarker"
+            <pictometry-png-marker v-if="this.pictometryShowAddressMarker"
                         :latlng="[this.geocodeData.geometry.coordinates[1], this.geocodeData.geometry.coordinates[0]]"
                         :icon="'images/markers.png'"
                         :height="60"
@@ -34,8 +34,8 @@
                         :offsetX="0"
                         :offsetY="0"
             />
-            <layer v-if="this.pictometryActive" />
-            <png-marker v-if="this.cyclomediaActive && this.pictometryActive"
+            <pictometry-layer v-if="this.pictometryActive" />
+            <pictometry-png-marker v-if="this.cyclomediaActive && this.pictometryActive"
                         :latlng="cycloLatlng"
                         :icon="'images/camera2.png'"
                         :height="20"
@@ -43,7 +43,7 @@
                         :offsetX="-2"
                         :offsetY="-2"
             />
-            <view-cone v-if="this.cyclomediaActive && this.pictometryActive"
+            <pictometry-view-cone v-if="this.cyclomediaActive && this.pictometryActive"
                        :latlng="cycloLatlng"
                        :rotationAngle="cycloRotationAngle"
                        :hFov="cycloHFov"
@@ -51,43 +51,40 @@
           </pictometry-widget>
         </map-panel>
 
-        <popover
+        <!-- <popover
                  v-if="popoverOpen"
                  :options="this.popoverOptions"
                  :slots="{'text': this.popoverText}"
-        />
+        /> -->
         <!-- v-if="popoverOpen && popoverText.length > 0" -->
     <!-- </div> -->
   </div>
 </template>
 
 <script>
-  import philaVueMapping from '@cityofphiladelphia/phila-vue-mapping';
-  import philaVueComps from '@cityofphiladelphia/phila-vue-comps';
-  // console.log('in Mapboard.vue, philaVueComps:', philaVueComps);
-
-  import HeaderComp from './HeaderComp.vue';
+  // import HeaderComp from './HeaderComp.vue';
   import TopicPanel from './TopicPanel.vue';
   import MapPanel from './MapPanel.vue';
 
-  const CyclomediaWidget = philaVueMapping.CyclomediaWidget;
-  const PictometryWidget = philaVueMapping.PictometryWidget;
-  const Layer = philaVueMapping.PictometryLayer;
-  const ViewCone = philaVueMapping.PictometryViewCone;
-  const PngMarker = philaVueMapping.PictometryPngMarker;
-  const Popover = philaVueComps.Popover;
-
+  import {
+    CyclomediaWidget,
+    PictometryWidget,
+    PictometryLayer,
+    PictometryViewCone,
+    PictometryPngMarker
+  } from '@cityofphiladelphia/phila-vue-mapping';
+  import { Popover } from '@cityofphiladelphia/phila-vue-comps';
 
   export default {
     components: {
-      HeaderComp,
+      // HeaderComp,
       TopicPanel,
       MapPanel,
       CyclomediaWidget,
       PictometryWidget,
-      Layer,
-      PngMarker,
-      ViewCone,
+      PictometryLayer,
+      PictometryPngMarker,
+      PictometryViewCone,
       Popover,
     },
     data() {
@@ -100,7 +97,7 @@
       return data;
     },
     created() {
-      console.log('this.$config:', this.$config);
+      console.log('mapboard created, this.$config:', this.$config);
       if (this.$config.panels) {
         if (!this.$config.panels.includes('map')) {
           this.$store.commit('setTopicsOnly', true);
