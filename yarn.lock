@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@cityofphiladelphia/phila-vue-comps@https://github.com/CityOfPhiladelphia/phila-vue-comps#5cfa9456fd9d4b74a57f5b5ead783ed526b60ce4":
+"@cityofphiladelphia/phila-vue-comps@https://github.com/CityOfPhiladelphia/phila-vue-comps#ffea144eb62a8c43980ca00671da3f4105fef84c":
   version "1.0.14"
-  resolved "https://github.com/CityOfPhiladelphia/phila-vue-comps#5cfa9456fd9d4b74a57f5b5ead783ed526b60ce4"
+  resolved "https://github.com/CityOfPhiladelphia/phila-vue-comps#ffea144eb62a8c43980ca00671da3f4105fef84c"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.8"
     "@fortawesome/pro-light-svg-icons" "^5.5.0"

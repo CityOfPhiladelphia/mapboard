@@ -11,7 +11,7 @@
   },
   "main": "./dist/mapboard.js",
   "dependencies": {
-    "@cityofphiladelphia/phila-vue-comps": "https://github.com/CityOfPhiladelphia/phila-vue-comps#5cfa9456fd9d4b74a57f5b5ead783ed526b60ce4",
+    "@cityofphiladelphia/phila-vue-comps": "https://github.com/CityOfPhiladelphia/phila-vue-comps#ffea144eb62a8c43980ca00671da3f4105fef84c",
     "@cityofphiladelphia/phila-vue-datafetch": "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#41f6ee45b15752457ef129e87d8338770c5c0278",
     "@cityofphiladelphia/phila-vue-mapping": "https://github.com/CityOfPhiladelphia/phila-vue-mapping#07439530a1af72d195201036c7635061069af4bf",
     "@fortawesome/fontawesome-svg-core": "^1.2.8",
