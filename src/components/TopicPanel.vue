@@ -68,7 +68,7 @@
                                   slot="address-candidates-slot"
                                   :widthFromConfig="this.addressInputWidth"
           />
-        />
+        </address-input>
       </div>
 
     </div>
@@ -98,15 +98,15 @@
 </template>
 
 <script>
-  import philaVueComps from '@cityofphiladelphia/phila-vue-comps';
-  const Topic = philaVueComps.Topic;
-  const TopicComponentGroup = philaVueComps.TopicComponentGroup;
-  // console.log('TopicComponentGroup:', TopicComponentGroup);
-  const AnyHeader = philaVueComps.AnyHeader;
-  const Greeting = philaVueComps.Greeting;
-  const AddressInput = philaVueComps.AddressInput;
-  const AddressCandidateList = philaVueComps.AddressCandidateList;
-  const FullScreenTopicsToggleTab = philaVueComps.FullScreenTopicsToggleTab;
+  import {
+    Topic,
+    TopicComponentGroup,
+    AnyHeader,
+    Greeting,
+    AddressInput,
+    AddressCandidateList,
+    FullScreenTopicsToggleTab,
+  } from '@cityofphiladelphia/phila-vue-comps';
 
   export default {
     components: {
