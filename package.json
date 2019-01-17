@@ -13,7 +13,7 @@
   "dependencies": {
     "@cityofphiladelphia/phila-vue-comps": "^1.0.15",
     "@cityofphiladelphia/phila-vue-datafetch": "^0.0.13",
-    "@cityofphiladelphia/phila-vue-mapping": "1.0.12",
+    "@cityofphiladelphia/phila-vue-mapping": "1.0.13",
     "@fortawesome/fontawesome-svg-core": "^1.2.8",
     "@fortawesome/pro-light-svg-icons": "^5.5.0",
     "@fortawesome/pro-regular-svg-icons": "^5.5.0",
