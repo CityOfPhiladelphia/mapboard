@@ -323,8 +323,16 @@
 </template>
 
 <script>
-  import { geoJSON, featureGroup } from 'leaflet';
-  import { marker as Lmarker } from 'leaflet';
+  import * as L from 'leaflet';
+  console.log('L:', L)
+  const FeatureGroup = L.default.featureGroup;
+  const GeoJSON = L.default.geoJSON;
+  const Lmarker = L.default.marker;
+  console.log('FeatureGroup:', FeatureGroup, 'GeoJSON:', GeoJSON)
+  // import { featureGroup, geoJSON } from 'leaflet';
+  // import { marker as Lmarker } from 'leaflet';
+  // import { FeatureGroup, GeoJSON } from 'leaflet';
+  // import { Marker as Lmarker } from 'leaflet';
 
   // mixins
   import markersMixin from './markers-mixin';
@@ -784,14 +792,16 @@
         if (czts) {
           if (czts.includes('geojsonParcels')) {
             for (let geojsonFeature of this.geojsonParcels) {
-              featureArray.push(geoJSON(geojsonFeature.geojson))
+              // featureArray.push(geoJson(geojsonFeature.geojson))
               // featureArray.push(L.geoJSON(geojsonFeature.geojson))
+              featureArray.push(GeoJSON(geojsonFeature.geojson))
             }
           }
           if (czts.includes('geojsonForTopic')) {
             for (let geojsonFeature of this.geojsonForTopic) {
-              featureArray.push(geoJSON(geojsonFeature.geojson))
+              // featureArray.push(geoJson(geojsonFeature.geojson))
               // featureArray.push(L.geoJSON(geojsonFeature.geojson))
+              featureArray.push(GeoJSON(geojsonFeature.geojson))
             }
           }
           if (czts.includes('markersForAddress')) {
@@ -806,7 +816,8 @@
               // featureArray.push(L.marker(marker.latlng))
             }
           }
-          const group = new featureGroup(featureArray);
+          const group = new FeatureGroup(featureArray);
+          // const group = new featureGroup(featureArray);
           // const group = new L.featureGroup(featureArray);
           const bounds = group.getBounds();
           this.$store.commit('setMapBounds', bounds);
