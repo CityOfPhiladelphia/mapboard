@@ -13,7 +13,7 @@
   "dependencies": {
     "@cityofphiladelphia/phila-vue-comps": "^1.0.15",
     "@cityofphiladelphia/phila-vue-datafetch": "^0.0.13",
-    "@cityofphiladelphia/phila-vue-mapping": "1.0.13",
+    "@cityofphiladelphia/phila-vue-mapping": "https://github.com/CityOfPhiladelphia/phila-vue-mapping#ff0585fcbc2e27085a8600f9e03e1da7773cb874",
     "@fortawesome/fontawesome-svg-core": "^1.2.8",
     "@fortawesome/pro-light-svg-icons": "^5.5.0",
     "@fortawesome/pro-regular-svg-icons": "^5.5.0",
@@ -30,15 +30,12 @@
     "leaflet-measure": "https://github.com/CityOfPhiladelphia/leaflet-measure#b70886af342f19597dc2937d79d64bad6bab07c6",
     "leaflet-rotatedmarker": "^0.2.0",
     "leaflet-vector-icon": "https://github.com/CityOfPhiladelphia/leaflet-vector-icon#74a56f048bceccef9c945f752bbd0379ae9dc77c",
-    "lodash.debounce": "^4.0.8",
     "moment": "^2.21.0",
     "phila-standards": "^1.0.2",
-    "proj4": "^2.5.0",
     "vue": "^2.5.22",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-pro": "^5.4.2",
     "chromedriver": "^2.37.0",
     "cross-spawn": "^6.0.4",
     "nightwatch": "^0.9.19",
