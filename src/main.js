@@ -76,16 +76,21 @@ function initMapboard(clientConfig) {
     // console.log('in axios, clientConfig:', clientConfig);
     const data = response.data;
     // const data = baseConfigUrl;
+    let config;
+    if (typeof data === 'object') {
 
-    // parse raw js. yes, it's ok to use eval :)
-    // http://stackoverflow.com/a/87260/676001
-    const baseConfigFn = eval(data);
-    const { gatekeeperKey } = clientConfig;
-    const baseConfig = baseConfigFn({ gatekeeperKey });
+      // parse raw js. yes, it's ok to use eval :)
+      // http://stackoverflow.com/a/87260/676001
+      const baseConfigFn = eval(data);
+      const { gatekeeperKey } = clientConfig;
+      const baseConfig = baseConfigFn({ gatekeeperKey });
 
-    // deep merge base config and client config
-    const config = mergeDeep(baseConfig, clientConfig);
-    // const config = mergeDeep(baseConfigUrl, clientConfig);
+      // deep merge base config and client config
+      config = mergeDeep(baseConfig, clientConfig);
+      // const config = mergeDeep(baseConfigUrl, clientConfig);
+    } else {
+      config = clientConfig;
+    }
 
     // assign table ids
     for (let topic of config.topics) {
