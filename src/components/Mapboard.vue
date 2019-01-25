@@ -62,7 +62,7 @@
 </template>
 
 <script>
-  // import HeaderComp from './HeaderComp.vue';
+  import HeaderComp from './HeaderComp.vue';
   import TopicPanel from './TopicPanel.vue';
   import MapPanel from './MapPanel.vue';
 
@@ -77,7 +77,7 @@
 
   export default {
     components: {
-      // HeaderComp,
+      HeaderComp,
       TopicPanel,
       MapPanel,
       CyclomediaWidget,
