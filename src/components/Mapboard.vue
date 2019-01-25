@@ -4,7 +4,7 @@
        :style="mbRootStyle"
   >
 
-    <!-- <header-comp v-if="shouldShowHeader" /> -->
+    <header-comp v-if="shouldShowHeader" />
 
     <!-- <div id="mb-root"
          :class="rootClass"
