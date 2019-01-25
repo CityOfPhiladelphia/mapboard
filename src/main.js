@@ -67,17 +67,52 @@ function assignHorizontalTableGroupIds(comps) {
   }
 }
 
+function finishInit(config) {
+  // assign table ids
+  for (let topic of config.topics) {
+    assignTableIds(topic.components);
+    assignHorizontalTableGroupIds(topic.components);
+  }
+
+  // make config accessible from each component via this.$config
+  Vue.use(configMixin, config);
+
+  // create store
+  const store = createStore(config);
+
+  // mix in controller
+  Vue.use(controllerMixin, { config, store });
+  // Vue.use(controllerMixin, { config, store, eventBus });
+
+  Vue.component('font-awesome-icon', FontAwesomeIcon);
+  // Vue.config.productionTip = false
+
+  const customComps = config.customComps || [];
+  // console.log('mapboard main.js, customComps:', customComps);
+  for (let key of Object.keys(customComps)) {
+    Vue.component(key, customComps[key]);
+  }
+
+  // mount main vue
+  const vm = new Vue({
+    el: config.el || '#mapboard',
+    render: h => h(Mapboard),
+    store
+  });
+}
+
 function initMapboard(clientConfig) {
   const baseConfigUrl = clientConfig.baseConfig;
   // console.log('baseConfigUrl:', baseConfigUrl);
 
-  // get base config
-  return axios.get(baseConfigUrl).then(response => {
-    // console.log('in axios, clientConfig:', clientConfig);
-    const data = response.data;
-    // const data = baseConfigUrl;
-    let config;
-    if (typeof data === 'object') {
+  if (baseConfigUrl === null) {
+    finishInit(clientConfig);
+  } else {
+    // get base config
+    return axios.get(baseConfigUrl).then(response => {
+      // console.log('in axios, clientConfig:', clientConfig);
+      const data = response.data;
+      // console.log('in axios, data:', data);
 
       // parse raw js. yes, it's ok to use eval :)
       // http://stackoverflow.com/a/87260/676001
@@ -86,47 +121,28 @@ function initMapboard(clientConfig) {
       const baseConfig = baseConfigFn({ gatekeeperKey });
 
       // deep merge base config and client config
-      config = mergeDeep(baseConfig, clientConfig);
-      // const config = mergeDeep(baseConfigUrl, clientConfig);
-    } else {
-      config = clientConfig;
-    }
-
-    // assign table ids
-    for (let topic of config.topics) {
-      assignTableIds(topic.components);
-      assignHorizontalTableGroupIds(topic.components);
-    }
-
-    // make config accessible from each component via this.$config
-    Vue.use(configMixin, config);
-
-    // create store
-    const store = createStore(config);
-
-    // mix in controller
-    Vue.use(controllerMixin, { config, store });
-    // Vue.use(controllerMixin, { config, store, eventBus });
-
-    Vue.component('font-awesome-icon', FontAwesomeIcon);
-    // Vue.config.productionTip = false
-
-    const customComps = clientConfig.customComps || [];
-    // console.log('mapboard main.js, customComps:', customComps);
-    for (let key of Object.keys(customComps)) {
-      Vue.component(key, customComps[key]);
-    }
-
-    // mount main vue
-    const vm = new Vue({
-      el: config.el || '#mapboard',
-      render: h => h(Mapboard),
-      store
+      const config = mergeDeep(baseConfigUrl, clientConfig);
+      finishInit(config);
+    }).catch(err => {
+      console.error('Error loading base config:', err);
+      var windowHeight = window.innerHeight;
+      var appFooterHeightNum = parseInt(document.getElementsByClassName('app-footer')[0].getBoundingClientRect().height);
+      var divHeight = windowHeight - appFooterHeightNum;
+      console.log('windowHeight:', windowHeight, 'appFooterHeightNum:', appFooterHeightNum, 'divHeight:', divHeight);
+      var element = document.getElementById('mapboard');
+      element.innerHTML = '\
+      <div style="width:100%;height:' + divHeight + ';">\
+        <div style="max-width:300px;margin-left:auto;margin-right:auto;">\
+          <h2>\
+            Something has gone wrong with the site.<br>\
+            Please try again later.\
+          </h2>\
+        </div>\
+      </div>\
+      ';
+      // return 'return error';
     });
-
-  }).catch(err => {
-    console.error('Error loading base config:', err);
-  });
+  }
 }
 
 export default initMapboard;
