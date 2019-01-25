@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@cityofphiladelphia/phila-vue-comps@^1.0.15":
+"@cityofphiladelphia/phila-vue-comps@https://github.com/CityOfPhiladelphia/phila-vue-comps#27da86ffbda2b8e11669dd42ac883f66f1b18fa6":
   version "1.0.15"
-  resolved "https://registry.yarnpkg.com/@cityofphiladelphia/phila-vue-comps/-/phila-vue-comps-1.0.15.tgz#cb5cfa30d10f928948e40b100db9c8c3ba78a3e5"
+  resolved "https://github.com/CityOfPhiladelphia/phila-vue-comps#27da86ffbda2b8e11669dd42ac883f66f1b18fa6"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.8"
     "@fortawesome/pro-light-svg-icons" "^5.5.0"
@@ -16,21 +16,20 @@
     escape-html "^1.0.3"
     jspdf "^1.4.1"
     jspdf-autotable "^2.3.5"
-    lodash.debounce "^4.0.8"
+    lodash-es "^4.17.11"
     phila-standards "^1.0.2"
     vue "^2.5.22"
     vuex "^3.0.1"
 
-"@cityofphiladelphia/phila-vue-datafetch@^0.0.13":
+"@cityofphiladelphia/phila-vue-datafetch@https://github.com/CityOfPhiladelphia/phila-vue-datafetch#9e383c7a983350ecc24cd244b4830720fc4862c4":
   version "0.0.13"
-  resolved "https://registry.yarnpkg.com/@cityofphiladelphia/phila-vue-datafetch/-/phila-vue-datafetch-0.0.13.tgz#f791952ed6ebc2729e946d2cbf0d1b608aa69afa"
+  resolved "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#9e383c7a983350ecc24cd244b4830720fc4862c4"
   dependencies:
     "@turf/turf" "^5.1.6"
     axios "^0.18.0"
     date-fns "^1.30.1"
     esri-leaflet "^2.2.3"
     leaflet "^1.4.0"
-    lodash.debounce "^4.0.8"
     proj4 "^2.5.0"
     vue "^2.5.22"
     vuex "^3.0.1"
@@ -5341,7 +5340,7 @@ mocha-nightwatch@3.2.2:
     mkdirp "0.5.1"
     supports-color "3.1.2"
 
-moment@^2.18.1, moment@^2.21.0:
+moment@^2.18.1:
   version "2.23.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.23.0.tgz#759ea491ac97d54bac5ad776996e2a58cc1bc225"
 
