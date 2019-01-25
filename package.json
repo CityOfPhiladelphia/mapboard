@@ -15,8 +15,6 @@
     "@cityofphiladelphia/phila-vue-datafetch": "^0.0.13",
     "@cityofphiladelphia/phila-vue-mapping": "https://github.com/CityOfPhiladelphia/phila-vue-mapping#ff0585fcbc2e27085a8600f9e03e1da7773cb874",
     "axios": "^0.18.0",
-    "moment": "^2.21.0",
-    "phila-standards": "^1.0.2",
     "vue": "^2.5.22",
     "vuex": "^3.0.1"
   },
