@@ -4,8 +4,8 @@
   "version": "3.0.18",
   "author": "City of Philadelphia <maps@phila.gov>",
   "scripts": {
-    "build": "rollup -c rollup.config.js",
-    "dev": "yarn build -w",
+    "build": "cross-env NODE_ENV=production npx webpack --display-modules",
+    "dev": "cross-env NODE_ENV=development webpack-dev-server",
     "e2e": "node test/e2e/runner.js",
     "example": "webpack-serve ./example/webpack.config.js"
   },
@@ -20,7 +20,10 @@
   },
   "devDependencies": {
     "chromedriver": "^2.37.0",
+    "cross-env": "^5.2.0",
     "cross-spawn": "^6.0.4",
+    "css-loader": "^2.1.0",
+    "file-loader": "^3.0.1",
     "nightwatch": "^0.9.19",
     "rollup": "^0.57.1",
     "rollup-analyzer-plugin": "^1.1.1",
@@ -33,9 +36,14 @@
     "rollup-plugin-uglify": "^3.0.0",
     "rollup-plugin-vue": "^3.0.0",
     "selenium-server": "^3.11.0",
+    "style-loader": "^0.23.1",
+    "vue-loader": "^15.6.1",
     "vue-template-compiler": "^2.5.22",
     "webpack": "^4.6.0",
-    "webpack-serve": "^0.3.2"
+    "webpack-cli": "^3.2.1",
+    "webpack-dev-server": "^3.1.14",
+    "webpack-serve": "^0.3.2",
+    "webpack-visualizer-plugin": "^0.1.11"
   },
   "publishConfig": {
     "access": "public"

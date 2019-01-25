@@ -68,6 +68,7 @@ function assignHorizontalTableGroupIds(comps) {
 }
 
 function finishInit(config) {
+  // console.log('finishInit is running, config:', config);
   // assign table ids
   for (let topic of config.topics) {
     assignTableIds(topic.components);
@@ -103,7 +104,7 @@ function finishInit(config) {
 
 function initMapboard(clientConfig) {
   const baseConfigUrl = clientConfig.baseConfig;
-  // console.log('baseConfigUrl:', baseConfigUrl);
+  // console.log('initMapboard, baseConfigUrl:', baseConfigUrl);
 
   if (baseConfigUrl === null) {
     finishInit(clientConfig);
@@ -119,9 +120,11 @@ function initMapboard(clientConfig) {
       const baseConfigFn = eval(data);
       const { gatekeeperKey } = clientConfig;
       const baseConfig = baseConfigFn({ gatekeeperKey });
+      // console.log('baseConfig:', baseConfig);
 
       // deep merge base config and client config
-      const config = mergeDeep(baseConfigUrl, clientConfig);
+      const config = mergeDeep(baseConfig, clientConfig);
+      // console.log('config:', config);
       finishInit(config);
     }).catch(err => {
       console.error('Error loading base config:', err);
