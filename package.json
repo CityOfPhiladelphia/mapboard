@@ -4,7 +4,7 @@
   "version": "3.0.18",
   "author": "City of Philadelphia <maps@phila.gov>",
   "scripts": {
-    "build": "cross-env NODE_ENV=production npx webpack --display-modules",
+    "build": "cross-env NODE_ENV=production npx webpack",
     "dev": "cross-env NODE_ENV=development webpack-dev-server",
     "e2e": "node test/e2e/runner.js",
     "example": "webpack-serve ./example/webpack.config.js"

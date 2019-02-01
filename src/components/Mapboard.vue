@@ -62,6 +62,9 @@
 </template>
 
 <script>
+
+  console.log('test Mapboard.vue')
+
   import HeaderComp from './HeaderComp.vue';
   import TopicPanel from './TopicPanel.vue';
   import MapPanel from './MapPanel.vue';
@@ -120,13 +123,13 @@
       }
     },
     computed: {
-      mapPanelLoader () {
-        if (!this.fullScreenTopicsOnly) {
-          return;
-        } else {
-          return () => import(/* webpackChunkName: "mapPanelLoader" */'./MapPanel.vue').then(console.log('after MapPanel import'))
-        }
-      },
+      // mapPanelLoader () {
+      //   if (!this.fullScreenTopicsOnly) {
+      //     return;
+      //   } else {
+      //     return () => import(/* webpackChunkName: "mapPanelLoader" */'./MapPanel.vue').then(console.log('after MapPanel import'))
+      //   }
+      // },
       shouldShowHeader() {
         if (this.$config.header) {
           return this.$config.header.enabled;

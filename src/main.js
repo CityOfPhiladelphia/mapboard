@@ -7,7 +7,7 @@ import mergeDeep from './util/merge-deep';
 import generateUniqueId from './util/unique-id';
 
 // Font Awesome Icons
-import { library } from '@fortawesome/fontawesome-svg-core'
+import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSpinner } from '@fortawesome/pro-solid-svg-icons/faSpinner';
 import { faBook } from '@fortawesome/pro-solid-svg-icons/faBook';
 import { faWrench } from '@fortawesome/pro-solid-svg-icons/faWrench';
@@ -18,6 +18,8 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import philaVueDatafetch from '@cityofphiladelphia/phila-vue-datafetch';
 const controllerMixin = philaVueDatafetch.controllerMixin;
+
+console.log('test')
 
 // helper function to auto-assign ids to horizontal tables
 function assignTableIds(comps) {

@@ -324,11 +324,11 @@
 
 <script>
   import * as L from 'leaflet';
-  console.log('L:', L)
+  // console.log('L:', L)
   const FeatureGroup = L.default.featureGroup;
   const GeoJSON = L.default.geoJSON;
   const Lmarker = L.default.marker;
-  console.log('FeatureGroup:', FeatureGroup, 'GeoJSON:', GeoJSON)
+  // console.log('FeatureGroup:', FeatureGroup, 'GeoJSON:', GeoJSON)
   // import { featureGroup, geoJSON } from 'leaflet';
   // import { marker as Lmarker } from 'leaflet';
   // import { FeatureGroup, GeoJSON } from 'leaflet';
