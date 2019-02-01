@@ -193,7 +193,7 @@
        />
 
        <!-- TODO give these a real key -->
-      <circle-marker v-for="circleMarker in circleMarkers"
+      <circle-marker v-for="circleMarker in reactiveCircleMarkers"
                      @l-mouseover="handleMarkerMouseover"
                      @l-click="handleMarkerClick"
                      @l-mouseout="handleMarkerMouseout"
@@ -862,7 +862,7 @@
           this.$store.commit('setCyclomediaLatLngFromMap', [lat, lng]);
         }
       },
-      fillColorForCircleMarker(markerId, tableId) {
+      fillColorForOverlayMarker(markerId, tableId) {
         // get map overlay style and hover style for table
         const tableConfig = this.getConfigForTable(tableId);
         const mapOverlay = tableConfig.options.mapOverlay;

@@ -123,7 +123,7 @@ export default {
       return markers;
     },
 
-    circleMarkers() {
+    reactiveCircleMarkers() {
       const filteredData = this.$store.state.horizontalTables.filteredData;
       // const filteredData = this.filteredData;
       let circleMarkers = [];
@@ -368,7 +368,7 @@ export default {
       // console.log('updateMarkerFillColor, marker:', marker);
       // get next fill color
       const { featureId, tableId } = marker.options.data;
-      const nextFillColor = this.fillColorForCircleMarker(featureId, tableId);
+      const nextFillColor = this.fillColorForOverlayMarker(featureId, tableId);
 
       // highlight. we're doing this here (non-reactively) because binding the
       // fill color property was not performing well enough.
