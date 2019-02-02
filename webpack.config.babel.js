@@ -1,4 +1,8 @@
+import fs from 'fs';
 const path = require('path');
+const pkg = JSON.parse(fs.readFileSync(path.resolve('./package.json'), 'utf-8'));
+const external = Object.keys(pkg.dependencies || {});
+
 const env = process.env.NODE_ENV;
 const isDevelopment = env === 'development';
 
@@ -31,7 +35,7 @@ export default {
     // port: process.env.WEBPACK_DEV_PORT
     port: 8082
   },
-  // externals: Object.keys(dependencies),
+  externals: external,
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'mapboard.js',
