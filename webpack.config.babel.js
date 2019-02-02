@@ -10,8 +10,8 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const Visualizer = require('webpack-visualizer-plugin');
 
 export default {
-  mode: 'development',
-  // mode: 'production',
+  // mode: 'development',
+  mode: 'production',
   // mode: env,
   entry: [
     './src/main.js'
