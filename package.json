@@ -19,6 +19,11 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/register": "^7.0.0",
+    "babel-loader": "^8.0.5",
+    "babel-plugin-component": "^1.1.1",
     "chromedriver": "^2.37.0",
     "cross-env": "^5.2.0",
     "cross-spawn": "^6.0.4",
@@ -47,5 +52,10 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
   }
 }
