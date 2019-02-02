@@ -1,4 +1,14 @@
-/******/ (function(modules) { // webpackBootstrap
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["mapboard"] = factory();
+	else
+		root["mapboard"] = factory();
+})(window, function() {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -94395,8 +94405,8 @@ function assignHorizontalTableGroupIds(comps) {
 }
 
 function finishInit(config) {
-  // console.log('finishInit is running, config:', config);
-  // assign table ids
+  console.log('finishInit is running, config:', config); // assign table ids
+
   var _iteratorNormalCompletion3 = true;
   var _didIteratorError3 = false;
   var _iteratorError3 = undefined;
@@ -94454,7 +94464,8 @@ function finishInit(config) {
 }
 
 function initMapboard(clientConfig) {
-  var baseConfigUrl = clientConfig.baseConfig; // console.log('initMapboard, baseConfigUrl:', baseConfigUrl);
+  var baseConfigUrl = clientConfig.baseConfig;
+  console.log('initMapboard, baseConfigUrl:', baseConfigUrl);
 
   if (baseConfigUrl === null) {
     finishInit(clientConfig);
@@ -95031,4 +95042,5 @@ module.exports = __webpack_require__(/*! ./src/main.js */"./src/main.js");
 /***/ })
 
 /******/ });
+});
 //# sourceMappingURL=mapboard.js.map

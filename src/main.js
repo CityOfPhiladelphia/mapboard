@@ -73,7 +73,7 @@ function assignHorizontalTableGroupIds(comps) {
 }
 
 function finishInit(config) {
-  // console.log('finishInit is running, config:', config);
+  console.log('finishInit is running, config:', config);
   // assign table ids
   for (let topic of config.topics) {
     assignTableIds(topic.components);
@@ -109,7 +109,7 @@ function finishInit(config) {
 
 function initMapboard(clientConfig) {
   const baseConfigUrl = clientConfig.baseConfig;
-  // console.log('initMapboard, baseConfigUrl:', baseConfigUrl);
+  console.log('initMapboard, baseConfigUrl:', baseConfigUrl);
 
   if (baseConfigUrl === null) {
     finishInit(clientConfig);

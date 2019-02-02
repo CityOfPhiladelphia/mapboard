@@ -9,9 +9,12 @@ export default {
   mode: 'development',
   // mode: 'production',
   // mode: env,
-  entry: {
-    app: ['./src/main.js'],
-  },
+  entry: [
+    './src/main.js'
+  ],
+  // entry: {
+  //   app: ['./src/main.js'],
+  // },
   resolve: {
     mainFields: ['module', 'main', 'browser'],
     // alias: {
@@ -33,6 +36,8 @@ export default {
     path: path.resolve(__dirname, 'dist'),
     filename: 'mapboard.js',
     publicPath: '/',
+    library: 'mapboard',
+    libraryTarget: 'umd'
   },
   module: {
     rules: [
