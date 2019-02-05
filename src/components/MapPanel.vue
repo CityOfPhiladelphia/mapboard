@@ -323,6 +323,7 @@
 </template>
 
 <script>
+  console.log('in MapPanel, this.$config:', this.$config);
   import * as L from 'leaflet';
   // console.log('L:', L)
   const FeatureGroup = L.default.featureGroup;

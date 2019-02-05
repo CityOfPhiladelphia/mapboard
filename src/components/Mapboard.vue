@@ -74,7 +74,8 @@
 
 <script>
 
-  console.log('test Mapboard.vue')
+  // console.log('test Mapboard.vue, this.$store.state:', this.$store.state);
+  // console.log('test Mapboard.vue, this.$config:', this.$config, 'this.$store.state:', this.$store.state);
 
   import HeaderComp from './HeaderComp.vue';
   import TopicPanel from './TopicPanel.vue';
@@ -111,8 +112,12 @@
       };
       return data;
     },
+    beforeCreate() {
+      console.log('Mapboard.vue beforeCreate is running');
+      console.log('this:', this);
+    },
     created() {
-      console.log('mapboard created, this.$config:', this.$config);
+      console.log('mapboard created, this.$config:', this.$config, 'this.$store.state:', this.$store.state);
       if (this.$config.panels) {
         if (!this.$config.panels.includes('map')) {
           this.$store.commit('setTopicsOnly', true);
