@@ -12,9 +12,19 @@
     > -->
         <topic-panel :class="this.shouldShowTopicPanel" />
 
-        <map-panel :class="this.shouldShowMapPanel"
+        <!-- <map-panel :class="this.shouldShowMapPanel"
                    v-if="this.fullScreenTopicsOnly !== true"
+        > -->
+        <component :is="mapPanelLoader"
+                   :class="this.shouldShowMapPanel"
         >
+        <!-- v-if="this.fullScreenTopicsOnly !== true" -->
+          <!-- <component :is="cyclomediaWidgetLoader"
+                     v-if="this.shouldLoadCyclomediaWidget"
+                     slot="cycloWidget"
+                     v-show="cyclomediaActive"
+                     screen-percent="2"
+          /> -->
           <cyclomedia-widget v-if="this.shouldLoadCyclomediaWidget"
                              slot="cycloWidget"
                              v-show="cyclomediaActive"
@@ -67,7 +77,7 @@
 
   import HeaderComp from './HeaderComp.vue';
   import TopicPanel from './TopicPanel.vue';
-  import MapPanel from './MapPanel.vue';
+  // import MapPanel from './MapPanel.vue';
 
   import {
     CyclomediaWidget,
@@ -76,13 +86,14 @@
     PictometryViewCone,
     PictometryPngMarker
   } from '@cityofphiladelphia/phila-vue-mapping';
+
   import { Popover } from '@cityofphiladelphia/phila-vue-comps';
 
   export default {
     components: {
       HeaderComp,
       TopicPanel,
-      MapPanel,
+      // MapPanel,
       CyclomediaWidget,
       PictometryWidget,
       PictometryLayer,
@@ -123,12 +134,34 @@
       }
     },
     computed: {
-      // mapPanelLoader () {
-      //   if (!this.fullScreenTopicsOnly) {
-      //     return;
+      mapPanelLoader() {
+        console.log('computed mapPanelLoader is running');
+        if (this.fullScreenTopicsOnly) {
+          console.log('if this.fullScreenTopicsOnly is true, returning');
+          return;
+        } else {
+          console.log('else is true, importing mapPanel.vue');
+          return () => import(/* webpackChunkName: "mapPanelLoader" */'./MapPanel.vue').then(console.log('after MapPanel import'))
+        }
+      },
+      // cyclomediaWidgetLoader() {
+      //   if (this.$config.cyclomedia.enabled) {
+      //     return () => import(/* webpackChunkName: "cyclomediaWidgetLoader" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/Widget.vue').then(console.log('after cyclomediaWidget import'))
       //   } else {
-      //     return () => import(/* webpackChunkName: "mapPanelLoader" */'./MapPanel.vue').then(console.log('after MapPanel import'))
+      //     return;
       //   }
+      // },
+      // pictometryWidgetLoader() {
+      //
+      // },
+      // pictometryLayerLoader() {
+      //
+      // },
+      // pictometryViewConeLoader() {
+      //
+      // },
+      // pictometryPngMarkerLoader() {
+      //
       // },
       shouldShowHeader() {
         if (this.$config.header) {
@@ -160,6 +193,7 @@
         return this.$store.state.fullScreenMapEnabled;
       },
       fullScreenTopicsOnly() {
+        // return true;
         return this.$store.state.fullScreen.topicsOnly;
       },
       fullScreenTopicsEnabled() {

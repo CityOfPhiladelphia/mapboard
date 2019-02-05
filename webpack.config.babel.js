@@ -10,12 +10,13 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const Visualizer = require('webpack-visualizer-plugin');
 
 export default {
-  // mode: 'development',
-  mode: 'production',
+  mode: 'development',
+  // mode: 'production',
   // mode: env,
-  entry: [
-    './src/main.js'
-  ],
+  entry: {
+    mapboard: ['./src/main.js'],
+    // './src/main.js'
+  },
   // entry: {
   //   app: ['./src/main.js'],
   // },
@@ -27,7 +28,7 @@ export default {
     // }
     // extensions: [".js", ".jsx"],
   },
-  devtool: isDevelopment ? 'inline-source-map' : 'source-map',
+  // devtool: isDevelopment ? 'inline-source-map' : 'source-map',
   devServer: {
     contentBase: './dist',
     // host: process.env.WEBPACK_DEV_HOST,
@@ -35,30 +36,30 @@ export default {
     // port: process.env.WEBPACK_DEV_PORT
     port: 8082
   },
-  externals: external,
+  // externals: external,
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'mapboard.js',
+    filename: '[name].js',
     publicPath: '/',
     library: 'mapboard',
     libraryTarget: 'umd'
   },
   module: {
     rules: [
-      {
-        test: /\.js$/,
-        exclude: /(node_modules|bower_components)/,
-        use: [
-          {
-            loader: 'babel-loader',
-            // options: {
-            //   presets: [
-            //     ['@babel/preset-env', {modules: false} ]
-            //   ]
-            // }
-          }
-        ]
-      },
+      // {
+      //   test: /\.js$/,
+      //   exclude: /(node_modules|bower_components)/,
+      //   use: [
+      //     {
+      //       loader: 'babel-loader',
+      //       // options: {
+      //       //   presets: [
+      //       //     ['@babel/preset-env', {modules: false} ]
+      //       //   ]
+      //       // }
+      //     }
+      //   ]
+      // },
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
