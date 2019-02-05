@@ -59,7 +59,8 @@
                        :hFov="cycloHFov"
             />
           </pictometry-widget>
-        </map-panel>
+        </component>
+        <!-- </map-panel> -->
 
         <!-- <popover
                  v-if="popoverOpen"
