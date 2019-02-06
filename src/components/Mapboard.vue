@@ -81,7 +81,7 @@
   // import MapPanel from './MapPanel.vue';
 
   import {
-    CyclomediaWidget,
+    // CyclomediaWidget,
     PictometryWidget,
     PictometryLayer,
     PictometryViewCone,
@@ -95,6 +95,7 @@
       HeaderComp,
       TopicPanel,
       // MapPanel,
+      CyclomediaWidget: () => import(/* webpackChunkName: "cyclomediaWidget" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/Widget.vue'),
       CyclomediaWidget,
       PictometryWidget,
       PictometryLayer,
