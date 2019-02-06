@@ -6,7 +6,7 @@ import * as philaVueMapping from '@cityofphiladelphia/phila-vue-mapping';
 import * as philaVueComps from '@cityofphiladelphia/phila-vue-comps';
 import mergeDeep from './util/merge-deep';
 
-console.log('philaVueDatafetch:', philaVueDatafetch, 'philaVueMapping:', philaVueMapping);
+// console.log('philaVueDatafetch:', philaVueDatafetch, 'philaVueMapping:', philaVueMapping);
 
 const pvdStore = philaVueDatafetch.pvdStore
 const pvmStore = philaVueMapping.pvmStore
