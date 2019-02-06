@@ -4,13 +4,19 @@
        :style="mbRootStyle"
   >
 
-    <header-comp v-if="shouldShowHeader" />
+    <component :is="headerCompLoader"
+               v-if="shouldShowHeader"
+    />
+    <!-- <header-comp v-if="shouldShowHeader" /> -->
 
     <!-- <div id="mb-root"
          :class="rootClass"
          :style="mbRootStyle"
     > -->
-        <topic-panel :class="this.shouldShowTopicPanel" />
+        <component :is="topicPanelLoader"
+                   :class="this.shouldShowTopicPanel"
+        />
+        <!-- <topic-panel :class="this.shouldShowTopicPanel" /> -->
 
         <!-- <map-panel :class="this.shouldShowMapPanel"
                    v-if="this.fullScreenTopicsOnly !== true"
