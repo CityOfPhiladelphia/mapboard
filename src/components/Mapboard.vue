@@ -76,8 +76,8 @@
 
   console.log('test Mapboard.vue')
 
-  import HeaderComp from './HeaderComp.vue';
-  import TopicPanel from './TopicPanel.vue';
+  // import HeaderComp from './HeaderComp.vue';
+  // import TopicPanel from './TopicPanel.vue';
   // import MapPanel from './MapPanel.vue';
 
   // import {
@@ -92,8 +92,8 @@
 
   export default {
     components: {
-      HeaderComp,
-      TopicPanel,
+      // HeaderComp,
+      // TopicPanel,
       // MapPanel,
       CyclomediaWidget: () => import(/* webpackChunkName: "cyclomediaWidget" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/Widget.vue'),
       PictometryWidget: () => import(/* webpackChunkName: "pictometryWidget" */'@cityofphiladelphia/phila-vue-mapping/src/pictometry/Widget.vue'),
@@ -143,6 +143,24 @@
         } else {
           console.log('else is true, importing mapPanel.vue');
           return () => import(/* webpackChunkName: "mapPanelLoader" */'./MapPanel.vue').then(console.log('after MapPanel import'))
+        }
+      },
+      topicPanelLoader() {
+        if (this.fullScreenMapOnly) {
+          console.log('if this.fullScreenMapOnly is true, returning');
+          return;
+        } else {
+          console.log('else is true, importing topicPanel.vue');
+          return () => import(/* webpackChunkName: "topicPanelLoader" */'./TopicPanel.vue').then(console.log('after TopicPanel import'))
+        }
+      },
+      headerCompLoader() {
+        if (!this.shouldShowHeader) {
+          console.log('if this.fullScreenMapOnly is true, returning');
+          return;
+        } else {
+          console.log('else is true, importing topicPanel.vue');
+          return () => import(/* webpackChunkName: "headerCompLoader" */'./HeaderComp.vue').then(console.log('after HeaderComp import'))
         }
       },
       // cyclomediaWidgetLoader() {
