@@ -427,6 +427,7 @@
       return data;
     },
     created() {
+      console.log('MapPanel.vue created this.$config:', this.$config);
       // if there's a default address, navigate to it
       const defaultAddress = this.$config.defaultAddress;
       if (defaultAddress) {
