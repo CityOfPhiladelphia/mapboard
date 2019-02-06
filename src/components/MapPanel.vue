@@ -233,16 +233,16 @@
       <!-- <basemap-tooltip :position="'topright'"
       /> -->
 
-      <div v-once>
+      <!-- <div v-once> -->
         <basemap-toggle-control v-if="shouldShowImageryToggle"
                                 v-once
                                 :position="'topright'"
         />
-      </div>
+      <!-- </div> -->
 
-      <div v-once>
+      <!-- <div v-once> -->
         <basemap-select-control :position="this.basemapSelectControlPosition" />
-      </div>
+      <!-- </div> -->
 
       <div v-once>
         <pictometry-button v-if="this.shouldShowPictometryButton"
@@ -278,12 +278,12 @@
         />
       </div>
 
-      <div v-once>
+      <!-- <div v-once> -->
         <location-control v-once
                           v-if="this.geolocationEnabled"
                           :position="'bottomright'"
         />
-      </div>
+      <!-- </div> -->
 
       <!-- <basemap-tooltip :position="'bottomalmostleft'"
       /> -->
@@ -293,13 +293,13 @@
       >
       </scale-control> -->
 
-      <div v-once>
+      <!-- <div v-once> -->
         <map-address-input :position="this.addressInputPosition"
                        :placeholder="this.addressInputPlaceholder"
                        :widthFromConfig="this.addressInputWidth"
         >
         </map-address-input>
-      </div>
+      <!-- </div> -->
       <map-address-candidate-list v-if="this.addressAutocompleteEnabled"
                               :position="this.addressInputPosition"
                               :widthFromConfig="this.addressInputWidth"
@@ -425,6 +425,9 @@
         },
       };
       return data;
+    },
+    beforeCreate() {
+      console.log('MapPanel.vue beforeCreate this.$config:', this.$config);
     },
     created() {
       console.log('MapPanel.vue created this.$config:', this.$config);
