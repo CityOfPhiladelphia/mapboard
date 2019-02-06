@@ -80,15 +80,15 @@
   import TopicPanel from './TopicPanel.vue';
   // import MapPanel from './MapPanel.vue';
 
-  import {
+  // import {
     // CyclomediaWidget,
-    PictometryWidget,
-    PictometryLayer,
-    PictometryViewCone,
-    PictometryPngMarker
-  } from '@cityofphiladelphia/phila-vue-mapping';
+    // PictometryWidget,
+    // PictometryLayer,
+    // PictometryViewCone,
+    // PictometryPngMarker
+  // } from '@cityofphiladelphia/phila-vue-mapping';
 
-  import { Popover } from '@cityofphiladelphia/phila-vue-comps';
+  // import { Popover } from '@cityofphiladelphia/phila-vue-comps';
 
   export default {
     components: {
@@ -96,12 +96,11 @@
       TopicPanel,
       // MapPanel,
       CyclomediaWidget: () => import(/* webpackChunkName: "cyclomediaWidget" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/Widget.vue'),
-      CyclomediaWidget,
-      PictometryWidget,
-      PictometryLayer,
-      PictometryPngMarker,
-      PictometryViewCone,
-      Popover,
+      PictometryWidget: () => import(/* webpackChunkName: "pictometryWidget" */'@cityofphiladelphia/phila-vue-mapping/src/pictometry/Widget.vue'),
+      PictometryLayer: () => import(/* webpackChunkName: "pictometryLayer" */'@cityofphiladelphia/phila-vue-mapping/src/pictometry/Layer.vue'),
+      PictometryPngMarker: () => import(/* webpackChunkName: "pictometryPngMarker" */'@cityofphiladelphia/phila-vue-mapping/src/pictometry/PngMarker.vue'),
+      PictometryViewCone: () => import(/* webpackChunkName: "pictometryViewCone" */'@cityofphiladelphia/phila-vue-mapping/src/pictometry/ViewCone.vue'),
+      Popover: () => import(/* webpackChunkName: "popover" */'@cityofphiladelphia/phila-vue-comps/src/components/Popover.vue'),
     },
     data() {
       const data = {

@@ -46,20 +46,20 @@ export default {
   },
   module: {
     rules: [
-      // {
-      //   test: /\.js$/,
-      //   exclude: /(node_modules|bower_components)/,
-      //   use: [
-      //     {
-      //       loader: 'babel-loader',
-      //       // options: {
-      //       //   presets: [
-      //       //     ['@babel/preset-env', {modules: false} ]
-      //       //   ]
-      //       // }
-      //     }
-      //   ]
-      // },
+      {
+        test: /\.js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: [
+          {
+            loader: 'babel-loader',
+            // options: {
+            //   presets: [
+            //     ['@babel/preset-env', {modules: false} ]
+            //   ]
+            // }
+          }
+        ]
+      },
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
@@ -94,8 +94,8 @@ export default {
     new Visualizer({ filename: './statistics.html' })
   ],
   optimization: {
-    // usedExports: true,
-    // sideEffects: false,
+    usedExports: true,
+    sideEffects: false,
     // splitChunks: {
     //   // chunks: 'all'
     //   cacheGroups: {
