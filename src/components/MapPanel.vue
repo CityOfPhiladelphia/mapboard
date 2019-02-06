@@ -336,9 +336,11 @@
 
   // mixins
   import markersMixin from './markers-mixin';
-  // const cyclomediaMixin = () => import(/* webpackChunkName: "cyclomediaMixin" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/map-panel-mixin.js');
-  // const pictometryMixin = () => import(/* webpackChunkName: "pictometryMixin" */'@cityofphiladelphia/phila-vue-mapping/src/pictometry/map-panel-mixin.js');
-
+  // const cyclomediaMixin = import(/* webpackChunkName: "cyclomediaMixin" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/map-panel-mixin.js');
+  // const pictometryMixin = import(/* webpackChunkName: "pictometryMixin" */'@cityofphiladelphia/phila-vue-mapping/src/pictometry/map-panel-mixin.js');
+  import cyclomediaMixin from '@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/map-panel-mixin.js';
+  import pictometryMixin from '@cityofphiladelphia/phila-vue-mapping/src/pictometry/map-panel-mixin.js';
+  console.log('cyclomediaMixin:', cyclomediaMixin, 'pictometryMixin:', pictometryMixin);
 
   // import {
   //   cyclomediaMixin,
@@ -382,8 +384,8 @@
     name: 'MapPanel',
     mixins: [
       markersMixin,
-      // cyclomediaMixin,
-      // pictometryMixin
+      cyclomediaMixin,
+      pictometryMixin
     ],
     components: {
       Map_: () => import(/* webpackChunkName: "map" */'@cityofphiladelphia/phila-vue-mapping/src/leaflet/Map.vue'),
