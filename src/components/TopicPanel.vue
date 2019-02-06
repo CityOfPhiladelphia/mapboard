@@ -98,25 +98,24 @@
 </template>
 
 <script>
-  import {
-    Topic,
-    TopicComponentGroup,
-    AnyHeader,
-    Greeting,
-    AddressInput,
-    AddressCandidateList,
-    FullScreenTopicsToggleTab,
-  } from '@cityofphiladelphia/phila-vue-comps';
+  // import {
+  //   // Topic,
+  //   // TopicComponentGroup,
+  //   // AnyHeader,
+  //   // Greeting,
+  //   // AddressInput,
+  //   // AddressCandidateList,
+  //   // FullScreenTopicsToggleTab,
+  // } from '@cityofphiladelphia/phila-vue-comps';
 
   export default {
     components: {
-      Greeting,
-      TopicComponentGroup,
-      Topic,
-      AnyHeader,
-      AddressInput,
-      AddressCandidateList,
-      FullScreenTopicsToggleTab,
+      Greeting: () => import(/* webpackChunkName: "greeting" */'@cityofphiladelphia/phila-vue-comps/src/components/Greeting.vue'),
+      TopicComponentGroup: () => import(/* webpackChunkName: "TopicComponentGroup" */'@cityofphiladelphia/phila-vue-comps/src/components/TopicComponentGroup.vue'),
+      Topic: () => import(/* webpackChunkName: "topic" */'@cityofphiladelphia/phila-vue-comps/src/components/Topic.vue'),
+      AddressInput: () => import(/* webpackChunkName: "addressInput" */'@cityofphiladelphia/phila-vue-comps/src/components/AddressInput.vue'),
+      AddressCandidateList: () => import(/* webpackChunkName: "addressCandidateList" */'@cityofphiladelphia/phila-vue-comps/src/components/AddressCandidateList.vue'),
+      FullScreenTopicsToggleTab: () => import(/* webpackChunkName: "fullScreenTopicsToggleTab" */'@cityofphiladelphia/phila-vue-comps/src/components/FullScreenTopicsToggleTab.vue')
     },
     data() {
       const data = {
