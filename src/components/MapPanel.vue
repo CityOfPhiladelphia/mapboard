@@ -2,7 +2,8 @@
   <div id="map-panel-container"
        :class="this.mapPanelContainerClass"
   >
-    <full-screen-map-toggle-tab v-once />
+    <full-screen-map-toggle-tab />
+    <!-- <full-screen-map-toggle-tab v-once /> -->
     <map_ :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }"
           id="map-tag"
           :center="this.$store.state.map.center"
@@ -235,51 +236,53 @@
 
       <!-- <div v-once> -->
         <basemap-toggle-control v-if="shouldShowImageryToggle"
-                                v-once
                                 :position="'topright'"
         />
+        <!-- v-once -->
       <!-- </div> -->
 
       <!-- <div v-once> -->
         <basemap-select-control :position="this.basemapSelectControlPosition" />
       <!-- </div> -->
 
-      <div v-once>
+      <!-- <div v-once> -->
         <pictometry-button v-if="this.shouldShowPictometryButton"
-                           v-once
                            :position="'topright'"
                            :link="'pictometry'"
                            :imgSrc="'images/pictometry.png'"
         />
-      </div>
+        <!-- v-once -->
+      <!-- </div> -->
 
-      <div v-once>
+      <!-- <div v-once> -->
         <cyclomedia-button v-if="this.shouldShowCyclomediaButton"
-                           v-once
                            :position="'topright'"
                            :link="'cyclomedia'"
                            :imgSrc="'images/cyclomedia.png'"
                            @click="handleCyclomediaButtonClick"
         />
-      </div>
+        <!-- v-once -->
+      <!-- </div> -->
 
-      <div v-once
+      <!-- <div v-once -->
+      <div
            v-if="this.measureControlEnabled"
       >
         <measure-control :position="'bottomleft'" />
       </div>
 
-      <div v-once>
+      <!-- <div v-once> -->
         <legend-control v-for="legendControl in Object.keys(legendControls)"
                         :key="legendControl"
                         :position="'bottomleft'"
                         :options="legendControls[legendControl].options"
                         :items="legendControls[legendControl].data"
         />
-      </div>
+      <!-- </div> -->
 
       <!-- <div v-once> -->
-        <location-control v-once
+        <!-- <location-control v-once -->
+        <location-control
                           v-if="this.geolocationEnabled"
                           :position="'bottomright'"
         />
