@@ -6,14 +6,6 @@ import Mapboard from './components/Mapboard.vue';
 import mergeDeep from './util/merge-deep';
 import generateUniqueId from './util/unique-id';
 
-// Font Awesome Icons
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faSpinner } from '@fortawesome/pro-solid-svg-icons/faSpinner';
-import { faBook } from '@fortawesome/pro-solid-svg-icons/faBook';
-import { faWrench } from '@fortawesome/pro-solid-svg-icons/faWrench';
-import { faUniversity } from '@fortawesome/pro-solid-svg-icons/faUniversity';
-import { faGavel } from '@fortawesome/pro-solid-svg-icons/faGavel';
-library.add(faSpinner, faBook, faWrench, faUniversity, faGavel);
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import philaVueDatafetch from '@cityofphiladelphia/phila-vue-datafetch';

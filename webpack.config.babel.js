@@ -14,7 +14,7 @@ export default {
   mode: 'production',
   // mode: env,
   entry: {
-    mapboard: ['./src/main.js'],
+    mapboard: ['./src/main.js', './src/fa.js'],
     // './src/main.js'
   },
   // entry: {
@@ -34,7 +34,7 @@ export default {
     // host: process.env.WEBPACK_DEV_HOST,
     host: 'localhost',
     // port: process.env.WEBPACK_DEV_PORT
-    port: 8082
+    port: 8090
   },
   // externals: external,
   output: {
