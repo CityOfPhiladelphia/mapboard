@@ -80,7 +80,7 @@
 
 <script>
 
-  console.log('test Mapboard.vue')
+  console.log('test Mapboard.vue, this:', this);
 
   // import HeaderComp from './HeaderComp.vue';
   // import TopicPanel from './TopicPanel.vue';
