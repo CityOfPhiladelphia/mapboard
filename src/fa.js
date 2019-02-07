@@ -10,3 +10,5 @@ import { faWrench } from '@fortawesome/pro-solid-svg-icons/faWrench';
 import { faUniversity } from '@fortawesome/pro-solid-svg-icons/faUniversity';
 import { faGavel } from '@fortawesome/pro-solid-svg-icons/faGavel';
 library.add(faSpinner, faBook, faWrench, faUniversity, faGavel);
+
+export default library;

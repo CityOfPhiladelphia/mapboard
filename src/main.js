@@ -6,7 +6,8 @@ import Mapboard from './components/Mapboard.vue';
 import mergeDeep from './util/merge-deep';
 import generateUniqueId from './util/unique-id';
 
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import * as faAll from './fa.js';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import philaVueDatafetch from '@cityofphiladelphia/phila-vue-datafetch';
 const controllerMixin = philaVueDatafetch.controllerMixin;
