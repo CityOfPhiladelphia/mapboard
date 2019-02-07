@@ -12,7 +12,7 @@
   "main": "./dist/mapboard.js",
   "dependencies": {
     "@cityofphiladelphia/phila-vue-comps": "https://github.com/CityOfPhiladelphia/phila-vue-comps#0aa5c744f6ef40a10185a298f155809e6c4a9221",
-    "@cityofphiladelphia/phila-vue-datafetch": "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#39201348df299888f8172026dd8f1e86b68d9c20",
+    "@cityofphiladelphia/phila-vue-datafetch": "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#8572e93458890ae9a4ea6cde82886f72053e3e69",
     "@cityofphiladelphia/phila-vue-mapping": "https://github.com/CityOfPhiladelphia/phila-vue-mapping#2c31ee90214c0d3f975c05baf2796258cccccad8",
     "axios": "^0.18.0",
     "vue": "2.6.2",

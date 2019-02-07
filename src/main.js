@@ -151,4 +151,4 @@ function initMapboard(clientConfig) {
 export default initMapboard;
 
 // also expose the vue component as a named export
-export { Mapboard };
+// export { Mapboard };

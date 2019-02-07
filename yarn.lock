@@ -578,9 +578,9 @@
     vue "^2.6.2"
     vuex "^3.1.0"
 
-"@cityofphiladelphia/phila-vue-datafetch@https://github.com/CityOfPhiladelphia/phila-vue-datafetch#39201348df299888f8172026dd8f1e86b68d9c20":
+"@cityofphiladelphia/phila-vue-datafetch@https://github.com/CityOfPhiladelphia/phila-vue-datafetch#8572e93458890ae9a4ea6cde82886f72053e3e69":
   version "0.0.13"
-  resolved "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#39201348df299888f8172026dd8f1e86b68d9c20"
+  resolved "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#8572e93458890ae9a4ea6cde82886f72053e3e69"
   dependencies:
     "@turf/turf" "^5.1.6"
     axios "^0.18.0"
@@ -588,7 +588,7 @@
     esri-leaflet "^2.2.3"
     leaflet "^1.4.0"
     proj4 "^2.5.0"
-    vue "^2.6.2"
+    vue "2.6.2"
     vuex "^3.1.0"
 
 "@cityofphiladelphia/phila-vue-mapping@https://github.com/CityOfPhiladelphia/phila-vue-mapping#2c31ee90214c0d3f975c05baf2796258cccccad8":
