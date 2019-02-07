@@ -345,6 +345,8 @@
   import pictometryMixin from '@cityofphiladelphia/phila-vue-mapping/src/pictometry/map-panel-mixin.js';
   console.log('cyclomediaMixin:', cyclomediaMixin, 'pictometryMixin:', pictometryMixin);
 
+  import CyclomediaRecordingsClient from '@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/recordings-client.js';
+
   // import {
   //   cyclomediaMixin,
   //   pictometryMixin,
@@ -411,7 +413,6 @@
       PictometryButton: () => import(/* webpackChunkName: "pictometryButton" */'@cityofphiladelphia/phila-vue-mapping/src/pictometry/Button.vue'),
       CyclomediaButton: () => import(/* webpackChunkName: "cyclomediaButton" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/Button.vue'),
       CyclomediaRecordingCircle: () => import(/* webpackChunkName: "cyclomediaRecordingCircle" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/RecordingCircle.vue'),
-      CyclomediaRecordingsClient: () => import(/* webpackChunkName: "cyclomediaRecordingsClient" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/recordings-client.js'),
       SvgViewConeMarker: () => import(/* webpackChunkName: "cyclomediaSvgViewConeMarker" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/SvgViewConeMarker.vue'),
       MeasureControl: () => import(/* webpackChunkName: "measureControl" */'@cityofphiladelphia/phila-vue-mapping/src/components/MeasureControl.vue'),
       LegendControl: () => import(/* webpackChunkName: "legendControl" */'@cityofphiladelphia/phila-vue-mapping/src/components/LegendControl.vue'),
