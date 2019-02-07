@@ -346,6 +346,7 @@
   console.log('cyclomediaMixin:', cyclomediaMixin, 'pictometryMixin:', pictometryMixin);
 
   import CyclomediaRecordingsClient from '@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/recordings-client.js';
+  console.log('in MapPanel.vue, CyclomediaRecordingsClient:', CyclomediaRecordingsClient);
 
   // import {
   //   cyclomediaMixin,
