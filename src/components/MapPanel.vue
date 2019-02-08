@@ -346,6 +346,7 @@
 
   // components
   import CyclomediaRecordingsClient from '@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/recordings-client.js';
+  import ControlCorner from '@cityofphiladelphia/phila-vue-mapping/src/leaflet/ControlCorner.vue';
   import FullScreenMapToggleTab from '@cityofphiladelphia/phila-vue-mapping/src/components/FullScreenMapToggleTab.vue';
   import Map_ from '@cityofphiladelphia/phila-vue-mapping/src/leaflet/Map.vue';
   import LocationControl from '@cityofphiladelphia/phila-vue-mapping/src/components/locationControl.vue';
@@ -378,7 +379,7 @@
       CyclomediaRecordingCircle: () => import(/* webpackChunkName: "mbmp_pvm_CyclomediaRecordingCircle" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/RecordingCircle.vue'),
       SvgViewConeMarker: () => import(/* webpackChunkName: "mbmp_pvm_CyclomediaSvgViewConeMarker" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/SvgViewConeMarker.vue'),
       BasemapTooltip: () => import(/* webpackChunkName: "mbmp_pvm_BasemapTooltip" */'@cityofphiladelphia/phila-vue-mapping/src/components/BasemapTooltip.vue'),
-      ControlCorner: () => import(/* webpackChunkName: "mbmp_pvm_ControlCorner" */'@cityofphiladelphia/phila-vue-mapping/src/leaflet/ControlCorner.vue'),
+      ControlCorner,
       FullScreenMapToggleTab,
       Map_,
       LocationControl,
