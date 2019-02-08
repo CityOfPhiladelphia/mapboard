@@ -2,8 +2,9 @@
   <div id="map-panel-container"
        :class="this.mapPanelContainerClass"
   >
-    <full-screen-map-toggle-tab />
-    <!-- <full-screen-map-toggle-tab v-once /> -->
+    <!-- <full-screen-map-toggle-tab /> -->
+    <full-screen-map-toggle-tab v-once />
+
     <map_ :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }"
           id="map-tag"
           :center="this.$store.state.map.center"
@@ -234,59 +235,57 @@
       <!-- <basemap-tooltip :position="'topright'"
       /> -->
 
-      <!-- <div v-once> -->
+      <div v-once>
         <basemap-toggle-control v-if="shouldShowImageryToggle"
+                                v-once
                                 :position="'topright'"
         />
-        <!-- v-once -->
-      <!-- </div> -->
+      </div>
 
-      <!-- <div v-once> -->
+      <div v-once>
         <basemap-select-control :position="this.basemapSelectControlPosition" />
-      <!-- </div> -->
+      </div>
 
-      <!-- <div v-once> -->
+      <div v-once>
         <pictometry-button v-if="this.shouldShowPictometryButton"
+                           v-once
                            :position="'topright'"
                            :link="'pictometry'"
                            :imgSrc="'images/pictometry.png'"
         />
-        <!-- v-once -->
-      <!-- </div> -->
+      </div>
 
-      <!-- <div v-once> -->
+      <div v-once>
         <cyclomedia-button v-if="this.shouldShowCyclomediaButton"
+                           v-once
                            :position="'topright'"
                            :link="'cyclomedia'"
                            :imgSrc="'images/cyclomedia.png'"
                            @click="handleCyclomediaButtonClick"
         />
-        <!-- v-once -->
-      <!-- </div> -->
+      </div>
 
-      <!-- <div v-once -->
-      <div
+      <div v-once
            v-if="this.measureControlEnabled"
       >
         <measure-control :position="'bottomleft'" />
       </div>
 
-      <!-- <div v-once> -->
+      <div v-once>
         <legend-control v-for="legendControl in Object.keys(legendControls)"
                         :key="legendControl"
                         :position="'bottomleft'"
                         :options="legendControls[legendControl].options"
                         :items="legendControls[legendControl].data"
         />
-      <!-- </div> -->
+      </div>
 
-      <!-- <div v-once> -->
-        <!-- <location-control v-once -->
-        <location-control
+      <div v-once>
+        <location-control v-once
                           v-if="this.geolocationEnabled"
                           :position="'bottomright'"
         />
-      <!-- </div> -->
+      </div>
 
       <!-- <basemap-tooltip :position="'bottomalmostleft'"
       /> -->
@@ -296,13 +295,13 @@
       >
       </scale-control> -->
 
-      <!-- <div v-once> -->
+      <div v-once>
         <map-address-input :position="this.addressInputPosition"
                        :placeholder="this.addressInputPlaceholder"
                        :widthFromConfig="this.addressInputWidth"
         >
         </map-address-input>
-      <!-- </div> -->
+      </div>
       <map-address-candidate-list v-if="this.addressAutocompleteEnabled"
                               :position="this.addressInputPosition"
                               :widthFromConfig="this.addressInputWidth"
@@ -343,11 +342,20 @@
   // const pictometryMixin = import(/* webpackChunkName: "mbmb_pvm_pictometryMixin" */'@cityofphiladelphia/phila-vue-mapping/src/pictometry/map-panel-mixin.js');
   import cyclomediaMixin from '@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/map-panel-mixin.js';
   import pictometryMixin from '@cityofphiladelphia/phila-vue-mapping/src/pictometry/map-panel-mixin.js';
-  console.log('cyclomediaMixin:', cyclomediaMixin, 'pictometryMixin:', pictometryMixin);
-
   // const CyclomediaRecordingsClient = import(/* webpackChunkName: "mbmb_pvm_CyclomediaRecordingsClient" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/recordings-client.js');
+
+  // components
   import CyclomediaRecordingsClient from '@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/recordings-client.js';
-  console.log('in MapPanel.vue, CyclomediaRecordingsClient:', CyclomediaRecordingsClient);
+  import FullScreenMapToggleTab from '@cityofphiladelphia/phila-vue-mapping/src/components/FullScreenMapToggleTab.vue';
+  import Map_ from '@cityofphiladelphia/phila-vue-mapping/src/leaflet/Map.vue';
+  import LocationControl from '@cityofphiladelphia/phila-vue-mapping/src/components/locationControl.vue';
+  import BasemapToggleControl from '@cityofphiladelphia/phila-vue-mapping/src/components/BasemapToggleControl.vue';
+  import BasemapSelectControl from '@cityofphiladelphia/phila-vue-mapping/src/components/BasemapSelectControl.vue';
+  import PictometryButton from '@cityofphiladelphia/phila-vue-mapping/src/pictometry/Button.vue';
+  import CyclomediaButton from '@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/Button.vue';
+  import MeasureControl from '@cityofphiladelphia/phila-vue-mapping/src/components/MeasureControl.vue';
+  import LegendControl from '@cityofphiladelphia/phila-vue-mapping/src/components/LegendControl.vue';
+  import MapAddressInput from '@cityofphiladelphia/phila-vue-mapping/src/components/MapAddressInput.vue';
 
   export default {
     name: 'MapPanel',
@@ -357,9 +365,7 @@
       pictometryMixin
     ],
     components: {
-      Map_: () => import(/* webpackChunkName: "mbmp_pvm_Map" */'@cityofphiladelphia/phila-vue-mapping/src/leaflet/Map.vue'),
       Control: () => import(/* webpackChunkName: "mbmp_pvm_Control" */'@cityofphiladelphia/phila-vue-mapping/src/leaflet/Control.vue'),
-      MapAddressInput: () => import(/* webpackChunkName: "mbmp_pvm_MapAddressInput" */'@cityofphiladelphia/phila-vue-mapping/src/components/MapAddressInput.vue'),
       MapAddressCandidateList: () => import(/* webpackChunkName: "mbmp_pvm_MapAddressCandidateList" */'@cityofphiladelphia/phila-vue-mapping/src/components/MapAddressCandidateList.vue'),
       EsriTiledMapLayer: () => import(/* webpackChunkName: "mbmp_pvm_EsriTiledMapLayer" */'@cityofphiladelphia/phila-vue-mapping/src/esri-leaflet/TiledMapLayer.vue'),
       EsriTiledOverlay: () => import(/* webpackChunkName: "mbmp_pvm_EsriTiledOverlay" */'@cityofphiladelphia/phila-vue-mapping/src/esri-leaflet/TiledOverlay.vue'),
@@ -367,23 +373,23 @@
       EsriFeatureLayer: () => import(/* webpackChunkName: "mbmp_pvm_EsriFeatureLayer" */'@cityofphiladelphia/phila-vue-mapping/src/esri-leaflet/FeatureLayer.vue'),
       Geojson: () => import(/* webpackChunkName: "mbmp_pvm_Geojson" */'@cityofphiladelphia/phila-vue-mapping/src/leaflet/Geojson.vue'),
       CircleMarker: () => import(/* webpackChunkName: "mbmp_pvm_CircleMarker" */'@cityofphiladelphia/phila-vue-mapping/src/leaflet/CircleMarker.vue'),
-      // OpacitySlider,
       VectorMarker: () => import(/* webpackChunkName: "mbmp_pvm_VectorMarker" */'@cityofphiladelphia/phila-vue-mapping/src/components/VectorMarker.vue'),
       PngMarker: () => import(/* webpackChunkName: "mbmp_pvm_PngMarker" */'@cityofphiladelphia/phila-vue-mapping/src/components/PngMarker.vue'),
-      BasemapToggleControl: () => import(/* webpackChunkName: "mbmp_pvm_BasemapToggleControl" */'@cityofphiladelphia/phila-vue-mapping/src/components/BasemapToggleControl.vue'),
-      BasemapSelectControl: () => import(/* webpackChunkName: "mbmp_pvm_BasemapSelectControl" */'@cityofphiladelphia/phila-vue-mapping/src/components/BasemapSelectControl.vue'),
-      FullScreenMapToggleTab: () => import(/* webpackChunkName: "mbmp_pvm_FullScreenMapToggleTab" */'@cityofphiladelphia/phila-vue-mapping/src/components/FullScreenMapToggleTab.vue'),
-      LocationControl: () => import(/* webpackChunkName: "mbmp_pvm_LocationControl" */'@cityofphiladelphia/phila-vue-mapping/src/components/locationControl.vue'),
-      PictometryButton: () => import(/* webpackChunkName: "mbmp_pvm_PictometryButton" */'@cityofphiladelphia/phila-vue-mapping/src/pictometry/Button.vue'),
-      CyclomediaButton: () => import(/* webpackChunkName: "mbmp_pvm_CyclomediaButton" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/Button.vue'),
       CyclomediaRecordingCircle: () => import(/* webpackChunkName: "mbmp_pvm_CyclomediaRecordingCircle" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/RecordingCircle.vue'),
       SvgViewConeMarker: () => import(/* webpackChunkName: "mbmp_pvm_CyclomediaSvgViewConeMarker" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/SvgViewConeMarker.vue'),
-      MeasureControl: () => import(/* webpackChunkName: "mbmp_pvm_MeasureControl" */'@cityofphiladelphia/phila-vue-mapping/src/components/MeasureControl.vue'),
-      LegendControl: () => import(/* webpackChunkName: "mbmp_pvm_LegendControl" */'@cityofphiladelphia/phila-vue-mapping/src/components/LegendControl.vue'),
       BasemapTooltip: () => import(/* webpackChunkName: "mbmp_pvm_BasemapTooltip" */'@cityofphiladelphia/phila-vue-mapping/src/components/BasemapTooltip.vue'),
       ControlCorner: () => import(/* webpackChunkName: "mbmp_pvm_ControlCorner" */'@cityofphiladelphia/phila-vue-mapping/src/leaflet/ControlCorner.vue'),
+      FullScreenMapToggleTab,
+      Map_,
+      LocationControl,
+      BasemapToggleControl,
+      BasemapSelectControl,
+      PictometryButton,
+      CyclomediaButton,
+      MeasureControl,
+      LegendControl,
+      MapAddressInput,
     },
-    // data: {
     data() {
       const data = {
         zoomToShape: {
