@@ -1,5 +1,6 @@
 {
   "name": "@cityofphiladelphia/mapboard",
+  "sideEffects": false,
   "description": "A Vue.js component for data-rich web mapping",
   "version": "3.0.18",
   "author": "City of Philadelphia <maps@phila.gov>",

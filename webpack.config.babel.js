@@ -52,11 +52,11 @@ export default {
         use: [
           {
             loader: 'babel-loader',
-            // options: {
-            //   presets: [
-            //     ['@babel/preset-env', {modules: false} ]
-            //   ]
-            // }
+            options: {
+              presets: [
+                ['@babel/preset-env', {modules: false} ]
+              ]
+            }
           }
         ]
       },
