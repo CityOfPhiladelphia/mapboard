@@ -349,44 +349,6 @@
   import CyclomediaRecordingsClient from '@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/recordings-client.js';
   console.log('in MapPanel.vue, CyclomediaRecordingsClient:', CyclomediaRecordingsClient);
 
-  // import {
-  //   cyclomediaMixin,
-  //   pictometryMixin,
-  //   Map_,
-  //   Control,
-  //   MapAddressInput,
-  //   MapAddressCandidateList,
-  //   EsriTiledMapLayer,
-  //   EsriTiledOverlay,
-  //   EsriDynamicMapLayer,
-  //   EsriFeatureLayer,
-  //   Geojson,
-  //   CircleMarker,
-  //   // OpacitySlider,
-  //   VectorMarker,
-  //   PngMarker,
-  //   BasemapToggleControl,
-  //   BasemapSelectControl,
-  //   FullScreenMapToggleTab,
-  //   LocationControl,
-  //   CyclomediaButton,
-  //   PictometryButton,
-  //   CyclomediaRecordingCircle,
-  //   CyclomediaRecordingsClient,
-  //   SvgViewConeMarker,
-  //   MeasureControl,
-  //   LegendControl,
-  //   BasemapTooltip,
-  //   ControlCorner,
-  //   EsriWebMap,
-  //   EsriWebMapLayer,
-  //   PopUp,
-  //   PopUpContent,
-  //   Polygon_,
-  //   Polyline_,
-  //   ModalAbout
-  // } from '@cityofphiladelphia/phila-vue-mapping';
-
   export default {
     name: 'MapPanel',
     mixins: [
