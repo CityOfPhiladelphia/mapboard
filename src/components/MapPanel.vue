@@ -339,8 +339,8 @@
 
   // mixins
   import markersMixin from './markers-mixin';
-  // const cyclomediaMixin = import(/* webpackChunkName: "cyclomediaMixin" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/map-panel-mixin.js');
-  // const pictometryMixin = import(/* webpackChunkName: "pictometryMixin" */'@cityofphiladelphia/phila-vue-mapping/src/pictometry/map-panel-mixin.js');
+  // const cyclomediaMixin = import(/* webpackChunkName: "mbmb_pvm_cyclomediaMixin" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/map-panel-mixin.js');
+  // const pictometryMixin = import(/* webpackChunkName: "mbmb_pvm_pictometryMixin" */'@cityofphiladelphia/phila-vue-mapping/src/pictometry/map-panel-mixin.js');
   import cyclomediaMixin from '@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/map-panel-mixin.js';
   import pictometryMixin from '@cityofphiladelphia/phila-vue-mapping/src/pictometry/map-panel-mixin.js';
   console.log('cyclomediaMixin:', cyclomediaMixin, 'pictometryMixin:', pictometryMixin);
@@ -394,31 +394,31 @@
       pictometryMixin
     ],
     components: {
-      Map_: () => import(/* webpackChunkName: "map" */'@cityofphiladelphia/phila-vue-mapping/src/leaflet/Map.vue'),
-      Control: () => import(/* webpackChunkName: "control" */'@cityofphiladelphia/phila-vue-mapping/src/leaflet/Control.vue'),
-      MapAddressInput: () => import(/* webpackChunkName: "mapAddressInput" */'@cityofphiladelphia/phila-vue-mapping/src/components/MapAddressInput.vue'),
-      MapAddressCandidateList: () => import(/* webpackChunkName: "MapAddressCandidateList" */'@cityofphiladelphia/phila-vue-mapping/src/components/MapAddressCandidateList.vue'),
-      EsriTiledMapLayer: () => import(/* webpackChunkName: "esriTiledMapLayer" */'@cityofphiladelphia/phila-vue-mapping/src/esri-leaflet/TiledMapLayer.vue'),
-      EsriTiledOverlay: () => import(/* webpackChunkName: "esriTiledOverlay" */'@cityofphiladelphia/phila-vue-mapping/src/esri-leaflet/TiledOverlay.vue'),
-      EsriDynamicMapLayer: () => import(/* webpackChunkName: "esriDynamicMapLayer" */'@cityofphiladelphia/phila-vue-mapping/src/esri-leaflet/DynamicMapLayer.vue'),
-      EsriFeatureLayer: () => import(/* webpackChunkName: "esriFeatureLayer" */'@cityofphiladelphia/phila-vue-mapping/src/esri-leaflet/FeatureLayer.vue'),
-      Geojson: () => import(/* webpackChunkName: "geojson" */'@cityofphiladelphia/phila-vue-mapping/src/leaflet/Geojson.vue'),
-      CircleMarker: () => import(/* webpackChunkName: "circleMarker" */'@cityofphiladelphia/phila-vue-mapping/src/leaflet/CircleMarker.vue'),
+      Map_: () => import(/* webpackChunkName: "mbmp_pvm_Map" */'@cityofphiladelphia/phila-vue-mapping/src/leaflet/Map.vue'),
+      Control: () => import(/* webpackChunkName: "mbmp_pvm_Control" */'@cityofphiladelphia/phila-vue-mapping/src/leaflet/Control.vue'),
+      MapAddressInput: () => import(/* webpackChunkName: "mbmp_pvm_MapAddressInput" */'@cityofphiladelphia/phila-vue-mapping/src/components/MapAddressInput.vue'),
+      MapAddressCandidateList: () => import(/* webpackChunkName: "mbmp_pvm_MapAddressCandidateList" */'@cityofphiladelphia/phila-vue-mapping/src/components/MapAddressCandidateList.vue'),
+      EsriTiledMapLayer: () => import(/* webpackChunkName: "mbmp_pvm_EsriTiledMapLayer" */'@cityofphiladelphia/phila-vue-mapping/src/esri-leaflet/TiledMapLayer.vue'),
+      EsriTiledOverlay: () => import(/* webpackChunkName: "mbmp_pvm_EsriTiledOverlay" */'@cityofphiladelphia/phila-vue-mapping/src/esri-leaflet/TiledOverlay.vue'),
+      EsriDynamicMapLayer: () => import(/* webpackChunkName: "mbmp_pvm_EsriDynamicMapLayer" */'@cityofphiladelphia/phila-vue-mapping/src/esri-leaflet/DynamicMapLayer.vue'),
+      EsriFeatureLayer: () => import(/* webpackChunkName: "mbmp_pvm_EsriFeatureLayer" */'@cityofphiladelphia/phila-vue-mapping/src/esri-leaflet/FeatureLayer.vue'),
+      Geojson: () => import(/* webpackChunkName: "mbmp_pvm_Geojson" */'@cityofphiladelphia/phila-vue-mapping/src/leaflet/Geojson.vue'),
+      CircleMarker: () => import(/* webpackChunkName: "mbmp_pvm_CircleMarker" */'@cityofphiladelphia/phila-vue-mapping/src/leaflet/CircleMarker.vue'),
       // OpacitySlider,
-      VectorMarker: () => import(/* webpackChunkName: "vectorMarker" */'@cityofphiladelphia/phila-vue-mapping/src/components/VectorMarker.vue'),
-      PngMarker: () => import(/* webpackChunkName: "pngMarker" */'@cityofphiladelphia/phila-vue-mapping/src/components/PngMarker.vue'),
-      BasemapToggleControl: () => import(/* webpackChunkName: "basemapToggleControl" */'@cityofphiladelphia/phila-vue-mapping/src/components/BasemapToggleControl.vue'),
-      BasemapSelectControl: () => import(/* webpackChunkName: "basemapSelectControl" */'@cityofphiladelphia/phila-vue-mapping/src/components/BasemapSelectControl.vue'),
-      FullScreenMapToggleTab: () => import(/* webpackChunkName: "fullScreenMapToggleTab" */'@cityofphiladelphia/phila-vue-mapping/src/components/FullScreenMapToggleTab.vue'),
-      LocationControl: () => import(/* webpackChunkName: "locationControl" */'@cityofphiladelphia/phila-vue-mapping/src/components/locationControl.vue'),
-      PictometryButton: () => import(/* webpackChunkName: "pictometryButton" */'@cityofphiladelphia/phila-vue-mapping/src/pictometry/Button.vue'),
-      CyclomediaButton: () => import(/* webpackChunkName: "cyclomediaButton" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/Button.vue'),
-      CyclomediaRecordingCircle: () => import(/* webpackChunkName: "cyclomediaRecordingCircle" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/RecordingCircle.vue'),
-      SvgViewConeMarker: () => import(/* webpackChunkName: "cyclomediaSvgViewConeMarker" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/SvgViewConeMarker.vue'),
-      MeasureControl: () => import(/* webpackChunkName: "measureControl" */'@cityofphiladelphia/phila-vue-mapping/src/components/MeasureControl.vue'),
-      LegendControl: () => import(/* webpackChunkName: "legendControl" */'@cityofphiladelphia/phila-vue-mapping/src/components/LegendControl.vue'),
-      BasemapTooltip: () => import(/* webpackChunkName: "basemapTooltip" */'@cityofphiladelphia/phila-vue-mapping/src/components/BasemapTooltip.vue'),
-      ControlCorner: () => import(/* webpackChunkName: "controlCorner" */'@cityofphiladelphia/phila-vue-mapping/src/leaflet/ControlCorner.vue'),
+      VectorMarker: () => import(/* webpackChunkName: "mbmp_pvm_VectorMarker" */'@cityofphiladelphia/phila-vue-mapping/src/components/VectorMarker.vue'),
+      PngMarker: () => import(/* webpackChunkName: "mbmp_pvm_PngMarker" */'@cityofphiladelphia/phila-vue-mapping/src/components/PngMarker.vue'),
+      BasemapToggleControl: () => import(/* webpackChunkName: "mbmp_pvm_BasemapToggleControl" */'@cityofphiladelphia/phila-vue-mapping/src/components/BasemapToggleControl.vue'),
+      BasemapSelectControl: () => import(/* webpackChunkName: "mbmp_pvm_BasemapSelectControl" */'@cityofphiladelphia/phila-vue-mapping/src/components/BasemapSelectControl.vue'),
+      FullScreenMapToggleTab: () => import(/* webpackChunkName: "mbmp_pvm_FullScreenMapToggleTab" */'@cityofphiladelphia/phila-vue-mapping/src/components/FullScreenMapToggleTab.vue'),
+      LocationControl: () => import(/* webpackChunkName: "mbmp_pvm_LocationControl" */'@cityofphiladelphia/phila-vue-mapping/src/components/locationControl.vue'),
+      PictometryButton: () => import(/* webpackChunkName: "mbmp_pvm_PictometryButton" */'@cityofphiladelphia/phila-vue-mapping/src/pictometry/Button.vue'),
+      CyclomediaButton: () => import(/* webpackChunkName: "mbmp_pvm_CyclomediaButton" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/Button.vue'),
+      CyclomediaRecordingCircle: () => import(/* webpackChunkName: "mbmp_pvm_CyclomediaRecordingCircle" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/RecordingCircle.vue'),
+      SvgViewConeMarker: () => import(/* webpackChunkName: "mbmp_pvm_CyclomediaSvgViewConeMarker" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/SvgViewConeMarker.vue'),
+      MeasureControl: () => import(/* webpackChunkName: "mbmp_pvm_MeasureControl" */'@cityofphiladelphia/phila-vue-mapping/src/components/MeasureControl.vue'),
+      LegendControl: () => import(/* webpackChunkName: "mbmp_pvm_LegendControl" */'@cityofphiladelphia/phila-vue-mapping/src/components/LegendControl.vue'),
+      BasemapTooltip: () => import(/* webpackChunkName: "mbmp_pvm_BasemapTooltip" */'@cityofphiladelphia/phila-vue-mapping/src/components/BasemapTooltip.vue'),
+      ControlCorner: () => import(/* webpackChunkName: "mbmp_pvm_ControlCorner" */'@cityofphiladelphia/phila-vue-mapping/src/leaflet/ControlCorner.vue'),
     },
     // data: {
     data() {

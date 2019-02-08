@@ -101,12 +101,12 @@
       // HeaderComp,
       // TopicPanel,
       // MapPanel,
-      CyclomediaWidget: () => import(/* webpackChunkName: "cyclomediaWidget" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/Widget.vue'),
-      PictometryWidget: () => import(/* webpackChunkName: "pictometryWidget" */'@cityofphiladelphia/phila-vue-mapping/src/pictometry/Widget.vue'),
-      PictometryLayer: () => import(/* webpackChunkName: "pictometryLayer" */'@cityofphiladelphia/phila-vue-mapping/src/pictometry/Layer.vue'),
-      PictometryPngMarker: () => import(/* webpackChunkName: "pictometryPngMarker" */'@cityofphiladelphia/phila-vue-mapping/src/pictometry/PngMarker.vue'),
-      PictometryViewCone: () => import(/* webpackChunkName: "pictometryViewCone" */'@cityofphiladelphia/phila-vue-mapping/src/pictometry/ViewCone.vue'),
-      Popover: () => import(/* webpackChunkName: "popover" */'@cityofphiladelphia/phila-vue-comps/src/components/Popover.vue'),
+      CyclomediaWidget: () => import(/* webpackChunkName: "mbmb_pvm_CyclomediaWidget" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/Widget.vue'),
+      PictometryWidget: () => import(/* webpackChunkName: "mbmb_pvm_PictometryWidget" */'@cityofphiladelphia/phila-vue-mapping/src/pictometry/Widget.vue'),
+      PictometryLayer: () => import(/* webpackChunkName: "mbmb_pvm_PictometryLayer" */'@cityofphiladelphia/phila-vue-mapping/src/pictometry/Layer.vue'),
+      PictometryPngMarker: () => import(/* webpackChunkName: "mbmb_pvm_PictometryPngMarker" */'@cityofphiladelphia/phila-vue-mapping/src/pictometry/PngMarker.vue'),
+      PictometryViewCone: () => import(/* webpackChunkName: "mbmb_pvm_PictometryViewCone" */'@cityofphiladelphia/phila-vue-mapping/src/pictometry/ViewCone.vue'),
+      Popover: () => import(/* webpackChunkName: "mbmb_pvc_Popover" */'@cityofphiladelphia/phila-vue-comps/src/components/Popover.vue'),
     },
     data() {
       const data = {
@@ -149,7 +149,7 @@
           return;
         } else {
           console.log('else is true, importing mapPanel.vue');
-          return () => import(/* webpackChunkName: "mapPanelLoader" */'./MapPanel.vue').then(console.log('after MapPanel import'))
+          return () => import(/* webpackChunkName: "mbmb_MapPanelLoader" */'./MapPanel.vue').then(console.log('after MapPanel import'))
         }
       },
       topicPanelLoader() {
@@ -158,7 +158,7 @@
           return;
         } else {
           console.log('else is true, importing topicPanel.vue');
-          return () => import(/* webpackChunkName: "topicPanelLoader" */'./TopicPanel.vue').then(console.log('after TopicPanel import'))
+          return () => import(/* webpackChunkName: "mbmb_TopicPanelLoader" */'./TopicPanel.vue').then(console.log('after TopicPanel import'))
         }
       },
       headerCompLoader() {
@@ -167,12 +167,12 @@
           return;
         } else {
           console.log('else is true, importing topicPanel.vue');
-          return () => import(/* webpackChunkName: "headerCompLoader" */'./HeaderComp.vue').then(console.log('after HeaderComp import'))
+          return () => import(/* webpackChunkName: "mbmb_headerCompLoader" */'./HeaderComp.vue').then(console.log('after HeaderComp import'))
         }
       },
       // cyclomediaWidgetLoader() {
       //   if (this.$config.cyclomedia.enabled) {
-      //     return () => import(/* webpackChunkName: "cyclomediaWidgetLoader" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/Widget.vue').then(console.log('after cyclomediaWidget import'))
+      //     return () => import(/* webpackChunkName: "mbmb_pvm_cyclomediaWidgetLoader" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/Widget.vue').then(console.log('after cyclomediaWidget import'))
       //   } else {
       //     return;
       //   }
