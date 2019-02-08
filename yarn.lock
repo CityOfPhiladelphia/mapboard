@@ -559,9 +559,9 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@cityofphiladelphia/phila-vue-comps@https://github.com/CityOfPhiladelphia/phila-vue-comps#8532364877afd01fe35a8482be6198a28b7b146b":
+"@cityofphiladelphia/phila-vue-comps@https://github.com/CityOfPhiladelphia/phila-vue-comps#9e75745e704cff9236076998ca96f4f6170f2078":
   version "1.0.15"
-  resolved "https://github.com/CityOfPhiladelphia/phila-vue-comps#8532364877afd01fe35a8482be6198a28b7b146b"
+  resolved "https://github.com/CityOfPhiladelphia/phila-vue-comps#9e75745e704cff9236076998ca96f4f6170f2078"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.14"
     "@fortawesome/pro-light-svg-icons" "^5.5.0"
