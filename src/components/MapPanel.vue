@@ -345,7 +345,8 @@
   import pictometryMixin from '@cityofphiladelphia/phila-vue-mapping/src/pictometry/map-panel-mixin.js';
   console.log('cyclomediaMixin:', cyclomediaMixin, 'pictometryMixin:', pictometryMixin);
 
-  import CyclomediaRecordingsClient from '@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/recordings-client.js';
+  const CyclomediaRecordingsClient = import(/* webpackChunkName: "mbmb_pvm_CyclomediaRecordingsClient" */'@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/recordings-client.js');
+  // import CyclomediaRecordingsClient from '@cityofphiladelphia/phila-vue-mapping/src/cyclomedia/recordings-client.js';
   console.log('in MapPanel.vue, CyclomediaRecordingsClient:', CyclomediaRecordingsClient);
 
   // import {
