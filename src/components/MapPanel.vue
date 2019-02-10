@@ -349,7 +349,7 @@
   import ControlCorner from '@cityofphiladelphia/phila-vue-mapping/src/leaflet/ControlCorner.vue';
   import FullScreenMapToggleTab from '@cityofphiladelphia/phila-vue-mapping/src/components/FullScreenMapToggleTab.vue';
   import Map_ from '@cityofphiladelphia/phila-vue-mapping/src/leaflet/Map.vue';
-  import LocationControl from '@cityofphiladelphia/phila-vue-mapping/src/components/locationControl.vue';
+  import LocationControl from '@cityofphiladelphia/phila-vue-mapping/src/components/LocationControl.vue';
   import BasemapToggleControl from '@cityofphiladelphia/phila-vue-mapping/src/components/BasemapToggleControl.vue';
   import BasemapSelectControl from '@cityofphiladelphia/phila-vue-mapping/src/components/BasemapSelectControl.vue';
   import PictometryButton from '@cityofphiladelphia/phila-vue-mapping/src/pictometry/Button.vue';
