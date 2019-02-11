@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import axios from 'axios';
-// import createStore from './store';
+import createStore from './store';
 import configMixin from './util/config-mixin';
 import Mapboard from './components/Mapboard.vue';
 import mergeDeep from './util/merge-deep';
@@ -72,11 +72,10 @@ function finishInit(config) {
   Vue.use(configMixin, config);
 
   // create store
-  // const store = createStore(config);
+  const store = createStore(config);
 
   // mix in controller
-  // Vue.use(controllerMixin, { config, store });
-  Vue.use(controllerMixin, { config });
+  Vue.use(controllerMixin, { config, store });
   // Vue.use(controllerMixin, { config, store, eventBus });
 
   Vue.component('font-awesome-icon', FontAwesomeIcon);
@@ -92,7 +91,7 @@ function finishInit(config) {
   const vm = new Vue({
     el: config.el || '#mapboard',
     render: h => h(Mapboard),
-    // store
+    store
   });
 }
 
