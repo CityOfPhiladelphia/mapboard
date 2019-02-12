@@ -1,19 +1,10 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import isMobileDevice from './util/is-mobile-device';
-import philaVueDatafetch from '@cityofphiladelphia/phila-vue-datafetch'
-// import * as philaVueMapping from '@cityofphiladelphia/phila-vue-mapping';
+import pvdStore from '@cityofphiladelphia/phila-vue-datafetch/src/store.js';
 import pvmStore from '@cityofphiladelphia/phila-vue-mapping/src/store.js';
 import pvcStore from '@cityofphiladelphia/phila-vue-comps/src/store.js';
-// import * as philaVueComps from '@cityofphiladelphia/phila-vue-comps';
 import mergeDeep from './util/merge-deep';
-
-// console.log('pvmStore:', pvmStore);
-// console.log('philaVueDatafetch:', philaVueDatafetch, 'philaVueMapping:', philaVueMapping);
-
-const pvdStore = philaVueDatafetch.pvdStore
-// const pvmStore = philaVueMapping.pvmStore
-// const pvcStore = philaVueComps.pvcStore
 
 // when you load vuex from a script tag this seems to happen automatically
 Vue.use(Vuex);
