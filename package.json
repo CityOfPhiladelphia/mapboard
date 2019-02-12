@@ -1,60 +1,32 @@
 {
-  "name": "@cityofphiladelphia/mapboard",
-  "sideEffects": false,
-  "description": "A Vue.js component for data-rich web mapping",
-  "version": "3.0.18",
-  "author": "City of Philadelphia <maps@phila.gov>",
+  "name": "cli3_mapboard",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "build": "cross-env NODE_ENV=production npx webpack",
-    "dev": "cross-env NODE_ENV=development webpack-dev-server",
-    "e2e": "node test/e2e/runner.js",
-    "example": "webpack-serve ./example/webpack.config.js"
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
   },
-  "main": "./dist/mapboard.js",
   "dependencies": {
     "@cityofphiladelphia/phila-vue-comps": "https://github.com/CityOfPhiladelphia/phila-vue-comps#23c02c76629a8ac00963c85ee2c1711facfd21f1",
     "@cityofphiladelphia/phila-vue-datafetch": "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#1e5778f30f36d5d94a6b99779bcfb867fe010c38",
     "@cityofphiladelphia/phila-vue-mapping": "https://github.com/CityOfPhiladelphia/phila-vue-mapping#ae85c96f21f375b26723ec507b32cb161da77be3",
     "@fortawesome/vue-fontawesome": "^0.1.5",
-    "axios": "^0.18.0",
-    "vue": "^2.6.3",
-    "vuex": "^3.1.0"
+    "vue": "2.5.22",
+    "vuex": "^3.0.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.2.2",
-    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
-    "@babel/preset-env": "^7.3.1",
-    "@babel/register": "^7.0.0",
-    "babel-loader": "^8.0.5",
-    "babel-plugin-component": "^1.1.1",
-    "babel-plugin-dynamic-import-node-babel-7": "^2.0.7",
-    "chromedriver": "^2.37.0",
-    "cross-env": "^5.2.0",
-    "cross-spawn": "^6.0.4",
-    "css-loader": "^2.1.0",
-    "file-loader": "^3.0.1",
-    "nightwatch": "^0.9.19",
-    "rollup": "^0.57.1",
-    "rollup-analyzer-plugin": "^1.1.1",
-    "rollup-plugin-buble": "^0.19.2",
-    "rollup-plugin-commonjs": "^9.1.0",
-    "rollup-plugin-node-builtins": "^2.1.2",
-    "rollup-plugin-node-globals": "^1.2.0",
-    "rollup-plugin-node-resolve": "^3.3.0",
-    "rollup-plugin-replace": "^2.0.0",
-    "rollup-plugin-uglify": "^3.0.0",
-    "rollup-plugin-vue": "^3.0.0",
-    "selenium-server": "^3.11.0",
-    "style-loader": "^0.23.1",
-    "vue-loader": "^15.6.1",
-    "vue-template-compiler": "^2.6.3",
-    "webpack": "^4.29.0",
-    "webpack-cli": "^3.2.1",
-    "webpack-dev-server": "^3.1.14",
-    "webpack-serve": "^0.3.2",
-    "webpack-visualizer-plugin": "^0.1.11"
+    "@vue/cli-plugin-babel": "^3.0.5",
+    "@vue/cli-service": "^3.0.5",
+    "vue-template-compiler": "2.5.22"
   },
-  "publishConfig": {
-    "access": "public"
-  }
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
 }

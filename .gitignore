@@ -1,10 +1,27 @@
 .DS_Store
-node_modules/
-npm-debug.log
-yarn-error.log
+node_modules
+/dist
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*
+
+.npmrc
 /test/e2e/reports/
 selenium-debug.log
 _bin/
 package-lock.json
-main_old.js
-.npmrc
