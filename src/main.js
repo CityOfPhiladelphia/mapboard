@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 // import philaVueDatafetch from '@cityofphiladelphia/phila-vue-datafetch';
 // const controllerMixin = philaVueDatafetch.controllerMixin;
-import controllerMixin from '@cityofphiladelphia/phila-vue-datafetch/src/controller/controllerMixin/index.js';
+import controllerMixin from '@cityofphiladelphia/phila-vue-datafetch/src/controller/index.js';
 
 // helper function to auto-assign ids to horizontal tables
 function assignTableIds(comps) {
