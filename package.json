@@ -1,8 +1,11 @@
 {
-  "name": "cli3_mapboard",
-  "version": "0.1.0",
+  "name": "@cityofphiladelphia/mapboard",
+  "version": "3.0.18",
+  "author": "City of Philadelphia <maps@phila.gov>",
   "private": true,
   "scripts": {
+    "e2e": "node test/e2e/runner.js",
+    "example": "vue-cli-service serve ./example/webpack.config.js",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build"
   },
