@@ -11,14 +11,12 @@
   },
   "main": "./dist/mapboard.js",
   "dependencies": {
-    "@cityofphiladelphia/phila-vue-comps": "^1.0.15",
+    "@cityofphiladelphia/phila-vue-comps": "https://github.com/CityOfPhiladelphia/phila-vue-comps#7c33da7608ac516f3db70deabedcb0a01ec028e2",
     "@cityofphiladelphia/phila-vue-datafetch": "^0.0.13",
-    "@cityofphiladelphia/phila-vue-mapping": "1.0.13",
-    "@fortawesome/fontawesome-svg-core": "^1.2.8",
-    "@fortawesome/pro-light-svg-icons": "^5.5.0",
-    "@fortawesome/pro-regular-svg-icons": "^5.5.0",
-    "@fortawesome/pro-solid-svg-icons": "^5.5.0",
-    "@fortawesome/vue-fontawesome": "^0.1.1",
+    "@cityofphiladelphia/phila-vue-mapping": "https://github.com/CityOfPhiladelphia/phila-vue-mapping#2369d2c90dbe7c42c28573fd5df5d694b2725929",
+    "@fortawesome/fontawesome-svg-core": "^1.2.15",
+    "@fortawesome/free-solid-svg-icons": "^5.7.2",
+    "@fortawesome/vue-fontawesome": "^0.1.5",
     "@turf/turf": "^5.1.6",
     "axios": "^0.18.0",
     "babel-preset-env": "^1.7.0",
@@ -38,7 +36,6 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-pro": "^5.4.2",
     "chromedriver": "^2.37.0",
     "cross-spawn": "^6.0.4",
     "nightwatch": "^0.9.19",
