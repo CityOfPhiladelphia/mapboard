@@ -46,7 +46,7 @@ export default {
       '@turf/distance': 'turf.distance',
       '@turf/area': 'turf.area',
       '@fortawesome/vue-fontawesome':'vueFontAwesome',
-      '@fortawesome/fontawesome-svg-core': 'fontawesomeSvgCore',
+      '@fortawesome/fontawesome-svg-core': 'FontAwesome',
       '@cityofphiladelphia/phila-vue-comps': 'philaVueComps',
       '@cityofphiladelphia/phila-vue-mapping': 'philaVueMapping',
       '@cityofphiladelphia/phila-vue-datafetch': 'philaVueDatafetch',
