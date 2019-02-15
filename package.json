@@ -11,9 +11,9 @@
   },
   "main": "./dist/mapboard.js",
   "dependencies": {
-    "@cityofphiladelphia/phila-vue-comps": "^1.0.17",
+    "@cityofphiladelphia/phila-vue-comps": "^1.0.18",
     "@cityofphiladelphia/phila-vue-datafetch": "^0.0.13",
-    "@cityofphiladelphia/phila-vue-mapping": "^1.0.16",
+    "@cityofphiladelphia/phila-vue-mapping": "^1.0.17",
     "@fortawesome/fontawesome-svg-core": "^1.2.15",
     "@fortawesome/free-solid-svg-icons": "^5.7.2",
     "@fortawesome/vue-fontawesome": "^0.1.5",

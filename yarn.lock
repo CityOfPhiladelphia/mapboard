@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@cityofphiladelphia/phila-vue-comps@^1.0.17":
-  version "1.0.17"
-  resolved "https://registry.yarnpkg.com/@cityofphiladelphia/phila-vue-comps/-/phila-vue-comps-1.0.17.tgz#dd4a4f01ce501a10c99f3562ff4bf5bd54f49729"
+"@cityofphiladelphia/phila-vue-comps@^1.0.18":
+  version "1.0.18"
+  resolved "https://registry.yarnpkg.com/@cityofphiladelphia/phila-vue-comps/-/phila-vue-comps-1.0.18.tgz#9ea0f3265619dc202f19d3bda960f3ccc4341344"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-solid-svg-icons" "^5.7.2"
@@ -33,9 +33,9 @@
     vue "^2.5.22"
     vuex "^3.0.1"
 
-"@cityofphiladelphia/phila-vue-mapping@^1.0.16":
-  version "1.0.16"
-  resolved "https://registry.yarnpkg.com/@cityofphiladelphia/phila-vue-mapping/-/phila-vue-mapping-1.0.16.tgz#c3311c68cdfafdefab035f7caecbfbfe69f49e7b"
+"@cityofphiladelphia/phila-vue-mapping@^1.0.17":
+  version "1.0.17"
+  resolved "https://registry.yarnpkg.com/@cityofphiladelphia/phila-vue-mapping/-/phila-vue-mapping-1.0.17.tgz#4585c8ccf959eb61f2f776fd9ad15e21d575c4f6"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-solid-svg-icons" "^5.7.2"
