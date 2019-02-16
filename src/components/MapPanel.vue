@@ -629,11 +629,12 @@
         return this.$store.state.activeTopic;
       },
       activeTopicConfig() {
+        console.log('computed activeTopicConfig is running, this.$config:', this.$config);
         const key = this.activeTopic;
         let config;
 
         // if no active topic, return null
-        if (key) {
+        if (key && this.$config) {
           config = this.$config.topics.filter((topic) => {
             return topic.key === key;
           })[0];
