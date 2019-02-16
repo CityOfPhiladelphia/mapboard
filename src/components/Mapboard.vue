@@ -72,8 +72,8 @@
     PictometryLayer,
     PictometryViewCone,
     PictometryPngMarker
-  } from '@cityofphiladelphia/phila-vue-mapping';
-  import { Popover } from '@cityofphiladelphia/phila-vue-comps';
+  } from '@philly/vue-mapping';
+  import { Popover } from '@philly/vue-comps';
 
   export default {
     components: {

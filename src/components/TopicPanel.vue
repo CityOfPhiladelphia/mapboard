@@ -106,7 +106,7 @@
     AddressInput,
     AddressCandidateList,
     FullScreenTopicsToggleTab,
-  } from '@cityofphiladelphia/phila-vue-comps';
+  } from '@philly/vue-comps';
 
   export default {
     components: {

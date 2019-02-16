@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import isMobileDevice from './util/is-mobile-device';
-import philaVueDatafetch from '@cityofphiladelphia/phila-vue-datafetch'
-import philaVueMapping from '@cityofphiladelphia/phila-vue-mapping';
-import philaVueComps from '@cityofphiladelphia/phila-vue-comps';
+import philaVueDatafetch from '@philly/vue-datafetch'
+import philaVueMapping from '@philly/vue-mapping';
+import philaVueComps from '@philly/vue-comps';
 import mergeDeep from './util/merge-deep';
 
 const pvdStore = philaVueDatafetch.pvdStore

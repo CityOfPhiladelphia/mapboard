@@ -364,7 +364,7 @@
     Polygon_,
     Polyline_,
     ModalAbout
-  } from '@cityofphiladelphia/phila-vue-mapping';
+  } from '@philly/vue-mapping';
 
   export default {
     name: 'MapPanel',

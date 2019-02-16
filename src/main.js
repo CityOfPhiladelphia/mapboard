@@ -16,7 +16,7 @@ import { faGavel } from '@fortawesome/free-solid-svg-icons/faGavel';
 library.add(faSpinner, faBook, faWrench, faUniversity, faGavel);
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-import philaVueDatafetch from '@cityofphiladelphia/phila-vue-datafetch';
+import philaVueDatafetch from '@philly/vue-datafetch';
 const controllerMixin = philaVueDatafetch.controllerMixin;
 
 // helper function to auto-assign ids to horizontal tables
