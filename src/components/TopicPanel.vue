@@ -106,18 +106,18 @@
   //   // AddressInput,
   //   // AddressCandidateList,
     // FullScreenTopicsToggleTab,
-  // } from '@cityofphiladelphia/phila-vue-comps';
+  // } from '@philly/vue-comps';
 
-  import FullScreenTopicsToggleTab from '@cityofphiladelphia/phila-vue-comps/src/components/FullScreenTopicsToggleTab.vue';
+  import FullScreenTopicsToggleTab from '@philly/vue-comps/src/components/FullScreenTopicsToggleTab.vue';
 
   export default {
     components: {
-      Greeting: () => import(/* webpackChunkName: "mbmp_pvc_Greeting" */'@cityofphiladelphia/phila-vue-comps/src/components/Greeting.vue'),
-      TopicComponentGroup: () => import(/* webpackChunkName: "mbmp_pvc_TopicComponentGroup" */'@cityofphiladelphia/phila-vue-comps/src/components/TopicComponentGroup.vue'),
-      Topic: () => import(/* webpackChunkName: "mbmp_pvc_Topic" */'@cityofphiladelphia/phila-vue-comps/src/components/Topic.vue'),
-      AddressInput: () => import(/* webpackChunkName: "mbmp_pvc_AddressInput" */'@cityofphiladelphia/phila-vue-comps/src/components/AddressInput.vue'),
-      AddressCandidateList: () => import(/* webpackChunkName: "mbmp_pvc_AddressCandidateList" */'@cityofphiladelphia/phila-vue-comps/src/components/AddressCandidateList.vue'),
-      // FullScreenTopicsToggleTab: () => import(/* webpackChunkName: "mbmp_pvc_FullScreenTopicsToggleTab" */'@cityofphiladelphia/phila-vue-comps/src/components/FullScreenTopicsToggleTab.vue')
+      Greeting: () => import(/* webpackChunkName: "mbmp_pvc_Greeting" */'@philly/vue-comps/src/components/Greeting.vue'),
+      TopicComponentGroup: () => import(/* webpackChunkName: "mbmp_pvc_TopicComponentGroup" */'@philly/vue-comps/src/components/TopicComponentGroup.vue'),
+      Topic: () => import(/* webpackChunkName: "mbmp_pvc_Topic" */'@philly/vue-comps/src/components/Topic.vue'),
+      AddressInput: () => import(/* webpackChunkName: "mbmp_pvc_AddressInput" */'@philly/vue-comps/src/components/AddressInput.vue'),
+      AddressCandidateList: () => import(/* webpackChunkName: "mbmp_pvc_AddressCandidateList" */'@philly/vue-comps/src/components/AddressCandidateList.vue'),
+      // FullScreenTopicsToggleTab: () => import(/* webpackChunkName: "mbmp_pvc_FullScreenTopicsToggleTab" */'@philly/vue-comps/src/components/FullScreenTopicsToggleTab.vue')
       FullScreenTopicsToggleTab
     },
     data() {
