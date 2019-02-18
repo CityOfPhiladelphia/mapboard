@@ -11,9 +11,9 @@
   },
   "main": "./dist/mapboard.js",
   "dependencies": {
-    "@philly/vue-comps": "^1.0.19",
+    "@philly/vue-comps": "^1.0.20",
     "@philly/vue-datafetch": "^0.0.13",
-    "@philly/vue-mapping": "^1.0.17",
+    "@philly/vue-mapping": "^1.0.19",
     "@fortawesome/fontawesome-svg-core": "^1.2.15",
     "@fortawesome/free-solid-svg-icons": "^5.7.2",
     "@fortawesome/vue-fontawesome": "^0.1.5",
