@@ -393,6 +393,7 @@
     },
     data() {
       const data = {
+        createdComplete: false,
         zoomToShape: {
           geojsonParcels: [],
           geojsonForTopic: [],
@@ -407,6 +408,7 @@
     },
     created() {
       console.log('MapPanel.vue created this.$config:', this.$config);
+      this.createdComplete = true;
       // if there's a default address, navigate to it
       const defaultAddress = this.$config.defaultAddress;
       if (defaultAddress) {
@@ -629,8 +631,9 @@
         return this.$store.state.activeTopic;
       },
       activeTopicConfig() {
-        console.log('computed activeTopicConfig is running, this.$config:', this.$config);
         const key = this.activeTopic;
+        const createdComplete = this.createdComplete;
+        // console.log('computed activeTopicConfig is running, this.$config:', this.$config, 'key:', key, 'createdComplete:', createdComplete);
         let config;
 
         // if no active topic, return null
