@@ -10,16 +10,16 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
-    "@philly/vue-comps": "https://github.com/CityOfPhiladelphia/phila-vue-comps#44711c510ef52d78ce99c0971990752bce6f1d44",
-    "@philly/vue-datafetch": "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#a60c88f2a145c99594854970bed1af24c9256c01",
-    "@philly/vue-mapping": "https://github.com/CityOfPhiladelphia/phila-vue-mapping#27fc7a5b6f70adf092b726b2df8b3e2dc3a909fc",
-    "vue": "2.5.22",
+    "@philly/vue-comps": "https://github.com/CityOfPhiladelphia/phila-vue-comps#02704868f330ed74813000ff89675f6b4f923b05",
+    "@philly/vue-datafetch": "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#501a91705e32b96ecce666636f83b7a5982d9778",
+    "@philly/vue-mapping": "https://github.com/CityOfPhiladelphia/phila-vue-mapping#2b7acb9aadbaf3e7fd863724e40966463c6adce3",
+    "vue": "^2.6.8",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.5",
     "@vue/cli-service": "^3.0.5",
-    "vue-template-compiler": "2.5.22",
+    "vue-template-compiler": "^2.6.8",
     "webpack-visualizer-plugin": "^0.1.11"
   },
   "postcss": {
