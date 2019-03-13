@@ -82,7 +82,7 @@
       <esri-dynamic-map-layer v-for="(item, key) in this.imageOverlayItems"
                               v-if="shouldShowImageOverlay(item.properties.RECMAP)"
                               :key="key"
-                              :url="'//gis.phila.gov/arcgis/rest/services/Atlas/RegMaps/MapServer'"
+                              :url="'//gis-svc.databridge.phila.gov/arcgis/rest/services/Atlas/RegMaps/MapServer'"
                               :layers="[0]"
                               :layerDefs="'0:NAME=\'g' + item.properties.RECMAP.toLowerCase() + '.tif\''"
                               :transparent="true"
