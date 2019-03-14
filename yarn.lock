@@ -652,9 +652,9 @@
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
 
-"@philly/vue-comps@https://github.com/CityOfPhiladelphia/phila-vue-comps#ab30addaf362f6e8b3572dd1aebfc7e10822a649":
+"@philly/vue-comps@https://github.com/CityOfPhiladelphia/phila-vue-comps#5920e972489cfff9ec8b505f7b05492cd473a611":
   version "1.0.20"
-  resolved "https://github.com/CityOfPhiladelphia/phila-vue-comps#ab30addaf362f6e8b3572dd1aebfc7e10822a649"
+  resolved "https://github.com/CityOfPhiladelphia/phila-vue-comps#5920e972489cfff9ec8b505f7b05492cd473a611"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-regular-svg-icons" "^5.7.2"
@@ -667,12 +667,12 @@
     jspdf-autotable "^2.3.5"
     lodash-es "^4.17.11"
     phila-standards "^1.0.2"
-    vue "^2.6.8"
+    vue "^2.6.9"
     vuex "^3.0.1"
 
-"@philly/vue-datafetch@https://github.com/CityOfPhiladelphia/phila-vue-datafetch#c67da7a645fd9fcf6b22b91bb989c97a8cf34b80":
+"@philly/vue-datafetch@https://github.com/CityOfPhiladelphia/phila-vue-datafetch#d16d53ba924ab8070ca0ea31c8356a56c1c492c6":
   version "0.0.14"
-  resolved "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#c67da7a645fd9fcf6b22b91bb989c97a8cf34b80"
+  resolved "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#d16d53ba924ab8070ca0ea31c8356a56c1c492c6"
   dependencies:
     "@turf/turf" "^5.1.6"
     axios "^0.18.0"
@@ -680,12 +680,12 @@
     esri-leaflet "^2.2.3"
     leaflet "^1.4.0"
     proj4 "^2.5.0"
-    vue "^2.6.8"
+    vue "^2.6.9"
     vuex "^3.0.1"
 
-"@philly/vue-mapping@https://github.com/CityOfPhiladelphia/phila-vue-mapping#db274cb5b27b0a27a169a255adbd59b1f188c845":
+"@philly/vue-mapping@https://github.com/CityOfPhiladelphia/phila-vue-mapping#ed511dc30cfbdea65216c75d4ffa4a695be6432c":
   version "1.0.20"
-  resolved "https://github.com/CityOfPhiladelphia/phila-vue-mapping#db274cb5b27b0a27a169a255adbd59b1f188c845"
+  resolved "https://github.com/CityOfPhiladelphia/phila-vue-mapping#ed511dc30cfbdea65216c75d4ffa4a695be6432c"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-regular-svg-icons" "^5.7.2"
@@ -710,7 +710,7 @@
     lodash-es "^4.17.11"
     phila-standards "^1.0.2"
     proj4 "^2.5.0"
-    vue "^2.6.8"
+    vue "^2.6.9"
     vuex "^3.0.1"
 
 "@soda/friendly-errors-webpack-plugin@^1.7.1":
@@ -8620,6 +8620,10 @@ vue-template-es2015-compiler@^1.8.2:
 vue@^2.6.8:
   version "2.6.8"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.8.tgz#f21cbc536bfc14f7d1d792a137bb12f69e60ea91"
+
+vue@^2.6.9:
+  version "2.6.9"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.9.tgz#415c1cc1a5ed00c8f0acdd0a948139d12b7ea6b3"
 
 vuex@^3.0.1:
   version "3.1.0"
