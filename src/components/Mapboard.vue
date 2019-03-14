@@ -51,11 +51,11 @@
           </pictometry-widget>
         </component>
 
-        <!-- <popover
+        <popover
                  v-if="popoverOpen"
                  :options="this.popoverOptions"
                  :slots="{'text': this.popoverText}"
-        /> -->
+        />
         <!-- v-if="popoverOpen && popoverText.length > 0" -->
     <!-- </div> -->
   </div>

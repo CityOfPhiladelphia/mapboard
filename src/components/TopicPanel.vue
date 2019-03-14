@@ -103,6 +103,7 @@
 
   export default {
     components: {
+      AnyHeader: () => import(/* webpackChunkName: "mbmp_pvc_AnyHeader" */'@philly/vue-comps/src/components/AnyHeader.vue'),
       Greeting: () => import(/* webpackChunkName: "mbmp_pvc_Greeting" */'@philly/vue-comps/src/components/Greeting.vue'),
       TopicComponentGroup: () => import(/* webpackChunkName: "mbmp_pvc_TopicComponentGroup" */'@philly/vue-comps/src/components/TopicComponentGroup.vue'),
       Topic: () => import(/* webpackChunkName: "mbmp_pvc_Topic" */'@philly/vue-comps/src/components/Topic.vue'),
