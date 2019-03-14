@@ -338,8 +338,6 @@
 
   // mixins
   import markersMixin from './markers-mixin';
-  // const cyclomediaMixin = import(/* webpackChunkName: "mbmb_pvm_cyclomediaMixin" */'@philly/vue-mapping/src/cyclomedia/map-panel-mixin.js');
-  // const pictometryMixin = import(/* webpackChunkName: "mbmb_pvm_pictometryMixin" */'@philly/vue-mapping/src/pictometry/map-panel-mixin.js');
   import cyclomediaMixin from '@philly/vue-mapping/src/cyclomedia/map-panel-mixin.js';
   import pictometryMixin from '@philly/vue-mapping/src/pictometry/map-panel-mixin.js';
   // const CyclomediaRecordingsClient = import(/* webpackChunkName: "mbmb_pvm_CyclomediaRecordingsClient" */'@philly/vue-mapping/src/cyclomedia/recordings-client.js');
@@ -403,11 +401,8 @@
       };
       return data;
     },
-    beforeCreate() {
-      console.log('MapPanel.vue beforeCreate this.$config:', this.$config);
-    },
     created() {
-      console.log('MapPanel.vue created this.$config:', this.$config);
+      // console.log('MapPanel.vue created this.$config:', this.$config);
       this.createdComplete = true;
       // if there's a default address, navigate to it
       const defaultAddress = this.$config.defaultAddress;
@@ -427,13 +422,6 @@
       }
     },
     computed: {
-      // shouldShowAddressInput() {
-      //   if (this.$config.addressInputLocation == 'map') {
-      //     return true;
-      //   } else {
-      //     return false;
-      //   }
-      // },
       addressAutocompleteEnabled() {
         // TODO tidy up the code
         if (this.$config.addressInput) {
@@ -834,7 +822,6 @@
       },
       handleMapClick(e) {
         // console.log('MapPanel.vue handleMapClick e:', e);
-        // latLng = L.latLng(e.lat, e.lng)
         this.$controller.handleMapClick(e);
       },
 
@@ -915,15 +902,5 @@
     top: 40%;
     left: 40%;
   }
-
-  /*small retina*/
-  /*@media
-  (-webkit-min-device-pixel-ratio: 2),
-  (min-resolution: 192dpi),
-  (max-width: 39.9375em) {
-    .mb-search-control-input {
-      max-width: 250px;
-    }
-  }*/
 
 </style>

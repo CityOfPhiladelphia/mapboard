@@ -9,28 +9,12 @@
     />
     <!-- <header-comp v-if="shouldShowHeader" /> -->
 
-    <!-- <div id="mb-root"
-         :class="rootClass"
-         :style="mbRootStyle"
-    > -->
         <component :is="topicPanelLoader"
                    :class="this.shouldShowTopicPanel"
         />
-        <!-- <topic-panel :class="this.shouldShowTopicPanel" /> -->
-
-        <!-- <map-panel :class="this.shouldShowMapPanel"
-                   v-if="this.fullScreenTopicsOnly !== true"
-        > -->
         <component :is="mapPanelLoader"
                    :class="this.shouldShowMapPanel"
         >
-        <!-- v-if="this.fullScreenTopicsOnly !== true" -->
-          <!-- <component :is="cyclomediaWidgetLoader"
-                     v-if="this.shouldLoadCyclomediaWidget"
-                     slot="cycloWidget"
-                     v-show="cyclomediaActive"
-                     screen-percent="2"
-          /> -->
           <cyclomedia-widget v-if="this.shouldLoadCyclomediaWidget"
                              slot="cycloWidget"
                              v-show="cyclomediaActive"
@@ -66,7 +50,6 @@
             />
           </pictometry-widget>
         </component>
-        <!-- </map-panel> -->
 
         <!-- <popover
                  v-if="popoverOpen"
@@ -79,28 +62,9 @@
 </template>
 
 <script>
-
-  console.log('test Mapboard.vue, this:', this);
-
-  // import HeaderComp from './HeaderComp.vue';
-  // import TopicPanel from './TopicPanel.vue';
-  // import MapPanel from './MapPanel.vue';
-
-  // import {
-    // CyclomediaWidget,
-    // PictometryWidget,
-    // PictometryLayer,
-    // PictometryViewCone,
-    // PictometryPngMarker
-  // } from '@philly/vue-mapping';
-
-  // import { Popover } from '@philly/vue-comps';
-
+  // console.log('test Mapboard.vue, this:', this);
   export default {
     components: {
-      // HeaderComp,
-      // TopicPanel,
-      // MapPanel,
       CyclomediaWidget: () => import(/* webpackChunkName: "mbmb_pvm_CyclomediaWidget" */'@philly/vue-mapping/src/cyclomedia/Widget.vue'),
       PictometryWidget: () => import(/* webpackChunkName: "mbmb_pvm_PictometryWidget" */'@philly/vue-mapping/src/pictometry/Widget.vue'),
       PictometryLayer: () => import(/* webpackChunkName: "mbmb_pvm_PictometryLayer" */'@philly/vue-mapping/src/pictometry/Layer.vue'),
@@ -118,8 +82,8 @@
       return data;
     },
     created() {
-      console.log('mapboard created, this.$config:', this.$config);
-      console.log('mapboard created, this.$store:', this.$store);
+      // console.log('mapboard created, this.$config:', this.$config);
+      // console.log('mapboard created, this.$store:', this.$store);
       if (this.$config.panels) {
         if (!this.$config.panels.includes('map')) {
           this.$store.commit('setTopicsOnly', true);
@@ -129,9 +93,9 @@
       }
       window.addEventListener('click', this.closeAddressCandidateList);
       window.addEventListener('resize', this.handleWindowResize);
-      this.handleWindowResize();
     },
     mounted() {
+      this.handleWindowResize();
       this.$controller.appDidLoad();
       if (this.$config.initialPopover && window.location.hash == '') {
         this.$store.commit('setPopoverOpen', true);
@@ -143,52 +107,33 @@
     },
     computed: {
       mapPanelLoader() {
-        console.log('computed mapPanelLoader is running');
+        // console.log('computed mapPanelLoader is running');
         if (this.fullScreenTopicsOnly) {
-          console.log('if this.fullScreenTopicsOnly is true, returning');
+          // console.log('if this.fullScreenTopicsOnly is true, returning');
           return;
         } else {
-          console.log('else is true, importing mapPanel.vue');
+          // console.log('else is true, importing mapPanel.vue');
           return () => import(/* webpackChunkName: "mbmb_MapPanelLoader" */'./MapPanel.vue').then(console.log('after MapPanel import'))
         }
       },
       topicPanelLoader() {
         if (this.fullScreenMapOnly) {
-          console.log('if this.fullScreenMapOnly is true, returning');
+          // console.log('if this.fullScreenMapOnly is true, returning');
           return;
         } else {
-          console.log('else is true, importing topicPanel.vue');
+          // console.log('else is true, importing topicPanel.vue');
           return () => import(/* webpackChunkName: "mbmb_TopicPanelLoader" */'./TopicPanel.vue').then(console.log('after TopicPanel import'))
         }
       },
       headerCompLoader() {
         if (!this.shouldShowHeader) {
-          console.log('if this.fullScreenMapOnly is true, returning');
+          // console.log('if this.fullScreenMapOnly is true, returning');
           return;
         } else {
-          console.log('else is true, importing topicPanel.vue');
+          // console.log('else is true, importing topicPanel.vue');
           return () => import(/* webpackChunkName: "mbmb_headerCompLoader" */'./HeaderComp.vue').then(console.log('after HeaderComp import'))
         }
       },
-      // cyclomediaWidgetLoader() {
-      //   if (this.$config.cyclomedia.enabled) {
-      //     return () => import(/* webpackChunkName: "mbmb_pvm_cyclomediaWidgetLoader" */'@philly/vue-mapping/src/cyclomedia/Widget.vue').then(console.log('after cyclomediaWidget import'))
-      //   } else {
-      //     return;
-      //   }
-      // },
-      // pictometryWidgetLoader() {
-      //
-      // },
-      // pictometryLayerLoader() {
-      //
-      // },
-      // pictometryViewConeLoader() {
-      //
-      // },
-      // pictometryPngMarkerLoader() {
-      //
-      // },
       shouldShowHeader() {
         if (this.$config.header) {
           return this.$config.header.enabled;
@@ -325,23 +270,36 @@
         return this.$store.state.popover.options;
       }
     },
-    watch: {
-      pictometryShowAddressMarker(nextValue) {
-        console.log('watch pictometryShowAddressMarker', nextValue);
-      }
-    },
+    // watch: {
+    //   pictometryShowAddressMarker(nextValue) {
+    //     console.log('watch pictometryShowAddressMarker', nextValue);
+    //   }
+    // },
     methods: {
       closeAddressCandidateList() {
         this.$store.commit('setShouldShowAddressCandidateList', false);
       },
       handleWindowResize() {
+        // console.log('Mapboard.vue handleWindowResize is running');
         // this only actually affects the size if it is set to "plugin mode"
-        // if ($(window).width() >= 750) {
         if (window.innerWidth >= 750) {
           this.mbRootStyle.height = '600px'
         } else {
           this.mbRootStyle.height = 'auto';
         }
+
+        const rootElement = document.getElementById('mb-root');
+        const rootStyle = window.getComputedStyle(rootElement);
+        const rootWidth = rootStyle.getPropertyValue('width');
+        const rootHeight = rootStyle.getPropertyValue('height');
+        const rootWidthNum = parseInt(rootWidth.replace('px', ''));
+        const rootHeightNum = parseInt(rootHeight.replace('px', ''));
+
+        const dim = {
+          width: rootWidthNum,
+          height: rootHeightNum
+        }
+        this.$store.commit('setWindowDimensions', dim);
       }
     },
   };

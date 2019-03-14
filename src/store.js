@@ -152,7 +152,11 @@ function createStore(config) {
       keys: config.modals,
       open: '',
     },
-    map: {}
+    map: {},
+    windowDimensions: {
+      height: 0,
+      width: 0,
+    },
   };
 
   if (config.map.initialImagery) {
@@ -187,6 +191,10 @@ function createStore(config) {
       }
     },
     mutations: {
+
+      setWindowDimensions(state, payload) {
+        state.windowDimensions = payload;
+      },
 
       setIsMobileOrTablet(state, payload) {
         state.isMobileOrTablet = payload;
