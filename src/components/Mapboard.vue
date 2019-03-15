@@ -4,16 +4,16 @@
        :style="mbRootStyle"
   >
 
+    <component :is="headerCompLoader"
+               v-if="shouldShowHeader"
+    />
     <!-- <header-comp v-if="shouldShowHeader" /> -->
 
-    <!-- <div id="mb-root"
-         :class="rootClass"
-         :style="mbRootStyle"
-    > -->
-        <topic-panel :class="this.shouldShowTopicPanel" />
-
-        <map-panel :class="this.shouldShowMapPanel"
-                   v-if="this.fullScreenTopicsOnly !== true"
+        <component :is="topicPanelLoader"
+                   :class="this.shouldShowTopicPanel"
+        />
+        <component :is="mapPanelLoader"
+                   :class="this.shouldShowMapPanel"
         >
           <cyclomedia-widget v-if="this.shouldLoadCyclomediaWidget"
                              slot="cycloWidget"
@@ -49,43 +49,28 @@
                        :hFov="cycloHFov"
             />
           </pictometry-widget>
-        </map-panel>
+        </component>
 
-        <!-- <popover
+        <popover
                  v-if="popoverOpen"
                  :options="this.popoverOptions"
                  :slots="{'text': this.popoverText}"
-        /> -->
+        />
         <!-- v-if="popoverOpen && popoverText.length > 0" -->
     <!-- </div> -->
   </div>
 </template>
 
 <script>
-  // import HeaderComp from './HeaderComp.vue';
-  import TopicPanel from './TopicPanel.vue';
-  import MapPanel from './MapPanel.vue';
-
-  import {
-    CyclomediaWidget,
-    PictometryWidget,
-    PictometryLayer,
-    PictometryViewCone,
-    PictometryPngMarker
-  } from '@philly/vue-mapping';
-  import { Popover } from '@philly/vue-comps';
-
+  // console.log('test Mapboard.vue, this:', this);
   export default {
     components: {
-      // HeaderComp,
-      TopicPanel,
-      MapPanel,
-      CyclomediaWidget,
-      PictometryWidget,
-      PictometryLayer,
-      PictometryPngMarker,
-      PictometryViewCone,
-      Popover,
+      CyclomediaWidget: () => import(/* webpackChunkName: "mbmb_pvm_CyclomediaWidget" */'@philly/vue-mapping/src/cyclomedia/Widget.vue'),
+      PictometryWidget: () => import(/* webpackChunkName: "mbmb_pvm_PictometryWidget" */'@philly/vue-mapping/src/pictometry/Widget.vue'),
+      PictometryLayer: () => import(/* webpackChunkName: "mbmb_pvm_PictometryLayer" */'@philly/vue-mapping/src/pictometry/Layer.vue'),
+      PictometryPngMarker: () => import(/* webpackChunkName: "mbmb_pvm_PictometryPngMarker" */'@philly/vue-mapping/src/pictometry/PngMarker.vue'),
+      PictometryViewCone: () => import(/* webpackChunkName: "mbmb_pvm_PictometryViewCone" */'@philly/vue-mapping/src/pictometry/ViewCone.vue'),
+      Popover: () => import(/* webpackChunkName: "mbmb_pvc_Popover" */'@philly/vue-comps/src/components/Popover.vue'),
     },
     data() {
       const data = {
@@ -97,7 +82,8 @@
       return data;
     },
     created() {
-      console.log('mapboard created, this.$config:', this.$config);
+      // console.log('mapboard created, this.$config:', this.$config);
+      // console.log('mapboard created, this.$store:', this.$store);
       if (this.$config.panels) {
         if (!this.$config.panels.includes('map')) {
           this.$store.commit('setTopicsOnly', true);
@@ -107,9 +93,9 @@
       }
       window.addEventListener('click', this.closeAddressCandidateList);
       window.addEventListener('resize', this.handleWindowResize);
-      this.handleWindowResize();
     },
     mounted() {
+      this.handleWindowResize();
       this.$controller.appDidLoad();
       if (this.$config.initialPopover && window.location.hash == '') {
         this.$store.commit('setPopoverOpen', true);
@@ -120,6 +106,34 @@
       }
     },
     computed: {
+      mapPanelLoader() {
+        // console.log('computed mapPanelLoader is running');
+        if (this.fullScreenTopicsOnly) {
+          // console.log('if this.fullScreenTopicsOnly is true, returning');
+          return;
+        } else {
+          // console.log('else is true, importing mapPanel.vue');
+          return () => import(/* webpackChunkName: "mbmb_MapPanelLoader" */'./MapPanel.vue').then(console.log('after MapPanel import'))
+        }
+      },
+      topicPanelLoader() {
+        if (this.fullScreenMapOnly) {
+          // console.log('if this.fullScreenMapOnly is true, returning');
+          return;
+        } else {
+          // console.log('else is true, importing topicPanel.vue');
+          return () => import(/* webpackChunkName: "mbmb_TopicPanelLoader" */'./TopicPanel.vue').then(console.log('after TopicPanel import'))
+        }
+      },
+      headerCompLoader() {
+        if (!this.shouldShowHeader) {
+          // console.log('if this.fullScreenMapOnly is true, returning');
+          return;
+        } else {
+          // console.log('else is true, importing topicPanel.vue');
+          return () => import(/* webpackChunkName: "mbmb_headerCompLoader" */'./HeaderComp.vue').then(console.log('after HeaderComp import'))
+        }
+      },
       shouldShowHeader() {
         if (this.$config.header) {
           return this.$config.header.enabled;
@@ -150,6 +164,7 @@
         return this.$store.state.fullScreenMapEnabled;
       },
       fullScreenTopicsOnly() {
+        // return true;
         return this.$store.state.fullScreen.topicsOnly;
       },
       fullScreenTopicsEnabled() {
@@ -255,23 +270,36 @@
         return this.$store.state.popover.options;
       }
     },
-    watch: {
-      pictometryShowAddressMarker(nextValue) {
-        console.log('watch pictometryShowAddressMarker', nextValue);
-      }
-    },
+    // watch: {
+    //   pictometryShowAddressMarker(nextValue) {
+    //     console.log('watch pictometryShowAddressMarker', nextValue);
+    //   }
+    // },
     methods: {
       closeAddressCandidateList() {
         this.$store.commit('setShouldShowAddressCandidateList', false);
       },
       handleWindowResize() {
+        // console.log('Mapboard.vue handleWindowResize is running');
         // this only actually affects the size if it is set to "plugin mode"
-        // if ($(window).width() >= 750) {
         if (window.innerWidth >= 750) {
           this.mbRootStyle.height = '600px'
         } else {
           this.mbRootStyle.height = 'auto';
         }
+
+        const rootElement = document.getElementById('mb-root');
+        const rootStyle = window.getComputedStyle(rootElement);
+        const rootWidth = rootStyle.getPropertyValue('width');
+        const rootHeight = rootStyle.getPropertyValue('height');
+        const rootWidthNum = parseInt(rootWidth.replace('px', ''));
+        const rootHeightNum = parseInt(rootHeight.replace('px', ''));
+
+        const dim = {
+          width: rootWidthNum,
+          height: rootHeightNum
+        }
+        this.$store.commit('setWindowDimensions', dim);
       }
     },
   };

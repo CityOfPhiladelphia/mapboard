@@ -98,25 +98,19 @@
 </template>
 
 <script>
-  import {
-    Topic,
-    TopicComponentGroup,
-    AnyHeader,
-    Greeting,
-    AddressInput,
-    AddressCandidateList,
-    FullScreenTopicsToggleTab,
-  } from '@philly/vue-comps';
+
+  import FullScreenTopicsToggleTab from '@philly/vue-comps/src/components/FullScreenTopicsToggleTab.vue';
 
   export default {
     components: {
-      Greeting,
-      TopicComponentGroup,
-      Topic,
-      AnyHeader,
-      AddressInput,
-      AddressCandidateList,
-      FullScreenTopicsToggleTab,
+      AnyHeader: () => import(/* webpackChunkName: "mbmp_pvc_AnyHeader" */'@philly/vue-comps/src/components/AnyHeader.vue'),
+      Greeting: () => import(/* webpackChunkName: "mbmp_pvc_Greeting" */'@philly/vue-comps/src/components/Greeting.vue'),
+      TopicComponentGroup: () => import(/* webpackChunkName: "mbmp_pvc_TopicComponentGroup" */'@philly/vue-comps/src/components/TopicComponentGroup.vue'),
+      Topic: () => import(/* webpackChunkName: "mbmp_pvc_Topic" */'@philly/vue-comps/src/components/Topic.vue'),
+      AddressInput: () => import(/* webpackChunkName: "mbmp_pvc_AddressInput" */'@philly/vue-comps/src/components/AddressInput.vue'),
+      AddressCandidateList: () => import(/* webpackChunkName: "mbmp_pvc_AddressCandidateList" */'@philly/vue-comps/src/components/AddressCandidateList.vue'),
+      // FullScreenTopicsToggleTab: () => import(/* webpackChunkName: "mbmp_pvc_FullScreenTopicsToggleTab" */'@philly/vue-comps/src/components/FullScreenTopicsToggleTab.vue')
+      FullScreenTopicsToggleTab
     },
     data() {
       const data = {
@@ -143,22 +137,21 @@
       };
       return data;
     },
-    // created() {
-    //   console.log('TopicPanel created, this.$config:', this.$config);
-    //   TopicComponentGroup.components.PropertyCallout = this.$config.customComps.propertyCallout;
-    //   console.log('TopicPanel created, TopicComponentGroup:', TopicComponentGroup);
-    // },
     mounted() {
-      window.addEventListener('click', this.closeAddressCandidateList);
-      window.addEventListener('resize', this.handleWindowResize);
-      this.handleWindowResize(25);
+      this.handleWindowResize(this.windowDim);
     },
     watch: {
       geocodeStatus() {
-        this.handleWindowResize();
+        this.handleWindowResize(this.windowDim);
+      },
+      windowDim(nextDim) {
+        this.handleWindowResize(nextDim);
       }
     },
     computed: {
+      windowDim() {
+        return this.$store.state.windowDimensions;
+      },
       greetingText() {
         return this.$config.greeting.message;
       },
@@ -172,13 +165,6 @@
           return false;
         }
       },
-      // shouldShowAddressHeaderAdditionalInfo() {
-      //   if (this.addressHeaderAdditionalHeaderOptions.headerType) {
-      //     return 'anyHeader'
-      //   } else if (this.addressHeaderAdditionalHeaderOptions && !this.addressHeaderAdditionalHeaderOptions.headerType) {
-      //     return ''
-      //   }
-      // }
       addressHeaderAdditionalHeaderOptions() {
         if (this.$config.addressHeaderAdditionalInfo) {
           const ahai = this.$config.addressHeaderAdditionalInfo;
@@ -329,7 +315,7 @@
       closeAddressCandidateList() {
         this.$store.state.shouldShowAddressCandidateList = false;
       },
-      handleWindowResize(pixelAdjustment) {
+      handleWindowResize(dim) {
         // this is called to run when:
         // 1 - TopicPanel.vue mounted
         // 2 - geocodeStatus change

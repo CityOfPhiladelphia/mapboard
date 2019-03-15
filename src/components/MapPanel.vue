@@ -2,7 +2,9 @@
   <div id="map-panel-container"
        :class="this.mapPanelContainerClass"
   >
+    <!-- <full-screen-map-toggle-tab /> -->
     <full-screen-map-toggle-tab v-once />
+
     <map_ :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }"
           id="map-tag"
           :center="this.$store.state.map.center"
@@ -323,86 +325,73 @@
 </template>
 
 <script>
-  import { geoJSON, featureGroup } from 'leaflet';
-  import { marker as Lmarker } from 'leaflet';
+  import * as L from 'leaflet';
+  // console.log('L:', L)
+  const FeatureGroup = L.default.featureGroup;
+  const GeoJSON = L.default.geoJSON;
+  const Lmarker = L.default.marker;
+  // console.log('FeatureGroup:', FeatureGroup, 'GeoJSON:', GeoJSON)
+  // import { featureGroup, geoJSON } from 'leaflet';
+  // import { marker as Lmarker } from 'leaflet';
+  // import { FeatureGroup, GeoJSON } from 'leaflet';
+  // import { Marker as Lmarker } from 'leaflet';
 
   // mixins
   import markersMixin from './markers-mixin';
-  import {
-    cyclomediaMixin,
-    pictometryMixin,
-    Map_,
-    Control,
-    MapAddressInput,
-    MapAddressCandidateList,
-    EsriTiledMapLayer,
-    EsriTiledOverlay,
-    EsriDynamicMapLayer,
-    EsriFeatureLayer,
-    Geojson,
-    CircleMarker,
-    // OpacitySlider,
-    VectorMarker,
-    PngMarker,
-    BasemapToggleControl,
-    BasemapSelectControl,
-    FullScreenMapToggleTab,
-    LocationControl,
-    CyclomediaButton,
-    PictometryButton,
-    CyclomediaRecordingCircle,
-    CyclomediaRecordingsClient,
-    SvgViewConeMarker,
-    MeasureControl,
-    LegendControl,
-    BasemapTooltip,
-    ControlCorner,
-    EsriWebMap,
-    EsriWebMapLayer,
-    PopUp,
-    PopUpContent,
-    Polygon_,
-    Polyline_,
-    ModalAbout
-  } from '@philly/vue-mapping';
+  import cyclomediaMixin from '@philly/vue-mapping/src/cyclomedia/map-panel-mixin.js';
+  import pictometryMixin from '@philly/vue-mapping/src/pictometry/map-panel-mixin.js';
+  // const CyclomediaRecordingsClient = import(/* webpackChunkName: "mbmb_pvm_CyclomediaRecordingsClient" */'@philly/vue-mapping/src/cyclomedia/recordings-client.js');
+
+  // components
+  import CyclomediaRecordingsClient from '@philly/vue-mapping/src/cyclomedia/recordings-client.js';
+  import ControlCorner from '@philly/vue-mapping/src/leaflet/ControlCorner.vue';
+  import FullScreenMapToggleTab from '@philly/vue-mapping/src/components/FullScreenMapToggleTab.vue';
+  import Map_ from '@philly/vue-mapping/src/leaflet/Map.vue';
+  import LocationControl from '@philly/vue-mapping/src/components/LocationControl.vue';
+  import BasemapToggleControl from '@philly/vue-mapping/src/components/BasemapToggleControl.vue';
+  import BasemapSelectControl from '@philly/vue-mapping/src/components/BasemapSelectControl.vue';
+  import PictometryButton from '@philly/vue-mapping/src/pictometry/Button.vue';
+  import CyclomediaButton from '@philly/vue-mapping/src/cyclomedia/Button.vue';
+  import MeasureControl from '@philly/vue-mapping/src/components/MeasureControl.vue';
+  import LegendControl from '@philly/vue-mapping/src/components/LegendControl.vue';
+  import MapAddressInput from '@philly/vue-mapping/src/components/MapAddressInput.vue';
 
   export default {
     name: 'MapPanel',
     mixins: [
       markersMixin,
       cyclomediaMixin,
-      pictometryMixin,
+      pictometryMixin
     ],
     components: {
+      Control: () => import(/* webpackChunkName: "mbmp_pvm_Control" */'@philly/vue-mapping/src/leaflet/Control.vue'),
+      MapAddressCandidateList: () => import(/* webpackChunkName: "mbmp_pvm_MapAddressCandidateList" */'@philly/vue-mapping/src/components/MapAddressCandidateList.vue'),
+      EsriTiledMapLayer: () => import(/* webpackChunkName: "mbmp_pvm_EsriTiledMapLayer" */'@philly/vue-mapping/src/esri-leaflet/TiledMapLayer.vue'),
+      EsriTiledOverlay: () => import(/* webpackChunkName: "mbmp_pvm_EsriTiledOverlay" */'@philly/vue-mapping/src/esri-leaflet/TiledOverlay.vue'),
+      EsriDynamicMapLayer: () => import(/* webpackChunkName: "mbmp_pvm_EsriDynamicMapLayer" */'@philly/vue-mapping/src/esri-leaflet/DynamicMapLayer.vue'),
+      EsriFeatureLayer: () => import(/* webpackChunkName: "mbmp_pvm_EsriFeatureLayer" */'@philly/vue-mapping/src/esri-leaflet/FeatureLayer.vue'),
+      Geojson: () => import(/* webpackChunkName: "mbmp_pvm_Geojson" */'@philly/vue-mapping/src/leaflet/Geojson.vue'),
+      CircleMarker: () => import(/* webpackChunkName: "mbmp_pvm_CircleMarker" */'@philly/vue-mapping/src/leaflet/CircleMarker.vue'),
+      VectorMarker: () => import(/* webpackChunkName: "mbmp_pvm_VectorMarker" */'@philly/vue-mapping/src/components/VectorMarker.vue'),
+      PngMarker: () => import(/* webpackChunkName: "mbmp_pvm_PngMarker" */'@philly/vue-mapping/src/components/PngMarker.vue'),
+      CyclomediaRecordingCircle: () => import(/* webpackChunkName: "mbmp_pvm_CyclomediaRecordingCircle" */'@philly/vue-mapping/src/cyclomedia/RecordingCircle.vue'),
+      SvgViewConeMarker: () => import(/* webpackChunkName: "mbmp_pvm_CyclomediaSvgViewConeMarker" */'@philly/vue-mapping/src/cyclomedia/SvgViewConeMarker.vue'),
+      BasemapTooltip: () => import(/* webpackChunkName: "mbmp_pvm_BasemapTooltip" */'@philly/vue-mapping/src/components/BasemapTooltip.vue'),
+      ControlCorner,
+      FullScreenMapToggleTab,
       Map_,
-      Control,
-      MapAddressInput,
-      MapAddressCandidateList,
-      EsriTiledMapLayer,
-      EsriTiledOverlay,
-      EsriDynamicMapLayer,
-      EsriFeatureLayer,
-      Geojson,
-      CircleMarker,
-      // OpacitySlider,
-      VectorMarker,
-      PngMarker,
+      LocationControl,
       BasemapToggleControl,
       BasemapSelectControl,
-      FullScreenMapToggleTab,
-      LocationControl,
       PictometryButton,
       CyclomediaButton,
-      CyclomediaRecordingCircle,
-      SvgViewConeMarker,
       MeasureControl,
       LegendControl,
-      BasemapTooltip,
-      ControlCorner,
+      MapAddressInput,
     },
-    // data: {
     data() {
       const data = {
+        createdComplete: false,
         zoomToShape: {
           geojsonParcels: [],
           geojsonForTopic: [],
@@ -413,6 +402,8 @@
       return data;
     },
     created() {
+      // console.log('MapPanel.vue created this.$config:', this.$config);
+      this.createdComplete = true;
       // if there's a default address, navigate to it
       const defaultAddress = this.$config.defaultAddress;
       if (defaultAddress) {
@@ -431,13 +422,6 @@
       }
     },
     computed: {
-      // shouldShowAddressInput() {
-      //   if (this.$config.addressInputLocation == 'map') {
-      //     return true;
-      //   } else {
-      //     return false;
-      //   }
-      // },
       addressAutocompleteEnabled() {
         // TODO tidy up the code
         if (this.$config.addressInput) {
@@ -636,10 +620,12 @@
       },
       activeTopicConfig() {
         const key = this.activeTopic;
+        const createdComplete = this.createdComplete;
+        // console.log('computed activeTopicConfig is running, this.$config:', this.$config, 'key:', key, 'createdComplete:', createdComplete);
         let config;
 
         // if no active topic, return null
-        if (key) {
+        if (key && this.$config) {
           config = this.$config.topics.filter((topic) => {
             return topic.key === key;
           })[0];
@@ -784,14 +770,16 @@
         if (czts) {
           if (czts.includes('geojsonParcels')) {
             for (let geojsonFeature of this.geojsonParcels) {
-              featureArray.push(geoJSON(geojsonFeature.geojson))
+              // featureArray.push(geoJson(geojsonFeature.geojson))
               // featureArray.push(L.geoJSON(geojsonFeature.geojson))
+              featureArray.push(GeoJSON(geojsonFeature.geojson))
             }
           }
           if (czts.includes('geojsonForTopic')) {
             for (let geojsonFeature of this.geojsonForTopic) {
-              featureArray.push(geoJSON(geojsonFeature.geojson))
+              // featureArray.push(geoJson(geojsonFeature.geojson))
               // featureArray.push(L.geoJSON(geojsonFeature.geojson))
+              featureArray.push(GeoJSON(geojsonFeature.geojson))
             }
           }
           if (czts.includes('markersForAddress')) {
@@ -806,7 +794,8 @@
               // featureArray.push(L.marker(marker.latlng))
             }
           }
-          const group = new featureGroup(featureArray);
+          const group = new FeatureGroup(featureArray);
+          // const group = new featureGroup(featureArray);
           // const group = new L.featureGroup(featureArray);
           const bounds = group.getBounds();
           this.$store.commit('setMapBounds', bounds);
@@ -833,7 +822,6 @@
       },
       handleMapClick(e) {
         // console.log('MapPanel.vue handleMapClick e:', e);
-        // latLng = L.latLng(e.lat, e.lng)
         this.$controller.handleMapClick(e);
       },
 
@@ -914,15 +902,5 @@
     top: 40%;
     left: 40%;
   }
-
-  /*small retina*/
-  /*@media
-  (-webkit-min-device-pixel-ratio: 2),
-  (min-resolution: 192dpi),
-  (max-width: 39.9375em) {
-    .mb-search-control-input {
-      max-width: 250px;
-    }
-  }*/
 
 </style>

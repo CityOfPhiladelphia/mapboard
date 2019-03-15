@@ -22,7 +22,8 @@ module.exports = {
   },
   serve: {
     content: [__dirname],
-    host: process.env.WEBPACK_DEV_HOST,
+    // host: process.env.WEBPACK_DEV_HOST,
+    host: 'localhost',
     port: process.env.WEBPACK_DEV_PORT,
   },
 };

@@ -1,14 +1,10 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import isMobileDevice from './util/is-mobile-device';
-import philaVueDatafetch from '@philly/vue-datafetch'
-import philaVueMapping from '@philly/vue-mapping';
-import philaVueComps from '@philly/vue-comps';
+import pvdStore from '@philly/vue-datafetch/src/controller/store.js';
+import pvmStore from '@philly/vue-mapping/src/store.js';
+import pvcStore from '@philly/vue-comps/src/store.js';
 import mergeDeep from './util/merge-deep';
-
-const pvdStore = philaVueDatafetch.pvdStore
-const pvmStore = philaVueMapping.pvmStore
-const pvcStore = philaVueComps.pvcStore
 
 // when you load vuex from a script tag this seems to happen automatically
 Vue.use(Vuex);
@@ -156,7 +152,11 @@ function createStore(config) {
       keys: config.modals,
       open: '',
     },
-    map: {}
+    map: {},
+    windowDimensions: {
+      height: 0,
+      width: 0,
+    },
   };
 
   if (config.map.initialImagery) {
@@ -191,6 +191,10 @@ function createStore(config) {
       }
     },
     mutations: {
+
+      setWindowDimensions(state, payload) {
+        state.windowDimensions = payload;
+      },
 
       setIsMobileOrTablet(state, payload) {
         state.isMobileOrTablet = payload;
