@@ -270,11 +270,14 @@
         return this.$store.state.popover.options;
       }
     },
-    // watch: {
-    //   pictometryShowAddressMarker(nextValue) {
-    //     console.log('watch pictometryShowAddressMarker', nextValue);
-    //   }
-    // },
+    watch: {
+      // pictometryShowAddressMarker(nextValue) {
+      //   console.log('watch pictometryShowAddressMarker', nextValue);
+      // }
+      fullScreenMapEnabled() {
+        this.handleWindowResize();
+      }
+    },
     methods: {
       closeAddressCandidateList() {
         this.$store.commit('setShouldShowAddressCandidateList', false);
