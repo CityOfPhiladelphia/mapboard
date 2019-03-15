@@ -274,9 +274,9 @@
       // pictometryShowAddressMarker(nextValue) {
       //   console.log('watch pictometryShowAddressMarker', nextValue);
       // }
-      fullScreenMapEnabled() {
-        this.handleWindowResize();
-      }
+      // fullScreenMapEnabled() {
+      //   this.handleWindowResize();
+      // }
     },
     methods: {
       closeAddressCandidateList() {
