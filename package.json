@@ -10,9 +10,9 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
-    "@philly/vue-comps": "https://github.com/CityOfPhiladelphia/phila-vue-comps#13494755455259f8d73391e032a8639e6184481d",
-    "@philly/vue-datafetch": "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#d16d53ba924ab8070ca0ea31c8356a56c1c492c6",
-    "@philly/vue-mapping": "https://github.com/CityOfPhiladelphia/phila-vue-mapping#ed511dc30cfbdea65216c75d4ffa4a695be6432c",
+    "@philly/vue-comps": "https://github.com/CityOfPhiladelphia/phila-vue-comps#17bd4ed1952a355c327663c6084703ddc413276d",
+    "@philly/vue-datafetch": "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#03c5cc54b20c91587a09289d97930c27e3509d29",
+    "@philly/vue-mapping": "https://github.com/CityOfPhiladelphia/phila-vue-mapping#020c79bbe120e49c246adc06e76d8598232cb307",
     "vue": "^2.6.9",
     "vuex": "^3.0.1"
   },
