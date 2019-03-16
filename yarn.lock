@@ -653,9 +653,9 @@
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
 
-"@philly/vue-comps@https://github.com/CityOfPhiladelphia/phila-vue-comps#17bd4ed1952a355c327663c6084703ddc413276d":
-  version "1.0.21"
-  resolved "https://github.com/CityOfPhiladelphia/phila-vue-comps#17bd4ed1952a355c327663c6084703ddc413276d"
+"@philly/vue-comps@^1.0.23":
+  version "1.0.23"
+  resolved "https://registry.yarnpkg.com/@philly/vue-comps/-/vue-comps-1.0.23.tgz#feb6ea255948de4ef8fbb949d617f258c048d65d"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-regular-svg-icons" "^5.7.2"
@@ -2679,12 +2679,12 @@ browserslist@^1.7.6:
     electron-to-chromium "^1.2.7"
 
 browserslist@^4.0.0, browserslist@^4.3.4, browserslist@^4.4.2:
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.4.2.tgz#6ea8a74d6464bb0bd549105f659b41197d8f0ba2"
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.5.0.tgz#b26d80ac95b3b592b05ec9cdd8a142d924189ba7"
   dependencies:
-    caniuse-lite "^1.0.30000939"
-    electron-to-chromium "^1.3.113"
-    node-releases "^1.1.8"
+    caniuse-lite "^1.0.30000948"
+    electron-to-chromium "^1.3.116"
+    node-releases "^1.1.10"
 
 buffer-equal@0.0.1:
   version "0.0.1"
@@ -2840,7 +2840,7 @@ caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639:
   version "1.0.30000948"
   resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000948.tgz#dbb2eee161743d5767850d259b916f25978a1a9b"
 
-caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000939, caniuse-lite@^1.0.30000947:
+caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000947, caniuse-lite@^1.0.30000948:
   version "1.0.30000948"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000948.tgz#793ed7c28fe664856beb92b43fc013fc22b81633"
 
@@ -3826,7 +3826,7 @@ ejs@^2.6.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.6.1.tgz#498ec0d495655abc6f23cd61868d926464071aa0"
 
-electron-to-chromium@^1.2.7, electron-to-chromium@^1.3.113:
+electron-to-chromium@^1.2.7, electron-to-chromium@^1.3.116:
   version "1.3.116"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.116.tgz#1dbfee6a592a0c14ade77dbdfe54fef86387d702"
 
@@ -4275,7 +4275,7 @@ file-loader@^3.0.1:
     loader-utils "^1.0.2"
     schema-utils "^1.0.0"
 
-"file-saver@github:eligrey/FileSaver.js#1.3.8":
+file-saver@eligrey/FileSaver.js#1.3.8:
   version "1.3.8"
   resolved "https://codeload.github.com/eligrey/FileSaver.js/tar.gz/e865e37af9f9947ddcced76b549e27dc45c1cb2e"
 
@@ -5679,9 +5679,9 @@ mapbox-gl-function@^1.0.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/mapbox-gl-function/-/mapbox-gl-function-1.3.0.tgz#cee3d95750c189d45e83ab41a0a57fc2a8a509bc"
 
-"mapbox-gl-leaflet@git+https://github.com/mapbox/mapbox-gl-leaflet.git#v0.0.3":
+"mapbox-gl-leaflet@git+https://github.com/mapbox/mapbox-gl-leaflet#v0.0.3":
   version "0.0.3"
-  resolved "git+https://github.com/mapbox/mapbox-gl-leaflet.git#b0bdc55e277ed23091a1d78b3c13aa82af615566"
+  resolved "git+https://github.com/mapbox/mapbox-gl-leaflet#b0bdc55e277ed23091a1d78b3c13aa82af615566"
 
 mapbox-gl-style-spec@^8.4.0:
   version "8.11.0"
@@ -6093,9 +6093,9 @@ node-pre-gyp@^0.10.0:
     semver "^5.3.0"
     tar "^4"
 
-node-releases@^1.1.8:
-  version "1.1.10"
-  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.10.tgz#5dbeb6bc7f4e9c85b899e2e7adcc0635c9b2adf7"
+node-releases@^1.1.10:
+  version "1.1.11"
+  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.11.tgz#9a0841a4b0d92b7d5141ed179e764f42ad22724a"
   dependencies:
     semver "^5.3.0"
 
