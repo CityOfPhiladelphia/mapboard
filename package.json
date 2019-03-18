@@ -3,7 +3,7 @@
   "description": "A Vue.js component for data-rich web mapping",
   "version": "3.0.25",
   "author": "City of Philadelphia <maps@phila.gov>",
-  "private": true,
+  "private": false,
   "scripts": {
     "e2e": "node test/e2e/runner.js",
     "example": "vue-cli-service serve ./example/webpack.config.js",
