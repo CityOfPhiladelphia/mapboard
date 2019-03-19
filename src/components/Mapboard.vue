@@ -113,7 +113,7 @@
           return;
         } else {
           // console.log('else is true, importing mapPanel.vue');
-          return () => import(/* webpackChunkName: "mbmb_MapPanelLoader" */'./MapPanel.vue').then(console.log('after MapPanel import'))
+          return () => import(/* webpackChunkName: "mbmb_MapPanelLoader" */'./MapPanel.vue');//.then(console.log('after MapPanel import'))
         }
       },
       topicPanelLoader() {
@@ -122,7 +122,7 @@
           return;
         } else {
           // console.log('else is true, importing topicPanel.vue');
-          return () => import(/* webpackChunkName: "mbmb_TopicPanelLoader" */'./TopicPanel.vue').then(console.log('after TopicPanel import'))
+          return () => import(/* webpackChunkName: "mbmb_TopicPanelLoader" */'./TopicPanel.vue');//.then(console.log('after TopicPanel import'))
         }
       },
       headerCompLoader() {
@@ -131,7 +131,7 @@
           return;
         } else {
           // console.log('else is true, importing topicPanel.vue');
-          return () => import(/* webpackChunkName: "mbmb_headerCompLoader" */'./HeaderComp.vue').then(console.log('after HeaderComp import'))
+          return () => import(/* webpackChunkName: "mbmb_headerCompLoader" */'./HeaderComp.vue');//.then(console.log('after HeaderComp import'))
         }
       },
       shouldShowHeader() {
