@@ -1,3 +1,4 @@
+
 import Vue from 'vue';
 import axios from 'axios';
 import createStore from './store';
@@ -9,9 +10,13 @@ import generateUniqueId from './util/unique-id';
 import * as faAll from './fa.js';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-// import philaVueDatafetch from '@philly/vue-datafetch';
-// const controllerMixin = philaVueDatafetch.controllerMixin;
 import controllerMixin from '@philly/vue-datafetch/src/controller/index.js';
+
+import 'leaflet/dist/leaflet.css';
+import 'leaflet-easybutton/src/easy-button.css';
+import 'leaflet-measure/dist/leaflet-measure.css';
+// import 'phila-standards/dist/css/phila-app.min.css';
+// import './styles.css';
 
 // helper function to auto-assign ids to horizontal tables
 function assignTableIds(comps) {
@@ -143,6 +148,3 @@ function initMapboard(clientConfig) {
 }
 
 export default initMapboard;
-
-// also expose the vue component as a named export
-// export { Mapboard };
