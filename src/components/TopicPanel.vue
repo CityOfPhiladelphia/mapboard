@@ -316,6 +316,11 @@
         this.$store.state.shouldShowAddressCandidateList = false;
       },
       handleWindowResize(dim) {
+        // console.log('TopicPanel handleWindowResize is running');
+        if (this.$config.plugin) {
+          return;
+        }
+
         // this is called to run when:
         // 1 - TopicPanel.vue mounted
         // 2 - geocodeStatus change

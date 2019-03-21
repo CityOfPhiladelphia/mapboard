@@ -82,6 +82,9 @@
       return data;
     },
     created() {
+      if (this.$config.pluginHeight) {
+        this.mbRootStyle.height = this.$config.pluginHeight.toString() + 'px';
+      }
       // console.log('mapboard created, this.$config:', this.$config);
       // console.log('mapboard created, this.$store:', this.$store);
       if (this.$config.panels) {
@@ -285,6 +288,10 @@
       handleWindowResize() {
         // console.log('Mapboard.vue handleWindowResize is running');
         // this only actually affects the size if it is set to "plugin mode"
+        if (this.$config.plugin) {
+          return;
+        }
+
         if (window.innerWidth >= 750) {
           this.mbRootStyle.height = '600px'
         } else {
