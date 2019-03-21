@@ -82,8 +82,10 @@
       return data;
     },
     created() {
-      if (this.$config.pluginHeight) {
-        this.mbRootStyle.height = this.$config.pluginHeight.toString() + 'px';
+      if (this.$config.plugin) {
+        if (this.$config.plugin.enabled) {
+          this.mbRootStyle.height = this.$config.pluginHeight.toString() + 'px';
+        }
       }
       // console.log('mapboard created, this.$config:', this.$config);
       // console.log('mapboard created, this.$store:', this.$store);
@@ -146,7 +148,11 @@
       },
       rootClass() {
         if (this.$config.plugin) {
-          return 'grid-x';
+          if (this.$config.plugin.enabled) {
+            return 'grid-x';
+          } else {
+            return 'cell medium-auto grid-x';
+          }
         } else {
           return 'cell medium-auto grid-x';
         }
@@ -289,7 +295,9 @@
         // console.log('Mapboard.vue handleWindowResize is running');
         // this only actually affects the size if it is set to "plugin mode"
         if (this.$config.plugin) {
-          return;
+          if (this.$config.plugin.enabled) {
+            return;
+          }
         }
 
         if (window.innerWidth >= 750) {

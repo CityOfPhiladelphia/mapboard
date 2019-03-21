@@ -318,7 +318,9 @@
       handleWindowResize(dim) {
         // console.log('TopicPanel handleWindowResize is running');
         if (this.$config.plugin) {
-          return;
+          if (this.$config.plugin.enabled) {
+            return;
+          }
         }
 
         // this is called to run when:
