@@ -159,8 +159,10 @@ function createStore(config) {
     },
   };
 
-  if (config.map.initialImagery) {
-    initialState.map.imagery = config.map.initialImagery;
+  if (config.map) {
+    if (config.map.initialImagery) {
+      initialState.map.imagery = config.map.initialImagery;
+    }
   }
 
   const mb = {
@@ -299,14 +301,12 @@ function createStore(config) {
   // mergeStore = mergeDeep(mergeStore, pvcStore);
 
   // reset the map center and zoom based on the config
-  mergeStore.state.map.center = config.map.center;
-  mergeStore.state.map.zoom = config.map.zoom;
-  mergeStore.state.pictometry.map.center = config.map.center;
-  mergeStore.state.pictometry.map.zoom = config.map.zoom;
-  // mergeStore.state.pictometry.enabled = config.pictometry.enabled;
-  // mergeStore.state.cyclomedia.enabled = config.cyclomedia.enabled;
-
-  // console.log('mergeStore:', mergeStore);
+  if (config.map) {
+    mergeStore.state.map.center = config.map.center;
+    mergeStore.state.map.zoom = config.map.zoom;
+    mergeStore.state.pictometry.map.center = config.map.center;
+    mergeStore.state.pictometry.map.zoom = config.map.zoom;
+  }
 
   // TODO standardize how payloads are passed around/handled
   return new Vuex.Store({

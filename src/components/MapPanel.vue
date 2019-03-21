@@ -326,6 +326,8 @@
 
 <script>
   import * as L from 'leaflet';
+  import 'leaflet/dist/leaflet.css';
+
   // console.log('L:', L)
   const FeatureGroup = L.default.featureGroup;
   const GeoJSON = L.default.geoJSON;

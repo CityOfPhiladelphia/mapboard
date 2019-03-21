@@ -12,12 +12,6 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import controllerMixin from '@philly/vue-datafetch/src/controller/index.js';
 
-import 'leaflet/dist/leaflet.css';
-import 'leaflet-easybutton/src/easy-button.css';
-import 'leaflet-measure/dist/leaflet-measure.css';
-// import 'phila-standards/dist/css/phila-app.min.css';
-// import './styles.css';
-
 // helper function to auto-assign ids to horizontal tables
 function assignTableIds(comps) {
   for (let comp of comps) {
@@ -67,7 +61,7 @@ function assignHorizontalTableGroupIds(comps) {
 }
 
 function finishInit(config) {
-  console.log('finishInit is running, config:', config);
+  // console.log('finishInit is running, config:', config);
   // assign table ids
   for (let topic of config.topics) {
     assignTableIds(topic.components);
@@ -103,7 +97,6 @@ function finishInit(config) {
 
 function initMapboard(clientConfig) {
   const baseConfigUrl = clientConfig.baseConfig;
-  console.log('initMapboard, baseConfigUrl:', baseConfigUrl);
 
   if (baseConfigUrl === null) {
     finishInit(clientConfig);
