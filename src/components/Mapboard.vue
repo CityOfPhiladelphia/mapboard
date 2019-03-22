@@ -84,7 +84,7 @@
     created() {
       if (this.$config.plugin) {
         if (this.$config.plugin.enabled) {
-          this.mbRootStyle.height = this.$config.pluginHeight.toString() + 'px';
+          this.mbRootStyle.height = this.$config.plugin.height.toString() + 'px';
         }
       }
       // console.log('mapboard created, this.$config:', this.$config);
