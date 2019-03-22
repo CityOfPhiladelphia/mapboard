@@ -137,6 +137,13 @@
       };
       return data;
     },
+    // created() {
+    //   if (this.$config.plugin) {
+    //     if (this.$config.plugin.enabled) {
+    //       this.topicsContainerStyle.height = this.$config.plugin.height.toString() + 'px';
+    //     }
+    //   }
+    // },
     mounted() {
       this.handleWindowResize(this.windowDim);
     },
@@ -316,46 +323,69 @@
         this.$store.state.shouldShowAddressCandidateList = false;
       },
       handleWindowResize(dim) {
-        // console.log('TopicPanel handleWindowResize is running');
+        console.log('TopicPanel handleWindowResize is running');
+        let topicsHeight;
         if (this.$config.plugin) {
           if (this.$config.plugin.enabled) {
-            return;
-          }
-        }
-
-        // this is called to run when:
-        // 1 - TopicPanel.vue mounted
-        // 2 - geocodeStatus change
-        // 3 - any resizing of the window
-
-        // const windowHeight = $(window).height();
-        const windowHeight = window.innerHeight;
-        // const siteHeaderHeightNum = parseInt(window.getComputedStyle(document.getElementsByClassName('site-header')[0]).getPropertyValue('height').replace('px', ''));
-        const siteHeaderHeightNum = parseInt(document.getElementsByClassName('site-header')[0].getBoundingClientRect().height);
-        // const appFooterHeightNum = parseInt(window.getComputedStyle(document.getElementsByClassName('app-footer')[0]).getPropertyValue('height').replace('px', ''));
-        const appFooterHeightNum = parseInt(document.getElementsByClassName('app-footer')[0].getBoundingClientRect().height);
-        let topicsHeight;
-
-        if (this.shouldShowAddressHeader) {
-          if (document.getElementsByClassName('address-header')[0]) {
-            // const addressHeaderHeightNum = parseInt(window.getComputedStyle(document.getElementsByClassName('address-header')[0]).getPropertyValue('height').replace('px', ''));
-            const addressHeaderHeightNum = parseInt(document.getElementsByClassName('address-header')[0].getBoundingClientRect().height);
-            if (addressHeaderHeightNum !== 0) {
-              topicsHeight = windowHeight - siteHeaderHeightNum - appFooterHeightNum - addressHeaderHeightNum;
-              // console.log('handleWindowResize shouldShowAddressHeader and it was found, window-height:', windowHeight, 'SiteHeaderHeight:', siteHeaderHeightNum, 'addressHeaderHeight:', addressHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
+            if (this.shouldShowAddressHeader) {
+              if (document.getElementsByClassName('address-header')[0]) {
+                // const addressHeaderHeightNum = parseInt(window.getComputedStyle(document.getElementsByClassName('address-header')[0]).getPropertyValue('height').replace('px', ''));
+                const addressHeaderHeightNum = parseInt(document.getElementsByClassName('address-header')[0].getBoundingClientRect().height);
+                if (addressHeaderHeightNum !== 0) {
+                  topicsHeight = this.$config.plugin.height - addressHeaderHeightNum;
+                  console.log('handleWindowResize shouldShowAddressHeader and it was found, addressHeaderHeight:', addressHeaderHeightNum, 'topicsHeight:', topicsHeight);
+                } else {
+                  topicsHeight = this.$config.plugin.height - 103;
+                  this.topicsContainerStyle.height = this.$config.plugin.height.toString() + 'px';
+                  console.log('handleWindowResize shouldShowAddressHeader and it was found to be 0 so it is using the hardcoded 103, topicsHeight:', topicsHeight);
+                }
+            // return;
+              } else {
+                console.log('no address-header');
+                topicsHeight = this.$config.plugin.height - 103;
+              }
             } else {
-              topicsHeight = windowHeight - siteHeaderHeightNum - appFooterHeightNum - 103;
-              // console.log('handleWindowResize shouldShowAddressHeader and it was found to be 0 so it is using the hardcoded 103, window-height:', windowHeight, 'SiteHeaderHeight:', siteHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
+              console.log('this.shouldShowAddressHeader:', this.shouldShowAddressHeader);
+              topicsHeight = this.$config.plugin.height;
             }
-          } else {
-            topicsHeight = windowHeight - siteHeaderHeightNum - appFooterHeightNum - 103;
-            // console.log('handleWindowResize shouldShowAddressHeader but it was not found so it is using the hardcoded 103, window-height:', windowHeight, 'SiteHeaderHeight:', siteHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
           }
         } else {
-          topicsHeight = windowHeight - siteHeaderHeightNum - appFooterHeightNum;
-          // console.log('handleWindowResize shouldShowAddressHeader is NOT true, window-height:', windowHeight, 'SiteHeaderHeight:', siteHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
+
+          // this is called to run when:
+          // 1 - TopicPanel.vue mounted
+          // 2 - geocodeStatus change
+          // 3 - any resizing of the window
+
+          // const windowHeight = $(window).height();
+          const windowHeight = window.innerHeight;
+          // const siteHeaderHeightNum = parseInt(window.getComputedStyle(document.getElementsByClassName('site-header')[0]).getPropertyValue('height').replace('px', ''));
+          const siteHeaderHeightNum = parseInt(document.getElementsByClassName('site-header')[0].getBoundingClientRect().height);
+          // const appFooterHeightNum = parseInt(window.getComputedStyle(document.getElementsByClassName('app-footer')[0]).getPropertyValue('height').replace('px', ''));
+          const appFooterHeightNum = parseInt(document.getElementsByClassName('app-footer')[0].getBoundingClientRect().height);
+
+
+          if (this.shouldShowAddressHeader) {
+            if (document.getElementsByClassName('address-header')[0]) {
+              // const addressHeaderHeightNum = parseInt(window.getComputedStyle(document.getElementsByClassName('address-header')[0]).getPropertyValue('height').replace('px', ''));
+              const addressHeaderHeightNum = parseInt(document.getElementsByClassName('address-header')[0].getBoundingClientRect().height);
+              if (addressHeaderHeightNum !== 0) {
+                topicsHeight = windowHeight - siteHeaderHeightNum - appFooterHeightNum - addressHeaderHeightNum;
+                // console.log('handleWindowResize shouldShowAddressHeader and it was found, window-height:', windowHeight, 'SiteHeaderHeight:', siteHeaderHeightNum, 'addressHeaderHeight:', addressHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
+              } else {
+                topicsHeight = windowHeight - siteHeaderHeightNum - appFooterHeightNum - 103;
+                // console.log('handleWindowResize shouldShowAddressHeader and it was found to be 0 so it is using the hardcoded 103, window-height:', windowHeight, 'SiteHeaderHeight:', siteHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
+              }
+            } else {
+              topicsHeight = windowHeight - siteHeaderHeightNum - appFooterHeightNum - 103;
+              // console.log('handleWindowResize shouldShowAddressHeader but it was not found so it is using the hardcoded 103, window-height:', windowHeight, 'SiteHeaderHeight:', siteHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
+            }
+          } else {
+            topicsHeight = windowHeight - siteHeaderHeightNum - appFooterHeightNum;
+            // console.log('handleWindowResize shouldShowAddressHeader is NOT true, window-height:', windowHeight, 'SiteHeaderHeight:', siteHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
+          }
         }
 
+        console.log('topicsHeight:', topicsHeight);
         // if ($(window).width() >= 750) {
         if (window.innerWidth >= 750) {
           this.stacked = false;
@@ -377,7 +407,13 @@
           }
           this.topicsContainerStyle.height = topicsHeight.toString() + 'px';
           this.topicsContainerStyle['min-height'] = topicsHeight.toString() + 'px';
-          this.topicsContainerStyle['overflow-y'] = 'auto';
+          // if (this.$config.plugin) {
+          //   if (this.$config.plugin.enabled) {
+          //     this.topicsContainerStyle['overflow-y'] = 'hidden';
+          //   }
+          // } else {
+            this.topicsContainerStyle['overflow-y'] = 'auto';
+          // }
 
         } else {
           this.stacked = true;
