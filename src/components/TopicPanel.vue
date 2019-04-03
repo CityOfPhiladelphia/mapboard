@@ -323,7 +323,7 @@
         this.$store.state.shouldShowAddressCandidateList = false;
       },
       handleWindowResize(dim) {
-        console.log('TopicPanel handleWindowResize is running');
+        // console.log('TopicPanel handleWindowResize is running');
         let topicsHeight;
         if (this.$config.plugin) {
           if (this.$config.plugin.enabled) {
@@ -333,19 +333,19 @@
                 const addressHeaderHeightNum = parseInt(document.getElementsByClassName('address-header')[0].getBoundingClientRect().height);
                 if (addressHeaderHeightNum !== 0) {
                   topicsHeight = this.$config.plugin.height - addressHeaderHeightNum;
-                  console.log('handleWindowResize shouldShowAddressHeader and it was found, addressHeaderHeight:', addressHeaderHeightNum, 'topicsHeight:', topicsHeight);
+                  // console.log('handleWindowResize shouldShowAddressHeader and it was found, addressHeaderHeight:', addressHeaderHeightNum, 'topicsHeight:', topicsHeight);
                 } else {
                   topicsHeight = this.$config.plugin.height - 103;
                   this.topicsContainerStyle.height = this.$config.plugin.height.toString() + 'px';
-                  console.log('handleWindowResize shouldShowAddressHeader and it was found to be 0 so it is using the hardcoded 103, topicsHeight:', topicsHeight);
+                  // console.log('handleWindowResize shouldShowAddressHeader and it was found to be 0 so it is using the hardcoded 103, topicsHeight:', topicsHeight);
                 }
             // return;
               } else {
-                console.log('no address-header');
+                // console.log('no address-header');
                 topicsHeight = this.$config.plugin.height - 103;
               }
             } else {
-              console.log('this.shouldShowAddressHeader:', this.shouldShowAddressHeader);
+              // console.log('this.shouldShowAddressHeader:', this.shouldShowAddressHeader);
               topicsHeight = this.$config.plugin.height;
             }
           }

@@ -721,9 +721,9 @@
     vue "^2.6.9"
     vuex "^3.0.1"
 
-"@philly/vue-mapping@^1.0.25":
-  version "1.0.25"
-  resolved "https://registry.yarnpkg.com/@philly/vue-mapping/-/vue-mapping-1.0.25.tgz#47f814966e623c851e9a2d2c45a611b2d1922289"
+"@philly/vue-mapping@^1.0.27":
+  version "1.0.27"
+  resolved "https://registry.yarnpkg.com/@philly/vue-mapping/-/vue-mapping-1.0.27.tgz#27ab9c856074d458701d881747629b32104ac71a"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-regular-svg-icons" "^5.7.2"
