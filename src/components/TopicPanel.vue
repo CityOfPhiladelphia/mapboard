@@ -281,7 +281,10 @@
         return this.$store.state.parcels.dor.data.length > 0;
       },
       shouldShowGreeting() {
-        if (this.$config.onGeocodeFail.data) {
+        // this was added to allow fetchData to run even without a geocode result
+        // for the real estate tax site which sometimes needs data from TIPS
+        // even if the property is not in OPA and AIS
+        if (this.$config.onGeocodeFail) {
           if (this.$store.state.geocode.status === null) {
             return true;
           }
@@ -292,7 +295,6 @@
       },
       // this returns the address shown in the address header
       address() {
-        console.log('computing address');
         const geocode = this.geocode;
         const dorParcels = this.$store.state.parcels.dor.data;
         const activeDorAddress = this.$store.state.parcels.dor.activeAddress;
@@ -312,8 +314,10 @@
         // a DOR address might be found even if there is no geocode
         } else if (activeDorAddress) {
           address = activeDorAddress;
-        } else if (this.$config.onGeocodeFail.data) {
-          console.log('at start of ifs', this.$store.state.sources[this.$config.onGeocodeFail.data]['status'])
+        } else if (this.$config.onGeocodeFail) {
+          // this was added to allow fetchData to run even without a geocode result
+          // for the real estate tax site which sometimes needs data from TIPS
+          // even if the property is not in OPA and AIS
           if (this.$store.state.sources[this.$config.onGeocodeFail.data].data) {
             if (this.$store.state.sources[this.$config.onGeocodeFail.data].data.body) {
               if (this.$store.state.sources[this.$config.onGeocodeFail.data].data.body.includes('Invalid account number')) {
