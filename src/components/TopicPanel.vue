@@ -281,10 +281,18 @@
         return this.$store.state.parcels.dor.data.length > 0;
       },
       shouldShowGreeting() {
-        return !(this.geocode || this.dorParcels);
+        if (this.$config.onGeocodeFail.data) {
+          if (this.$store.state.geocode.status === null) {
+            return true;
+          }
+          return !(this.$store.state.sources[this.$config.onGeocodeFail.data]);
+        } else {
+          return !(this.geocode || this.dorParcels);
+        }
       },
       // this returns the address shown in the address header
       address() {
+        console.log('computing address');
         const geocode = this.geocode;
         const dorParcels = this.$store.state.parcels.dor.data;
         const activeDorAddress = this.$store.state.parcels.dor.activeAddress;
@@ -304,6 +312,19 @@
         // a DOR address might be found even if there is no geocode
         } else if (activeDorAddress) {
           address = activeDorAddress;
+        } else if (this.$config.onGeocodeFail.data) {
+          console.log('at start of ifs', this.$store.state.sources[this.$config.onGeocodeFail.data]['status'])
+          if (this.$store.state.sources[this.$config.onGeocodeFail.data].data) {
+            if (this.$store.state.sources[this.$config.onGeocodeFail.data].data.body) {
+              if (this.$store.state.sources[this.$config.onGeocodeFail.data].data.body.includes('Invalid account number')) {
+                address = null;
+              } else {
+                address = this.$store.state.geocode.input;
+              }
+            } else {
+              address = this.$store.state.geocode.input;
+            }
+          }
         }
 
         return address;
