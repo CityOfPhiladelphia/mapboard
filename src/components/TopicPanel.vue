@@ -410,7 +410,7 @@
           }
         }
 
-        console.log('topicsHeight:', topicsHeight);
+        // console.log('topicsHeight:', topicsHeight);
         // if ($(window).width() >= 750) {
         if (window.innerWidth >= 750) {
           this.stacked = false;
