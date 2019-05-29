@@ -249,7 +249,9 @@
       </div>
 
       <div v-once>
-        <overlay-select-control :position="this.overlaySelectControlPosition" />
+        <overlay-select-control :position="this.overlaySelectControlPosition"
+                                v-if="this.shouldShowOverlaySelectControl"
+        />
       </div>
 
       <div v-once>
@@ -439,6 +441,17 @@
       }
     },
     computed: {
+      shouldShowOverlaySelectControl() {
+        let value = false
+        if (this.$config.map) {
+          if (this.$config.map.overlaySelectControl) {
+            if (this.$config.map.overlaySelectControl.shouldShow === true) {
+              value = true
+            }
+          }
+        }
+        return value
+      },
       addressAutocompleteEnabled() {
         // TODO tidy up the code
         if (this.$config.addressInput) {
