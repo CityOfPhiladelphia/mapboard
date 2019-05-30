@@ -28,7 +28,7 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
-### 3.0.34:
+### 3.0.34
 
 * Uses @philly/vue-comps 1.0.29
 * Uses @philly/vue-mapping 1.0.30
