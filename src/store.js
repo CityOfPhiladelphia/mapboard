@@ -163,6 +163,11 @@ function createStore(config) {
     if (config.map.initialImagery) {
       initialState.map.imagery = config.map.initialImagery;
     }
+    if (config.map.overlaySelectControl) {
+      if (config.map.overlaySelectControl.initialSelection) {
+        initialState.map.selectedOverlay = config.map.overlaySelectControl.initialSelection;
+      }
+    }
   }
 
   const mb = {

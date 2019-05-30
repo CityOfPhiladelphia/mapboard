@@ -42,12 +42,14 @@
                             :attribution="tiledLayer.attribution"
       />
 
+      <!-- tiled overlay based on topic -->
       <esri-tiled-overlay v-for="(tiledLayer, key) in this.$config.map.tiledOverlays"
                           v-if="activeTiledOverlays.includes(key)"
                           :key="key"
                           :url="tiledLayer.url"
                           :zIndex="tiledLayer.zIndex"
                           :opacity="tiledLayer.opacity"
+                          :test="key"
       />
 
       <esri-dynamic-map-layer v-for="(dynamicLayer, key) in this.$config.map.dynamicMapLayers"
@@ -236,7 +238,7 @@
       /> -->
 
       <div v-once>
-        <basemap-toggle-control v-if="shouldShowImageryToggle"
+        <basemap-toggle-control v-if="shouldShowBasemapToggleControl"
                                 v-once
                                 :position="'topright'"
         />
@@ -244,6 +246,12 @@
 
       <div v-once>
         <basemap-select-control :position="this.basemapSelectControlPosition" />
+      </div>
+
+      <div v-once>
+        <overlay-select-control :position="this.overlaySelectControlPosition"
+                                v-if="this.shouldShowOverlaySelectControl"
+        />
       </div>
 
       <div v-once>
@@ -352,6 +360,7 @@
   import LocationControl from '@philly/vue-mapping/src/components/LocationControl.vue';
   import BasemapToggleControl from '@philly/vue-mapping/src/components/BasemapToggleControl.vue';
   import BasemapSelectControl from '@philly/vue-mapping/src/components/BasemapSelectControl.vue';
+  import OverlaySelectControl from '@philly/vue-mapping/src/components/OverlaySelectControl.vue';
   import PictometryButton from '@philly/vue-mapping/src/pictometry/Button.vue';
   import CyclomediaButton from '@philly/vue-mapping/src/cyclomedia/Button.vue';
   import MeasureControl from '@philly/vue-mapping/src/components/MeasureControl.vue';
@@ -385,6 +394,7 @@
       LocationControl,
       BasemapToggleControl,
       BasemapSelectControl,
+      OverlaySelectControl,
       PictometryButton,
       CyclomediaButton,
       MeasureControl,
@@ -422,8 +432,26 @@
           4326
         );
       }
+
+      // adds overlaySelectControl for cleanphls
+      if (this.$config.map.overlaySelectControl) {
+        if (this.$config.map.overlaySelectControl.shouldShow) {
+          this.$store.commit('setShouldShowOverlaySelectControl', true);
+        }
+      }
     },
     computed: {
+      shouldShowOverlaySelectControl() {
+        let value = false
+        if (this.$config.map) {
+          if (this.$config.map.overlaySelectControl) {
+            if (this.$config.map.overlaySelectControl.shouldShow === true) {
+              value = true
+            }
+          }
+        }
+        return value
+      },
       addressAutocompleteEnabled() {
         // TODO tidy up the code
         if (this.$config.addressInput) {
@@ -463,6 +491,22 @@
         } else {
           return 'topalmostright'
         }
+      },
+      overlaySelectControlPosition() {
+        if (this.$config.map.overlaySelectControl) {
+          if (this.$config.map.overlaySelectControl.position) {
+            return this.$config.map.overlaySelectControl.position;
+          } else {
+            return 'topright';
+          }
+        } else {
+          return 'topright';
+        }
+        // if (this.isMobileOrTablet) {
+        //   return 'topright'
+        // } else {
+        //   return 'topalmostright'
+        // }
       },
       shouldShowAddressCandidateList() {
         return this.$store.state.shouldShowAddressCandidateList;
@@ -550,8 +594,8 @@
         return this.$config.map.dynamicMapLayers.regmaps;
       },
       activeBasemap() {
-        const shouldShowImagery = this.$store.state.map.shouldShowImagery;
-        if (shouldShowImagery) {
+        const shouldShowBasemapSelectControl = this.$store.state.map.shouldShowBasemapSelectControl;
+        if (shouldShowBasemapSelectControl) {
           return this.$store.state.map.imagery;
         }
         const defaultBasemap = this.$config.map.defaultBasemap;
@@ -561,15 +605,21 @@
       tiledLayers() {
         const activeBasemap = this.activeBasemap;
         const activeBasemapConfig = this.configForBasemap(activeBasemap)
-
         return activeBasemapConfig.tiledLayers || [];
       },
       activeTiledOverlays() {
         if (!this.activeTopicConfig || !this.activeTopicConfig.tiledOverlays) {
           return [];
         } else {
-          return this.activeTopicConfig.tiledOverlays;
+          if (this.selectedOverlay) {
+            return this.selectedOverlay;
+          } else {
+            return this.activeTopicConfig.tiledOverlays;
+          }
         }
+      },
+      selectedOverlay() {
+        return this.$store.state.map.selectedOverlay;
       },
       activeDynamicMaps() {
         if (!this.activeTopicConfig || !this.activeTopicConfig.dynamicMapLayers) {
@@ -597,7 +647,7 @@
       hasImageryBasemaps() {
         return this.imageryBasemaps.length > 0;
       },
-      shouldShowImageryToggle() {
+      shouldShowBasemapToggleControl() {
         if (this.$config.map.imagery) {
           return this.hasImageryBasemaps && this.$config.map.imagery.enabled;
         } else {

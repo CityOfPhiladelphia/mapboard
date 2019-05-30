@@ -354,6 +354,7 @@
           if (this.$config.plugin.enabled) {
             if (this.shouldShowAddressHeader) {
               if (document.getElementsByClassName('address-header')[0]) {
+                console.log('handleWindowResize is running, it is set to plugin and there is an address header')
                 // const addressHeaderHeightNum = parseInt(window.getComputedStyle(document.getElementsByClassName('address-header')[0]).getPropertyValue('height').replace('px', ''));
                 const addressHeaderHeightNum = parseInt(document.getElementsByClassName('address-header')[0].getBoundingClientRect().height);
                 if (addressHeaderHeightNum !== 0) {
@@ -418,14 +419,14 @@
             this.defaultAddressTextPlaceholderStyle = this.$config.defaultAddressTextPlaceholder.wideStyle;
           }
           this.addressContainerStyle = {
-            'height': '100%',
+            // 'height': '100%',
             'align-items': 'flex-start',
             'padding-left': '20px',
             'padding-top': '20px',
             'padding-bottom': '20px',
           }
           this.addressInputContainerStyle = {
-            'height': '100%',
+            // 'height': '100%',
             'align-items': this.inputAlign,
             'padding-top': '30px',
             'padding-bottom': '30px',
@@ -446,14 +447,14 @@
             this.defaultAddressTextPlaceholderStyle = this.$config.defaultAddressTextPlaceholder.narrowStyle;
           }
           this.addressContainerStyle = {
-            'height': 'auto',
+            // 'height': 'auto',
             'align-items': 'center',
             'padding-left': '0px',
             'padding-top': '10px',
             'padding-bottom': '10px',
           }
           this.addressInputContainerStyle = {
-            'height': 'auto',
+            // 'height': 'auto',
             'align-items': 'center',
             'padding-top': '10px',
             'padding-bottom': '10px',
