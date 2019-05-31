@@ -28,8 +28,12 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
-### 3.0.34
+### 3.0.34 - 5/30/2019
 
 * Uses @philly/vue-comps 1.0.29
 * Uses @philly/vue-mapping 1.0.30
 * Uses @philly/vue-datafetch 0.0.17
+* Allows you to put [footerContent](https://github.com/CityOfPhiladelphia/mapboard/wiki/footerContent) in your config, which allows you to put as many popoverLink and Anchor components in you need.
+* Allows you to use a [customComps](https://github.com/CityOfPhiladelphia/mapboard/wiki/customComps) parameter in your config to include your own components in a project.
+* Allows you to set up an [initialPopover](https://github.com/CityOfPhiladelphia/mapboard/wiki/initialPopover) to put an alert modal on your site when it loads.
+
