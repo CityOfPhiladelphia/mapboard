@@ -354,7 +354,7 @@
           if (this.$config.plugin.enabled) {
             if (this.shouldShowAddressHeader) {
               if (document.getElementsByClassName('address-header')[0]) {
-                console.log('handleWindowResize is running, it is set to plugin and there is an address header')
+                // console.log('handleWindowResize is running, it is set to plugin and there is an address header')
                 // const addressHeaderHeightNum = parseInt(window.getComputedStyle(document.getElementsByClassName('address-header')[0]).getPropertyValue('height').replace('px', ''));
                 const addressHeaderHeightNum = parseInt(document.getElementsByClassName('address-header')[0].getBoundingClientRect().height);
                 if (addressHeaderHeightNum !== 0) {

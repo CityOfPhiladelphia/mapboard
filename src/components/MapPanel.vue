@@ -120,7 +120,7 @@
 
       <!-- marker using a png and ablility to rotate it -->
       <png-marker v-if="this.cyclomediaActive"
-                  :icon="'images/camera.png'"
+                  :icon="this.sitePath + 'images/camera.png'"
                   :latlng="cycloLatlng"
                   :rotationAngle="cycloRotationAngle"
       />
@@ -259,7 +259,7 @@
                            v-once
                            :position="'topright'"
                            :link="'pictometry'"
-                           :imgSrc="'images/pictometry.png'"
+                           :imgSrc="this.sitePath + 'images/pictometry.png'"
         />
       </div>
 
@@ -268,7 +268,7 @@
                            v-once
                            :position="'topright'"
                            :link="'cyclomedia'"
-                           :imgSrc="'images/cyclomedia.png'"
+                           :imgSrc="this.sitePath + 'images/cyclomedia.png'"
                            @click="handleCyclomediaButtonClick"
         />
       </div>
@@ -414,7 +414,7 @@
       return data;
     },
     created() {
-      // console.log('MapPanel.vue created this.$config:', this.$config);
+      // console.log('MapPanel.vue created this.$config:', this.$config, 'process.env.VUE_APP_PUBLICPATH', process.env.VUE_APP_PUBLICPATH);
       this.createdComplete = true;
       // if there's a default address, navigate to it
       const defaultAddress = this.$config.defaultAddress;
@@ -441,6 +441,13 @@
       }
     },
     computed: {
+      sitePath() {
+        if (process.env.VUE_APP_PUBLICPATH) {
+          return window.location.origin + process.env.VUE_APP_PUBLICPATH;
+        } else {
+          return ''
+        }
+      },
       shouldShowOverlaySelectControl() {
         let value = false
         if (this.$config.map) {

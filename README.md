@@ -28,6 +28,14 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 3.0.35 - 6/2/2019
+
+* Uses new releases of @philly libraries which use axios 0.19.0:
+  * Uses @philly/vue-comps 1.0.31
+  * Uses @philly/vue-mapping 1.0.31
+  * Uses @philly/vue-datafetch 0.0.18
+* Fixes sources for images in the MapPanel
+
 ### 3.0.34 - 5/30/2019
 
 * Uses @philly/vue-comps 1.0.29
@@ -36,4 +44,3 @@ Travis will now run a build and publish to NPM.
 * Allows you to use a [footerContent](https://github.com/CityOfPhiladelphia/mapboard/wiki/footerContent) parameter in your config, which lets you include as many popoverLink and Anchor components in your footer as you need.
 * Allows you to use a [customComps](https://github.com/CityOfPhiladelphia/mapboard/wiki/customComps) parameter in your config to include your own components in a project.
 * Allows you to set up an [initialPopover](https://github.com/CityOfPhiladelphia/mapboard/wiki/initialPopover) to put an alert modal on your site when it loads.
-
