@@ -34,6 +34,7 @@ Travis will now run a build and publish to NPM.
   * Uses @philly/vue-comps 1.0.31
   * Uses @philly/vue-mapping 1.0.31
   * Uses @philly/vue-datafetch 0.0.18
+* Fixes sources for images in the MapPanel
 
 ### 3.0.34 - 5/30/2019
 
