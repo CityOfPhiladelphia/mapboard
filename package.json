@@ -11,9 +11,9 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
-    "@philly/vue-comps": "^1.0.31",
-    "@philly/vue-datafetch": "^0.0.18",
-    "@philly/vue-mapping": "^1.0.31",
+    "@philly/vue-comps": "^1.0.33",
+    "@philly/vue-datafetch": "^0.0.20",
+    "@philly/vue-mapping": "^1.0.33",
     "vue": "^2.6.9",
     "vuex": "^3.0.1"
   },
