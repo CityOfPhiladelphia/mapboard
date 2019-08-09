@@ -28,6 +28,28 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 3.0.38 - 8/9/2019
+
+* Uses new releases of @philly libraries which ran upgrades
+  * Uses @philly/vue-comps 1.0.36
+  * Uses @philly/vue-mapping 1.0.35
+  * Uses @philly/vue-datafetch 0.0.22
+* Adds ids to Horizontal and Vertical table html
+* Adds borders to Address Search bars
+* Fixes css where very wide horizontal tables were going way behind the map
+
+### 3.0.37 - 7/12/2019
+* Uses new releases of @philly libraries which ran upgrades
+  * Uses @philly/vue-comps 1.0.33
+  * Uses @philly/vue-mapping 1.0.33
+  * Uses @philly/vue-datafetch 0.0.21
+
+### 3.0.36 - 7/11/2019
+* Uses new releases of @philly libraries which ran upgrades
+  * Uses @philly/vue-comps 1.0.33
+  * Uses @philly/vue-mapping 1.0.33
+  * Uses @philly/vue-datafetch 0.0.20
+
 ### 3.0.35 - 6/2/2019
 
 * Uses new releases of @philly libraries which use axios 0.19.0:
