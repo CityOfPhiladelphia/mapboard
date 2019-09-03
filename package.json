@@ -11,9 +11,9 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@philly/pvd": "https://github.com/ajrothwell/pvd#cfb8723e4e1261443ab19777145d3bf8f583c75b",
     "@philly/vue-comps": "^1.0.36",
     "@philly/vue-mapping": "^1.0.35",
-    "pvd": "https://github.com/ajrothwell/pvd#b16402f2290d20a408ff0d076ea23490a13f3930",
     "vue": "^2.6.9",
     "vuex": "^3.0.1"
   },
