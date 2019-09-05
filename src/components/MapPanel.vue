@@ -750,8 +750,21 @@
       isGeocoding() {
         return this.$store.state.geocode.status === 'waiting';
       },
+      geocodeZoom() {
+        if (this.$config.map.geocodeZoom) {
+          return this.$config.map.geocodeZoom;
+        } else {
+          return 19;
+        }
+      }
     },
     watch: {
+      geocodeResult(nextGeocodeResult) {
+        if (nextGeocodeResult._featureId) {
+          this.$store.commit('setMapCenter', nextGeocodeResult.geometry.coordinates);
+          this.$store.commit('setMapZoom', this.geocodeZoom);
+        }
+      },
       picOrCycloActive(value) {
         this.$nextTick(() => {
           this.$store.state.map.map.invalidateSize();
@@ -835,7 +848,7 @@
             tf.push(false);
           }
         }
-        // console.log('MapPanel.vue checkBoundsChanges, tf:', tf);
+        console.log('MapPanel.vue checkBoundsChanges, dzts:', dzts, 'czts:', czts, 'tf:', tf);
         if (tf.includes(false)) {
           return;
         } else {
