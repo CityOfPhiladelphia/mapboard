@@ -28,6 +28,13 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 3.0.39 - 9/6/2019
+
+* Uses new releases of @philly libraries which ran upgrades
+  * Uses @philly/vue-comps 1.0.37
+  * Uses @philly/vue-mapping 1.0.36
+  * Uses @philly/vue-datafetch 0.0.24
+
 ### 3.0.38 - 8/9/2019
 
 * Uses new releases of @philly libraries which ran upgrades
