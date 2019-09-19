@@ -184,6 +184,25 @@
                 }"
         />
 
+       <!-- reactive polyline features -->
+       <!-- v-if="shouldShowPolyline(geojsonFeature.key)" -->
+       <!-- :fillOpacity="geojsonFeature.fillOpacity" -->
+       <polyline_ v-for="polyline in reactivePolylineFeatures"
+                @l-mouseover="handleMarkerMouseover"
+                @l-click="handleMarkerClick"
+                @l-mouseout="handleMarkerMouseout"
+                :latlngs="polyline.latlngs"
+                :color="polyline.color"
+                :fillColor="polyline.fillColor"
+                :weight="polyline.weight"
+                :opacity="polyline.opacity"
+                :key="polyline.key"
+                :data="{
+                  featureId: polyline.featureId,
+                  tableId: polyline.tableId
+                }"
+        />
+
        <!-- location marker -->
        <circle-marker v-if="this.$store.state.map.location.lat != null"
                       :latlng="this.locationMarker.latlng"
@@ -382,6 +401,7 @@
       EsriDynamicMapLayer: () => import(/* webpackChunkName: "mbmp_pvm_EsriDynamicMapLayer" */'@philly/vue-mapping/src/esri-leaflet/DynamicMapLayer.vue'),
       EsriFeatureLayer: () => import(/* webpackChunkName: "mbmp_pvm_EsriFeatureLayer" */'@philly/vue-mapping/src/esri-leaflet/FeatureLayer.vue'),
       Geojson: () => import(/* webpackChunkName: "mbmp_pvm_Geojson" */'@philly/vue-mapping/src/leaflet/Geojson.vue'),
+      Polyline_: () => import(/* webpackChunkName: "mbmp_pvm_Geojson" */'@philly/vue-mapping/src/leaflet/Polyline.vue'),
       CircleMarker: () => import(/* webpackChunkName: "mbmp_pvm_CircleMarker" */'@philly/vue-mapping/src/leaflet/CircleMarker.vue'),
       VectorMarker: () => import(/* webpackChunkName: "mbmp_pvm_VectorMarker" */'@philly/vue-mapping/src/components/VectorMarker.vue'),
       PngMarker: () => import(/* webpackChunkName: "mbmp_pvm_PngMarker" */'@philly/vue-mapping/src/components/PngMarker.vue'),

@@ -1,10 +1,10 @@
 export default {
   watch: {
     activeFeature(nextActiveFeature, prevActiveFeature) {
-      // console.log('WATCH active feature', prevActiveFeature, '=>', nextActiveFeature);
 
       const layerMap = this.$store.state.map.map._layers;
       const layers = Object.values(layerMap);
+      console.log('WATCH active feature', prevActiveFeature, '=>', nextActiveFeature, 'layers:', layers);
 
       let updateFeaturePrev,
           updateFeatureNext,
@@ -15,6 +15,7 @@ export default {
           matchingLayerPrev;
 
       if (prevActiveFeature && prevActiveFeature.tableId && prevActiveFeature.featureId) {
+        console.log('prevActiveFeature:', prevActiveFeature);
         updateFeaturePrev = prevActiveFeature;
         tableId = updateFeaturePrev.tableId
         featureIdPrev = updateFeaturePrev.featureId;
@@ -30,6 +31,7 @@ export default {
       }
 
       if (nextActiveFeature && nextActiveFeature.tableId && nextActiveFeature.featureId) {
+        console.log('nextActiveFeature:', nextActiveFeature);
         updateFeatureNext = nextActiveFeature;
         tableId = updateFeatureNext.tableId
         featureIdNext = updateFeatureNext.featureId;
@@ -240,6 +242,55 @@ export default {
       return features;
     },
 
+    // these polyline features will have mouseover and mouseout events,
+    // for highlighting horizontal table rows
+    reactivePolylineFeatures() {
+      const features = [];
+
+      const filteredData = this.$store.state.horizontalTables.filteredData;
+      // get visible tables based on active topic
+      const tableIds = this.$store.getters.visibleTableIds;
+
+      for (let tableId of tableIds) {
+        const tableConfig = this.getConfigForTable(tableId) || {};
+        const mapOverlay = (tableConfig.options || {}).mapOverlay;
+
+        if (!mapOverlay || mapOverlay.marker !== 'polyline') {
+          continue;
+        }
+
+        const items = filteredData[tableId];
+
+        if (items.length < 1) {
+          continue;
+        }
+
+        const style = mapOverlay.style;
+        // items.push(tableId);
+
+        console.log('items:', items);
+        // go through rows
+        for (let item of items) {
+          console.log('item:', item);
+          let props = Object.assign({}, style);
+          let latlngs = [];
+          for (let coord of item.geometry.coordinates) {
+            console.log('coord:', coord, 'coord[0]:', coord[0]);
+            latlngs.push([coord[1], coord[0]])
+          }
+
+          props.latlngs = latlngs;
+          // props.latlngs = item.geometry.coordinates;
+          props.key = item.id;
+          props.featureId = item._featureId || null;
+          props.tableId = items[items.length-1];
+          features.push(props);
+        }
+      }
+      return features;
+    },
+
+
     // these geojson features will have mouseover and mouseout events,
     // for highlighting horizontal table rows
     reactiveGeojsonFeatures() {
@@ -326,6 +377,7 @@ export default {
       }
     },
     bringMarkerToFront(circleMarker) {
+      if (!circleMarker) { return }
       // put marker on top
       const el = circleMarker._path;
 
@@ -365,7 +417,8 @@ export default {
       // }
     },
     updateMarkerFillColor(marker) {
-      // console.log('updateMarkerFillColor, marker:', marker);
+      console.log('updateMarkerFillColor, marker:', marker);
+      if (!marker) { return };
       // get next fill color
       const { featureId, tableId } = marker.options.data;
       const nextFillColor = this.fillColorForOverlayMarker(featureId, tableId);
