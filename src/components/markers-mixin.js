@@ -4,7 +4,7 @@ export default {
 
       const layerMap = this.$store.state.map.map._layers;
       const layers = Object.values(layerMap);
-      console.log('WATCH active feature', prevActiveFeature, '=>', nextActiveFeature, 'layers:', layers);
+      // console.log('WATCH active feature', prevActiveFeature, '=>', nextActiveFeature, 'layers:', layers);
 
       let updateFeaturePrev,
           updateFeatureNext,
@@ -15,7 +15,7 @@ export default {
           matchingLayerPrev;
 
       if (prevActiveFeature && prevActiveFeature.tableId && prevActiveFeature.featureId) {
-        console.log('prevActiveFeature:', prevActiveFeature);
+        // console.log('prevActiveFeature:', prevActiveFeature);
         updateFeaturePrev = prevActiveFeature;
         tableId = updateFeaturePrev.tableId
         featureIdPrev = updateFeaturePrev.featureId;
@@ -27,11 +27,11 @@ export default {
           const layerTableId = data.tableId;
           return layerFeatureId === featureIdPrev && layerTableId === tableId;
         })[0];
-        this.updateMarkerFillColor(matchingLayerPrev);
+        this.updateMarkerStyle(matchingLayerPrev);
       }
 
       if (nextActiveFeature && nextActiveFeature.tableId && nextActiveFeature.featureId) {
-        console.log('nextActiveFeature:', nextActiveFeature);
+        // console.log('nextActiveFeature:', nextActiveFeature);
         updateFeatureNext = nextActiveFeature;
         tableId = updateFeatureNext.tableId
         featureIdNext = updateFeatureNext.featureId;
@@ -43,7 +43,7 @@ export default {
           const layerTableId = data.tableId;
           return layerFeatureId === featureIdNext && layerTableId === tableId;
         })[0];
-        this.updateMarkerFillColor(matchingLayerNext);
+        this.updateMarkerStyle(matchingLayerNext);
         this.bringMarkerToFront(matchingLayerNext);
       }
 
@@ -268,14 +268,14 @@ export default {
         const style = mapOverlay.style;
         // items.push(tableId);
 
-        console.log('items:', items);
+        // console.log('items:', items);
         // go through rows
         for (let item of items) {
-          console.log('item:', item);
+          // console.log('item:', item);
           let props = Object.assign({}, style);
           let latlngs = [];
           for (let coord of item.geometry.coordinates) {
-            console.log('coord:', coord, 'coord[0]:', coord[0]);
+            // console.log('coord:', coord, 'coord[0]:', coord[0]);
             latlngs.push([coord[1], coord[0]])
           }
 
@@ -283,7 +283,8 @@ export default {
           // props.latlngs = item.geometry.coordinates;
           props.key = item.id;
           props.featureId = item._featureId || null;
-          props.tableId = items[items.length-1];
+          props.tableId = tableId;
+          // props.tableId = items[items.length-1];
           features.push(props);
         }
       }
@@ -416,17 +417,25 @@ export default {
         this.$store.commit('setActiveFeature', null);
       // }
     },
-    updateMarkerFillColor(marker) {
-      console.log('updateMarkerFillColor, marker:', marker);
+    updateMarkerStyle(marker) {
+      // console.log('updateMarkerStyle, marker:', marker);
       if (!marker) { return };
       // get next fill color
-      const { featureId, tableId } = marker.options.data;
-      const nextFillColor = this.fillColorForOverlayMarker(featureId, tableId);
+      const { featureId, tableId, type } = marker.options.data;
+      const nextStyles = this.styleForOverlayMarker(featureId, tableId);
+      const nextFillColor = nextStyles.fillColor;
+      const nextWeight = nextStyles.weight;
 
       // highlight. we're doing this here (non-reactively) because binding the
       // fill color property was not performing well enough.
       const nextStyle = Object.assign({}, marker.options);
-      nextStyle.fillColor = nextFillColor;
+
+      if (type === 'polyline') {
+        nextStyle.color = nextFillColor;
+        nextStyle.weight = nextWeight;
+      } else {
+        nextStyle.fillColor = nextFillColor;
+      }
       marker.setStyle(nextStyle);
     },
   }

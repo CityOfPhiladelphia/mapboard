@@ -199,7 +199,8 @@
                 :key="polyline.key"
                 :data="{
                   featureId: polyline.featureId,
-                  tableId: polyline.tableId
+                  tableId: polyline.tableId,
+                  type: 'polyline'
                 }"
         />
 
@@ -929,7 +930,7 @@
           this.$store.commit('setCyclomediaLatLngFromMap', [lat, lng]);
         }
       },
-      fillColorForOverlayMarker(markerId, tableId) {
+      styleForOverlayMarker(markerId, tableId) {
         // get map overlay style and hover style for table
         const tableConfig = this.getConfigForTable(tableId);
         const mapOverlay = tableConfig.options.mapOverlay;
@@ -943,7 +944,8 @@
         );
         const curStyle = useHoverStyle ? hoverStyle : style;
 
-        return curStyle.fillColor;
+        return curStyle;
+        // return curStyle.fillColor;
       },
     }, // end of methods
   }; //end of export
