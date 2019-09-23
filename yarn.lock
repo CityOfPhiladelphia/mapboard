@@ -852,10 +852,10 @@
     vue "^2.6.9"
     vuex "^3.0.1"
 
-"@philly/vue-mapping@^1.0.37":
-  version "1.0.37"
-  resolved "https://registry.yarnpkg.com/@philly/vue-mapping/-/vue-mapping-1.0.37.tgz#7c881893fb5390e0f68d299b59165f3632db21dd"
-  integrity sha512-NSzcp6qTy1LGeSUEkAQU7P6acxUU0TIWyzHXHVzLHwpCbjJ+PE5PCCwGRRYB49v/z4D+SrlwT32mvvkx6MKVnw==
+"@philly/vue-mapping@^1.0.39":
+  version "1.0.39"
+  resolved "https://registry.yarnpkg.com/@philly/vue-mapping/-/vue-mapping-1.0.39.tgz#5fe6b767af49b1ad01cc4be36b32b64a46cdab48"
+  integrity sha512-9Nlyxh0k4cLSxwrHz4rqKLnj7938I/523hz1L1oNH+KG+nitl73qK81989gpPaSVy2s8xptPh/7qP+vPh8W0qQ==
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-regular-svg-icons" "^5.7.2"
