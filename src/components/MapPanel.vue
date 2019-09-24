@@ -574,7 +574,7 @@
         }
       },
       cycloRotationAngle() {
-        return this.$store.state.cyclomedia.orientation.yaw * (180/3.14159265359);
+        return this.$store.state.cyclomedia.orientation.yaw// * (180/3.14159265359);
       },
       cycloHFov() {
         return this.$store.state.cyclomedia.orientation.hFov;
