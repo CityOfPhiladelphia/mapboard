@@ -820,11 +820,14 @@
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 "@philly/vue-comps@^1.0.38":
   version "1.0.38"
   resolved "https://registry.yarnpkg.com/@philly/vue-comps/-/vue-comps-1.0.38.tgz#b1231441963e5f482f7283e1c43078d2ebbf227f"
   integrity sha512-7as9WVtzjyse/2Y44kx6gOJY9rpD480KACd32VZwwNnE0752r6Pazj0wgSvoOWJE6LwfkOaGxT6MmuuMZ/UlJQ==
 =======
+=======
+>>>>>>> d31630178b7411adcebd1a56318eb8cd0684d55e
 "@philly/pvd@https://github.com/ajrothwell/pvd#cfb8723e4e1261443ab19777145d3bf8f583c75b":
   version "0.0.22"
   resolved "https://github.com/ajrothwell/pvd#cfb8723e4e1261443ab19777145d3bf8f583c75b"
@@ -858,6 +861,7 @@
     vue "^2.6.9"
     vuex "^3.0.1"
 
+<<<<<<< HEAD
 "@philly/vue-datafetch@https://github.com/ajrothwell/pvd#9eaf5b1cfdd0d6eeacd254c2bf7f07eaa4a29da6":
   version "0.0.22"
   resolved "https://github.com/ajrothwell/pvd#9eaf5b1cfdd0d6eeacd254c2bf7f07eaa4a29da6"
@@ -875,6 +879,12 @@
   version "1.0.40"
   resolved "https://registry.yarnpkg.com/@philly/vue-mapping/-/vue-mapping-1.0.40.tgz#cea6da4ec4f1235b2444a83eaec56fa997d5499f"
   integrity sha512-dCVCJ1vW9tZ+P7aVrJdWPup5aD+a0HymlhHXksqlVvKpykYfy5Udn5dDlcXcFPMxa61UOvX/5QuTC1Y7rRwUzQ==
+=======
+"@philly/vue-mapping@^1.0.35":
+  version "1.0.35"
+  resolved "https://registry.yarnpkg.com/@philly/vue-mapping/-/vue-mapping-1.0.35.tgz#b67f8d206af15859391e8ed94042dc529a7fed63"
+  integrity sha512-SpaCjN051h5axYvHJf0j0qoR5A4f+5I+Xt5f8yI9vAuaY4Iv+0Mh8azcs1LpcB/2+KokaffioceDaxmG8VM6HA==
+>>>>>>> d31630178b7411adcebd1a56318eb8cd0684d55e
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-regular-svg-icons" "^5.7.2"
