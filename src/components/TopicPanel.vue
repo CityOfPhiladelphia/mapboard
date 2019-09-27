@@ -63,6 +63,7 @@
       >
         <address-input :widthFromConfig="this.addressInputWidth"
                        :placeholder="this.addressInputPlaceholder"
+                       @handle-search-form-submit="handleSearchFormSubmit"
         >
           <address-candidate-list v-if="this.addressAutocompleteEnabled"
                                   slot="address-candidates-slot"
@@ -90,7 +91,10 @@
            class="topics-container cell medium-cell-block-y"
            :style="topicsContainerStyle"
       >
-        <topic-component-group :topic-components="this.$config.components" />
+        <topic-component-group :topic-components="this.$config.components"
+                               @handle-topic-header-click="handleTopicHeaderClick"
+                               @get-more-records="getMoreRecords"
+        />
       </div>
     </div>
 
@@ -146,6 +150,7 @@
     // },
     mounted() {
       this.handleWindowResize(this.windowDim);
+      console.log('TopicPanel.vue mounted')
     },
     watch: {
       geocodeStatus() {
@@ -344,6 +349,18 @@
       },
     },
     methods: {
+      getMoreRecords(dataSource, highestPageRetrieved) {
+        // console.log('TopicPanel getMoreRecords is running');
+        this.$controller.getMoreRecords(dataSource, highestPageRetrieved);
+      },
+      handleSearchFormSubmit(value) {
+        // console.log('TopicPanel handleSearchFormSubmit is running');
+        this.$controller.handleSearchFormSubmit(value);
+      },
+      handleTopicHeaderClick(nextTopic) {
+        // console.log('TopicPanel handleTopicHeaderClick is running');
+        this.$controller.handleTopicHeaderClick(nextTopic);
+      },
       closeAddressCandidateList() {
         this.$store.state.shouldShowAddressCandidateList = false;
       },

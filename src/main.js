@@ -77,7 +77,6 @@ function finishInit(config) {
 
   // mix in controller
   Vue.use(controllerMixin, { config, store });
-  // Vue.use(controllerMixin, { config, store, eventBus });
 
   Vue.component('font-awesome-icon', FontAwesomeIcon);
   // Vue.config.productionTip = false
