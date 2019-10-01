@@ -12,6 +12,10 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import controllerMixin from '@philly/pvd/src/controller.js';
 
+// import router from '@philly/pvd/src/router0.js';
+import router from './router.js';
+console.log('mapboard main.js router:', router);
+
 // helper function to auto-assign ids to horizontal tables
 function assignTableIds(comps) {
   for (let comp of comps) {
@@ -61,7 +65,7 @@ function assignHorizontalTableGroupIds(comps) {
 }
 
 function finishInit(config) {
-  // console.log('finishInit is running, config:', config);
+  console.log('finishInit is running, config:', config, 'router:', router);
   // assign table ids
   for (let topic of config.topics) {
     assignTableIds(topic.components);
@@ -76,7 +80,7 @@ function finishInit(config) {
   let opts = { config, store };
 
   // mix in controller
-  Vue.use(controllerMixin, { config, store });
+  Vue.use(controllerMixin, { config, store, router });
 
   Vue.component('font-awesome-icon', FontAwesomeIcon);
   // Vue.config.productionTip = false
@@ -91,6 +95,7 @@ function finishInit(config) {
   const vm = new Vue({
     el: config.el || '#mapboard',
     render: h => h(Mapboard),
+    router,
     store
   });
 }
