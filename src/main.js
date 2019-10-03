@@ -10,7 +10,7 @@ import generateUniqueId from './util/unique-id';
 import * as faAll from './fa.js';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-import controllerMixin from '@philly/pvd/src/controller.js';
+import controllerMixin from '@philly/vue-datafetch/src/controller.js';
 
 // helper function to auto-assign ids to horizontal tables
 function assignTableIds(comps) {
