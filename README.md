@@ -28,6 +28,26 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 3.0.43 - 10/7/2019
+
+* Uses new releases of @philly libraries which ran upgrades
+  * Uses @philly/vue-comps 1.0.40
+  * Uses @philly/vue-mapping 1.0.41
+* Uses new restructured pvd (which also ran upgrades)
+  * Uses @philly/vue-datafetch 0.0.26
+
+### 3.0.42 - 9/24/2019
+
+* Fixes icon issue with Cyclomedia 19.12
+
+### 3.0.41 - 9/23/2019
+
+* Uses Cyclomedia 19.12
+
+### 3.0.40 - 9/20/2019
+
+* Fixes for dor parcels that are listed with "pipes" in AIS, and for adding polylines in pvm
+
 ### 3.0.39 - 9/6/2019
 
 * Uses new releases of @philly libraries which ran upgrades
