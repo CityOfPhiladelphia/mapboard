@@ -10,7 +10,7 @@ import generateUniqueId from './util/unique-id';
 import * as faAll from './fa.js';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-import controllerMixin from '@philly/vue-datafetch/src/controller/index.js';
+import controllerMixin from '@philly/vue-datafetch/src/controller.js';
 
 // helper function to auto-assign ids to horizontal tables
 function assignTableIds(comps) {
@@ -73,10 +73,10 @@ function finishInit(config) {
 
   // create store
   const store = createStore(config);
+  let opts = { config, store };
 
   // mix in controller
   Vue.use(controllerMixin, { config, store });
-  // Vue.use(controllerMixin, { config, store, eventBus });
 
   Vue.component('font-awesome-icon', FontAwesomeIcon);
   // Vue.config.productionTip = false

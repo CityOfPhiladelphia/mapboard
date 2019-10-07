@@ -11,11 +11,11 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
-    "@philly/vue-comps": "^1.0.38",
-    "@philly/vue-datafetch": "^0.0.25",
-    "@philly/vue-mapping": "^1.0.40",
-    "vue": "^2.6.9",
-    "vuex": "^3.0.1"
+    "@philly/vue-comps": "^1.0.40",
+    "@philly/vue-datafetch": "^0.0.26",
+    "@philly/vue-mapping": "^1.0.41",
+    "vue": "^2.6.10",
+    "vuex": "^3.1.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.5",

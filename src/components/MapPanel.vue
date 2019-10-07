@@ -327,6 +327,7 @@
         <map-address-input :position="this.addressInputPosition"
                        :placeholder="this.addressInputPlaceholder"
                        :widthFromConfig="this.addressInputWidth"
+                       @handle-search-form-submit="handleSearchFormSubmit"
         >
         </map-address-input>
       </div>
@@ -435,7 +436,7 @@
       return data;
     },
     created() {
-      // console.log('MapPanel.vue created this.$config:', this.$config, 'process.env.VUE_APP_PUBLICPATH', process.env.VUE_APP_PUBLICPATH);
+      console.log('MapPanel.vue created this.$config:', this.$config, 'process.env.VUE_APP_PUBLICPATH', process.env.VUE_APP_PUBLICPATH);
       this.createdComplete = true;
       // if there's a default address, navigate to it
       const defaultAddress = this.$config.defaultAddress;
@@ -750,8 +751,38 @@
       isGeocoding() {
         return this.$store.state.geocode.status === 'waiting';
       },
+      geocodeZoom() {
+        if (this.$config.map.geocodeZoom) {
+          return this.$config.map.geocodeZoom;
+        } else {
+          return 19;
+        }
+      }
     },
     watch: {
+      activeTopicConfig(nextTopicConfig) {
+        const prevBasemap = this.$store.state.map.basemap || null;
+        // const nextTopicConfig = this.config.topics.filter(topic => {
+        //   return topic.key === nextTopic;
+        // })[0] || {};
+        const nextBasemap = nextTopicConfig.parcels;
+        const nextImagery = nextTopicConfig.imagery;
+        if (prevBasemap !== nextBasemap) {
+          this.$store.commit('setBasemap', nextTopicConfig.parcels);
+        }
+        if (nextImagery) {
+          this.$store.commit('setShouldShowImagery', true);
+          this.$store.commit('setImagery', nextImagery);
+        }
+      },
+      geocodeResult(nextGeocodeResult) {
+        if (nextGeocodeResult._featureId) {
+          this.$store.commit('setMapCenter', nextGeocodeResult.geometry.coordinates);
+          this.$store.commit('setMapZoom', this.geocodeZoom);
+        } else {
+          this.$store.commit('setBasemap', 'pwd');
+        }
+      },
       picOrCycloActive(value) {
         this.$nextTick(() => {
           this.$store.state.map.map.invalidateSize();
@@ -820,6 +851,10 @@
       },
     },
     methods: {
+      handleSearchFormSubmit(value) {
+        console.log('MapPanel.vue handleSearchFormSubmit is running');
+        this.$controller.handleSearchFormSubmit(value);
+      },
       checkBoundsChanges() {
         let czts = this.activeTopicConfig.zoomToShape;
         if (!czts) {
@@ -835,7 +870,7 @@
             tf.push(false);
           }
         }
-        // console.log('MapPanel.vue checkBoundsChanges, tf:', tf);
+        console.log('MapPanel.vue checkBoundsChanges, dzts:', dzts, 'czts:', czts, 'tf:', tf);
         if (tf.includes(false)) {
           return;
         } else {
