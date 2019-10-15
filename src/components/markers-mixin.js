@@ -7,22 +7,24 @@ export default {
       // console.log('WATCH active feature', prevActiveFeature, '=>', nextActiveFeature, 'layers:', layers);
 
       let updateFeaturePrev,
-          updateFeatureNext,
-          tableId,
-          featureIdPrev,
-          featureIdNext,
-          matchingLayerNext,
-          matchingLayerPrev;
+        updateFeatureNext,
+        tableId,
+        featureIdPrev,
+        featureIdNext,
+        matchingLayerNext,
+        matchingLayerPrev;
 
       if (prevActiveFeature && prevActiveFeature.tableId && prevActiveFeature.featureId) {
         // console.log('prevActiveFeature:', prevActiveFeature);
         updateFeaturePrev = prevActiveFeature;
-        tableId = updateFeaturePrev.tableId
+        tableId = updateFeaturePrev.tableId;
         featureIdPrev = updateFeaturePrev.featureId;
         matchingLayerPrev = layers.filter(layer => {
           const options = layer.options || {};
           const data = options.data;
-          if (!data) return;
+          if (!data) {
+            return;
+          }
           const layerFeatureId = data.featureId;
           const layerTableId = data.tableId;
           return layerFeatureId === featureIdPrev && layerTableId === tableId;
@@ -33,12 +35,14 @@ export default {
       if (nextActiveFeature && nextActiveFeature.tableId && nextActiveFeature.featureId) {
         // console.log('nextActiveFeature:', nextActiveFeature);
         updateFeatureNext = nextActiveFeature;
-        tableId = updateFeatureNext.tableId
+        tableId = updateFeatureNext.tableId;
         featureIdNext = updateFeatureNext.featureId;
         matchingLayerNext = layers.filter(layer => {
           const options = layer.options || {};
           const data = options.data;
-          if (!data) return;
+          if (!data) {
+            return;
+          }
           const layerFeatureId = data.featureId;
           const layerTableId = data.tableId;
           return layerFeatureId === featureIdNext && layerTableId === tableId;
@@ -51,7 +55,7 @@ export default {
   },
   computed: {
     locationMarker() {
-      const latlngArray = [this.$store.state.map.location.lat, this.$store.state.map.location.lng]
+      const latlngArray = [ this.$store.state.map.location.lat, this.$store.state.map.location.lng ];
       const marker = {
         latlng: latlngArray,
         radius: 6,
@@ -59,8 +63,8 @@ export default {
         color: '#ff0000',
         weight: 1,
         opacity: 1,
-        fillOpacity: 1.0
-      }
+        fillOpacity: 1.0,
+      };
       return marker;
     },
 
@@ -72,7 +76,7 @@ export default {
       // geocoded address marker
       const geocodeGeom = this.geocodeGeom;
       if (this.identifyFeature === 'address-marker' && geocodeGeom) {
-        const latlng = [...geocodeGeom.coordinates].reverse();
+        const latlng = [ ...geocodeGeom.coordinates ].reverse();
         const key = this.geocodeResult.properties.street_address;
         const color = '#2176d2';
         const markerType = 'geocode';
@@ -81,8 +85,8 @@ export default {
           icon: 'map-marker-alt',
           shadow: true,
           size: 50,
-        }
-        const addressMarker = {latlng, key, color, markerType, icon};
+        };
+        const addressMarker = { latlng, key, color, markerType, icon };
         markers.push(addressMarker);
       }
       return markers;
@@ -112,13 +116,13 @@ export default {
           //     markers.push(markerObject);
           //   }
           // } else {
-            const latlng = [topicData[topicMarkers.lat], topicData[topicMarkers.lng]];
-            const key = topicData[topicMarkers.key];
-            const color = topicMarkers.color || 'green';
-            const markerType = 'overlay';
-            const icon = topicMarkers.icon;
-            const markerObject = {latlng, key, color, markerType, icon};
-            markers.push(markerObject);
+          const latlng = [ topicData[topicMarkers.lat], topicData[topicMarkers.lng] ];
+          const key = topicData[topicMarkers.key];
+          const color = topicMarkers.color || 'green';
+          const markerType = 'overlay';
+          const icon = topicMarkers.icon;
+          const markerObject = { latlng, key, color, markerType, icon };
+          markers.push(markerObject);
           // }
         }
       }
@@ -159,10 +163,10 @@ export default {
 
           // TODO - get geometry field name from config
           if (item.geometry) {
-            const [x, y] = item.geometry.coordinates;
-            latlng = [y, x];
+            const [ x, y ] = item.geometry.coordinates;
+            latlng = [ y, x ];
           } else if (item.lat) {
-            latlng = [item.lat, item.lng]
+            latlng = [ item.lat, item.lng ];
             // if (item.point_x) {
             //   latlng = [item.point_y, item.point_x];
             // } else if (item.geocode_x) {
@@ -234,7 +238,7 @@ export default {
           for (let geojson of topicData) {
             let props = Object.assign({}, topicGeojson.style);
             props.key = geojson[topicGeojson.key];
-            props.geojson = geojson
+            props.geojson = geojson;
             features.push(props);
           }
         }
@@ -276,7 +280,7 @@ export default {
           let latlngs = [];
           for (let coord of item.geometry.coordinates) {
             // console.log('coord:', coord, 'coord[0]:', coord[0]);
-            latlngs.push([coord[1], coord[0]])
+            latlngs.push([ coord[1], coord[0] ]);
           }
 
           props.latlngs = latlngs;
@@ -360,7 +364,9 @@ export default {
         // try outer comps
         const table = this.getTableFromComps(comps, tableId);
 
-        if (table) return table;
+        if (table) {
+          return table;
+        }
 
         // try inner comps
         for (let comp of comps) {
@@ -372,13 +378,17 @@ export default {
             const innerTable = this.getTableFromComps(innerComps, tableId);
             // console.log('table on 2nd try', innerTable, innerComps);
 
-            if (innerTable) return innerTable;
+            if (innerTable) {
+              return innerTable;
+            }
           }
         }
       }
     },
     bringMarkerToFront(circleMarker) {
-      if (!circleMarker) { return }
+      if (!circleMarker) {
+        return; 
+      }
       // put marker on top
       const el = circleMarker._path;
 
@@ -412,14 +422,16 @@ export default {
     handleMarkerMouseout(e) {
       // console.log('handleMarkerMouseout is starting');
       // if (!this.isMobileOrTablet) {
-        // console.log('handleMarkerMouseout actions are running');
-        const { target } = e;
-        this.$store.commit('setActiveFeature', null);
+      // console.log('handleMarkerMouseout actions are running');
+      const { target } = e;
+      this.$store.commit('setActiveFeature', null);
       // }
     },
     updateMarkerStyle(marker) {
       // console.log('updateMarkerStyle, marker:', marker);
-      if (!marker) { return };
+      if (!marker) {
+        return; 
+      }
       // get next fill color
       const { featureId, tableId, type } = marker.options.data;
       const nextStyles = this.styleForOverlayMarker(featureId, tableId);
@@ -438,5 +450,5 @@ export default {
       }
       marker.setStyle(nextStyle);
     },
-  }
+  },
 };

@@ -8,4 +8,4 @@ export default function () {
                             mobileOrTabletRegexB.test(userAgent.substr(0,4)));
 
   return isMobileOrTablet;
-};
+}

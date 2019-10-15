@@ -29,11 +29,11 @@ function assignTableIds(comps) {
       continue;
     }
 
-     const id = generateUniqueId();
-     comp._id = id;
-     // the id also needs to get passed to the horizontal table component, so
-     // use the options object.
-     comp.options.tableId = id;
+    const id = generateUniqueId();
+    comp._id = id;
+    // the id also needs to get passed to the horizontal table component, so
+    // use the options object.
+    comp.options.tableId = id;
   }
 }
 
@@ -52,11 +52,11 @@ function assignHorizontalTableGroupIds(comps) {
       continue;
     }
 
-     const id = generateUniqueId();
-     comp._id = id;
-     // the id also needs to get passed to the horizontal table component, so
-     // use the options object.
-     comp.options.horizontalTableGroupId = id;
+    const id = generateUniqueId();
+    comp._id = id;
+    // the id also needs to get passed to the horizontal table component, so
+    // use the options object.
+    comp.options.horizontalTableGroupId = id;
   }
 }
 
@@ -91,7 +91,7 @@ function finishInit(config) {
   const vm = new Vue({
     el: config.el || '#mapboard',
     render: h => h(Mapboard),
-    store
+    store,
   });
 }
 

@@ -58,7 +58,7 @@ function createFilteredData(config) {
   //   return acc;
   // }, {});
 
-  let filteredData = {}
+  let filteredData = {};
   for (let index=0; index < tableIds.length; index++) {
     filteredData[tableIds[index]] = [];
   }
@@ -105,7 +105,9 @@ function createHorizontalTableGroups(config) {
   for (let topic of topics) {
     const comps = topic.components;
     const compTableGroupId = getHorizontalTableGroupIdsFromComps(comps);
-    if (compTableGroupId) tableGroupIds.push(compTableGroupId);
+    if (compTableGroupId) {
+      tableGroupIds.push(compTableGroupId);
+    }
   }
   // console.log('createHorizontalTableGroups is running, config:', config, 'tableGroupIds:', tableGroupIds);
 
@@ -114,7 +116,7 @@ function createHorizontalTableGroups(config) {
   for (let tableGroupId of tableGroupIds) {
     horizontalTableGroups[tableGroupId] = {
       activeTable: null,
-      activeTableId: null
+      activeTableId: null,
     };
   }
   return horizontalTableGroups;
@@ -143,7 +145,7 @@ function createStore(config) {
     horizontalTableGroups: createHorizontalTableGroups(config),
     activeFeature: {
       featureId: null,
-      tableId: null
+      tableId: null,
     },
     appData: {
       propertyBalance: 0,
@@ -191,11 +193,11 @@ function createStore(config) {
           const array = [];
           array.push(state.horizontalTableGroups[compTableGroup].activeTableId);
           return array;
-        } else {
-          const compTables = getHorizontalTableIdsFromComps(comps);
-          return compTables;
-        }
-      }
+        } 
+        const compTables = getHorizontalTableIdsFromComps(comps);
+        return compTables;
+        
+      },
     },
     mutations: {
 
@@ -235,7 +237,9 @@ function createStore(config) {
         const { tableId, data } = payload;
 
         // check for not-null table id
-        if (!tableId) return;
+        if (!tableId) {
+          return;
+        }
 
         state.horizontalTables.filteredData[tableId] = data;
       },
@@ -256,7 +260,7 @@ function createStore(config) {
         state.map.bounds = payload;
       },
       setMapBoundsBasedOnShape(state, payload) {
-        state.map.boundsBasedOnShape = payload
+        state.map.boundsBasedOnShape = payload;
       },
       setActiveParcel(state, payload) {
         // console.log('store setActiveParcel:', payload)
@@ -295,8 +299,8 @@ function createStore(config) {
         // state.modals[name].open = open === null ? !state.modals[name].open : open
         state.modals.open = name;
       },
-    }
-  }
+    },
+  };
 
   let mergeStore = mergeDeep(pvdStore.store, pvmStore);
   mergeStore = mergeDeep(mergeStore, pvcStore);
@@ -317,7 +321,7 @@ function createStore(config) {
   return new Vuex.Store({
     state: mergeStore.state,
     getters: mergeStore.getters,
-    mutations: mergeStore.mutations
+    mutations: mergeStore.mutations,
   });
 }
 
