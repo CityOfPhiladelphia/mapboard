@@ -876,10 +876,10 @@
     vue "^2.6.10"
     vuex "^3.1.1"
 
-"@philly/vue-datafetch@^0.0.26":
-  version "0.0.26"
-  resolved "https://registry.yarnpkg.com/@philly/vue-datafetch/-/vue-datafetch-0.0.26.tgz#f48cc8abbce244d5e7c052e94442dc66746e0da4"
-  integrity sha512-IC8Y1aiDnVIOTiU8uhhK08S872L/SAhEPi7zUmTB7H7e5In2vG2m2ij6mn6cuZWbhsDuPoCs/45mCY4Fwfm9yg==
+"@philly/vue-datafetch@^0.0.27":
+  version "0.0.27"
+  resolved "https://registry.yarnpkg.com/@philly/vue-datafetch/-/vue-datafetch-0.0.27.tgz#c5551bd9b2bc4fba092619e8b81733650551dc20"
+  integrity sha512-3tdNHRQKjltyhNBI0Cv8n5lA4AAeIVYxm7GP4w7cGtlIiw+v6JAUNgJlx1wWolheDT4jLO8uj0pIKp4ohwAfrg==
   dependencies:
     "@turf/turf" "^5.1.6"
     axios "^0.19.0"
