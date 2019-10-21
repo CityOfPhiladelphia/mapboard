@@ -858,9 +858,9 @@
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
 "@philly/vue-comps@^1.0.40":
-  version "1.0.40"
-  resolved "https://registry.yarnpkg.com/@philly/vue-comps/-/vue-comps-1.0.40.tgz#2a7b9fc836b3e9f44fcaf468eb4f6b890027e5e3"
-  integrity sha512-KLffpzgBH3GVr/K0Iox9nMq+mBZs7GuIVxc7IUmGvFDZvyIt1lNEUeQ2j7fANnFYE2aFiV8nd5knkUWHHkZn4w==
+  version "1.0.42"
+  resolved "https://registry.yarnpkg.com/@philly/vue-comps/-/vue-comps-1.0.42.tgz#64afcaf675cf2cccc805a190862100f06ebff971"
+  integrity sha512-SUtD2VN+5wjXbnSp0TwY71VGHD9BSvs7PNHnQzrQoCIpTRsTz/Ke7yeQ4tYhxKRvbwuJIV903hMV/NTn5mNxsw==
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-regular-svg-icons" "^5.7.2"
