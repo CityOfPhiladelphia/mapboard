@@ -28,6 +28,29 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 3.0.45 - 10/23/2019
+
+* uses new releases of libraries all updated for dependabot
+
+### 3.0.45 - 10/22/2019
+
+* fixes bug with update to date-fns 2.6.0:
+  * date transforms must have the following format:
+
+    import { format, parseISO } from 'date-fns';
+    ...
+
+    ...
+    date: {
+      transform: function (value) {
+        return format(parseISO(value), 'MM/dd/yyyy');
+      },
+    },
+
+### 3.0.44 - 10/22/2019
+
+* incorporates all pull requests created by dependabot
+
 ### 3.0.43 - 10/7/2019
 
 * Uses new releases of @philly libraries which ran upgrades
