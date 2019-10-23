@@ -855,9 +855,9 @@
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
 "@philly/vue-comps@^1.0.44":
-  version "1.0.44"
-  resolved "https://registry.yarnpkg.com/@philly/vue-comps/-/vue-comps-1.0.44.tgz#3ac26870b277227779ce22c2a5704f773d89e99b"
-  integrity sha512-DR2+GGXBFs7SMQCHXJAdNsPu187L0d8QwKiOpteDDm06+i8Gw5tgg1eV5SkFWk7lrsPhD4w3dx+DXA3BbgL4xw==
+  version "1.0.45"
+  resolved "https://registry.yarnpkg.com/@philly/vue-comps/-/vue-comps-1.0.45.tgz#9a2d76e0f10d4efdbd024b551dd28b5f8f6a510a"
+  integrity sha512-umoljgYybesrwT786hXoBvcCJDVSuC+4kjj900E+iPQADCSeqvgjW4tF0qLHN6NiE5NTVEicVNFt3JMa/0eflA==
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-regular-svg-icons" "^5.7.2"
@@ -2511,9 +2511,10 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
-"L-esri-WebMap@git+https://github.com/CityOfPhiladelphia/L.esri.WebMap.git#1d4ee074f60f2bba8bfe596d150ea23556c8a94f":
+"L-esri-WebMap@https://github.com/CityOfPhiladelphia/L.esri.WebMap#1d4ee074f60f2bba8bfe596d150ea23556c8a94f":
   version "0.4.0"
-  resolved "git+https://github.com/CityOfPhiladelphia/L.esri.WebMap.git#1d4ee074f60f2bba8bfe596d150ea23556c8a94f"
+  uid "1d4ee074f60f2bba8bfe596d150ea23556c8a94f"
+  resolved "https://github.com/CityOfPhiladelphia/L.esri.WebMap#1d4ee074f60f2bba8bfe596d150ea23556c8a94f"
   dependencies:
     arcgis-to-geojson-utils "^1.0.1"
     date-fns "^1.30.1"
@@ -2526,9 +2527,10 @@
     leaflet-vectoricon "^0.1.0"
     leaflet.heat "^0.1.3"
 
-"Leaflet-PointInPolygon@git+https://github.com/CityOfPhiladelphia/Leaflet.PointInPolygon.git#a0d410f69aacf5f9165c4d01ccffeed824ccaed8":
+"Leaflet-PointInPolygon@https://github.com/CityOfPhiladelphia/Leaflet.PointInPolygon#a0d410f69aacf5f9165c4d01ccffeed824ccaed8":
   version "1.0.0"
-  resolved "git+https://github.com/CityOfPhiladelphia/Leaflet.PointInPolygon.git#a0d410f69aacf5f9165c4d01ccffeed824ccaed8"
+  uid a0d410f69aacf5f9165c4d01ccffeed824ccaed8
+  resolved "https://github.com/CityOfPhiladelphia/Leaflet.PointInPolygon#a0d410f69aacf5f9165c4d01ccffeed824ccaed8"
 
 abab@^1.0.0:
   version "1.0.4"
@@ -4917,9 +4919,10 @@ esri-leaflet-heatmap-feature-layer@^2.0.0-beta.1:
     leaflet "^1.0.0-beta.1"
     leaflet.heat "^0.1.3"
 
-"esri-leaflet-legend@git+https://github.com/CityOfPhiladelphia/esri-leaflet-legend.git#8d42cbc1ed71c630fd8f9c6795877b5f7498b49f":
+"esri-leaflet-legend@https://github.com/CityOfPhiladelphia/esri-leaflet-legend#8d42cbc1ed71c630fd8f9c6795877b5f7498b49f":
   version "2.0.1"
-  resolved "git+https://github.com/CityOfPhiladelphia/esri-leaflet-legend.git#8d42cbc1ed71c630fd8f9c6795877b5f7498b49f"
+  uid "8d42cbc1ed71c630fd8f9c6795877b5f7498b49f"
+  resolved "https://github.com/CityOfPhiladelphia/esri-leaflet-legend#8d42cbc1ed71c630fd8f9c6795877b5f7498b49f"
   dependencies:
     esri-leaflet "^2.2.3"
     leaflet "^1.4.0"
@@ -5232,8 +5235,9 @@ file-loader@^4.2.0:
     loader-utils "^1.2.3"
     schema-utils "^2.0.0"
 
-"file-saver@github:eligrey/FileSaver.js#1.3.8":
+file-saver@eligrey/FileSaver.js#1.3.8:
   version "1.3.8"
+  uid e865e37af9f9947ddcced76b549e27dc45c1cb2e
   resolved "https://codeload.github.com/eligrey/FileSaver.js/tar.gz/e865e37af9f9947ddcced76b549e27dc45c1cb2e"
 
 filesize@^3.6.1:
@@ -6693,9 +6697,10 @@ leaflet-easybutton@^2.3.0:
   dependencies:
     leaflet "^1.0.1"
 
-"leaflet-measure@git+https://github.com/CityOfPhiladelphia/leaflet-measure.git#b70886af342f19597dc2937d79d64bad6bab07c6":
+"leaflet-measure@https://github.com/CityOfPhiladelphia/leaflet-measure#b70886af342f19597dc2937d79d64bad6bab07c6":
   version "4.0.0"
-  resolved "git+https://github.com/CityOfPhiladelphia/leaflet-measure.git#b70886af342f19597dc2937d79d64bad6bab07c6"
+  uid b70886af342f19597dc2937d79d64bad6bab07c6
+  resolved "https://github.com/CityOfPhiladelphia/leaflet-measure#b70886af342f19597dc2937d79d64bad6bab07c6"
   dependencies:
     "@turf/area" "^5.1.5"
     "@turf/length" "^5.1.5"
@@ -6726,9 +6731,10 @@ leaflet-shape-markers@^1.0.4:
   dependencies:
     leaflet "^1.0.0"
 
-"leaflet-vector-icon@git+https://github.com/CityOfPhiladelphia/leaflet-vector-icon.git#c37571e92c66ce0003f22058f2d246b31d3941a5":
+"leaflet-vector-icon@https://github.com/CityOfPhiladelphia/leaflet-vector-icon#c37571e92c66ce0003f22058f2d246b31d3941a5":
   version "1.0.0"
-  resolved "git+https://github.com/CityOfPhiladelphia/leaflet-vector-icon.git#c37571e92c66ce0003f22058f2d246b31d3941a5"
+  uid c37571e92c66ce0003f22058f2d246b31d3941a5
+  resolved "https://github.com/CityOfPhiladelphia/leaflet-vector-icon#c37571e92c66ce0003f22058f2d246b31d3941a5"
 
 leaflet-vectoricon@^0.1.0:
   version "0.1.0"
