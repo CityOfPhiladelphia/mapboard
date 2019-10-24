@@ -32,6 +32,10 @@ Travis will now run a build and publish to NPM.
 
 * uses new releases of libraries all updated for dependabot
 
+### 3.0.46 - 10/22/2019
+
+* uses pvc 1.0.46 which has more bugfixes for new date-fns
+
 ### 3.0.45 - 10/22/2019
 
 * fixes bug with update to date-fns 2.6.0:
