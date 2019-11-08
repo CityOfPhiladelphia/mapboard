@@ -125,6 +125,7 @@ function createHorizontalTableGroups(config) {
 function createStore(config) {
   const sources = pvdStore.createSources(config);
   const parcels = pvdStore.createParcels(config);
+  console.log('parcels:', parcels);
 
   const initialState = {
     isMobileOrTablet: isMobileDevice(),
@@ -193,10 +194,10 @@ function createStore(config) {
           const array = [];
           array.push(state.horizontalTableGroups[compTableGroup].activeTableId);
           return array;
-        } 
+        }
         const compTables = getHorizontalTableIdsFromComps(comps);
         return compTables;
-        
+
       },
     },
     mutations: {

@@ -290,6 +290,7 @@ export default {
     },
     dorParcels() {
       return this.$store.state.parcels.dor.data.length > 0;
+      // return this.$store.state.parcels.dor.length > 0;
     },
     shouldShowGreeting() {
       // this was added to allow fetchData to run even without a geocode result
@@ -308,6 +309,7 @@ export default {
     address() {
       const geocode = this.geocode;
       const dorParcels = this.$store.state.parcels.dor.data;
+      // const dorParcels = this.$store.state.parcels.dor;
       const activeDorAddress = this.$store.state.parcels.dor.activeAddress;
       let address;
       // if (this.$config.defaultAddressTextPlaceholder) {
