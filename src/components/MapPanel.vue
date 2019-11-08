@@ -452,7 +452,7 @@ export default {
     LegendControl,
     MapAddressInput,
     // Control: () => import(/* webpackChunkName: "mbmp_pvm_Control" */'@philly/vue-mapping/src/leaflet/Control.vue'),
-    // Polyline_: () => import(/* webpackChunkName: "mbmp_pvm_Geojson" */'@philly/vue-mapping/src/leaflet/Polyline.vue'),
+    Polyline_: () => import(/* webpackChunkName: "mbmp_pvm_Geojson" */'@philly/vue-mapping/src/leaflet/Polyline.vue'),
     // BasemapTooltip: () => import(/* webpackChunkName: "mbmp_pvm_BasemapTooltip" */'@philly/vue-mapping/src/components/BasemapTooltip.vue'),
   },
   mixins: [
