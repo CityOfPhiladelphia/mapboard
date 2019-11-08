@@ -12,6 +12,9 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import controllerMixin from '@philly/vue-datafetch/src/controller.js';
 
+console.log('in mapboard main.js, createStore:', createStore, 'controllerMixin:', controllerMixin);
+
+
 // helper function to auto-assign ids to horizontal tables
 function assignTableIds(comps) {
   for (let comp of comps) {
@@ -61,7 +64,7 @@ function assignHorizontalTableGroupIds(comps) {
 }
 
 function finishInit(config) {
-  // console.log('finishInit is running, config:', config);
+  console.log('finishInit is running, config:', config);
   // assign table ids
   for (let topic of config.topics) {
     assignTableIds(topic.components);
@@ -74,6 +77,8 @@ function finishInit(config) {
   // create store
   const store = createStore(config);
   let opts = { config, store };
+
+  console.log('in finishInit, config:', config, 'store:', store);
 
   // mix in controller
   Vue.use(controllerMixin, { config, store });

@@ -728,6 +728,7 @@ export default {
       return this.activeTopicConfig.parcels;
     },
     dorParcels() {
+      // return this.$store.state.parcels.dor;
       return this.$store.state.parcels.dor.data;
     },
     pwdParcel() {
