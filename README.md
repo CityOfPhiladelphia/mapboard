@@ -28,9 +28,9 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
-### 3.0.45 - 10/23/2019
+### 3.0.47 - 11/12/2019
 
-* uses new releases of libraries all updated for dependabot
+* uses new release of pvd which passes the state to callback function in http-get
 
 ### 3.0.46 - 10/22/2019
 
