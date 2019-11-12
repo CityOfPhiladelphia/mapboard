@@ -876,7 +876,7 @@ export default {
         this.$config.cyclomedia.recordingsUrl,
         this.$config.cyclomedia.username,
         this.$config.cyclomedia.password,
-        4326
+        4326,
       );
     }
 
