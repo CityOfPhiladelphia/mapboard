@@ -28,9 +28,13 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
-### 3.0.47 - 11/12/2019
+### 3.0.48 - 11/12/2019
 
 * uses new release of pvd which passes the state to callback function in http-get
+
+### 3.0.47 - 11/8/2019
+
+* adds back in polyline
 
 ### 3.0.46 - 10/22/2019
 
