@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@philly/vue-comps": "^1.0.46",
-    "@philly/vue-datafetch": "^0.0.29",
+    "@philly/vue-datafetch": "^0.0.30",
     "@philly/vue-mapping": "^1.0.47",
     "vue": "^2.6.10",
     "vuex": "^3.1.1"

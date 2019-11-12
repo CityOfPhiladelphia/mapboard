@@ -814,10 +814,10 @@
     vue "^2.6.10"
     vuex "^3.1.1"
 
-"@philly/vue-datafetch@^0.0.29":
-  version "0.0.29"
-  resolved "https://registry.yarnpkg.com/@philly/vue-datafetch/-/vue-datafetch-0.0.29.tgz#00626552d7c26d4bf497bb6f8302eea5ac342e0f"
-  integrity sha512-ofD66pUvz1Z2ZOcf8ElU1gG2oIW2hAYWYJN/STxzGIvsjGrxBLbBAnfkmsY2y2857zirW+nlFLrFeS6FIfwwbA==
+"@philly/vue-datafetch@^0.0.30":
+  version "0.0.30"
+  resolved "https://registry.yarnpkg.com/@philly/vue-datafetch/-/vue-datafetch-0.0.30.tgz#fa8d436fce32fd5e83fb8894579f4e310b152438"
+  integrity sha512-qdhS4fE6RPhNh55l80QDQF0JKJn8S7xNn1mvPPGpVJRhMRP4ZKlksnkk5n++FZAvT2RNCfv7hpF/eRxtszM46g==
   dependencies:
     "@turf/turf" "^5.1.6"
     axios "^0.19.0"
