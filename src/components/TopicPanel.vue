@@ -308,9 +308,12 @@ export default {
     // this returns the address shown in the address header
     address() {
       const geocode = this.geocode;
-      const dorParcels = this.$store.state.parcels.dor.data;
-      // const dorParcels = this.$store.state.parcels.dor;
-      const activeDorAddress = this.$store.state.parcels.dor.activeAddress;
+      let dorParcels;
+      let activeDorAddress;
+      if (this.$store.state.parcels.dor) {
+        dorParcels = this.$store.state.parcels.dor.data;
+        activeDorAddress = this.$store.state.parcels.dor.activeAddress;
+      }
       let address;
       // if (this.$config.defaultAddressTextPlaceholder) {
       //   address = this.$config.defaultAddressTextPlaceholder.text;
