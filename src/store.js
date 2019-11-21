@@ -142,6 +142,7 @@ function createStore(config) {
     horizontalTables: {
       // table id => filtered rows
       filteredData: createFilteredData(config),
+      mouseover: false,
     },
     horizontalTableGroups: createHorizontalTableGroups(config),
     activeFeature: {
