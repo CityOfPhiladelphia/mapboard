@@ -11,6 +11,7 @@
       :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }"
       :center="this.$store.state.map.center"
       :zoom="this.$store.state.map.zoom"
+      attribution-position="bottomright"
       zoom-control-position="bottomright"
       :min-zoom="this.$config.map.minZoom"
       :max-zoom="this.$config.map.maxZoom"
@@ -877,7 +878,7 @@ export default {
         this.$config.cyclomedia.recordingsUrl,
         this.$config.cyclomedia.username,
         this.$config.cyclomedia.password,
-        4326
+        4326,
       );
     }
 
