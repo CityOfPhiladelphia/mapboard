@@ -6,9 +6,9 @@
     <!-- <full-screen-map-toggle-tab /> -->
     <full-screen-map-toggle-tab v-once />
 
+    <!-- :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }" -->
     <map_
       id="map-tag"
-      :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }"
       :center="this.$store.state.map.center"
       :zoom="this.$store.state.map.zoom"
       attribution-position="bottomright"

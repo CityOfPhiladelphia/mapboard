@@ -1,6 +1,6 @@
 <template>
   <div
-    id="topic-panel-container"
+    id="data-panel-container"
     :class="'mb-panel-topics cell ' + topicPanelContainerClass"
   >
     <full-screen-topics-toggle-tab
