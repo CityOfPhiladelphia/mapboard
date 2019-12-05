@@ -808,16 +808,16 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@philly/vue-comps@https://github.com/CityOfPhiladelphia/phila-vue-comps#72d998090cefd632676310f6ef5062c2ba61e308":
+"@philly/vue-comps@https://github.com/CityOfPhiladelphia/phila-vue-comps#aaa807b81ee0d242e8f12f0cce77c795181e5de9":
   version "1.0.46"
-  resolved "https://github.com/CityOfPhiladelphia/phila-vue-comps#72d998090cefd632676310f6ef5062c2ba61e308"
+  resolved "https://github.com/CityOfPhiladelphia/phila-vue-comps#aaa807b81ee0d242e8f12f0cce77c795181e5de9"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-regular-svg-icons" "^5.7.2"
     "@fortawesome/free-solid-svg-icons" "^5.7.2"
     "@fortawesome/vue-fontawesome" "^0.1.5"
     axios "^0.19.0"
-    date-fns "^2.6.0"
+    date-fns "^2.8.1"
     escape-html "^1.0.3"
     jspdf "^1.4.1"
     jspdf-autotable "^3.2.8"
@@ -826,13 +826,13 @@
     vue "^2.6.10"
     vuex "^3.1.1"
 
-"@philly/vue-datafetch@https://github.com/CityOfPhiladelphia/phila-vue-datafetch#64b1e2fdeabdf074fb3c9bb9abdca70d0b492e68":
+"@philly/vue-datafetch@https://github.com/CityOfPhiladelphia/phila-vue-datafetch#d36aa6012488eafa97097471382ed650cfe9814f":
   version "0.0.31"
-  resolved "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#64b1e2fdeabdf074fb3c9bb9abdca70d0b492e68"
+  resolved "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#d36aa6012488eafa97097471382ed650cfe9814f"
   dependencies:
     "@turf/turf" "^5.1.6"
     axios "^0.19.0"
-    date-fns "^2.6.0"
+    date-fns "^2.8.1"
     esri-leaflet "^2.3.1"
     https-proxy-agent "^3.0.0"
     leaflet "^1.5.1"
@@ -840,9 +840,9 @@
     vue "^2.6.10"
     vuex "^3.1.1"
 
-"@philly/vue-mapping@https://github.com/CityOfPhiladelphia/phila-vue-mapping#b5b75c9a1f480fe5268617f387e25b136104971c":
+"@philly/vue-mapping@https://github.com/CityOfPhiladelphia/phila-vue-mapping#cd183bdf4cfc871471a2dced45d51159921704ad":
   version "1.0.47"
-  resolved "https://github.com/CityOfPhiladelphia/phila-vue-mapping#b5b75c9a1f480fe5268617f387e25b136104971c"
+  resolved "https://github.com/CityOfPhiladelphia/phila-vue-mapping#cd183bdf4cfc871471a2dced45d51159921704ad"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-regular-svg-icons" "^5.7.2"
@@ -853,7 +853,7 @@
     arcgis-to-geojson-utils "^1.0.1"
     axios "^0.19.0"
     blueimp-md5 "^2.10.0"
-    date-fns "^2.6.0"
+    date-fns "^2.8.1"
     esri-leaflet "^2.3.1"
     esri-leaflet-legend "https://github.com/CityOfPhiladelphia/esri-leaflet-legend#8d42cbc1ed71c630fd8f9c6795877b5f7498b49f"
     esri-leaflet-renderers "^2.0.6"
@@ -4117,10 +4117,10 @@ dashdash@^1.12.0:
   dependencies:
     assert-plus "^1.0.0"
 
-date-fns@^2.6.0:
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.7.0.tgz#8271d943cc4636a1f27698f1b8d6a9f1ceb74026"
-  integrity sha512-wxYp2PGoUDN5ZEACc61aOtYFvSsJUylIvCjpjDOqM1UDaKIIuMJ9fAnMYFHV3TQaDpfTVxhwNK/GiCaHKuemTA==
+date-fns@^2.8.1:
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.8.1.tgz#2109362ccb6c87c3ca011e9e31f702bc09e4123b"
+  integrity sha512-EL/C8IHvYRwAHYgFRse4MGAPSqlJVlOrhVYZ75iQBKrnv+ZedmYsgwH3t+BCDuZDXpoo07+q9j4qgSSOa7irJg==
 
 de-indent@^1.0.2:
   version "1.0.2"
