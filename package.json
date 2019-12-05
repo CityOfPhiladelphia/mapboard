@@ -14,8 +14,8 @@
   },
   "dependencies": {
     "@philly/vue-comps": "https://github.com/CityOfPhiladelphia/phila-vue-comps#aaa807b81ee0d242e8f12f0cce77c795181e5de9",
-    "@philly/vue-datafetch": "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#d36aa6012488eafa97097471382ed650cfe9814f",
-    "@philly/vue-mapping": "https://github.com/CityOfPhiladelphia/phila-vue-mapping#0355d88a425e57caecabc97bea7428a68206effb",
+    "@philly/vue-datafetch": "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#934cfbbec56bf64e5f4a1a266275a012b74c9ca8",
+    "@philly/vue-mapping": "https://github.com/CityOfPhiladelphia/phila-vue-mapping#9093af137f3b20ba026f5da75fc98020b9c4967d",
     "vue": "^2.6.10",
     "vuex": "^3.1.1"
   },
