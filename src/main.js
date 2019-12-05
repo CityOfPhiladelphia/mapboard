@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import controllerMixin from '@philly/vue-datafetch/src/controller.js';
 
-console.log('in mapboard main.js, createStore:', createStore, 'controllerMixin:', controllerMixin);
+// conssole.log('in mapboard main.js, createStore:', createStore, 'controllerMixin:', controllerMixin);
 
 
 // helper function to auto-assign ids to horizontal tables
