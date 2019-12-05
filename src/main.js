@@ -101,6 +101,7 @@ function finishInit(config) {
 }
 
 function initMapboard(clientConfig) {
+  console.log('initMapboard is running');
   const baseConfigUrl = clientConfig.baseConfig;
 
   if (baseConfigUrl === null) {
