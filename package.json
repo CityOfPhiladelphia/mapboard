@@ -13,9 +13,9 @@
     "lintFix": "vue-cli-service lint --fix"
   },
   "dependencies": {
-    "@philly/vue-comps": "https://github.com/CityOfPhiladelphia/phila-vue-comps#5e663b9c3aead1d830c412531b57c4650c965249",
-    "@philly/vue-datafetch": "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#e729785bbbb390f5ae78521584cc80ad5e3eb49a",
-    "@philly/vue-mapping": "https://github.com/CityOfPhiladelphia/phila-vue-mapping#92cac71c8b6b89536d0795e624a7f085fdb3ef4a",
+    "@philly/vue-comps": "https://github.com/CityOfPhiladelphia/phila-vue-comps#8809740bafd4c5ec5776dc5bbb817480c789110c",
+    "@philly/vue-datafetch": "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#565be6fdcfa3c96625b27fead9d5742351fbb69e",
+    "@philly/vue-mapping": "https://github.com/CityOfPhiladelphia/phila-vue-mapping#5703de96d5f1f4cf4db5e730241b6238be34ca11",
     "vue": "^2.6.10",
     "vuex": "^3.1.2"
   },
