@@ -28,6 +28,13 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.0.0 - 12/17/2019
+
+* Uses new major releases:
+  * Uses @philly/vue-comps 2.0.0
+  * Uses @philly/vue-mapping 2.0.0
+  * Uses @philly/vue-datafetch 1.0.0
+
 ### 3.0.50 - 12/9/2019
 
 * uses pvc that fixes generation of xml for epay
