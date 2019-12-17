@@ -635,11 +635,14 @@ export default {
     },
     activeBasemap() {
       const shouldShowBasemapSelectControl = this.$store.state.map.shouldShowBasemapSelectControl;
+      let basemap;
       if (shouldShowBasemapSelectControl) {
-        return this.$store.state.map.imagery;
+        basemap = this.$store.state.map.imagery;
+      } else {
+        const defaultBasemap = this.$config.map.defaultBasemap;
+        basemap = this.$store.state.map.basemap || defaultBasemap;
       }
-      const defaultBasemap = this.$config.map.defaultBasemap;
-      const basemap = this.$store.state.map.basemap || defaultBasemap;
+      // console.log('computing activeBasemap, basemap:', basemap);
       return basemap;
     },
     tiledLayers() {
