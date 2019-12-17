@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 3.0.50 - 12/9/2019
+
+* uses pvc that fixes generation of xml for epay
+
 ### 3.0.49 - 11/12/2019
 
 * uses new release of pvd which finishes passing the state to callback function in http-get
