@@ -885,9 +885,9 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@philly/vue-comps@https://github.com/CityOfPhiladelphia/phila-vue-comps#8809740bafd4c5ec5776dc5bbb817480c789110c":
-  version "1.0.46"
-  resolved "https://github.com/CityOfPhiladelphia/phila-vue-comps#8809740bafd4c5ec5776dc5bbb817480c789110c"
+"@philly/vue-comps@https://github.com/CityOfPhiladelphia/phila-vue-comps#661e98790b59a82edd611143657a9893d3e2e4f7":
+  version "1.0.48"
+  resolved "https://github.com/CityOfPhiladelphia/phila-vue-comps#661e98790b59a82edd611143657a9893d3e2e4f7"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-regular-svg-icons" "^5.7.2"
@@ -903,9 +903,9 @@
     vue "^2.6.10"
     vuex "^3.1.2"
 
-"@philly/vue-datafetch@https://github.com/CityOfPhiladelphia/phila-vue-datafetch#565be6fdcfa3c96625b27fead9d5742351fbb69e":
+"@philly/vue-datafetch@https://github.com/CityOfPhiladelphia/phila-vue-datafetch#788297030dc6b3d4097ea1e61724358a1ced2daf":
   version "0.0.31"
-  resolved "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#565be6fdcfa3c96625b27fead9d5742351fbb69e"
+  resolved "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#788297030dc6b3d4097ea1e61724358a1ced2daf"
   dependencies:
     "@turf/turf" "^5.1.6"
     axios "^0.19.0"
@@ -917,9 +917,9 @@
     vue "^2.6.10"
     vuex "^3.1.2"
 
-"@philly/vue-mapping@https://github.com/CityOfPhiladelphia/phila-vue-mapping#5496ea91f8362a571e1cccd405e4bf41f2f9f919":
+"@philly/vue-mapping@https://github.com/CityOfPhiladelphia/phila-vue-mapping#91dd01c2ff4e99a67f77996b932b56ab54b8e1d1":
   version "1.0.47"
-  resolved "https://github.com/CityOfPhiladelphia/phila-vue-mapping#5496ea91f8362a571e1cccd405e4bf41f2f9f919"
+  resolved "https://github.com/CityOfPhiladelphia/phila-vue-mapping#91dd01c2ff4e99a67f77996b932b56ab54b8e1d1"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-regular-svg-icons" "^5.7.2"
