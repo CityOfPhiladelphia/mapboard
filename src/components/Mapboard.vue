@@ -23,11 +23,13 @@
         v-show="cyclomediaActive"
         slot="cycloWidget"
         screen-percent="2"
+        :orientation="this.$config.cyclomedia.orientation"
       />
       <pictometry-widget
         v-if="shouldLoadPictometryWidget"
         v-show="pictometryActive"
         slot="pictWidget"
+        :orientation="this.$config.pictometry.orientation"
       >
         <pictometry-png-marker
           v-if="pictometryShowAddressMarker"

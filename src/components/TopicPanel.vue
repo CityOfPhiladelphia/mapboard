@@ -1,6 +1,6 @@
 <template>
   <div
-    id="topic-panel-container"
+    id="data-panel-container"
     :class="'mb-panel-topics cell ' + topicPanelContainerClass"
   >
     <full-screen-topics-toggle-tab
@@ -290,6 +290,7 @@ export default {
     },
     dorParcels() {
       return this.$store.state.parcels.dor.data.length > 0;
+      // return this.$store.state.parcels.dor.length > 0;
     },
     shouldShowGreeting() {
       // this was added to allow fetchData to run even without a geocode result
@@ -307,8 +308,12 @@ export default {
     // this returns the address shown in the address header
     address() {
       const geocode = this.geocode;
-      const dorParcels = this.$store.state.parcels.dor.data;
-      const activeDorAddress = this.$store.state.parcels.dor.activeAddress;
+      let dorParcels;
+      let activeDorAddress;
+      if (this.$store.state.parcels.dor) {
+        dorParcels = this.$store.state.parcels.dor.data;
+        activeDorAddress = this.$store.state.parcels.dor.activeAddress;
+      }
       let address;
       // if (this.$config.defaultAddressTextPlaceholder) {
       //   address = this.$config.defaultAddressTextPlaceholder.text;

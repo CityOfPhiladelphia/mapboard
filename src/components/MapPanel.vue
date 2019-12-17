@@ -6,11 +6,12 @@
     <!-- <full-screen-map-toggle-tab /> -->
     <full-screen-map-toggle-tab v-once />
 
+    <!-- :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }" -->
     <map_
       id="map-tag"
-      :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }"
       :center="this.$store.state.map.center"
       :zoom="this.$store.state.map.zoom"
+      attribution-position="bottomright"
       zoom-control-position="bottomright"
       :min-zoom="this.$config.map.minZoom"
       :max-zoom="this.$config.map.maxZoom"
@@ -634,11 +635,14 @@ export default {
     },
     activeBasemap() {
       const shouldShowBasemapSelectControl = this.$store.state.map.shouldShowBasemapSelectControl;
+      let basemap;
       if (shouldShowBasemapSelectControl) {
-        return this.$store.state.map.imagery;
+        basemap = this.$store.state.map.imagery;
+      } else {
+        const defaultBasemap = this.$config.map.defaultBasemap;
+        basemap = this.$store.state.map.basemap || defaultBasemap;
       }
-      const defaultBasemap = this.$config.map.defaultBasemap;
-      const basemap = this.$store.state.map.basemap || defaultBasemap;
+      // console.log('computing activeBasemap, basemap:', basemap);
       return basemap;
     },
     tiledLayers() {
@@ -728,6 +732,7 @@ export default {
       return this.activeTopicConfig.parcels;
     },
     dorParcels() {
+      // return this.$store.state.parcels.dor;
       return this.$store.state.parcels.dor.data;
     },
     pwdParcel() {
