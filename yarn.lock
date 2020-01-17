@@ -904,10 +904,10 @@
     vue "^2.6.10"
     vuex "^3.1.2"
 
-"@philly/vue-datafetch@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@philly/vue-datafetch/-/vue-datafetch-1.0.1.tgz#5bb93046290d2354162b26593ec64871ba0c4828"
-  integrity sha512-vd0pnc8oYEXMs308zc7DuOxwjSaTMckeqtnxfQr5gLLw4WY2CCpT5zDz82gRSxkLo1IO5PblVWve9EVweQ45yQ==
+"@philly/vue-datafetch@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@philly/vue-datafetch/-/vue-datafetch-1.0.3.tgz#2c0c729e563665a2115d30e15afb8a4a33f0b442"
+  integrity sha512-cZLvk29SW3HL8Uf6nGGIjXfi29VnZeB5ph1yMU74yNFKr4mvU3Hd0W0C+r5NvMvMe5xLr4dcpBTxk2VSrI+cAg==
   dependencies:
     "@turf/turf" "^5.1.6"
     axios "^0.19.0"
