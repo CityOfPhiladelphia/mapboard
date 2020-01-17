@@ -28,6 +28,14 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.0.3 - 1/17/2020
+
+* uses pvd 1.0.3 which fixes bug with handleMapClick in Atlas
+
+### 4.0.2 - 1/14/2020
+
+### 4.0.1 - 12/30/2019
+
 ### 4.0.0 - 12/17/2019
 
 * Uses new major releases:
