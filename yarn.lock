@@ -885,10 +885,10 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@philly/vue-comps@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@philly/vue-comps/-/vue-comps-2.0.1.tgz#774e65436b133cf13892b2b5e0d7fbb0c09a65dd"
-  integrity sha512-XeCgTFheetEDTeWn/C8xQwV51t8GApGPv5ICS3QVPhX5AmngUcsb1HnIbpitu9xMZeLXXqsvTELRgNr4vYAt2g==
+"@philly/vue-comps@^2.0.8":
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/@philly/vue-comps/-/vue-comps-2.0.8.tgz#08a48e57938551ea6e0eea7f8ca909bb6d3ebb67"
+  integrity sha512-giIlEJ3YLUco4OSXaVukihNvJly73m3ILJ09LsDulnjiCvxH8SqxGXU/QP37dspRF//oPpjoZ2/yIPELOV6OhA==
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-regular-svg-icons" "^5.7.2"
@@ -904,10 +904,10 @@
     vue "^2.6.10"
     vuex "^3.1.2"
 
-"@philly/vue-datafetch@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@philly/vue-datafetch/-/vue-datafetch-1.0.3.tgz#2c0c729e563665a2115d30e15afb8a4a33f0b442"
-  integrity sha512-cZLvk29SW3HL8Uf6nGGIjXfi29VnZeB5ph1yMU74yNFKr4mvU3Hd0W0C+r5NvMvMe5xLr4dcpBTxk2VSrI+cAg==
+"@philly/vue-datafetch@^1.1.2":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@philly/vue-datafetch/-/vue-datafetch-1.1.3.tgz#9450e4a3801ebc8c04fca45816fcb1376d8cfa4f"
+  integrity sha512-k05zhFvs1okMS1SJyoL9lTQ9MN75YUQuOYgRaSURgjDX3fgYUTFsoLfcJIWlVNB2SQXZYupNuVr89AmHfAp83g==
   dependencies:
     "@turf/turf" "^5.1.6"
     axios "^0.19.0"
