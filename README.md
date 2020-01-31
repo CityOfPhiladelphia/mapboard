@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.0.6 - 1/31/2020
+
+* fixes map size on phone
+
 ### 4.0.5 - 1/31/2020
 
 * pushes to @phila/mapboard instead of @philly/mapboard
