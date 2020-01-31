@@ -1,6 +1,6 @@
 
-import * as faComps from '@philly/vue-comps/src/fa.js';
-import * as faMapping from '@philly/vue-mapping/src/fa.js';
+import * as faComps from '@phila/vue-comps/src/fa.js';
+import * as faMapping from '@phila/vue-mapping/src/fa.js';
 
 // Font Awesome Icons
 import { library } from '@fortawesome/fontawesome-svg-core';

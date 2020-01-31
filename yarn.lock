@@ -885,10 +885,10 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@philly/vue-comps@^2.0.8":
-  version "2.0.8"
-  resolved "https://registry.yarnpkg.com/@philly/vue-comps/-/vue-comps-2.0.8.tgz#08a48e57938551ea6e0eea7f8ca909bb6d3ebb67"
-  integrity sha512-giIlEJ3YLUco4OSXaVukihNvJly73m3ILJ09LsDulnjiCvxH8SqxGXU/QP37dspRF//oPpjoZ2/yIPELOV6OhA==
+"@phila/vue-comps@^2.0.9":
+  version "2.0.9"
+  resolved "https://registry.yarnpkg.com/@phila/vue-comps/-/vue-comps-2.0.9.tgz#aa66fecb4830bcbd75985b99788d593f4c2f3c4c"
+  integrity sha512-vhXyzPG5dYmB/T9ZHNCBozpOurW8j3ahlX+p1XgKSqvR6aRvKpjUwekrpFFsIqHrOaV4k4tGIGPVaBEWg7Xh6Q==
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-regular-svg-icons" "^5.7.2"
@@ -904,10 +904,10 @@
     vue "^2.6.10"
     vuex "^3.1.2"
 
-"@philly/vue-datafetch@^1.1.2":
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/@philly/vue-datafetch/-/vue-datafetch-1.1.3.tgz#9450e4a3801ebc8c04fca45816fcb1376d8cfa4f"
-  integrity sha512-k05zhFvs1okMS1SJyoL9lTQ9MN75YUQuOYgRaSURgjDX3fgYUTFsoLfcJIWlVNB2SQXZYupNuVr89AmHfAp83g==
+"@phila/vue-datafetch@^1.1.7":
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@phila/vue-datafetch/-/vue-datafetch-1.1.7.tgz#87326143412a54f9f17b8cb86c6bf62c249233e3"
+  integrity sha512-pDh+rCtRQQ86l9Wp9LD1nbpvb9NY2fTau7dlaUxh/EJ98v4KDbIGBMZ0UaaefzWMtwsK1/vPrwjMPSxaMEuHEA==
   dependencies:
     "@turf/turf" "^5.1.6"
     axios "^0.19.0"
@@ -919,10 +919,10 @@
     vue "^2.6.10"
     vuex "^3.1.2"
 
-"@philly/vue-mapping@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@philly/vue-mapping/-/vue-mapping-2.0.2.tgz#c01ac5a5a46ae93b7dd4cc00eab9dc9bc25310ea"
-  integrity sha512-RXBBI6NbRu40pT2UKce2CsUKn9sQno9Lxa+z0XR76m2usrdDQl1drX3B+uqF4X41o/VyyUxpS166JYMLnjkIPg==
+"@phila/vue-mapping@^2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@phila/vue-mapping/-/vue-mapping-2.0.5.tgz#c97f064bc6d5f95e555ca6ef60ec7c0c89b2cffd"
+  integrity sha512-tQjPAmsGmFbtsRw7GOiGWDL10BsiVXHDid+PvMVmNJUNZaA0fq6tb8lP0LJN8M90lxDYNRhDUDkPUNBIj2al8Q==
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-regular-svg-icons" "^5.7.2"

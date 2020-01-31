@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import isMobileDevice from './util/is-mobile-device';
-import pvdStore from '@philly/vue-datafetch/src/store.js';
-import pvmStore from '@philly/vue-mapping/src/store.js';
-import pvcStore from '@philly/vue-comps/src/store.js';
+import pvdStore from '@phila/vue-datafetch/src/store.js';
+import pvmStore from '@phila/vue-mapping/src/store.js';
+import pvcStore from '@phila/vue-comps/src/store.js';
 import mergeDeep from './util/merge-deep';
 
 // when you load vuex from a script tag this seems to happen automatically

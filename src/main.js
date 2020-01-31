@@ -10,7 +10,7 @@ import generateUniqueId from './util/unique-id';
 import * as faAll from './fa.js';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-import controllerMixin from '@philly/vue-datafetch/src/controller.js';
+import controllerMixin from '@phila/vue-datafetch/src/controller.js';
 
 // conssole.log('in mapboard main.js, createStore:', createStore, 'controllerMixin:', controllerMixin);
 

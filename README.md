@@ -28,6 +28,12 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.0.5 - 1/31/2020
+
+* pushes to @phila/mapboard instead of @philly/mapboard
+
+### 4.0.4 - 1/30/2020
+
 ### 4.0.3 - 1/17/2020
 
 * uses pvd 1.0.3 which fixes bug with handleMapClick in Atlas

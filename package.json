@@ -1,8 +1,9 @@
 {
-  "name": "@philly/mapboard",
+  "name": "@phila/mapboard",
   "description": "A Vue.js component for data-rich web mapping",
-  "version": "4.0.4",
+  "version": "4.0.5",
   "author": "City of Philadelphia <maps@phila.gov>",
+  "license": "MIT",
   "private": false,
   "scripts": {
     "e2e": "node test/e2e/runner.js",
@@ -13,9 +14,9 @@
     "lintFix": "vue-cli-service lint --fix"
   },
   "dependencies": {
-    "@philly/vue-comps": "^2.0.8",
-    "@philly/vue-datafetch": "^1.1.2",
-    "@philly/vue-mapping": "^2.0.2",
+    "@phila/vue-comps": "^2.0.9",
+    "@phila/vue-datafetch": "^1.1.7",
+    "@phila/vue-mapping": "^2.0.5",
     "vue": "^2.6.10",
     "vuex": "^3.1.2"
   },
