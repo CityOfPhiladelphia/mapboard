@@ -568,8 +568,8 @@ export default {
       // return 'medium-12 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map'
       if (this.fullScreenMapEnabled) {
         return 'medium-24 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map';
-      } else if (this.fullScreenMapOnly) {
-        return 'medium-1 small-order-1 small-1 medium-order-2 mb-panel mb-panel-map';
+      // } else if (this.fullScreenMapOnly) {
+      //   return 'medium-1 small-order-1 small-1 medium-order-2 mb-panel mb-panel-map';
       } else if (this.fullScreenTopicsEnabled) {
         return 'medium-1 small-order-1 small-24 medium-order-2 mb-panel mb-panel-map';
       }
@@ -1059,6 +1059,12 @@ export default {
     position: absolute;
     top: 40%;
     left: 40%;
+  }
+
+  @media screen and (max-width: 46.875em) {
+    .map-panel-true {
+      height: 400px;
+    }
   }
 
 </style>
