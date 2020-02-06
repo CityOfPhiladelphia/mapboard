@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.0.7 - 2/6/2020
+
+* fixes bug with pictometry popout button
+
 ### 4.0.6 - 1/31/2020
 
 * fixes map size on phone
