@@ -343,11 +343,11 @@ function createStore(config) {
           if (hc.endpoint) {
             response = await axios.get(hc.endpoint);
           }
-          console.log('Health-Check response:', response, 'this:', this);
+          console.log('Health-Check response:', response);
 
           commit('setMaintenanceResponse', response.data);
 
-          if (response.data && response.data.statusCode && response.data.statusCode === 400 || isMaintenanceHours) {
+          if (response.data && response.data.maintenance || response.status !== 200 || isMaintenanceHours) {
             if (!isMaintenance) {
               window.location.href = process.env.VUE_APP_PUBLIC_PATH + '#/maintenance';
               return;
