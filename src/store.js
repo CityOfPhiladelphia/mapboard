@@ -311,7 +311,7 @@ function createStore(config) {
       async healthCheck({ commit }, hc) {
 
         let isMaintenance = document.location.href.indexOf('maintenance') !== -1;
-        let isMaintenanceHours;
+        let isMaintenanceHours = false;
 
         const date = new Date();
         const day = date.getDay();
@@ -319,11 +319,13 @@ function createStore(config) {
 
         console.log('store.js healthCheck, isMaintenance:', isMaintenance, 'date:', date, 'day:', day, 't:', t);
 
-        for (let period of hc.maintenanceHours) {
-          console.log('format(date, "k:mm")', format(date,'k:mm'),'period.startTime:', period.startTime, 'period.endTime:', period.endTime);
-          if (day === period.day && t >= period.startTime && t < period.endTime) {
-            isMaintenanceHours = true;
-            continue;
+        if (hc.maintenanceHours) {
+          for (let period of hc.maintenanceHours) {
+            console.log('format(date, "k:mm")', format(date,'k:mm'),'period.startTime:', period.startTime, 'period.endTime:', period.endTime);
+            if (day === period.day && t >= period.startTime && t < period.endTime) {
+              isMaintenanceHours = true;
+              continue;
+            }
           }
         }
 
@@ -337,12 +339,15 @@ function createStore(config) {
         }
 
         try {
-          const response = await axios.get(hc.endpoint);
+          let response = {};
+          if (hc.endpoint) {
+            response = await axios.get(hc.endpoint);
+          }
           console.log('Health-Check response:', response, 'this:', this);
 
           commit('setMaintenanceResponse', response.data);
 
-          if (response.data.statusCode && response.data.statusCode === 400 || isMaintenanceHours) {
+          if (response.data && response.data.statusCode && response.data.statusCode === 400 || isMaintenanceHours) {
             if (!isMaintenance) {
               window.location.href = process.env.VUE_APP_PUBLIC_PATH + '#/maintenance';
               return;
