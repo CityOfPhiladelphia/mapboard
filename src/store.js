@@ -6,6 +6,7 @@ import pvmStore from '@phila/vue-mapping/src/store.js';
 import pvcStore from '@phila/vue-comps/src/store.js';
 import mergeDeep from './util/merge-deep';
 import axios from 'axios';
+import { format } from 'date-fns';
 
 // when you load vuex from a script tag this seems to happen automatically
 Vue.use(Vuex);
@@ -307,10 +308,24 @@ function createStore(config) {
       },
     },
     actions: {
-      async healthCheck({ commit }, endpoint) {
-        // console.log('endpoint:', endpoint);
-        const isMaintenance = document.location.href.indexOf('maintenance') !== -1;
-        // console.log('store.js healthCheck is running, config:', config, 'commit:', commit, 'document.location.href.indexOf("maintenance")', document.location.href.indexOf('maintenance'), 'isMaintenance:', isMaintenance);
+      async healthCheck({ commit }, hc) {
+
+        let isMaintenance = document.location.href.indexOf('maintenance') !== -1;
+        let isMaintenanceHours;
+
+        const date = new Date();
+        const day = date.getDay();
+        const t = format(date,'k:mm');
+
+        console.log('store.js healthCheck, isMaintenance:', isMaintenance, 'date:', date, 'day:', day, 't:', t);
+
+        for (let period of hc.maintenanceHours) {
+          console.log('format(date, "k:mm")', format(date,'k:mm'),'period.startTime:', period.startTime, 'period.endTime:', period.endTime);
+          if (day === period.day && t >= period.startTime && t < period.endTime) {
+            isMaintenanceHours = true;
+            continue;
+          }
+        }
 
         // sometimes the system is not on maintenance, it is just offline connection
         if (navigator.onLine === false) {
@@ -322,20 +337,24 @@ function createStore(config) {
         }
 
         try {
-          const response = await axios.get(endpoint);
+          const response = await axios.get(hc.endpoint);
           console.log('Health-Check response:', response, 'this:', this);
 
           commit('setMaintenanceResponse', response.data);
 
-          if (response.data.statusCode && response.data.statusCode === 400) {
+          if (response.data.statusCode && response.data.statusCode === 400 || isMaintenanceHours) {
             if (!isMaintenance) {
               window.location.href = process.env.VUE_APP_PUBLIC_PATH + '#/maintenance';
               return;
             }
           } else {
+            console.log('health check has a good response');
             if (isMaintenance) {
+              console.log('isMaintenance is true');
               window.location.href = process.env.VUE_APP_PUBLIC_PATH;
               return;
+            } else {
+              console.log('isMaintenance is false');
             }
           }
         } catch (err) {
@@ -347,6 +366,7 @@ function createStore(config) {
             return;
           }
         }
+        console.log('after try/catch');
       },
     },
   };

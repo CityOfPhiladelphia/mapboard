@@ -84,7 +84,7 @@ function finishInit(config) {
 
   console.log('in finishInit, config:', config, 'store:', store, 'opts.store:', opts.store);
   if (config.healthCheck) {
-    store.dispatch('healthCheck', config.healthCheck.endpoint);
+    store.dispatch('healthCheck', config.healthCheck);
   }
 
   Vue.component('font-awesome-icon', FontAwesomeIcon);

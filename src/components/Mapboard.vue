@@ -98,7 +98,13 @@ export default {
   },
   computed: {
     maintenanceResponse() {
-      return this.$store.state.maintenanceResponse && this.$store.state.maintenanceResponse.statusCode && this.$store.state.maintenanceResponse.statusCode === 400;
+      let value = false;
+      if (this.$store.state.maintenanceResponse && this.$store.state.maintenanceResponse.statusCode && this.$store.state.maintenanceResponse.statusCode === 400) {
+        value = true;
+      } else if (window.location.hash === '#/maintenance') {
+        value = true;
+      }
+      return value;
     },
     mapPanelLoader() {
       // console.log('computed mapPanelLoader is running');
