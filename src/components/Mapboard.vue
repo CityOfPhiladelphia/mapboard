@@ -9,13 +9,18 @@
       v-if="shouldShowHeader"
     />
     <!-- <header-comp v-if="shouldShowHeader" /> -->
+    <maintenance
+      v-if="maintenanceResponse"
+    />
 
     <component
       :is="topicPanelLoader"
+      v-if="!maintenanceResponse"
       :class="shouldShowTopicPanel"
     />
     <component
       :is="mapPanelLoader"
+      v-if="!maintenanceResponse"
       :class="shouldShowMapPanel"
     >
       <cyclomedia-widget
@@ -70,7 +75,9 @@
 </template>
 
 <script>
-// console.log('test Mapboard.vue, this:', this);
+// console.log('test Mapboard.vue, this:', this, 'this.$config:', this.$config);
+
+
 export default {
   components: {
     CyclomediaWidget: () => import(/* webpackChunkName: "mbmb_pvm_CyclomediaWidget" */'@phila/vue-mapping/src/cyclomedia/Widget.vue'),
@@ -90,6 +97,9 @@ export default {
     return data;
   },
   computed: {
+    maintenanceResponse() {
+      return this.$store.state.maintenanceResponse && this.$store.state.maintenanceResponse.statusCode && this.$store.state.maintenanceResponse.statusCode === 400;
+    },
     mapPanelLoader() {
       // console.log('computed mapPanelLoader is running');
       if (this.fullScreenTopicsOnly) {

@@ -5,6 +5,7 @@ import pvdStore from '@phila/vue-datafetch/src/store.js';
 import pvmStore from '@phila/vue-mapping/src/store.js';
 import pvcStore from '@phila/vue-comps/src/store.js';
 import mergeDeep from './util/merge-deep';
+import axios from 'axios';
 
 // when you load vuex from a script tag this seems to happen automatically
 Vue.use(Vuex);
@@ -161,6 +162,7 @@ function createStore(config) {
       height: 0,
       width: 0,
     },
+    maintenanceResponse: null,
   };
 
   if (config.map) {
@@ -202,7 +204,9 @@ function createStore(config) {
       },
     },
     mutations: {
-
+      setMaintenanceResponse(state, response) {
+        state.maintenanceResponse = response;
+      },
       setWindowDimensions(state, payload) {
         state.windowDimensions = payload;
       },
@@ -302,11 +306,56 @@ function createStore(config) {
         state.modals.open = name;
       },
     },
+    actions: {
+      async healthCheck({ commit }, endpoint) {
+        // console.log('endpoint:', endpoint);
+        const isMaintenance = document.location.href.indexOf('maintenance') !== -1;
+        // console.log('store.js healthCheck is running, config:', config, 'commit:', commit, 'document.location.href.indexOf("maintenance")', document.location.href.indexOf('maintenance'), 'isMaintenance:', isMaintenance);
+
+        // sometimes the system is not on maintenance, it is just offline connection
+        if (navigator.onLine === false) {
+          if (isMaintenance) {
+            window.location.href = '/';
+            return;
+          }
+          return true;
+        }
+
+        try {
+          const response = await axios.get(endpoint);
+          console.log('Health-Check response:', response, 'this:', this);
+
+          commit('setMaintenanceResponse', response.data);
+
+          if (response.data.statusCode && response.data.statusCode === 400) {
+            if (!isMaintenance) {
+              window.location.href = process.env.VUE_APP_PUBLIC_PATH + '#/maintenance';
+              return;
+            }
+          } else {
+            if (isMaintenance) {
+              window.location.href = process.env.VUE_APP_PUBLIC_PATH;
+              return;
+            }
+          }
+        } catch (err) {
+          console.log("Health-Check-Reponse error:", err);
+          commit('setMaintenanceResponse', err);
+
+          if (!isMaintenance) {
+            window.location.href = process.env.VUE_APP_PUBLIC_PATH + '#/maintenance';
+            return;
+          }
+        }
+      },
+    },
   };
 
   let mergeStore = mergeDeep(pvdStore.store, pvmStore);
   mergeStore = mergeDeep(mergeStore, pvcStore);
   mergeStore = mergeDeep(mergeStore, mb);
+
+  console.log('mergeStore:', mergeStore);
   // let mergeStore = mergeDeep(mb, pvdStore.store);
   // mergeStore = mergeDeep(mergeStore, pvmStore);
   // mergeStore = mergeDeep(mergeStore, pvcStore);
@@ -324,6 +373,7 @@ function createStore(config) {
     state: mergeStore.state,
     getters: mergeStore.getters,
     mutations: mergeStore.mutations,
+    actions: mergeStore.actions,
   });
 }
 

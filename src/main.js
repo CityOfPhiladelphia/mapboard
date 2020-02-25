@@ -78,10 +78,14 @@ function finishInit(config) {
   const store = createStore(config);
   let opts = { config, store };
 
-  console.log('in finishInit, config:', config, 'store:', store);
-
   // mix in controller
   Vue.use(controllerMixin, { config, store });
+  // Vue.use(controllerMixin, { config });
+
+  console.log('in finishInit, config:', config, 'store:', store, 'opts.store:', opts.store);
+  if (config.healthCheck) {
+    store.dispatch('healthCheck', config.healthCheck.endpoint);
+  }
 
   Vue.component('font-awesome-icon', FontAwesomeIcon);
   // Vue.config.productionTip = false
