@@ -313,18 +313,29 @@ function createStore(config) {
         let isMaintenance = document.location.href.indexOf('maintenance') !== -1;
         let isMaintenanceHours = false;
 
-        const date = new Date();
-        const day = date.getDay();
-        const t = format(date,'k:mm');
+        const fullDate = new Date();
+        const year = fullDate.getFullYear();
+        const month = fullDate.getMonth();
+        const date = fullDate.getDate();
+        const day = fullDate.getDay();
+        const t = format(fullDate,'k:mm');
 
-        console.log('store.js healthCheck, isMaintenance:', isMaintenance, 'date:', date, 'day:', day, 't:', t);
+        console.log('store.js healthCheck, isMaintenance:', isMaintenance, 'fullDate:', fullDate, 'year', year, 'month', month, 'date', date, 'day:', day, 't:', t);
 
         if (hc.maintenanceHours) {
           for (let period of hc.maintenanceHours) {
-            console.log('format(date, "k:mm")', format(date,'k:mm'),'period.startTime:', period.startTime, 'period.endTime:', period.endTime);
-            if (day === period.day && t >= period.startTime && t < period.endTime) {
-              isMaintenanceHours = true;
-              continue;
+            // console.log('format(fullDate, "k:mm")', format(fullDate,'k:mm'), 'period.day:', period.day, 'period.startTime:', period.startTime, 'period.endTime:', period.endTime);
+            if (day === period.day) {
+              let startTime = period.startTime.split(':');
+              let periodStartTime = new Date(format(new Date(year, month, date, startTime[0], startTime[1]), "MMMM d, yyyy k:mm") + ' GMT-05:00');
+              let endTime = period.endTime.split(':');
+              let periodEndTime = new Date(format(new Date(year, month, date, endTime[0], endTime[1]), "MMMM d, yyyy k:mm") + ' GMT-05:00');
+              // console.log('Date.parse(periodStartTime):', Date.parse(periodStartTime), 'Date.parse(fullDate):', Date.parse(fullDate), 'Date.parse(periodEndTime):', Date.parse(periodEndTime));
+              if (Date.parse(periodStartTime) <= Date.parse(fullDate) && Date.parse(fullDate) <= Date.parse(periodEndTime)) {
+                // console.log('fullDate is between start and end time');
+                isMaintenanceHours = true;
+                continue;
+              }
             }
           }
         }
