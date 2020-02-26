@@ -164,6 +164,7 @@ function createStore(config) {
       width: 0,
     },
     maintenanceResponse: null,
+    shouldShowAlertBanner: null,
   };
 
   if (config.map) {
@@ -205,8 +206,11 @@ function createStore(config) {
       },
     },
     mutations: {
-      setMaintenanceResponse(state, response) {
-        state.maintenanceResponse = response;
+      setShouldShowAlertBanner(state, payload) {
+        state.shouldShowAlertBanner = payload;
+      },
+      setMaintenanceResponse(state, payload) {
+        state.maintenanceResponse = payload;
       },
       setWindowDimensions(state, payload) {
         state.windowDimensions = payload;

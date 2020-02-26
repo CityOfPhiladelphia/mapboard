@@ -97,6 +97,9 @@ export default {
     return data;
   },
   computed: {
+    shouldShowAlertBanner() {
+      return this.$store.state.shouldShowAlertBanner;
+    },
     maintenanceResponse() {
       let value = false;
       if (this.$store.state.maintenanceResponse && this.$store.state.maintenanceResponse.statusCode && this.$store.state.maintenanceResponse.statusCode === 400) {
@@ -265,6 +268,9 @@ export default {
       if (this.$config.initialPopover.slots) {
         this.$store.commit('setPopoverText', this.$config.initialPopover.slots.text);
       }
+    }
+    if (this.$config.alertBanner && this.$config.alertBanner.enabled) {
+      this.$store.commit('setShouldShowAlertBanner', this.$config.alertBanner.enabled);
     }
   },
   methods: {

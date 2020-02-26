@@ -5,34 +5,42 @@
   >
     <!-- :class="rootClass"
   :style="mbRootStyle" -->
+    <div class="combo-header">
 
-    <header class="site-header app group">
-      <div class="row expanded">
-        <div class="columns">
-          <a
-            href="//beta.phila.gov"
-            class="logo"
-          >
-            <img
-              src="https://standards.phila.gov/img/logo/city-of-philadelphia-yellow-white.png"
-              alt="City of Philadelphia"
+      <header class="site-header app group">
+        <div class="row expanded">
+          <div class="columns">
+            <a
+              href="//beta.phila.gov"
+              class="logo"
             >
-          </a>
-          <div class="app-divide" />
-          <div class="page-title-container">
-            <a href="#/">
-              <h1
-                class="page-title"
-                :style="mbHeaderStyle"
+              <img
+                :class="imgSize"
+                :src="imgSrc"
+                alt="City of Philadelphia"
               >
-                {{ headerText }}
-              <!-- Real Estate Tax Balance Search -->
-              </h1>
             </a>
+            <div class="app-divide" />
+            <div class="page-title-container">
+              <a href="#/">
+                <h1
+                  class="page-title"
+                  :style="mbHeaderStyle"
+                >
+                  {{ headerText }}
+                <!-- Real Estate Tax Balance Search -->
+                </h1>
+              </a>
+            </div>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
+      <alert-banner
+        v-if="shouldShowAlertBanner"
+      />
+
+    </div>
+
   </div>
 </template>
 
@@ -57,10 +65,30 @@ export default {
       return null;
 
     },
+    shouldShowAlertBanner() {
+      return this.$store.state.shouldShowAlertBanner;
+    },
+    imgSize() {
+      if (this.$store.state.windowDimensions.width >= 750) {
+        return 'normal-image';
+      } else {
+        return 'large-image';
+      }
+    },
+    imgSrc() {
+      if (this.$store.state.windowDimensions.width >= 750) {
+        return 'images/city-of-philadelphia-yellow-white.png';
+      } else {
+        return 'images/city-of-philadelphia-bell.png';
+      }
+    },
   },
   created() {
     window.addEventListener('resize', this.handleWindowResize);
     this.handleWindowResize();
+  },
+  mounted() {
+    console.log('HeaderComp mounted is running');
   },
   methods: {
     handleWindowResize() {
@@ -89,6 +117,25 @@ export default {
     /* padding-bottom: 0px !important;
     padding-right: 8px !important;
     padding-left: 8px !important; */
+  }
+
+  /* .logo {
+    display: inline-block;
+    height: 10px;
+    width: 10px;
+  } */
+
+  .large-image {
+    height: 42px;
+    width: 42px;
+  }
+
+  /* .page-title-container {
+    display: inline-block;
+  } */
+
+  .combo-header {
+    display: block;
   }
 
 </style>
