@@ -332,7 +332,7 @@ function createStore(config) {
 
         if (maintenanceHours.length === 1) {
           console.log('healthCheck if is running');
-          for (let period of maintenanceHours[0].maintenanceHours) {
+          for (let period of maintenanceHours[0].condition) {
             // console.log('format(fullDate, "k:mm")', format(fullDate,'k:mm'), 'period.day:', period.day, 'period.startTime:', period.startTime, 'period.endTime:', period.endTime);
             if (day === period.day) {
               let startTime = period.startTime.split(':');
@@ -367,7 +367,7 @@ function createStore(config) {
         try {
 
           if (maintenanceAPI.length === 1) {
-            response = await axios.get(maintenanceAPI[0].endpoint);
+            response = await axios.get(maintenanceAPI[0].condition);
             console.log('Health-Check response:', response);
             if (response.data && response.data.maintenance || response.status !== 200) {
               commit('setMaintenanceResponse', 'maintenanceAPI');
