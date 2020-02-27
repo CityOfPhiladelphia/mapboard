@@ -436,6 +436,7 @@ export default {
         // const windowHeight = $(window).height();
         const windowHeight = window.innerHeight;
         // const siteHeaderHeightNum = parseInt(window.getComputedStyle(document.getElementsByClassName('site-header')[0]).getPropertyValue('height').replace('px', ''));
+        console.log("document.getElementsByClassName('combo-header')[0]", document.getElementsByClassName('combo-header')[0]);
         const siteHeaderHeightNum = parseInt(document.getElementsByClassName('combo-header')[0].getBoundingClientRect().height);
         // const appFooterHeightNum = parseInt(window.getComputedStyle(document.getElementsByClassName('app-footer')[0]).getPropertyValue('height').replace('px', ''));
         const appFooterHeightNum = parseInt(document.getElementsByClassName('app-footer')[0].getBoundingClientRect().height);

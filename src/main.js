@@ -83,8 +83,8 @@ function finishInit(config) {
   // Vue.use(controllerMixin, { config });
 
   console.log('in finishInit, config:', config, 'store:', store, 'opts.store:', opts.store);
-  if (config.healthCheck) {
-    store.dispatch('healthCheck', config.healthCheck);
+  if (config.healthChecks) {
+    store.dispatch('healthCheck', config.healthChecks);
   }
 
   Vue.component('font-awesome-icon', FontAwesomeIcon);

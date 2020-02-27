@@ -314,6 +314,9 @@ function createStore(config) {
     actions: {
       async healthCheck({ commit }, hc) {
 
+        let maintenanceHours = hc.filter(i => i.type === 'maintenanceHours');
+        let maintenanceAPI = hc.filter(i => i.type === 'maintenanceAPI');
+
         let isMaintenance = document.location.href.indexOf('maintenance') !== -1;
         let isMaintenanceHours = false;
 
@@ -324,10 +327,12 @@ function createStore(config) {
         const day = fullDate.getDay();
         const t = format(fullDate,'k:mm');
 
-        console.log('store.js healthCheck, isMaintenance:', isMaintenance, 'fullDate:', fullDate, 'year', year, 'month', month, 'date', date, 'day:', day, 't:', t);
+        console.log('store.js healthCheck, hc:', hc, 'maintenanceHours:', maintenanceHours, 'isMaintenance:', isMaintenance, 'fullDate:', fullDate, 'year', year, 'month', month, 'date', date, 'day:', day, 't:', t);
+        let response = {};
 
-        if (hc.maintenanceHours) {
-          for (let period of hc.maintenanceHours) {
+        if (maintenanceHours.length === 1) {
+          console.log('healthCheck if is running');
+          for (let period of maintenanceHours[0].maintenanceHours) {
             // console.log('format(fullDate, "k:mm")', format(fullDate,'k:mm'), 'period.day:', period.day, 'period.startTime:', period.startTime, 'period.endTime:', period.endTime);
             if (day === period.day) {
               let startTime = period.startTime.split(':');
@@ -336,57 +341,63 @@ function createStore(config) {
               let periodEndTime = new Date(format(new Date(year, month, date, endTime[0], endTime[1]), "MMMM d, yyyy k:mm") + ' GMT-05:00');
               // console.log('Date.parse(periodStartTime):', Date.parse(periodStartTime), 'Date.parse(fullDate):', Date.parse(fullDate), 'Date.parse(periodEndTime):', Date.parse(periodEndTime));
               if (Date.parse(periodStartTime) <= Date.parse(fullDate) && Date.parse(fullDate) <= Date.parse(periodEndTime)) {
-                // console.log('fullDate is between start and end time');
+                console.log('fullDate is between start and end time');
                 isMaintenanceHours = true;
-                continue;
+                commit('setMaintenanceResponse', 'maintenanceHours');
+                if (!isMaintenance) {
+                  window.location.href = process.env.VUE_APP_PUBLIC_PATH + '#/maintenance';
+                  return;
+                }
+                return;
+                // continue;
               }
             }
           }
         }
 
         // sometimes the system is not on maintenance, it is just offline connection
-        if (navigator.onLine === false) {
-          if (isMaintenance) {
-            window.location.href = '/';
-            return;
-          }
-          return true;
-        }
+        // if (navigator.onLine === false) {
+        //   if (isMaintenance) {
+        //     window.location.href = '/';
+        //     return;
+        //   }
+        //   return true;
+        // }
 
         try {
-          let response = {};
-          if (hc.endpoint) {
-            response = await axios.get(hc.endpoint);
-          }
-          console.log('Health-Check response:', response);
 
-          commit('setMaintenanceResponse', response.data);
-
-          if (response.data && response.data.maintenance || response.status !== 200 || isMaintenanceHours) {
-            if (!isMaintenance) {
-              window.location.href = process.env.VUE_APP_PUBLIC_PATH + '#/maintenance';
-              return;
-            }
-          } else {
-            console.log('health check has a good response');
-            if (isMaintenance) {
-              console.log('isMaintenance is true');
-              window.location.href = process.env.VUE_APP_PUBLIC_PATH;
-              return;
+          if (maintenanceAPI.length === 1) {
+            response = await axios.get(maintenanceAPI[0].endpoint);
+            console.log('Health-Check response:', response);
+            if (response.data && response.data.maintenance || response.status !== 200) {
+              commit('setMaintenanceResponse', 'maintenanceAPI');
+              if (!isMaintenance) {
+                window.location.href = process.env.VUE_APP_PUBLIC_PATH + '#/maintenance';
+                return;
+              }
             } else {
-              console.log('isMaintenance is false');
+              console.log('health check has a good response');
+              commit('setMaintenanceResponse', null);
+              if (isMaintenance) {
+                console.log('isMaintenance is null');
+                window.location.href = process.env.VUE_APP_PUBLIC_PATH;
+                return;
+              } else {
+                console.log('isMaintenance is null');
+              }
             }
           }
+
         } catch (err) {
           console.log("Health-Check-Reponse error:", err);
-          commit('setMaintenanceResponse', err);
+          commit('setMaintenanceResponse', 'maintenanceAPI');
 
           if (!isMaintenance) {
             window.location.href = process.env.VUE_APP_PUBLIC_PATH + '#/maintenance';
             return;
           }
         }
-        console.log('after try/catch');
+        // console.log('after try/catch');
       },
     },
   };

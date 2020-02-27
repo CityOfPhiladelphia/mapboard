@@ -134,8 +134,8 @@ export default {
     display: inline-block;
   } */
 
-  .combo-header {
+  /* .combo-header {
     display: block;
-  }
+  } */
 
 </style>

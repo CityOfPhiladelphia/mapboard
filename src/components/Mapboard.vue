@@ -9,10 +9,12 @@
       v-if="shouldShowHeader"
     />
     <!-- <header-comp v-if="shouldShowHeader" /> -->
-    <maintenance
-      v-if="maintenanceResponse"
+    <component
+      :is="healthCheck.type"
+      v-for="(healthCheck, index) in this.$config.healthChecks"
+      v-if="healthCheck.type === maintenanceResponse"
+      :key="index"
     />
-
     <component
       :is="topicPanelLoader"
       v-if="!maintenanceResponse"
@@ -64,6 +66,11 @@
       </pictometry-widget>
     </component>
 
+    <!-- <component
+      :is="footerCompLoader"
+    /> -->
+    <!-- v-if="shouldShowHeader" -->
+
     <popover
       v-if="popoverOpen"
       :options="popoverOptions"
@@ -101,13 +108,7 @@ export default {
       return this.$store.state.shouldShowAlertBanner;
     },
     maintenanceResponse() {
-      let value = false;
-      if (this.$store.state.maintenanceResponse && this.$store.state.maintenanceResponse.statusCode && this.$store.state.maintenanceResponse.statusCode === 400) {
-        value = true;
-      } else if (window.location.hash === '#/maintenance') {
-        value = true;
-      }
-      return value;
+      return this.$store.state.maintenanceResponse || null;
     },
     mapPanelLoader() {
       // console.log('computed mapPanelLoader is running');
@@ -144,6 +145,11 @@ export default {
       return false;
 
     },
+
+    footerCompLoader() {
+      return () => import(/* webpackChunkName: "mbmb_footerCompLoader" */'./PhilaFooter.vue');//.then(console.log('after PhilaFooter import'))
+    },
+
     rootClass() {
       if (this.$config.plugin) {
         if (this.$config.plugin.enabled) {
@@ -152,8 +158,11 @@ export default {
         return 'cell medium-auto grid-x';
 
       }
-      return 'cell medium-auto grid-x';
-
+      if (this.maintenanceResponse !== null && this.maintenanceResponse !== '') {
+        return 'cell medium-auto';
+      } else {
+        return 'cell medium-auto grid-x';
+      }
     },
     isMobileOrTablet() {
       return this.$store.state.isMobileOrTablet;
