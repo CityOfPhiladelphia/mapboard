@@ -131,6 +131,7 @@ function createStore(config) {
 
   const initialState = {
     isMobileOrTablet: isMobileDevice(),
+    headerLoaded: false,
     fullScreen: {
       mapOnly: false,
       topicsOnly: false,
@@ -164,7 +165,6 @@ function createStore(config) {
       width: 0,
     },
     maintenanceResponse: null,
-    shouldShowAlertBanner: null,
   };
 
   if (config.map) {
@@ -206,8 +206,8 @@ function createStore(config) {
       },
     },
     mutations: {
-      setShouldShowAlertBanner(state, payload) {
-        state.shouldShowAlertBanner = payload;
+      setHeaderLoaded(state, payload) {
+        state.headerLoaded = payload;
       },
       setMaintenanceResponse(state, payload) {
         state.maintenanceResponse = payload;

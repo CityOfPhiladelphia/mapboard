@@ -3,10 +3,7 @@
     id="mb-header"
     class="cell medium-24"
   >
-    <!-- :class="rootClass"
-  :style="mbRootStyle" -->
     <div class="combo-header">
-
       <header class="site-header app group">
         <div class="row expanded">
           <div class="columns">
@@ -28,16 +25,14 @@
                   :style="mbHeaderStyle"
                 >
                   {{ headerText }}
-                <!-- Real Estate Tax Balance Search -->
                 </h1>
               </a>
             </div>
           </div>
         </div>
       </header>
-      <alert-banner
-        v-if="shouldShowAlertBanner"
-      />
+
+      <slot />
 
     </div>
 
@@ -65,9 +60,6 @@ export default {
       return null;
 
     },
-    shouldShowAlertBanner() {
-      return this.$store.state.shouldShowAlertBanner;
-    },
     imgSize() {
       if (this.$store.state.windowDimensions.width >= 750) {
         return 'normal-image';
@@ -89,6 +81,7 @@ export default {
   },
   mounted() {
     console.log('HeaderComp mounted is running');
+    this.$store.commit('setHeaderLoaded', true);
   },
   methods: {
     handleWindowResize() {

@@ -362,6 +362,9 @@ export default {
       }
       return parts.join('-');
     },
+    headerLoaded() {
+      return this.$store.state.headerLoaded;
+    },
   },
   watch: {
     geocodeStatus() {
@@ -369,6 +372,9 @@ export default {
     },
     windowDim(nextDim) {
       this.handleWindowResize(nextDim);
+    },
+    headerLoaded() {
+      this.handleWindowResize(this.windowDim);
     },
   },
   // created() {
@@ -383,6 +389,9 @@ export default {
     console.log('TopicPanel.vue mounted');
   },
   methods: {
+    testEmit() {
+      console.log('TopicPanel.vue testEmit is running');
+    },
     getMoreRecords(dataSource, highestPageRetrieved) {
       // console.log('TopicPanel getMoreRecords is running');
       this.$controller.getMoreRecords(dataSource, highestPageRetrieved);

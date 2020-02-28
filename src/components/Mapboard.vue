@@ -7,8 +7,13 @@
     <component
       :is="headerCompLoader"
       v-if="shouldShowHeader"
-    />
-    <!-- <header-comp v-if="shouldShowHeader" /> -->
+    >
+      <component
+        :is="this.$config.alerts.header"
+        v-if="this.$config.alerts && this.$config.alerts.header != null"
+      />
+    </component>
+
     <component
       :is="healthCheck.type"
       v-for="(healthCheck, index) in this.$config.healthChecks"
@@ -104,9 +109,6 @@ export default {
     return data;
   },
   computed: {
-    shouldShowAlertBanner() {
-      return this.$store.state.shouldShowAlertBanner;
-    },
     maintenanceResponse() {
       return this.$store.state.maintenanceResponse || null;
     },
@@ -277,9 +279,6 @@ export default {
       if (this.$config.initialPopover.slots) {
         this.$store.commit('setPopoverText', this.$config.initialPopover.slots.text);
       }
-    }
-    if (this.$config.alertBanner && this.$config.alertBanner.enabled) {
-      this.$store.commit('setShouldShowAlertBanner', this.$config.alertBanner.enabled);
     }
   },
   methods: {
