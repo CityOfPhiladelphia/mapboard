@@ -42,6 +42,7 @@ module.exports = {
     "vue/no-use-v-if-with-v-for": "off",
     "no-useless-escape": "off",
     "vue/no-unused-components": "off",
+    "no-else-return": "off",
   },
   parserOptions: {
     parser: "babel-eslint",

@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.0.8 - 3/2/2020
+
+* allows a [header](https://github.com/CityOfPhiladelphia/mapboard/wiki/header), [alerts](https://github.com/CityOfPhiladelphia/mapboard/wiki/alerts), and [healthChecks](https://github.com/CityOfPhiladelphia/mapboard/wiki/healthChecks) to be include in a config file.
+
 ### 4.0.7 - 2/6/2020
 
 * fixes bug with pictometry popout button

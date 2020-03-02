@@ -5,6 +5,8 @@ import pvdStore from '@phila/vue-datafetch/src/store.js';
 import pvmStore from '@phila/vue-mapping/src/store.js';
 import pvcStore from '@phila/vue-comps/src/store.js';
 import mergeDeep from './util/merge-deep';
+import axios from 'axios';
+import { format } from 'date-fns';
 
 // when you load vuex from a script tag this seems to happen automatically
 Vue.use(Vuex);
@@ -129,6 +131,7 @@ function createStore(config) {
 
   const initialState = {
     isMobileOrTablet: isMobileDevice(),
+    headerLoaded: false,
     fullScreen: {
       mapOnly: false,
       topicsOnly: false,
@@ -161,6 +164,7 @@ function createStore(config) {
       height: 0,
       width: 0,
     },
+    maintenanceResponse: null,
   };
 
   if (config.map) {
@@ -202,7 +206,12 @@ function createStore(config) {
       },
     },
     mutations: {
-
+      setHeaderLoaded(state, payload) {
+        state.headerLoaded = payload;
+      },
+      setMaintenanceResponse(state, payload) {
+        state.maintenanceResponse = payload;
+      },
       setWindowDimensions(state, payload) {
         state.windowDimensions = payload;
       },
@@ -302,11 +311,102 @@ function createStore(config) {
         state.modals.open = name;
       },
     },
+    actions: {
+      async healthCheck({ commit }, hc) {
+
+        let maintenanceHours = hc.filter(i => i.type === 'maintenanceHours');
+        let maintenanceAPI = hc.filter(i => i.type === 'maintenanceAPI');
+
+        let isMaintenance = document.location.href.indexOf('maintenance') !== -1;
+        let isMaintenanceHours = false;
+
+        const fullDate = new Date();
+        const year = fullDate.getFullYear();
+        const month = fullDate.getMonth();
+        const date = fullDate.getDate();
+        const day = fullDate.getDay();
+        const t = format(fullDate,'k:mm');
+
+        console.log('store.js healthCheck, hc:', hc, 'maintenanceHours:', maintenanceHours, 'isMaintenance:', isMaintenance, 'fullDate:', fullDate, 'year', year, 'month', month, 'date', date, 'day:', day, 't:', t);
+        let response = {};
+
+        if (maintenanceHours.length === 1) {
+          console.log('healthCheck if is running');
+          for (let period of maintenanceHours[0].condition) {
+            // console.log('format(fullDate, "k:mm")', format(fullDate,'k:mm'), 'period.day:', period.day, 'period.startTime:', period.startTime, 'period.endTime:', period.endTime);
+            if (day === period.day) {
+              let startTime = period.startTime.split(':');
+              let periodStartTime = new Date(format(new Date(year, month, date, startTime[0], startTime[1]), "MMMM d, yyyy k:mm") + ' GMT-05:00');
+              let endTime = period.endTime.split(':');
+              let periodEndTime = new Date(format(new Date(year, month, date, endTime[0], endTime[1]), "MMMM d, yyyy k:mm") + ' GMT-05:00');
+              // console.log('Date.parse(periodStartTime):', Date.parse(periodStartTime), 'Date.parse(fullDate):', Date.parse(fullDate), 'Date.parse(periodEndTime):', Date.parse(periodEndTime));
+              if (Date.parse(periodStartTime) <= Date.parse(fullDate) && Date.parse(fullDate) <= Date.parse(periodEndTime)) {
+                console.log('fullDate is between start and end time');
+                isMaintenanceHours = true;
+                commit('setMaintenanceResponse', 'maintenanceHours');
+                if (!isMaintenance) {
+                  window.location.href = process.env.VUE_APP_PUBLIC_PATH + '#/maintenance';
+                  return;
+                }
+                return;
+                // continue;
+              }
+            }
+          }
+        }
+
+        // sometimes the system is not on maintenance, it is just offline connection
+        // if (navigator.onLine === false) {
+        //   if (isMaintenance) {
+        //     window.location.href = '/';
+        //     return;
+        //   }
+        //   return true;
+        // }
+
+        try {
+
+          if (maintenanceAPI.length === 1) {
+            response = await axios.get(maintenanceAPI[0].condition);
+            console.log('Health-Check response:', response);
+            if (response.data && response.data.maintenance || response.status !== 200) {
+              commit('setMaintenanceResponse', 'maintenanceAPI');
+              if (!isMaintenance) {
+                window.location.href = process.env.VUE_APP_PUBLIC_PATH + '#/maintenance';
+                return;
+              }
+            } else {
+              console.log('health check has a good response');
+              commit('setMaintenanceResponse', null);
+              if (isMaintenance) {
+                console.log('isMaintenance is null');
+                window.location.href = process.env.VUE_APP_PUBLIC_PATH;
+                return;
+              } else {
+                console.log('isMaintenance is null');
+              }
+            }
+          }
+
+        } catch (err) {
+          console.log("Health-Check-Reponse error:", err);
+          commit('setMaintenanceResponse', 'maintenanceAPI');
+
+          if (!isMaintenance) {
+            window.location.href = process.env.VUE_APP_PUBLIC_PATH + '#/maintenance';
+            return;
+          }
+        }
+        // console.log('after try/catch');
+      },
+    },
   };
 
   let mergeStore = mergeDeep(pvdStore.store, pvmStore);
   mergeStore = mergeDeep(mergeStore, pvcStore);
   mergeStore = mergeDeep(mergeStore, mb);
+
+  console.log('mergeStore:', mergeStore);
   // let mergeStore = mergeDeep(mb, pvdStore.store);
   // mergeStore = mergeDeep(mergeStore, pvmStore);
   // mergeStore = mergeDeep(mergeStore, pvcStore);
@@ -324,6 +424,7 @@ function createStore(config) {
     state: mergeStore.state,
     getters: mergeStore.getters,
     mutations: mergeStore.mutations,
+    actions: mergeStore.actions,
   });
 }
 

@@ -362,6 +362,9 @@ export default {
       }
       return parts.join('-');
     },
+    headerLoaded() {
+      return this.$store.state.headerLoaded;
+    },
   },
   watch: {
     geocodeStatus() {
@@ -369,6 +372,9 @@ export default {
     },
     windowDim(nextDim) {
       this.handleWindowResize(nextDim);
+    },
+    headerLoaded() {
+      this.handleWindowResize(this.windowDim);
     },
   },
   // created() {
@@ -383,6 +389,9 @@ export default {
     console.log('TopicPanel.vue mounted');
   },
   methods: {
+    testEmit() {
+      console.log('TopicPanel.vue testEmit is running');
+    },
     getMoreRecords(dataSource, highestPageRetrieved) {
       // console.log('TopicPanel getMoreRecords is running');
       this.$controller.getMoreRecords(dataSource, highestPageRetrieved);
@@ -399,7 +408,7 @@ export default {
       this.$store.state.shouldShowAddressCandidateList = false;
     },
     handleWindowResize(dim) {
-      // console.log('TopicPanel handleWindowResize is running');
+      console.log('TopicPanel handleWindowResize is running');
       let topicsHeight;
       if (this.$config.plugin) {
         if (this.$config.plugin.enabled) {
@@ -436,10 +445,12 @@ export default {
         // const windowHeight = $(window).height();
         const windowHeight = window.innerHeight;
         // const siteHeaderHeightNum = parseInt(window.getComputedStyle(document.getElementsByClassName('site-header')[0]).getPropertyValue('height').replace('px', ''));
-        const siteHeaderHeightNum = parseInt(document.getElementsByClassName('site-header')[0].getBoundingClientRect().height);
+        console.log("document.getElementsByClassName('combo-header')[0]", document.getElementsByClassName('combo-header')[0]);
+        const siteHeaderHeightNum = parseInt(document.getElementsByClassName('combo-header')[0].getBoundingClientRect().height);
         // const appFooterHeightNum = parseInt(window.getComputedStyle(document.getElementsByClassName('app-footer')[0]).getPropertyValue('height').replace('px', ''));
         const appFooterHeightNum = parseInt(document.getElementsByClassName('app-footer')[0].getBoundingClientRect().height);
 
+        console.log('else is running, siteHeaderHeightNum:', siteHeaderHeightNum);
 
         if (this.shouldShowAddressHeader) {
           if (document.getElementsByClassName('address-header')[0]) {

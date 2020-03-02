@@ -7,15 +7,27 @@
     <component
       :is="headerCompLoader"
       v-if="shouldShowHeader"
-    />
-    <!-- <header-comp v-if="shouldShowHeader" /> -->
+    >
+      <component
+        :is="this.$config.alerts.header"
+        v-if="this.$config.alerts && this.$config.alerts.header != null"
+      />
+    </component>
 
     <component
+      :is="healthCheck.type"
+      v-for="(healthCheck, index) in this.$config.healthChecks"
+      v-if="healthCheck.type === maintenanceResponse"
+      :key="index"
+    />
+    <component
       :is="topicPanelLoader"
+      v-if="!maintenanceResponse"
       :class="shouldShowTopicPanel"
     />
     <component
       :is="mapPanelLoader"
+      v-if="!maintenanceResponse"
       :class="shouldShowMapPanel"
     >
       <cyclomedia-widget
@@ -59,6 +71,11 @@
       </pictometry-widget>
     </component>
 
+    <!-- <component
+      :is="footerCompLoader"
+    /> -->
+    <!-- v-if="shouldShowHeader" -->
+
     <popover
       v-if="popoverOpen"
       :options="popoverOptions"
@@ -70,7 +87,9 @@
 </template>
 
 <script>
-// console.log('test Mapboard.vue, this:', this);
+// console.log('test Mapboard.vue, this:', this, 'this.$config:', this.$config);
+
+
 export default {
   components: {
     CyclomediaWidget: () => import(/* webpackChunkName: "mbmb_pvm_CyclomediaWidget" */'@phila/vue-mapping/src/cyclomedia/Widget.vue'),
@@ -90,6 +109,9 @@ export default {
     return data;
   },
   computed: {
+    maintenanceResponse() {
+      return this.$store.state.maintenanceResponse || null;
+    },
     mapPanelLoader() {
       // console.log('computed mapPanelLoader is running');
       if (this.fullScreenTopicsOnly) {
@@ -125,6 +147,11 @@ export default {
       return false;
 
     },
+
+    footerCompLoader() {
+      return () => import(/* webpackChunkName: "mbmb_footerCompLoader" */'./PhilaFooter.vue');//.then(console.log('after PhilaFooter import'))
+    },
+
     rootClass() {
       if (this.$config.plugin) {
         if (this.$config.plugin.enabled) {
@@ -133,8 +160,11 @@ export default {
         return 'cell medium-auto grid-x';
 
       }
-      return 'cell medium-auto grid-x';
-
+      if (this.maintenanceResponse !== null && this.maintenanceResponse !== '') {
+        return 'cell medium-auto';
+      } else {
+        return 'cell medium-auto grid-x';
+      }
     },
     isMobileOrTablet() {
       return this.$store.state.isMobileOrTablet;
