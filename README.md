@@ -28,6 +28,13 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.1.0 - 5/5/2020
+
+* uses minor releases of libraries:
+  * @phila/vue-comps 2.1.1
+  * @phila/vue-mapping 2.1.1
+  * @phila/vue-datafetch 1.2.0
+
 ### 4.0.8 - 3/2/2020
 
 * allows a [header](https://github.com/CityOfPhiladelphia/mapboard/wiki/header), [alerts](https://github.com/CityOfPhiladelphia/mapboard/wiki/alerts), and [healthChecks](https://github.com/CityOfPhiladelphia/mapboard/wiki/healthChecks) to be include in a config file.

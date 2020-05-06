@@ -33,9 +33,7 @@
       </header>
 
       <slot />
-
     </div>
-
   </div>
 </template>
 

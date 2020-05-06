@@ -22,7 +22,7 @@ module.exports = {
     "nonblock-statement-body-position": [ "error", "below" ],
     "curly": [ "error", "all" ],
     "indent": [ "error", 2 ],
-    "no-else-return": "error",
+    // "no-else-return": "error",
     "object-curly-spacing": [ "error", "always", {
       arraysInObjects: false,
       objectsInObjects: false,
