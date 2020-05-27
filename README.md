@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.1.1 - 5/27/2020
+
+* upgrades all packages
+
 ### 4.1.0 - 5/6/2020
 
 * uses minor releases of libraries:
