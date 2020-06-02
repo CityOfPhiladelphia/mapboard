@@ -8,6 +8,7 @@
 
     <!-- :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }" -->
     <map_
+      v-if="this.mapType === 'leaflet'"
       id="map-tag"
       :center="this.$store.state.map.center"
       :zoom="this.$store.state.map.zoom"
@@ -380,6 +381,159 @@
         @l-click="handleCyclomediaRecordingClick"
       />
     </map_>
+
+    <MglMap
+      v-if="mapType === 'mapbox'"
+      :mapStyle.sync="$config.mbStyle"
+      :center="$store.state.map.center"
+      :zoom="$store.state.map.zoom"
+      @load="onMapLoaded"
+      @move="handleMapMove"
+    >
+
+      <!-- <overlay-legend
+        v-for="legendControl in Object.keys(legendControls)"
+        :key="legendControl"
+        :position="'bottomleft'"
+        :options="legendControls[legendControl].options"
+        :items="legendControls[legendControl].data"
+      >
+      </overlay-legend> -->
+
+      <MglMarker
+        v-for="(marker) in markersForAddress"
+        :key="marker.key"
+        :coordinates="[marker.latlng[1], marker.latlng[0]]"
+        :color="marker.color"
+        :icon="marker.icon"
+      />
+
+      <!-- <MglCircleMarker
+        v-for="(marker) in currentMapData"
+        :coordinates="[marker.latlng[1], marker.latlng[0]]"
+        :key="marker._featureId"
+        :markerId="marker._featureId"
+        :size="marker.size"
+        :fill-color="marker.color"
+        :weight="marker.weight"
+        @click="handleMarkerClick"
+      > -->
+      <!-- v-for="(marker) in currentMapData"-->
+      <!-- :coordinates="[marker.latlng[1], marker.latlng[0]]" -->
+      <!-- v-if="marker.selected" -->
+        <!-- <MglPopup
+          v-if="latestSelectedResourceFromMap === marker._featureId"
+          :showed="true"
+        >
+          <div
+            @click="toggleMap"
+            v-html="mapboxSiteName(marker)"
+          >
+          </div>
+        </MglPopup> -->
+
+      <!-- </MglCircleMarker> -->
+
+      <!-- <MglPopup
+        v-for="(marker) in currentMapData"
+        v-if="marker.selected"
+        :close-on-click="false"
+        :coordinates="[marker.latlng[1], marker.latlng[0]]"
+        :showed="marker.selected"
+      >
+        <div>Hello, I'm popup!</div>
+      </MglPopup> -->
+
+      <!-- <MglCircleMarker
+        v-for="recording in cyclomediaRecordings"
+        v-if="!fullScreenMapEnabled"
+        :coordinates="[recording.lng, recording.lat]"
+        :key="recording.imageId"
+        :image-id="recording.imageId"
+        :size="1.2"
+        :color="'#3388ff'"
+        :weight="1"
+        @click="handleCyclomediaRecordingClick"
+      /> -->
+
+      <!-- <MbIcon
+        v-if="!fullScreenMapEnabled"
+        :url="'https://mapboard-images.s3.amazonaws.com/camera.png'"
+        :name="'camera'"
+        :rotation-angle="cycloRotationAngle"
+      /> -->
+
+      <!-- <MglGeojsonLayer
+        v-if="!fullScreenMapEnabled"
+        :sourceId="'cameraPoint'"
+        :source="geojsonCameraSource"
+        :layerId="'cameraPoints'"
+        :layer="geojsonCameraLayer"
+        :icon="sitePath + 'images/camera.png'"
+      /> -->
+
+      <!-- <MglGeojsonLayer
+        v-if="!fullScreenMapEnabled"
+        :sourceId="'viewcone'"
+        :source="geojsonViewconeSource"
+        :layerId="'viewcones'"
+        :layer="geojsonViewconeLayer"
+      /> -->
+
+      <!-- <MglVectorLayer
+        v-if="this.$config.vectorTiles"
+        :source="this.$config.vectorTiles"
+        :sourceId="'PVL_Original'"
+        :layer="this.$config.vectorTiles"
+        :layerId="'PVL_Original'"
+      /> -->
+
+      <MglRasterLayer
+        v-for="(basemapSource, key) in this.basemapSources"
+        v-if="activeBasemap === key"
+        :key="key"
+        :sourceId="activeBasemap"
+        :layerId="activeBasemap"
+        :layer="basemapSource.layer"
+        :source="basemapSource.source"
+        :before="firstOverlay"
+      />
+
+      <MglRasterLayer
+        v-for="(basemapLabelSource, key) in this.basemapLabelSources"
+        v-if="tiledLayers.includes(key)"
+        :key="key"
+        :sourceId="key"
+        :layerId="key"
+        :layer="basemapLabelSource.layer"
+        :source="basemapLabelSource.source"
+        :before="firstOverlay"
+      />
+
+      <!-- <MglRasterLayer
+        v-for="(overlaySource, key) in this.overlaySources"
+        v-if="activeTiledOverlays.includes(key)"
+        :sourceId="key"
+        :layerId="key"
+        :layer="overlaySource.layer"
+        :source="overlaySource.source"
+        :before="cameraOverlay"
+      /> -->
+
+      <!-- <MglButtonControl
+        :buttonId="'buttonId-01'"
+        :buttonClass="'right'"
+        :imageLink="BasemapImageLink"
+        @click="this.handleBasemapToggleClick"
+      /> -->
+
+      <MglNavigationControl position="bottom-right"/>
+      <!-- <MglGeolocateControl position="bottom-left"/> -->
+
+    </MglMap>
+
+
+
     <slot
       class="widget-slot"
       name="cycloWidget"
@@ -455,6 +609,22 @@ export default {
     // Control: () => import(/* webpackChunkName: "mbmp_pvm_Control" */'@phila/vue-mapping/src/leaflet/Control.vue'),
     Polyline_: () => import(/* webpackChunkName: "mbmp_pvm_Geojson" */'@phila/vue-mapping/src/leaflet/Polyline.vue'),
     // BasemapTooltip: () => import(/* webpackChunkName: "mbmp_pvm_BasemapTooltip" */'@phila/vue-mapping/src/components/BasemapTooltip.vue'),
+    MglMap: () => import(/* webpackChunkName: "pvm_MglMap" */'@phila/vue-mapping/src/mapbox/map/GlMap.vue'),
+    MglMarker: () => import(/* webpackChunkName: "pvm_MglMarker" */'@phila/vue-mapping/src/mapbox/UI/Marker.vue'),
+    MglIcon: () => import(/* webpackChunkName: "mbmp_pvm_MglIcon" */'@phila/vue-mapping/src/mapbox/UI/Icon.vue'),
+    MglCircleMarker: () => import(/* webpackChunkName: "pvm_MglCircleMarker" */'@phila/vue-mapping/src/mapbox/UI/CircleMarker.vue'),
+    MglNavigationControl: () => import(/* webpackChunkName: "pvm_MglNavigationControl" */'@phila/vue-mapping/src/mapbox/UI/controls/NavigationControl'),
+    MglGeolocateControl: () => import(/* webpackChunkName: "pvm_MglGeolocateControl" */'@phila/vue-mapping/src/mapbox/UI/controls/GeolocateControl'),
+    MglRasterLayer: () => import(/* webpackChunkName: "pvm_MglRasterLayer" */'@phila/vue-mapping/src/mapbox/layer/RasterLayer'),
+    MglButtonControl: () => import(/* webpackChunkName: "pvm_MglButtonControl" */'@phila/vue-mapping/src/mapbox/UI/controls/ButtonControl.vue'),
+    MglControlContainer: () => import(/* webpackChunkName: "pvm_MglControlContainer" */'@phila/vue-mapping/src/mapbox/UI/controls/ControlContainer.vue'),
+    MglImageLayer: () => import(/* webpackChunkName: "pvm_MglImageLayer" */'@phila/vue-mapping/src/mapbox/layer/ImageLayer'),
+    MglVectorLayer: () => import(/* webpackChunkName: "pvm_MglVectorLayer" */'@phila/vue-mapping/src/mapbox/layer/VectorLayer'),
+    MbIcon: () => import(/* webpackChunkName: "pvm_MbIcon" */'@phila/vue-mapping/src/mapbox/UI/MbIcon'),
+    MglGeojsonLayer: () => import(/* webpackChunkName: "pvm_MglGeojsonLayer" */'@phila/vue-mapping/src/mapbox/layer/GeojsonLayer'),
+    MglPopup: () => import(/* webpackChunkName: "pvm_MglPopup" */'@phila/vue-mapping/src/mapbox/UI/Popup'),
+    OverlayLegend: () => import(/* webpackChunkName: "pvm_OverlayLegend" */'@phila/vue-mapping/src/mapbox/OverlayLegend'),
+
   },
   mixins: [
     markersMixin,
@@ -474,12 +644,41 @@ export default {
     return data;
   },
   computed: {
+    basemapSources() {
+      return this.$config.basemapSources;
+    },
+    basemapLabelSources() {
+      return this.$config.basemapLabelSources;
+    },
+    overlaySources() {
+      return this.$config.overlaySources;
+    },
+    mapType() {
+      return this.$store.state.map.type;
+    },
+    firstOverlay() {
+      let map = this.$store.state.map.map;
+      let overlay;
+      if (this.$config.overlaySources) {
+        let overlaySources = Object.keys(this.$config.overlaySources);
+        if (map) {
+          let overlays = map.getStyle().layers.filter(function(layer) {
+            // console.log('layer.id:', layer.id, 'overlaySources:', overlaySources);
+            return overlaySources.includes(layer.id);//[0].id;
+          });
+          if (overlays.length) {
+            overlay = overlays[0].id;
+          }
+        }
+      }
+      return overlay;
+    },
+
     sitePath() {
       if (process.env.VUE_APP_PUBLICPATH) {
         return window.location.origin + process.env.VUE_APP_PUBLICPATH;
       }
       return '';
-
     },
     shouldShowOverlaySelectControl() {
       let value = false;
@@ -893,6 +1092,11 @@ export default {
     }
   },
   methods: {
+    onMapLoaded(map) {
+      this.$store.commit('setMap', map);
+    },
+
+
     handleSearchFormSubmit(value) {
       console.log('MapPanel.vue handleSearchFormSubmit is running');
       this.$controller.handleSearchFormSubmit(value);
