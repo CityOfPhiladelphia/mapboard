@@ -408,6 +408,13 @@
         :icon="marker.icon"
       />
 
+      <!-- :position="addressInputPosition" -->
+      <mapbox-address-input
+        :placeholder="addressInputPlaceholder"
+        :width-from-config="addressInputWidth"
+        @handle-search-form-submit="handleSearchFormSubmit"
+      />
+
       <!-- <MglCircleMarker
         v-for="(marker) in currentMapData"
         :coordinates="[marker.latlng[1], marker.latlng[0]]"
@@ -624,6 +631,7 @@ export default {
     MglGeojsonLayer: () => import(/* webpackChunkName: "pvm_MglGeojsonLayer" */'@phila/vue-mapping/src/mapbox/layer/GeojsonLayer'),
     MglPopup: () => import(/* webpackChunkName: "pvm_MglPopup" */'@phila/vue-mapping/src/mapbox/UI/Popup'),
     OverlayLegend: () => import(/* webpackChunkName: "pvm_OverlayLegend" */'@phila/vue-mapping/src/mapbox/OverlayLegend'),
+    MapboxAddressInput: () => import(/* webpackChunkName: "pvm_MapboxAddressInput" */'@phila/vue-mapping/src/mapbox/MapboxAddressInput'),
 
   },
   mixins: [
