@@ -520,6 +520,7 @@
       <!-- <MglRasterLayer
         v-for="(overlaySource, key) in this.overlaySources"
         v-if="activeTiledOverlays.includes(key)"
+        :key="key"
         :sourceId="key"
         :layerId="key"
         :layer="overlaySource.layer"
@@ -527,12 +528,26 @@
         :before="cameraOverlay"
       /> -->
 
-      <!-- <MglButtonControl
+      <MglVectorLayer
+        v-for="(overlaySource, key) in this.overlaySources"
+        v-if="activeDynamicMaps.includes(key)"
+        :key="key"
+        :sourceId="key"
+        :layerId="key"
+        :layer="overlaySource.layer"
+        :source="overlaySource.source"
+        :before="cameraOverlay"
+      />
+
+      <MglButtonControl
         :buttonId="'buttonId-01'"
         :buttonClass="'right'"
-        :imageLink="BasemapImageLink"
+        :imageLink="basemapImageLink"
         @click="this.handleBasemapToggleClick"
-      /> -->
+      />
+
+      <mapbox-basemap-select-control />
+
 
       <MglNavigationControl position="bottom-right"/>
       <!-- <MglGeolocateControl position="bottom-left"/> -->
@@ -632,6 +647,7 @@ export default {
     MglPopup: () => import(/* webpackChunkName: "pvm_MglPopup" */'@phila/vue-mapping/src/mapbox/UI/Popup'),
     OverlayLegend: () => import(/* webpackChunkName: "pvm_OverlayLegend" */'@phila/vue-mapping/src/mapbox/OverlayLegend'),
     MapboxAddressInput: () => import(/* webpackChunkName: "pvm_MapboxAddressInput" */'@phila/vue-mapping/src/mapbox/MapboxAddressInput'),
+    MapboxBasemapSelectControl: () => import(/* webpackChunkName: "pvm_MapboxBasemapSelectControl" */'@phila/vue-mapping/src/mapbox/UI/controls/BasemapSelectControl'),
 
   },
   mixins: [
@@ -652,6 +668,13 @@ export default {
     return data;
   },
   computed: {
+    basemapImageLink() {
+      if (this.activeBasemap === 'pwd') {
+        return 'images/imagery_small.png';
+      } else {
+        return 'images/basemap_small.png';
+      }
+    },
     basemapSources() {
       return this.$config.basemapSources;
     },
@@ -1103,7 +1126,11 @@ export default {
     onMapLoaded(map) {
       this.$store.commit('setMap', map);
     },
-
+    handleBasemapToggleClick() {
+      const prevShouldShowBasemapSelectControl = this.$store.state.map.shouldShowBasemapSelectControl;
+      const nextShouldShowBasemapSelectControl = !prevShouldShowBasemapSelectControl;
+      this.$store.commit('setShouldShowBasemapSelectControl', nextShouldShowBasemapSelectControl);
+    },
 
     handleSearchFormSubmit(value) {
       console.log('MapPanel.vue handleSearchFormSubmit is running');
