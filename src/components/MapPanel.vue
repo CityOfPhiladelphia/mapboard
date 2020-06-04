@@ -389,6 +389,7 @@
       :zoom="$store.state.map.zoom"
       @load="onMapLoaded"
       @move="handleMapMove"
+      @click="handleMapClick"
     >
 
       <!-- <overlay-legend
@@ -554,6 +555,13 @@
         :imageLink="basemapImageLink"
         @click="handleBasemapToggleClick"
       />
+
+      <!-- <MglButtonControl
+        :buttonId="'buttonId-02'"
+        :buttonClass="'right top-button-2'"
+        :imageLink="sitePath + 'images/pictometry.png'"
+        @click="handlePictometryButtonClick"
+      /> -->
 
       <MglButtonControl
         :buttonId="'buttonId-02'"
@@ -1197,7 +1205,18 @@ export default {
 
     fullScreenTopicsEnabled() {
       this.$nextTick(() => {
-        this.$store.state.map.map.invalidateSize();
+        if (this.mapType === 'leaflet') {
+          this.$store.state.map.map.invalidateSize();
+        } else if (this.mapType === 'mapbox') {
+          this.$store.state.map.map.resize();
+        }
+      });
+    },
+    fullScreenMapEnabled() {
+      this.$nextTick(() => {
+        if (this.mapType === 'mapbox') {
+          this.$store.state.map.map.resize();
+        }
       });
     },
   },
@@ -1265,6 +1284,10 @@ export default {
       const willBeActive = !this.$store.state.cyclomedia.active;
 
       this.$store.commit('setCyclomediaActive', willBeActive);
+    },
+    handlePictometryButtonClick(e) {
+      console.log('handlePictometryButtonClick is running');
+      this.$store.commit('setPictometryActive', !this.$store.state.pictometry.active);
     },
     onMapLoaded(map) {
       this.$store.commit('setMap', map);
@@ -1455,6 +1478,10 @@ export default {
 
   .top-button-2 {
     top: 46px;
+  }
+
+  .top-button-3 {
+    top: 92px;
   }
 
 </style>
