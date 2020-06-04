@@ -317,8 +317,8 @@
           :position="'topright'"
           :link="'cyclomedia'"
           :img-src="sitePath + 'images/cyclomedia.png'"
-          @click="handleCyclomediaButtonClick"
         />
+        <!-- @click="handleCyclomediaButtonClick" -->
       </div>
 
       <div
@@ -415,6 +415,15 @@
         @handle-search-form-submit="handleSearchFormSubmit"
       />
 
+      <MglGeojsonLayer
+        v-for="(queriedLayerSource, key) in queriedLayerSources"
+        :key="key"
+        :sourceId="key"
+        :source="queriedLayerSource"
+        :layerId="key"
+        :layer="queriedLayerSource"
+      />
+
       <!-- <MglCircleMarker
         v-for="(marker) in currentMapData"
         :coordinates="[marker.latlng[1], marker.latlng[0]]"
@@ -470,22 +479,22 @@
         :rotation-angle="cycloRotationAngle"
       /> -->
 
-      <!-- <MglGeojsonLayer
-        v-if="!fullScreenMapEnabled"
+      <MglGeojsonLayer
+        v-if="cyclomediaActive"
         :sourceId="'cameraPoint'"
         :source="geojsonCameraSource"
         :layerId="'cameraPoints'"
         :layer="geojsonCameraLayer"
         :icon="sitePath + 'images/camera.png'"
-      /> -->
+      />
 
-      <!-- <MglGeojsonLayer
-        v-if="!fullScreenMapEnabled"
+      <MglGeojsonLayer
+        v-if="cyclomediaActive"
         :sourceId="'viewcone'"
         :source="geojsonViewconeSource"
         :layerId="'viewcones'"
         :layer="geojsonViewconeLayer"
-      /> -->
+      />
 
       <!-- <MglVectorLayer
         v-if="this.$config.vectorTiles"
@@ -541,9 +550,16 @@
 
       <MglButtonControl
         :buttonId="'buttonId-01'"
-        :buttonClass="'right'"
+        :buttonClass="'right top-button-1'"
         :imageLink="basemapImageLink"
-        @click="this.handleBasemapToggleClick"
+        @click="handleBasemapToggleClick"
+      />
+
+      <MglButtonControl
+        :buttonId="'buttonId-02'"
+        :buttonClass="'right top-button-2'"
+        :imageLink="sitePath + 'images/cyclomedia.png'"
+        @click="handleCyclomediaButtonClick"
       />
 
       <mapbox-basemap-select-control />
@@ -570,6 +586,8 @@
 <script>
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+
+import destination from '@turf/destination';
 
 // console.log('L:', L)
 const FeatureGroup = L.default.featureGroup;
@@ -664,6 +682,68 @@ export default {
         markersForAddress: [],
         markersForTopic: [],
       },
+      geojsonCameraSource: {
+        'type': 'geojson',
+        'data': {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [],
+          },
+        },
+      },
+      geojsonCameraLayer: {
+        'id': 'cameraPoints',
+        'type': 'symbol',
+        'source': 'cameraPoint',
+        'layout': {
+          'icon-image': 'cameraMarker',
+          'icon-size': 0.13,
+          'icon-rotate': 0,
+          'icon-rotation-alignment': 'map',
+        },
+      },
+      geojsonViewconeSource: {
+        'type': 'geojson',
+        'data': {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Polygon',
+            'coordinates': [[]],
+          },
+        },
+      },
+      geojsonViewconeLayer: {
+        'id': 'viewcones',
+        'type': 'fill',
+        'source': 'viewcone',
+        'layout': {},
+        'paint': {
+          'fill-color': 'rgb(0,102,255)',
+          'fill-opacity': 0.5,
+        },
+      },
+      geojsonCircleSource: {
+        'type': 'geojson',
+        'data': {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+          },
+        },
+      },
+      geojsonCircleLayer: {
+        'id': 'circle500',
+        'type': 'circle',
+        'source': 'source_circle_500',
+        'layout': {},
+        'paint': {
+          'circle-radius': 10,
+          'circle-color': '#5b94c6',
+          'circle-opacity': 0.6,
+        },
+      },
+
     };
     return data;
   },
@@ -674,6 +754,9 @@ export default {
       } else {
         return 'images/basemap_small.png';
       }
+    },
+    queriedLayerSources() {
+      return this.$config.queriedLayerSources;
     },
     basemapSources() {
       return this.$config.basemapSources;
@@ -807,13 +890,17 @@ export default {
 
     },
     cycloLatlng() {
+      let value;
       if (this.$store.state.cyclomedia.orientation.xyz !== null) {
         const xyz = this.$store.state.cyclomedia.orientation.xyz;
-        return [ xyz[1], xyz[0] ];
+        value = [ xyz[1], xyz[0] ];
+      } else {
+        // console.log('this.$config:', this.$config);
+        if (this.$config) {
+          value = this.$config.map.center;
+        }
       }
-      const center = this.$config.map.center;
-      return center;
-
+      return value;
     },
     cycloRotationAngle() {
       return this.$store.state.cyclomedia.orientation.yaw;// * (180/3.14159265359);
@@ -1005,6 +1092,21 @@ export default {
     },
   },
   watch: {
+    cycloLatlng(nextCycloLatlng) {
+      console.log('watch cycloLatlng, nextCycloLatlng:', nextCycloLatlng, 'this.$data.geojsonCameraSource:', this.$data.geojsonCameraSource);
+      this.$data.geojsonCameraSource.data.geometry.coordinates = [ nextCycloLatlng[1], nextCycloLatlng[0] ];
+      this.handleCycloChanges();
+      // console.log('watch cycloLatlng end');
+    },
+    cycloRotationAngle(nextCycloRotationAngle) {
+      // console.log('watch cycloRotationAngle is firing, nextCycloRotationAngle:', nextCycloRotationAngle);
+      this.$data.geojsonCameraLayer.layout['icon-rotate'] = nextCycloRotationAngle;
+      this.handleCycloChanges();
+    },
+    cycloHFov(nextCycloHFov) {
+      // console.log('watch cycloHFov is running, nextCycloHFov:', nextCycloHFov);
+      this.handleCycloChanges();
+    },
     activeTopicConfig(nextTopicConfig) {
       const prevBasemap = this.$store.state.map.basemap || null;
       // const nextTopicConfig = this.config.topics.filter(topic => {
@@ -1030,7 +1132,11 @@ export default {
     },
     picOrCycloActive(value) {
       this.$nextTick(() => {
-        this.$store.state.map.map.invalidateSize();
+        if (this.mapType === 'leaflet') {
+          this.$store.state.map.map.invalidateSize();
+        } else if (this.mapType === 'mapbox') {
+          this.$store.state.map.map.resize();
+        }
       });
     },
     geojsonForTopic(nextGeojson) {
@@ -1123,6 +1229,43 @@ export default {
     }
   },
   methods: {
+    handleCycloChanges() {
+      console.log('handleCycloChanges is running');
+      const halfAngle = this.cycloHFov / 2.0;
+      let angle1 = this.cycloRotationAngle - halfAngle;
+      let angle2 = this.cycloRotationAngle + halfAngle;
+      // console.log('handleCycloChanges, halfAngle:', halfAngle, 'angle1:', angle1, 'this.cycloRotationAngle:', this.cycloRotationAngle, 'angle2:', angle2);
+
+      var distance = 1300;
+      var options = { units: 'feet' };
+
+      if (!this.cycloLatlng) {
+        return;
+      }
+
+      var destination1 = destination([ this.cycloLatlng[1], this.cycloLatlng[0] ], distance, angle1, options);
+      var destination2 = destination([ this.cycloLatlng[1], this.cycloLatlng[0] ], distance, angle2, options);
+      // console.log('cyclocenter:', [this.cycloLatlng[1], this.cycloLatlng[0]], 'destination1:', destination1.geometry.coordinates, 'destination2:', destination2.geometry.coordinates);
+      // console.log('destination1:', destination1.geometry.coordinates, 'destination2:', destination2.geometry.coordinates);
+
+      this.$data.geojsonViewconeSource.data.geometry.coordinates = [
+        [
+          [ this.cycloLatlng[1], this.cycloLatlng[0] ],
+          [ destination1.geometry.coordinates[0], destination1.geometry.coordinates[1] ],
+          [ destination2.geometry.coordinates[0], destination2.geometry.coordinates[1] ],
+          [ this.cycloLatlng[1], this.cycloLatlng[0] ],
+        ],
+      ];
+    },
+    handleCyclomediaButtonClick(e) {
+      console.log('handleCyclomediaButtonClick is running');
+      if (!this.cyclomediaInitializationBegun) {
+        this.$store.commit('setCyclomediaInitializationBegun', true);
+      }
+      const willBeActive = !this.$store.state.cyclomedia.active;
+
+      this.$store.commit('setCyclomediaActive', willBeActive);
+    },
     onMapLoaded(map) {
       this.$store.commit('setMap', map);
     },
@@ -1267,7 +1410,7 @@ export default {
 }; //end of export
 </script>
 
-<style scoped>
+<style>
   .mb-panel-map {
     /*this allows the loading mask to fill the div*/
     position: relative;
@@ -1304,6 +1447,14 @@ export default {
     .map-panel-true {
       height: 400px;
     }
+  }
+
+  .top-button-1 {
+    top: 0px;
+  }
+
+  .top-button-2 {
+    top: 46px;
   }
 
 </style>
