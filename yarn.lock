@@ -976,10 +976,9 @@
     vue "^2.6.11"
     vuex "^3.1.2"
 
-"@phila/vue-datafetch@1.2.1":
+"@phila/vue-datafetch@https://github.com/CityOfPhiladelphia/phila-vue-datafetch#7179b2ef4b8d9e28ef43d8aad4de6cbbfcfbdff3":
   version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@phila/vue-datafetch/-/vue-datafetch-1.2.1.tgz#4bf8b2934202cb892e372c01c313326497ae9998"
-  integrity sha512-fcDesvNsmuG36oJrA1JhfHjYJzf8ERKJecqduwehee2iKDi7tN6SV9J075A2FEf4DGw/9Phapp2Vlj8co7LFTA==
+  resolved "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#7179b2ef4b8d9e28ef43d8aad4de6cbbfcfbdff3"
   dependencies:
     "@turf/turf" "^5.1.6"
     axios "^0.19.0"
