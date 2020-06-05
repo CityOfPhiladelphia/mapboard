@@ -481,6 +481,18 @@
         :rotation-angle="cycloRotationAngle"
       /> -->
 
+      <!-- v-if="shouldShowGeojson(geojsonFeature.key)" -->
+      <!-- v-for="(geojsonFeature, key) in geojsonParcelSource" -->
+      <!-- v-if="shouldShowGeojson(geojsonFeature.key)" -->
+      <!-- v-for="(geojsonFeature, key) in geojsonParcels"
+      :key="key" -->
+      <MglGeojsonLayer
+        :sourceId="'geojsonParcel'"
+        :source="geojsonParcelSource"
+        :layerId="'geojsonParcels'"
+        :layer="geojsonParcelLayer"
+      />
+
       <MglGeojsonLayer
         v-if="cyclomediaActive"
         :sourceId="'cameraPoint'"
@@ -539,7 +551,7 @@
         :before="cameraOverlay"
       /> -->
 
-      <MglVectorLayer
+      <!-- <MglVectorLayer
         v-for="(overlaySource, key) in this.overlaySources"
         v-if="activeDynamicMaps.includes(key)"
         :key="key"
@@ -548,7 +560,7 @@
         :layer="overlaySource.layer"
         :source="overlaySource.source"
         :before="cameraOverlay"
-      />
+      /> -->
 
       <MglButtonControl
         :buttonId="'buttonId-01'"
@@ -732,6 +744,26 @@ export default {
           'fill-opacity': 0.2,
         },
       },
+      geojsonParcelSource: {
+        'type': 'geojson',
+        'data': {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Polygon',
+            'coordinates': [],
+          },
+        },
+      },
+      geojsonParcelLayer: {
+        'id': 'geojsonParcels',
+        'type': 'fill',
+        'source': 'geojsonParcel',
+        'layout': {},
+        'paint': {
+          'fill-color': 'rgb(0,102,255)',
+          'fill-opacity': 0.5,
+        },
+      },
       geojsonCircleSource: {
         'type': 'geojson',
         'data': {
@@ -758,7 +790,7 @@ export default {
   },
   computed: {
     basemapImageLink() {
-      if (this.activeBasemap === 'pwd') {
+      if (this.activeBasemap === 'pwd' || this.activeBasemap === 'dor') {
         return 'images/imagery_small.png';
       } else {
         return 'images/basemap_small.png';
@@ -787,21 +819,6 @@ export default {
       }
     },
     firstOverlay() {
-      // let map = this.$store.state.map.map;
-      // let overlay;
-      // if (this.$config.overlaySources) {
-      //   let overlaySources = Object.keys(this.$config.overlaySources);
-      //   if (map) {
-      //     let overlays = map.getStyle().layers.filter(function(layer) {
-      //       // console.log('layer.id:', layer.id, 'overlaySources:', overlaySources);
-      //       return overlaySources.includes(layer.id);//[0].id;
-      //     });
-      //     if (overlays.length) {
-      //       overlay = overlays[0].id;
-      //     }
-      //   }
-      // }
-      // return overlay;
 
       let map = this.$store.state.map.map;
       let overlay;
@@ -821,6 +838,8 @@ export default {
         }
       } else if (this.cyclomediaActive) {
         overlay = 'cameraPoints';
+      } else {
+        overlay = 'geojsonParcels';
       }
       return overlay;
     },
@@ -1190,6 +1209,12 @@ export default {
     },
 
     geojsonParcels(nextGeojson) {
+      if (nextGeojson[0]) {
+        console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
+        // this.geojsonParcelSource.data = nextGeojson[0].geojson;
+        this.$data.geojsonParcelSource.data.geometry.coordinates = nextGeojson[0].geojson.geometry.coordinates;
+      }
+      console.log('watch geojsonParcels is still running');
       let czts = this.activeTopicConfig.zoomToShape;
       let dzts = this.$data.zoomToShape;
       if (!czts || !czts.includes('geojsonParcels')) {
@@ -1199,6 +1224,7 @@ export default {
       dzts.geojsonParcels = nextGeojson;
       // console.log('exiting geojsonParcels');
       this.checkBoundsChanges();
+
 
     },
 
@@ -1410,11 +1436,14 @@ export default {
       return this.$config.map.basemaps[basemap] || {};
     },
     shouldShowGeojson(key) {
+      let value;
       if (this.activeTopicConfig.basemap === 'pwd') {
-        return true;
+        value = true;
+      } else {
+        value = key === this.activeDorParcel;
       }
-      return key === this.activeDorParcel;
-
+      console.log('shouldShowGeojson is running, key:', key, 'this.activeDorParcel:', this.activeDorParcel, 'value:', value);
+      return value;
     },
     shouldShowImageOverlay(key) {
       return key === this.imageOverlay;
