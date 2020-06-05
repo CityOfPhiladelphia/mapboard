@@ -135,7 +135,7 @@
 
       <!-- marker using a png and ablility to rotate it -->
       <png-marker
-        v-if="cyclomediaActive"
+        v-if="cyclomediaInitializationComplete && cyclomediaActive"
         :icon="sitePath + 'images/camera.png'"
         :latlng="cycloLatlng"
         :rotation-angle="cycloRotationAngle"
@@ -143,7 +143,7 @@
 
       <!-- marker using custom code extending icons - https://github.com/iatkin/leaflet-svgicon -->
       <svg-view-cone-marker
-        v-if="cyclomediaActive"
+        v-if="cyclomediaInitializationComplete && cyclomediaActive"
         :latlng="cycloLatlng"
         :rotation-angle="cycloRotationAngle"
         :h-fov="cycloHFov"
@@ -307,6 +307,7 @@
           :position="'topright'"
           :link="'pictometry'"
           :img-src="sitePath + 'images/pictometry.png'"
+          @handle-pictometry-button-click="handlePictometryButtonClick"
         />
       </div>
 
@@ -317,8 +318,8 @@
           :position="'topright'"
           :link="'cyclomedia'"
           :img-src="sitePath + 'images/cyclomedia.png'"
+          @handle-cyclomedia-button-click="handleCyclomediaButtonClick"
         />
-        <!-- @click="handleCyclomediaButtonClick" -->
       </div>
 
       <div
@@ -556,16 +557,16 @@
         @click="handleBasemapToggleClick"
       />
 
-      <!-- <MglButtonControl
+      <MglButtonControl
         :buttonId="'buttonId-02'"
         :buttonClass="'right top-button-2'"
         :imageLink="sitePath + 'images/pictometry.png'"
         @click="handlePictometryButtonClick"
-      /> -->
+      />
 
       <MglButtonControl
-        :buttonId="'buttonId-02'"
-        :buttonClass="'right top-button-2'"
+        :buttonId="'buttonId-03'"
+        :buttonClass="'right top-button-3'"
         :imageLink="sitePath + 'images/cyclomedia.png'"
         @click="handleCyclomediaButtonClick"
       />
@@ -728,7 +729,7 @@ export default {
         'layout': {},
         'paint': {
           'fill-color': 'rgb(0,102,255)',
-          'fill-opacity': 0.5,
+          'fill-opacity': 0.2,
         },
       },
       geojsonCircleSource: {
@@ -778,20 +779,48 @@ export default {
     mapType() {
       return this.$store.state.map.type;
     },
+    cameraOverlay() {
+      if (this.cyclomediaActive) {
+        return 'cameraPoints';
+      } else {
+        return null;
+      }
+    },
     firstOverlay() {
+      // let map = this.$store.state.map.map;
+      // let overlay;
+      // if (this.$config.overlaySources) {
+      //   let overlaySources = Object.keys(this.$config.overlaySources);
+      //   if (map) {
+      //     let overlays = map.getStyle().layers.filter(function(layer) {
+      //       // console.log('layer.id:', layer.id, 'overlaySources:', overlaySources);
+      //       return overlaySources.includes(layer.id);//[0].id;
+      //     });
+      //     if (overlays.length) {
+      //       overlay = overlays[0].id;
+      //     }
+      //   }
+      // }
+      // return overlay;
+
       let map = this.$store.state.map.map;
       let overlay;
       if (this.$config.overlaySources) {
         let overlaySources = Object.keys(this.$config.overlaySources);
         if (map) {
+          // console.log('map.getStyle().layers:', map.getStyle().layers);
           let overlays = map.getStyle().layers.filter(function(layer) {
             // console.log('layer.id:', layer.id, 'overlaySources:', overlaySources);
             return overlaySources.includes(layer.id);//[0].id;
           });
           if (overlays.length) {
             overlay = overlays[0].id;
+          } else if (this.cyclomediaActive) {
+            overlay = 'cameraPoints';
           }
         }
+      } else if (this.cyclomediaActive) {
+        overlay = 'cameraPoints';
       }
       return overlay;
     },
@@ -920,10 +949,10 @@ export default {
       return this.$store.state.isMobileOrTablet;
     },
     shouldShowCyclomediaButton() {
-      return this.$config.cyclomedia.enabled && !this.isMobileOrTablet;
+      return this.$config.cyclomedia.enabled;// && !this.isMobileOrTablet;
     },
     shouldShowPictometryButton() {
-      return this.$config.pictometry.enabled && !this.isMobileOrTablet;
+      return this.$config.pictometry.enabled;// && !this.isMobileOrTablet;
     },
     geolocationEnabled() {
       if (this.$config.geolocation) {
@@ -1277,17 +1306,31 @@ export default {
       ];
     },
     handleCyclomediaButtonClick(e) {
-      console.log('handleCyclomediaButtonClick is running');
+      // console.log('handleCyclomediaButtonClick is running');
       if (!this.cyclomediaInitializationBegun) {
         this.$store.commit('setCyclomediaInitializationBegun', true);
       }
       const willBeActive = !this.$store.state.cyclomedia.active;
 
       this.$store.commit('setCyclomediaActive', willBeActive);
+
+      if (this.isMobileOrTablet) {
+        // console.log('isMobileOrTablet is true');
+        if (this.$store.state.pictometry.active) {
+          this.$store.commit('setPictometryActive', false);
+        }
+      }
     },
     handlePictometryButtonClick(e) {
-      console.log('handlePictometryButtonClick is running');
+      // console.log('handlePictometryButtonClick is running');
       this.$store.commit('setPictometryActive', !this.$store.state.pictometry.active);
+
+      if (this.isMobileOrTablet) {
+        // console.log('isMobileOrTablet is true');
+        if (this.$store.state.cyclomedia.active) {
+          this.$store.commit('setCyclomediaActive', false);
+        }
+      }
     },
     onMapLoaded(map) {
       this.$store.commit('setMap', map);

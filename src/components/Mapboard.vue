@@ -174,10 +174,10 @@ export default {
       return this.$store.state.isMobileOrTablet;
     },
     shouldLoadCyclomediaWidget() {
-      return this.$config.cyclomedia.enabled && !this.isMobileOrTablet;
+      return this.$config.cyclomedia.enabled;// && !this.isMobileOrTablet;
     },
     shouldLoadPictometryWidget() {
-      return this.$config.pictometry.enabled && !this.isMobileOrTablet;
+      return this.$config.pictometry.enabled;// && !this.isMobileOrTablet;
     },
     fullScreenMapOnly() {
       return this.$store.state.fullScreen.mapOnly;
