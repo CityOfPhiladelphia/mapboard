@@ -2,8 +2,12 @@ export default {
   watch: {
     activeFeature(nextActiveFeature, prevActiveFeature) {
 
-      const layerMap = this.$store.state.map.map._layers;
-      const layers = Object.values(layerMap);
+      let layerMap, layers;
+      console.log('watch activeFeature, this.$store.state.map.map.getStyle():', this.$store.state.map.map.getStyle(), 'this.$store.state.map.map:', this.$store.state.map.map);
+      if (this.mapType === 'leaflet') {
+        layerMap = this.$store.state.map.map._layers;
+        layers = Object.values(layerMap);
+      }
       // console.log('WATCH active feature', prevActiveFeature, '=>', nextActiveFeature, 'layers:', layers);
 
       let updateFeaturePrev,
@@ -130,6 +134,7 @@ export default {
     },
 
     reactiveCircleMarkers() {
+      console.log('computed reactiveCircleMarkers is running');
       const filteredData = this.$store.state.horizontalTables.filteredData;
       // const filteredData = this.filteredData;
       let circleMarkers = [];
@@ -387,7 +392,7 @@ export default {
     },
     bringMarkerToFront(circleMarker) {
       if (!circleMarker) {
-        return; 
+        return;
       }
       // put marker on top
       const el = circleMarker._path;
@@ -430,7 +435,7 @@ export default {
     updateMarkerStyle(marker) {
       // console.log('updateMarkerStyle, marker:', marker);
       if (!marker) {
-        return; 
+        return;
       }
       // get next fill color
       const { featureId, tableId, type } = marker.options.data;

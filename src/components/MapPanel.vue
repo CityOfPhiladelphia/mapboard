@@ -389,7 +389,7 @@
       :center="$store.state.map.center"
       :zoom="$store.state.map.zoom"
       @load="onMapLoaded"
-      @move="handleMapMove"
+      @moveend="handleMapMove"
       @click="handleMapClick"
     >
 
@@ -417,14 +417,14 @@
         @handle-search-form-submit="handleSearchFormSubmit"
       />
 
-      <MglGeojsonLayer
+      <!-- <MglGeojsonLayer
         v-for="(queriedLayerSource, key) in queriedLayerSources"
         :key="key"
         :sourceId="key"
         :source="queriedLayerSource"
         :layerId="key"
         :layer="queriedLayerSource"
-      />
+      /> -->
 
       <!-- <MglCircleMarker
         v-for="(marker) in currentMapData"
@@ -462,17 +462,19 @@
         <div>Hello, I'm popup!</div>
       </MglPopup> -->
 
-      <!-- <MglCircleMarker
+      <MglCircleMarker
         v-for="recording in cyclomediaRecordings"
         v-if="!fullScreenMapEnabled"
-        :coordinates="[recording.lng, recording.lat]"
         :key="recording.imageId"
+        :coordinates="[recording.lng, recording.lat]"
         :image-id="recording.imageId"
-        :size="1.2"
-        :color="'#3388ff'"
+        :size="14"
+        :fill-color="'#3388ff'"
+        :color="'black'"
         :weight="1"
+        :opacity="0.5"
         @click="handleCyclomediaRecordingClick"
-      /> -->
+      />
 
       <!-- <MbIcon
         v-if="!fullScreenMapEnabled"
@@ -483,15 +485,55 @@
 
       <!-- v-if="shouldShowGeojson(geojsonFeature.key)" -->
       <!-- v-for="(geojsonFeature, key) in geojsonParcelSource" -->
-      <!-- v-if="shouldShowGeojson(geojsonFeature.key)" -->
       <!-- v-for="(geojsonFeature, key) in geojsonParcels"
       :key="key" -->
+      <!-- v-if="shouldShowGeojson(geojsonFeature.key)" -->
       <MglGeojsonLayer
         :sourceId="'geojsonParcel'"
         :source="geojsonParcelSource"
         :layerId="'geojsonParcels'"
         :layer="geojsonParcelLayer"
       />
+
+      <MglCircleMarker
+        v-for="(feature, index) in reactiveCircleMarkers"
+        :key="index"
+        :coordinates="[feature.latlng[1], feature.latlng[0]]"
+        :data="{
+          featureId: feature.featureId,
+          tableId: feature.tableId
+        }"
+        :size="14"
+        :fill-color="'#3388ff'"
+        :color="'black'"
+        :weight="1"
+        :opacity="1"
+        @click="handleMarkerClick"
+      />
+
+      <!-- reactive geojson features -->
+      <!-- <MglGeojsonLayer
+        :sourceId="'geojsonReactive'"
+        :source="geojsonReactiveSource"
+        :layerId="'geojsonReactives'"
+        :layer="geojsonReactiveLayer"
+      /> -->
+      <!-- v-for="geojsonFeature in reactiveGeojsonFeatures"
+      v-if="shouldShowGeojson(geojsonFeature.key)"
+      :key="geojsonFeature.key"
+      :geojson="geojsonFeature.geojson"
+      :fill-color="geojsonFeature.fillColor"
+      :color="geojsonFeature.color"
+      :weight="geojsonFeature.weight"
+      :opacity="geojsonFeature.opacity"
+      :fill-opacity="geojsonFeature.fillOpacity"
+      :data="{
+        featureId: geojsonFeature.featureId,
+        tableId: geojsonFeature.tableId
+      }" -->
+      <!-- @l-mouseover="handleMarkerMouseover"
+      @l-click="handleMarkerClick"
+      @l-mouseout="handleMarkerMouseout" -->
 
       <MglGeojsonLayer
         v-if="cyclomediaActive"
@@ -764,7 +806,28 @@ export default {
           'fill-opacity': 0.5,
         },
       },
-      geojsonCircleSource: {
+      geojsonReactiveSource: {
+        'type': 'geojson',
+        'data': {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [],
+          },
+        },
+      },
+      geojsonReactiveLayer: {
+        'id': 'geojsonReactives',
+        'type': 'circle',
+        'source': 'geojsonReactive',
+        'layout': {},
+        'paint': {
+          'circle-radius': 10,
+          'circle-color': '#5b94c6',
+          'circle-opacity': 0.6,
+        },
+      },
+      geojsonCycloCircleSource: {
         'type': 'geojson',
         'data': {
           'type': 'Feature',
@@ -773,7 +836,7 @@ export default {
           },
         },
       },
-      geojsonCircleLayer: {
+      geojsonCycloCircleLayer: {
         'id': 'circle500',
         'type': 'circle',
         'source': 'source_circle_500',
@@ -1209,10 +1272,13 @@ export default {
     },
 
     geojsonParcels(nextGeojson) {
+      console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson);
       if (nextGeojson[0]) {
         console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
         // this.geojsonParcelSource.data = nextGeojson[0].geojson;
         this.$data.geojsonParcelSource.data.geometry.coordinates = nextGeojson[0].geojson.geometry.coordinates;
+      } else {
+        this.$data.geojsonParcelSource.data.geometry.coordinates = [];
       }
       console.log('watch geojsonParcels is still running');
       let czts = this.activeTopicConfig.zoomToShape;
@@ -1224,9 +1290,16 @@ export default {
       dzts.geojsonParcels = nextGeojson;
       // console.log('exiting geojsonParcels');
       this.checkBoundsChanges();
-
-
     },
+    // reactiveGeojsonFeatures(nextReactiveGeojsonFeatures) {
+    //   if (nextReactiveGeojsonFeatures[0]) {
+    //     console.log('watch reactiveGeojsonFeatures is running, nextReactiveGeojsonFeatures:', nextReactiveGeojsonFeatures, 'nextReactiveGeojsonFeatures[0].geojson:', nextReactiveGeojsonFeatures[0].geojson);
+    //     // this.geojsonParcelSource.data = nextGeojson[0].geojson;
+    //     this.$data.geojsonReactiveSource.data.geometry.coordinates = nextReactiveGeojsonFeatures[0].geojson.geometry.coordinates;
+    //   } else {
+    //     this.$data.geojsonReactiveSource.data.geometry.coordinates = [];
+    //   }
+    // },
 
     markersForAddress(nextMarkers) {
       let czts = this.activeTopicConfig.zoomToShape;
@@ -1460,6 +1533,7 @@ export default {
     },
 
     handleMapMove(e) {
+      console.log('handleMapMove is running');
       const map = this.$store.state.map.map;
 
       const pictometryConfig = this.$config.pictometry || {};
