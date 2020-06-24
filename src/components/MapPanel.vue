@@ -8,7 +8,7 @@
 
     <!-- :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }" -->
     <map_
-      v-if="this.mapType === 'leaflet'"
+      v-if="mapType === 'leaflet'"
       id="map-tag"
       :center="this.$store.state.map.center"
       :zoom="this.$store.state.map.zoom"
@@ -385,14 +385,14 @@
 
     <MglMap
       v-if="mapType === 'mapbox'"
-      :mapStyle.sync="$config.mbStyle"
+      :access-token="accessToken"
+      :map-style.sync="$config.mbStyle"
       :center="$store.state.map.center"
       :zoom="$store.state.map.zoom"
-      @load="onMapLoaded"
       @moveend="handleMapMove"
       @click="handleMapClick"
+      @load="onMapLoaded"
     >
-
       <!-- <overlay-legend
         v-for="legendControl in Object.keys(legendControls)"
         :key="legendControl"
@@ -439,16 +439,16 @@
       <!-- v-for="(marker) in currentMapData"-->
       <!-- :coordinates="[marker.latlng[1], marker.latlng[0]]" -->
       <!-- v-if="marker.selected" -->
-        <!-- <MglPopup
-          v-if="latestSelectedResourceFromMap === marker._featureId"
-          :showed="true"
+      <!-- <MglPopup
+        v-if="latestSelectedResourceFromMap === marker._featureId"
+        :showed="true"
+      >
+        <div
+          @click="toggleMap"
+          v-html="mapboxSiteName(marker)"
         >
-          <div
-            @click="toggleMap"
-            v-html="mapboxSiteName(marker)"
-          >
-          </div>
-        </MglPopup> -->
+        </div>
+      </MglPopup> -->
 
       <!-- </MglCircleMarker> -->
 
@@ -489,9 +489,9 @@
       :key="key" -->
       <!-- v-if="shouldShowGeojson(geojsonFeature.key)" -->
       <MglGeojsonLayer
-        :sourceId="'geojsonParcel'"
+        :source-id="'geojsonParcel'"
         :source="geojsonParcelSource"
-        :layerId="'geojsonParcels'"
+        :layer-id="'geojsonParcels'"
         :layer="geojsonParcelLayer"
       />
 
@@ -537,18 +537,18 @@
 
       <MglGeojsonLayer
         v-if="cyclomediaActive"
-        :sourceId="'cameraPoint'"
+        :source-id="'cameraPoint'"
         :source="geojsonCameraSource"
-        :layerId="'cameraPoints'"
+        :layer-id="'cameraPoints'"
         :layer="geojsonCameraLayer"
         :icon="sitePath + 'images/camera.png'"
       />
 
       <MglGeojsonLayer
         v-if="cyclomediaActive"
-        :sourceId="'viewcone'"
+        :source-id="'viewcone'"
         :source="geojsonViewconeSource"
-        :layerId="'viewcones'"
+        :layer-id="'viewcones'"
         :layer="geojsonViewconeLayer"
       />
 
@@ -561,26 +561,76 @@
       /> -->
 
       <MglRasterLayer
-        v-for="(basemapSource, key) in this.basemapSources"
-        v-if="activeBasemap === key"
+        v-for="(basemapSource, key) in basemapSources"
+        v-if="shouldShowRasterLayer && activeBasemap === key"
         :key="key"
-        :sourceId="activeBasemap"
-        :layerId="activeBasemap"
+        :source-id="activeBasemap"
+        :layer-id="activeBasemap"
         :layer="basemapSource.layer"
         :source="basemapSource.source"
         :before="firstOverlay"
       />
 
       <MglRasterLayer
-        v-for="(basemapLabelSource, key) in this.basemapLabelSources"
-        v-if="tiledLayers.includes(key)"
+        v-for="(basemapLabelSource, key) in basemapLabelSources"
+        v-if="shouldShowRasterLayer && tiledLayers.includes(key)"
         :key="key"
-        :sourceId="key"
-        :layerId="key"
+        :source-id="key"
+        :layer-id="key"
         :layer="basemapLabelSource.layer"
         :source="basemapLabelSource.source"
         :before="firstOverlay"
       />
+
+      <MglRasterLayer
+        v-for="(overlaySource, key) in overlaySources"
+        v-if="activeDynamicMaps.includes(key)"
+        :key="key"
+        :source-id="key"
+        :layer-id="key"
+        :layer="overlaySource.layer"
+        :source="overlaySource.source"
+        :before="cameraOverlay"
+      />
+
+      <!-- <MglRasterLayer
+        v-for="(dynamicLayer, key) in this.$config.map.dynamicMapLayers"
+        v-if="activeDynamicMaps.includes(key)"
+        :key="key"
+        :url="dynamicLayer.url"
+        :attribution="dynamicLayer.attribution"
+        :transparent="true"
+        :opacity="dynamicLayer.opacity"
+      /> -->
+
+
+      <!-- <esri-dynamic-map-layer
+        v-for="(item, key) in imageOverlayItems"
+        v-if="shouldShowImageOverlay(item.properties.RECMAP)"
+        :key="key"
+        :url="'//gis-svc.databridge.phila.gov/arcgis/rest/services/Atlas/RegMaps/MapServer'"
+        :layers="[0]"
+        :layer-defs="'0:NAME=\'g' + item.properties.RECMAP.toLowerCase() + '.tif\''"
+        :transparent="true"
+        :opacity="0.5"
+      /> -->
+
+      <MglRasterLayer
+        v-for="item in imageOverlayItems"
+        v-if="shouldShowImageOverlay(item.data.properties.RECMAP)"
+        :key="item.data.properties.RECMAP"
+        :source-id="item.data.properties.RECMAP"
+        :layer-id="item.data.properties.RECMAP"
+        :layer="item.source.layer"
+        :source="item.source.source"
+        :before="cameraOverlay"
+      />
+
+      <!-- :url="'//gis-svc.databridge.phila.gov/arcgis/rest/services/Atlas/RegMaps/MapServer'"
+      :layers="[0]"
+      :layer-defs="'0:NAME=\'g' + item.properties.RECMAP.toLowerCase() + '.tif\''"
+      :transparent="true"
+      :opacity="0.5" -->
 
       <!-- <MglRasterLayer
         v-for="(overlaySource, key) in this.overlaySources"
@@ -605,35 +655,30 @@
       /> -->
 
       <MglButtonControl
-        :buttonId="'buttonId-01'"
-        :buttonClass="'right top-button-1'"
-        :imageLink="basemapImageLink"
+        :button-id="'buttonId-01'"
+        :button-class="'right top-button-1'"
+        :image-link="basemapImageLink"
         @click="handleBasemapToggleClick"
       />
 
       <MglButtonControl
-        :buttonId="'buttonId-02'"
-        :buttonClass="'right top-button-2'"
-        :imageLink="sitePath + 'images/pictometry.png'"
+        :button-id="'buttonId-02'"
+        :button-class="'right top-button-2'"
+        :image-link="sitePath + 'images/pictometry.png'"
         @click="handlePictometryButtonClick"
       />
 
       <MglButtonControl
-        :buttonId="'buttonId-03'"
-        :buttonClass="'right top-button-3'"
-        :imageLink="sitePath + 'images/cyclomedia.png'"
+        :button-id="'buttonId-03'"
+        :button-class="'right top-button-3'"
+        :image-link="sitePath + 'images/cyclomedia.png'"
         @click="handleCyclomediaButtonClick"
       />
 
       <mapbox-basemap-select-control />
 
-
-      <MglNavigationControl position="bottom-right"/>
-      <!-- <MglGeolocateControl position="bottom-left"/> -->
-
+      <MglNavigationControl position="bottom-right" />
     </MglMap>
-
-
 
     <slot
       class="widget-slot"
@@ -664,7 +709,7 @@ const Lmarker = L.default.marker;
 
 // mixins
 import markersMixin from './markers-mixin';
-import cyclomediaMixin from '@phila/vue-mapping/src/cyclomedia/map-panel-mixin.js';
+import cyclomediaMixin from '@phila/vue-mapping/src/cyclomedia/map-panel-mixin-update.js';
 import pictometryMixin from '@phila/vue-mapping/src/pictometry/map-panel-mixin.js';
 // const CyclomediaRecordingsClient = import(/* webpackChunkName: "mbmb_pvm_CyclomediaRecordingsClient" */'@phila/vue-mapping/src/cyclomedia/recordings-client.js');
 
@@ -745,6 +790,7 @@ export default {
         markersForAddress: [],
         markersForTopic: [],
       },
+      accessToken: process.env.VUE_APP_MAPBOX_ACCESSTOKEN,
       geojsonCameraSource: {
         'type': 'geojson',
         'data': {
@@ -852,6 +898,13 @@ export default {
     return data;
   },
   computed: {
+    shouldShowRasterLayer() {
+      let value = true;
+      if (this.$config.map.tiles === 'hosted') {
+        value = false;
+      }
+      return value;
+    },
     basemapImageLink() {
       if (this.activeBasemap === 'pwd' || this.activeBasemap === 'dor') {
         return 'images/imagery_small.png';
@@ -883,7 +936,7 @@ export default {
     },
     firstOverlay() {
 
-      let map = this.$store.state.map.map;
+      let map = this.$store.map;
       let overlay;
       if (this.$config.overlaySources) {
         let overlaySources = Object.keys(this.$config.overlaySources);
@@ -1058,6 +1111,7 @@ export default {
       if (this.activeTopicConfig.imageOverlayGroup) {
         const overlayGroup = this.activeTopicConfig.imageOverlayGroup;
         const state = this.$store.state;
+        console.log('in imageOverlayItems computed, overlayGroup:', overlayGroup);
         const overlay = this.$config.imageOverlayGroups[overlayGroup].items(state);
         // console.log('returning imageOverlayItem', overlay);
         return overlay;
@@ -1252,9 +1306,9 @@ export default {
     picOrCycloActive(value) {
       this.$nextTick(() => {
         if (this.mapType === 'leaflet') {
-          this.$store.state.map.map.invalidateSize();
+          this.$store.map.invalidateSize();
         } else if (this.mapType === 'mapbox') {
-          this.$store.state.map.map.resize();
+          this.$store.map.resize();
         }
       });
     },
@@ -1334,16 +1388,16 @@ export default {
     fullScreenTopicsEnabled() {
       this.$nextTick(() => {
         if (this.mapType === 'leaflet') {
-          this.$store.state.map.map.invalidateSize();
+          this.$store.map.invalidateSize();
         } else if (this.mapType === 'mapbox') {
-          this.$store.state.map.map.resize();
+          this.$store.map.resize();
         }
       });
     },
     fullScreenMapEnabled() {
       this.$nextTick(() => {
         if (this.mapType === 'mapbox') {
-          this.$store.state.map.map.resize();
+          this.$store.map.resize();
         }
       });
     },
@@ -1431,8 +1485,9 @@ export default {
         }
       }
     },
-    onMapLoaded(map) {
-      this.$store.commit('setMap', map);
+    onMapLoaded(event) {
+      // this.$store.commit('setMap', map);
+      this.$store.map = event.map;
     },
     handleBasemapToggleClick() {
       const prevShouldShowBasemapSelectControl = this.$store.state.map.shouldShowBasemapSelectControl;
@@ -1531,10 +1586,9 @@ export default {
       // console.log('MapPanel.vue handleMapClick e:', e);
       this.$controller.handleMapClick(e);
     },
-
     handleMapMove(e) {
-      console.log('handleMapMove is running');
-      const map = this.$store.state.map.map;
+      const map = this.$store.map;
+      console.log('handleMapMove is running, map:', map);
 
       const pictometryConfig = this.$config.pictometry || {};
 
