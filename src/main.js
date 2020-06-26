@@ -64,7 +64,7 @@ function assignHorizontalTableGroupIds(comps) {
 }
 
 function finishInit(config) {
-  console.log('finishInit is running, config:', config);
+  // console.log('finishInit is running, config:', config);
   // assign table ids
   for (let topic of config.topics) {
     assignTableIds(topic.components);
@@ -82,7 +82,7 @@ function finishInit(config) {
   Vue.use(controllerMixin, { config, store });
   // Vue.use(controllerMixin, { config });
 
-  console.log('in finishInit, config:', config, 'store:', store, 'opts.store:', opts.store);
+  // console.log('in finishInit, config:', config, 'store:', store, 'opts.store:', opts.store);
   if (config.healthChecks) {
     store.dispatch('healthCheck', config.healthChecks);
   }
@@ -105,7 +105,7 @@ function finishInit(config) {
 }
 
 function initMapboard(clientConfig) {
-  console.log('initMapboard is running');
+  // console.log('initMapboard is running');
   const baseConfigUrl = clientConfig.baseConfig;
 
   if (baseConfigUrl === null) {

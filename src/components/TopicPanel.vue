@@ -386,11 +386,11 @@ export default {
   // },
   mounted() {
     this.handleWindowResize(this.windowDim);
-    console.log('TopicPanel.vue mounted');
+    // console.log('TopicPanel.vue mounted');
   },
   methods: {
     testEmit() {
-      console.log('TopicPanel.vue testEmit is running');
+      // console.log('TopicPanel.vue testEmit is running');
     },
     getMoreRecords(dataSource, highestPageRetrieved) {
       // console.log('TopicPanel getMoreRecords is running');

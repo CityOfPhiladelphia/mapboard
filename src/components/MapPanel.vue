@@ -393,147 +393,62 @@
       @click="handleMapClick"
       @load="onMapLoaded"
     >
-      <!-- <overlay-legend
-        v-for="legendControl in Object.keys(legendControls)"
-        :key="legendControl"
-        :position="'bottomleft'"
-        :options="legendControls[legendControl].options"
-        :items="legendControls[legendControl].data"
-      >
-      </overlay-legend> -->
-
-      <MglMarker
-        v-for="(marker) in markersForAddress"
-        :key="marker.key"
-        :coordinates="[marker.latlng[1], marker.latlng[0]]"
-        :color="marker.color"
-        :icon="marker.icon"
-      />
-
-      <!-- :position="addressInputPosition" -->
-      <mapbox-address-input
-        :placeholder="addressInputPlaceholder"
-        :width-from-config="addressInputWidth"
-        @handle-search-form-submit="handleSearchFormSubmit"
-      />
-
-      <!-- <MglGeojsonLayer
-        v-for="(queriedLayerSource, key) in queriedLayerSources"
+      <MglRasterLayer
+        v-for="(basemapSource, key) in basemapSources"
+        v-if="shouldShowRasterLayer && activeBasemap === key"
         :key="key"
-        :sourceId="key"
-        :source="queriedLayerSource"
-        :layerId="key"
-        :layer="queriedLayerSource"
-      /> -->
+        :source-id="activeBasemap"
+        :layer-id="activeBasemap"
+        :layer="basemapSource.layer"
+        :source="basemapSource.source"
+        :before="'geojsonParcels'"
+      />
+      <!-- :before="'geojsonParcels'" -->
 
-      <!-- <MglCircleMarker
-        v-for="(marker) in currentMapData"
-        :coordinates="[marker.latlng[1], marker.latlng[0]]"
-        :key="marker._featureId"
-        :markerId="marker._featureId"
-        :size="marker.size"
-        :fill-color="marker.color"
-        :weight="marker.weight"
-        @click="handleMarkerClick"
-      > -->
-      <!-- v-for="(marker) in currentMapData"-->
-      <!-- :coordinates="[marker.latlng[1], marker.latlng[0]]" -->
-      <!-- v-if="marker.selected" -->
-      <!-- <MglPopup
-        v-if="latestSelectedResourceFromMap === marker._featureId"
-        :showed="true"
-      >
-        <div
-          @click="toggleMap"
-          v-html="mapboxSiteName(marker)"
-        >
-        </div>
-      </MglPopup> -->
+      <MglRasterLayer
+        v-for="(basemapLabelSource, key) in basemapLabelSources"
+        v-if="shouldShowRasterLayer && tiledLayers.includes(key)"
+        :key="key"
+        :source-id="key"
+        :layer-id="key"
+        :layer="basemapLabelSource.layer"
+        :source="basemapLabelSource.source"
+        :before="'geojsonParcels'"
+      />
+      <!-- :before="'geojsonParcels'" -->
 
-      <!-- </MglCircleMarker> -->
-
-      <!-- <MglPopup
-        v-for="(marker) in currentMapData"
-        v-if="marker.selected"
-        :close-on-click="false"
-        :coordinates="[marker.latlng[1], marker.latlng[0]]"
-        :showed="marker.selected"
-      >
-        <div>Hello, I'm popup!</div>
-      </MglPopup> -->
-
-      <MglCircleMarker
-        v-for="recording in cyclomediaRecordings"
-        v-if="!fullScreenMapEnabled"
-        :key="recording.imageId"
-        :coordinates="[recording.lng, recording.lat]"
-        :image-id="recording.imageId"
-        :size="14"
-        :fill-color="'#3388ff'"
-        :color="'black'"
-        :weight="1"
-        :opacity="0.5"
-        @click="handleCyclomediaRecordingClick"
+      <MglRasterLayer
+        v-for="(overlaySource, key) in overlaySources"
+        v-if="activeDynamicMaps.includes(key)"
+        :key="key"
+        :source-id="key"
+        :layer-id="key"
+        :layer="overlaySource.layer"
+        :source="overlaySource.source"
+        :before="'geojsonParcels'"
       />
 
-      <!-- <MbIcon
-        v-if="!fullScreenMapEnabled"
-        :url="'https://mapboard-images.s3.amazonaws.com/camera.png'"
-        :name="'camera'"
-        :rotation-angle="cycloRotationAngle"
-      /> -->
+      <MglRasterLayer
+        v-for="item in imageOverlayItems"
+        v-if="shouldShowImageOverlay(item.data.properties.RECMAP)"
+        :key="item.data.properties.RECMAP"
+        :source-id="item.data.properties.RECMAP"
+        :layer-id="item.data.properties.RECMAP"
+        :layer="item.source.layer"
+        :source="item.source.source"
+        :before="'geojsonParcels'"
+      />
 
-      <!-- v-if="shouldShowGeojson(geojsonFeature.key)" -->
-      <!-- v-for="(geojsonFeature, key) in geojsonParcelSource" -->
-      <!-- v-for="(geojsonFeature, key) in geojsonParcels"
-      :key="key" -->
-      <!-- v-if="shouldShowGeojson(geojsonFeature.key)" -->
+      <!-- v-for="(geojsonFeature, index) in geojsonParcels"
+      v-if="shouldShowGeojson(geojsonFeature.key)" -->
+      <!-- :key="index" -->
       <MglGeojsonLayer
         :source-id="'geojsonParcel'"
         :source="geojsonParcelSource"
         :layer-id="'geojsonParcels'"
         :layer="geojsonParcelLayer"
       />
-
-      <MglCircleMarker
-        v-for="(feature, index) in reactiveCircleMarkers"
-        :key="index"
-        :coordinates="[feature.latlng[1], feature.latlng[0]]"
-        :data="{
-          featureId: feature.featureId,
-          tableId: feature.tableId
-        }"
-        :size="14"
-        :fill-color="'#3388ff'"
-        :color="'black'"
-        :weight="1"
-        :opacity="1"
-        @click="handleMarkerClick"
-      />
-
-      <!-- reactive geojson features -->
-      <!-- <MglGeojsonLayer
-        :sourceId="'geojsonReactive'"
-        :source="geojsonReactiveSource"
-        :layerId="'geojsonReactives'"
-        :layer="geojsonReactiveLayer"
-      /> -->
-      <!-- v-for="geojsonFeature in reactiveGeojsonFeatures"
-      v-if="shouldShowGeojson(geojsonFeature.key)"
-      :key="geojsonFeature.key"
-      :geojson="geojsonFeature.geojson"
-      :fill-color="geojsonFeature.fillColor"
-      :color="geojsonFeature.color"
-      :weight="geojsonFeature.weight"
-      :opacity="geojsonFeature.opacity"
-      :fill-opacity="geojsonFeature.fillOpacity"
-      :data="{
-        featureId: geojsonFeature.featureId,
-        tableId: geojsonFeature.tableId
-      }" -->
-      <!-- @l-mouseover="handleMarkerMouseover"
-      @l-click="handleMarkerClick"
-      @l-mouseout="handleMarkerMouseout" -->
+      <!-- :before="'cameraPoints'" -->
 
       <MglGeojsonLayer
         v-if="cyclomediaActive"
@@ -552,118 +467,50 @@
         :layer="geojsonViewconeLayer"
       />
 
-      <!-- <MglVectorLayer
-        v-if="this.$config.vectorTiles"
-        :source="this.$config.vectorTiles"
-        :sourceId="'PVL_Original'"
-        :layer="this.$config.vectorTiles"
-        :layerId="'PVL_Original'"
-      /> -->
-
-      <MglRasterLayer
-        v-for="(basemapSource, key) in basemapSources"
-        v-if="shouldShowRasterLayer && activeBasemap === key"
-        :key="key"
-        :source-id="activeBasemap"
-        :layer-id="activeBasemap"
-        :layer="basemapSource.layer"
-        :source="basemapSource.source"
-        :before="firstOverlay"
+      <MglMarker
+        v-for="(marker) in markersForAddress"
+        :key="marker.key"
+        :coordinates="[marker.latlng[1], marker.latlng[0]]"
+        :color="marker.color"
+        :icon="marker.icon"
+        :anchor="'bottom'"
       />
 
-      <MglRasterLayer
-        v-for="(basemapLabelSource, key) in basemapLabelSources"
-        v-if="shouldShowRasterLayer && tiledLayers.includes(key)"
-        :key="key"
-        :source-id="key"
-        :layer-id="key"
-        :layer="basemapLabelSource.layer"
-        :source="basemapLabelSource.source"
-        :before="firstOverlay"
+      <mapbox-address-input
+        :placeholder="addressInputPlaceholder"
+        :width-from-config="addressInputWidth"
+        @handle-search-form-submit="handleSearchFormSubmit"
       />
 
-      <MglRasterLayer
-        v-for="(overlaySource, key) in overlaySources"
-        v-if="activeDynamicMaps.includes(key)"
-        :key="key"
-        :source-id="key"
-        :layer-id="key"
-        :layer="overlaySource.layer"
-        :source="overlaySource.source"
-        :before="cameraOverlay"
-      />
-
-      <!-- <MglImageLayer
-        v-for="(overlaySource, key) in overlaySources"
-        v-if="activeDynamicMaps.includes(key)"
-        :key="key"
-        :source-id="key"
-        :layer-id="key"
-        :layer="overlaySource.layer"
-        :source="overlaySource.source"
-        :before="cameraOverlay"
-      /> -->
-
-      <!-- <MglRasterLayer
-        v-for="(dynamicLayer, key) in this.$config.map.dynamicMapLayers"
-        v-if="activeDynamicMaps.includes(key)"
-        :key="key"
-        :url="dynamicLayer.url"
-        :attribution="dynamicLayer.attribution"
-        :transparent="true"
-        :opacity="dynamicLayer.opacity"
-      /> -->
-
-
-      <!-- <esri-dynamic-map-layer
-        v-for="(item, key) in imageOverlayItems"
-        v-if="shouldShowImageOverlay(item.properties.RECMAP)"
-        :key="key"
-        :url="'//gis-svc.databridge.phila.gov/arcgis/rest/services/Atlas/RegMaps/MapServer'"
-        :layers="[0]"
-        :layer-defs="'0:NAME=\'g' + item.properties.RECMAP.toLowerCase() + '.tif\''"
-        :transparent="true"
+      <MglCircleMarker
+        v-for="recording in cyclomediaRecordings"
+        v-if="!fullScreenMapEnabled"
+        :key="recording.imageId"
+        :coordinates="[recording.lng, recording.lat]"
+        :image-id="recording.imageId"
+        :size="14"
+        :fill-color="'#3388ff'"
+        :color="'black'"
+        :weight="1"
         :opacity="0.5"
-      /> -->
-
-      <MglRasterLayer
-        v-for="item in imageOverlayItems"
-        v-if="shouldShowImageOverlay(item.data.properties.RECMAP)"
-        :key="item.data.properties.RECMAP"
-        :source-id="item.data.properties.RECMAP"
-        :layer-id="item.data.properties.RECMAP"
-        :layer="item.source.layer"
-        :source="item.source.source"
-        :before="cameraOverlay"
+        @click="handleCyclomediaRecordingClick"
       />
 
-      <!-- :url="'//gis-svc.databridge.phila.gov/arcgis/rest/services/Atlas/RegMaps/MapServer'"
-      :layers="[0]"
-      :layer-defs="'0:NAME=\'g' + item.properties.RECMAP.toLowerCase() + '.tif\''"
-      :transparent="true"
-      :opacity="0.5" -->
-
-      <!-- <MglRasterLayer
-        v-for="(overlaySource, key) in this.overlaySources"
-        v-if="activeTiledOverlays.includes(key)"
-        :key="key"
-        :sourceId="key"
-        :layerId="key"
-        :layer="overlaySource.layer"
-        :source="overlaySource.source"
-        :before="cameraOverlay"
-      /> -->
-
-      <!-- <MglVectorLayer
-        v-for="(overlaySource, key) in this.overlaySources"
-        v-if="activeDynamicMaps.includes(key)"
-        :key="key"
-        :sourceId="key"
-        :layerId="key"
-        :layer="overlaySource.layer"
-        :source="overlaySource.source"
-        :before="cameraOverlay"
-      /> -->
+      <MglCircleMarker
+        v-for="(feature, index) in reactiveCircleMarkers"
+        :key="index"
+        :coordinates="[feature.latlng[1], feature.latlng[0]]"
+        :data="{
+          featureId: feature.featureId,
+          tableId: feature.tableId
+        }"
+        :size="14"
+        :fill-color="'#3388ff'"
+        :color="'black'"
+        :weight="1"
+        :opacity="1"
+        @click="handleMarkerClick"
+      />
 
       <MglButtonControl
         :button-id="'buttonId-01'"
@@ -980,22 +827,29 @@ export default {
       if (this.$config.overlaySources) {
         let overlaySources = Object.keys(this.$config.overlaySources);
         if (map) {
-          // console.log('map.getStyle().layers:', map.getStyle().layers);
+          console.log('firstOverlay computed, map.getStyle().layers:', map.getStyle().layers);
           let overlays = map.getStyle().layers.filter(function(layer) {
-            // console.log('layer.id:', layer.id, 'overlaySources:', overlaySources);
+            console.log('firstOverlay computed, layer.id:', layer.id, 'overlaySources:', overlaySources);
             return overlaySources.includes(layer.id);//[0].id;
           });
           if (overlays.length) {
             overlay = overlays[0].id;
+            console.log('firstOverlay computed, overlay:', overlay);
           } else if (this.cyclomediaActive) {
             overlay = 'cameraPoints';
+          } else {
+            overlay = 'geojsonParcels';
           }
-        }
+        } //else {
+        //   overlay = 'geojsonParcel';
+        //   console.log('firstOverlay computed, overlay:', overlay);
+        // }
       } else if (this.cyclomediaActive) {
         overlay = 'cameraPoints';
       } else {
         overlay = 'geojsonParcels';
       }
+      console.log('firstOverlay computed at end, overlay:', overlay);
       return overlay;
     },
 
@@ -1320,6 +1174,9 @@ export default {
       this.handleCycloChanges();
     },
     activeTopicConfig(nextTopicConfig) {
+      if (this.$store.map) {
+        console.log('watch activeTopicConfig is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextTopicConfig:', nextTopicConfig);
+      }
       const prevBasemap = this.$store.state.map.basemap || null;
       // const nextTopicConfig = this.config.topics.filter(topic => {
       //   return topic.key === nextTopic;
@@ -1352,6 +1209,9 @@ export default {
       });
     },
     geojsonForTopic(nextGeojson) {
+      if (this.$store.map) {
+        console.log('watch geojsonForTopic is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
+      }
       let czts = this.activeTopicConfig.zoomToShape;
       let dzts = this.$data.zoomToShape;
       if (!czts || !czts.includes('geojsonForTopic')) {
@@ -1365,15 +1225,16 @@ export default {
     },
 
     geojsonParcels(nextGeojson) {
-      console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson);
+      if (this.$store.map) {
+        console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers);
+      }
       if (nextGeojson[0]) {
         console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
-        // this.geojsonParcelSource.data = nextGeojson[0].geojson;
         this.$data.geojsonParcelSource.data.geometry.coordinates = nextGeojson[0].geojson.geometry.coordinates;
       } else {
         this.$data.geojsonParcelSource.data.geometry.coordinates = [];
       }
-      console.log('watch geojsonParcels is still running');
+      // console.log('watch geojsonParcels is still running');
       let czts = this.activeTopicConfig.zoomToShape;
       let dzts = this.$data.zoomToShape;
       if (!czts || !czts.includes('geojsonParcels')) {
@@ -1381,7 +1242,6 @@ export default {
         return;
       }
       dzts.geojsonParcels = nextGeojson;
-      // console.log('exiting geojsonParcels');
       this.checkBoundsChanges();
     },
     // reactiveGeojsonFeatures(nextReactiveGeojsonFeatures) {

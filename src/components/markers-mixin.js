@@ -3,7 +3,7 @@ export default {
     activeFeature(nextActiveFeature, prevActiveFeature) {
 
       let layerMap, layers;
-      console.log('watch activeFeature, this.$store.state.map.map.getStyle():', this.$store.state.map.map.getStyle(), 'this.$store.state.map.map:', this.$store.state.map.map);
+      console.log('watch activeFeature, this.$store.map.getStyle():', this.$store.map.getStyle(), 'this.$store.map:', this.$store.map);
       if (this.mapType === 'leaflet') {
         layerMap = this.$store.state.map.map._layers;
         layers = Object.values(layerMap);
@@ -134,7 +134,7 @@ export default {
     },
 
     reactiveCircleMarkers() {
-      console.log('computed reactiveCircleMarkers is running');
+      // console.log('computed reactiveCircleMarkers is running');
       const filteredData = this.$store.state.horizontalTables.filteredData;
       // const filteredData = this.filteredData;
       let circleMarkers = [];
