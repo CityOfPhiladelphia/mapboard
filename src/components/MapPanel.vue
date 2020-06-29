@@ -515,20 +515,23 @@
       />
 
       <MglCircleMarker
-        v-for="(feature, index) in reactiveCircleMarkers"
-        :key="index"
-        :coordinates="[feature.latlng[1], feature.latlng[0]]"
+        v-for="marker in reactiveCircleMarkers"
+        :key="marker._featureId"
+        :coordinates="[marker.latlng[1], marker.latlng[0]]"
         :data="{
-          featureId: feature.featureId,
-          tableId: feature.tableId
+          featureId: marker.featureId,
+          tableId: marker.tableId
         }"
-        :size="14"
-        :fill-color="'#3388ff'"
-        :color="'black'"
-        :weight="1"
+        :size="marker.size"
+        :fill-color="marker.color"
+        :weight="marker.weight"
         :opacity="1"
+        :anchor="'bottom'"
+        @mouseenter="handleMarkerMouseover"
         @click="handleMarkerClick"
+        @mouseleave="handleMarkerMouseout"
       />
+      <!-- :color="'black'" -->
 
       <MglButtonControl
         :button-id="'buttonId-01'"
