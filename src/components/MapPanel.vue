@@ -387,8 +387,10 @@
       v-if="mapType === 'mapbox'"
       :access-token="accessToken"
       :map-style.sync="$config.mbStyle"
+      :bounds="boundsProp"
       :center="$store.state.map.center"
       :zoom="$store.state.map.zoom"
+      :active-topic-config="activeTopicConfig"
       @moveend="handleMapMove"
       @click="handleMapClick"
       @load="onMapLoaded"
@@ -439,16 +441,19 @@
         :before="'geojsonParcels'"
       />
 
-      <!-- v-for="(geojsonFeature, index) in geojsonParcels"
-      v-if="shouldShowGeojson(geojsonFeature.key)" -->
-      <!-- :key="index" -->
       <MglGeojsonLayer
         :source-id="'geojsonParcel'"
         :source="geojsonParcelSource"
         :layer-id="'geojsonParcels'"
         :layer="geojsonParcelLayer"
       />
-      <!-- :before="'cameraPoints'" -->
+
+      <MglGeojsonLayer
+        :source-id="'geojsonForTopic'"
+        :source="geojsonForTopicSource"
+        :layer-id="'geojsonForTopic'"
+        :layer="geojsonForTopicLayer"
+      />
 
       <MglGeojsonLayer
         v-if="cyclomediaActive"
@@ -475,6 +480,19 @@
         :icon="marker.icon"
         :anchor="'bottom'"
       />
+
+      <MglFontAwesomeMarker
+        v-for="(marker) in markersForTopic"
+        :key="marker.markerType"
+        :coordinates="[marker.latlng[1], marker.latlng[0]]"
+        :size="marker.icon.size"
+        :icon="marker.icon"
+        :marker-id="marker.markerType"
+        :color="marker.color"
+        :anchor="'bottom'"
+        :offset="marker.offset"
+      />
+      <!-- @click="handleMarkerClick" -->
 
       <mapbox-address-input
         :placeholder="addressInputPlaceholder"
@@ -632,6 +650,7 @@ export default {
     OverlayLegend: () => import(/* webpackChunkName: "pvm_OverlayLegend" */'@phila/vue-mapping/src/mapbox/OverlayLegend'),
     MapboxAddressInput: () => import(/* webpackChunkName: "pvm_MapboxAddressInput" */'@phila/vue-mapping/src/mapbox/MapboxAddressInput'),
     MapboxBasemapSelectControl: () => import(/* webpackChunkName: "pvm_MapboxBasemapSelectControl" */'@phila/vue-mapping/src/mapbox/UI/controls/BasemapSelectControl'),
+    MglFontAwesomeMarker: () => import(/* webpackChunkName: "pvm_MglFontAwesomeMarker" */'@phila/vue-mapping/src/mapbox/UI/FontAwesomeMarker.vue'),
 
   },
   mixins: [
@@ -710,6 +729,26 @@ export default {
           'fill-opacity': 0.5,
         },
       },
+      geojsonForTopicSource: {
+        'type': 'geojson',
+        'data': {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Polygon',
+            'coordinates': [],
+          },
+        },
+      },
+      geojsonForTopicLayer: {
+        'id': 'geojsonForTopic',
+        'type': 'fill',
+        'source': 'geojsonForTopic',
+        'layout': {},
+        'paint': {
+          'fill-color': 'rgb(0,102,255)',
+          'fill-opacity': 0.2,
+        },
+      },
       geojsonReactiveSource: {
         'type': 'geojson',
         'data': {
@@ -784,6 +823,24 @@ export default {
     return data;
   },
   computed: {
+    boundsProp() {
+      let bounds = this.$store.state.map.bounds;
+      console.log('boundsProps, bounds:', bounds);
+      let finalBounds;
+
+      if (this.mapType === 'leaflet') {
+        finalBounds = bounds;
+      } else {
+        if (bounds._northEast && bounds._northEast.lat != null) {
+          finalBounds = [[ bounds._southWest.lng, bounds._southWest.lat ], [ bounds._northEast.lng, bounds._northEast.lat ]];
+        } else if (bounds._northEast && bounds._northEast.lat == null) {
+          // finalBounds = [[ -75.0936906502695, 39.999379013777684 ], [ -75.23325134973207, 39.9072659724458 ]];
+        } else {
+          finalBounds = bounds;
+        }
+      }
+      return finalBounds;
+    },
     shouldShowRasterLayer() {
       let value = true;
       if (this.$config.map.tiles === 'hosted') {
@@ -1212,6 +1269,12 @@ export default {
       if (this.$store.map) {
         console.log('watch geojsonForTopic is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
       }
+      if (nextGeojson[0]) {
+        console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
+        this.$data.geojsonForTopicSource.data.geometry.coordinates = nextGeojson[0].geojson.geometry.coordinates;
+      } else {
+        this.$data.geojsonForTopicSource.data.geometry.coordinates = [];
+      }
       let czts = this.activeTopicConfig.zoomToShape;
       let dzts = this.$data.zoomToShape;
       if (!czts || !czts.includes('geojsonForTopic')) {
@@ -1399,6 +1462,7 @@ export default {
       this.$controller.handleSearchFormSubmit(value);
     },
     checkBoundsChanges() {
+      console.log('checkBoundsChanges is running');
       let czts = this.activeTopicConfig.zoomToShape;
       if (!czts) {
         return;
@@ -1422,7 +1486,7 @@ export default {
     },
 
     setMapToBounds() {
-      // console.log('setMapToBounds is running');
+      console.log('AAAAAAAAAAAAAAAAA setMapToBounds is running');
       let featureArray = [];
       let czts = this.activeTopicConfig.zoomToShape;
       if (czts) {
@@ -1456,7 +1520,13 @@ export default {
         // const group = new featureGroup(featureArray);
         // const group = new L.featureGroup(featureArray);
         const bounds = group.getBounds();
-        this.$store.commit('setMapBounds', bounds);
+        console.log('bounds:', bounds);
+        if (this.mapType === 'leaflet') {
+          this.$store.commit('setMapBounds', bounds);
+        } else if (this.mapType === 'mapbox') {
+          let bounds2 = [[ bounds._southWest.lng, bounds._southWest.lat ], [ bounds._northEast.lng, bounds._northEast.lat ]];
+          this.$store.commit('setMapBounds', bounds2);
+        }
       }
     },
     configForBasemap(basemap) {

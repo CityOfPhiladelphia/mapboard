@@ -265,6 +265,7 @@ function createStore(config) {
 
 
       setMapBounds(state, payload) {
+        console.log('mapboard store.js setMapBounds is running');
         // const { northEast, southWest } = payload || {};
         // state.map.bounds.northEast = northEast;
         // state.map.bounds.southWest = southWest;
