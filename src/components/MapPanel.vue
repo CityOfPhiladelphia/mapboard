@@ -533,6 +533,14 @@
       />
       <!-- :color="'black'" -->
 
+      <MglDrawControl
+        position="bottom-left"
+      />
+
+      <MglDrawControlBox
+      />
+      <!-- v-if="this.$store.state.drawStart === 'start'" -->
+
       <MglButtonControl
         :button-id="'buttonId-01'"
         :button-class="'right top-button-1'"
@@ -642,12 +650,15 @@ export default {
     MglCircleMarker: () => import(/* webpackChunkName: "pvm_MglCircleMarker" */'@phila/vue-mapping/src/mapbox/UI/CircleMarker.vue'),
     MglNavigationControl: () => import(/* webpackChunkName: "pvm_MglNavigationControl" */'@phila/vue-mapping/src/mapbox/UI/controls/NavigationControl'),
     MglGeolocateControl: () => import(/* webpackChunkName: "pvm_MglGeolocateControl" */'@phila/vue-mapping/src/mapbox/UI/controls/GeolocateControl'),
+    MglDrawControl: () => import(/* webpackChunkName: "pvm_MglDrawControl" */'@phila/vue-mapping/src/mapbox/UI/controls/DrawControl'),
+    MglDrawControlBox: () => import(/* webpackChunkName: "pvm_MglDrawControlBox" */'@phila/vue-mapping/src/mapbox/DrawControlBox'),
     MglRasterLayer: () => import(/* webpackChunkName: "pvm_MglRasterLayer" */'@phila/vue-mapping/src/mapbox/layer/RasterLayer'),
     MglButtonControl: () => import(/* webpackChunkName: "pvm_MglButtonControl" */'@phila/vue-mapping/src/mapbox/UI/controls/ButtonControl.vue'),
     MglControlContainer: () => import(/* webpackChunkName: "pvm_MglControlContainer" */'@phila/vue-mapping/src/mapbox/UI/controls/ControlContainer.vue'),
     MglImageLayer: () => import(/* webpackChunkName: "pvm_MglImageLayer" */'@phila/vue-mapping/src/mapbox/layer/ImageLayer'),
     MglVectorLayer: () => import(/* webpackChunkName: "pvm_MglVectorLayer" */'@phila/vue-mapping/src/mapbox/layer/VectorLayer'),
     MbIcon: () => import(/* webpackChunkName: "pvm_MbIcon" */'@phila/vue-mapping/src/mapbox/UI/MbIcon'),
+    MbMeasureTool: () => import(/* webpackChunkName: "pvm_MbMeasureTool" */'@phila/vue-mapping/src/mapbox/MbMeasureTool'),
     MglGeojsonLayer: () => import(/* webpackChunkName: "pvm_MglGeojsonLayer" */'@phila/vue-mapping/src/mapbox/layer/GeojsonLayer'),
     MglPopup: () => import(/* webpackChunkName: "pvm_MglPopup" */'@phila/vue-mapping/src/mapbox/UI/Popup'),
     OverlayLegend: () => import(/* webpackChunkName: "pvm_OverlayLegend" */'@phila/vue-mapping/src/mapbox/OverlayLegend'),
@@ -1555,8 +1566,15 @@ export default {
       return false;
     },
     handleMapClick(e) {
-      // console.log('MapPanel.vue handleMapClick e:', e);
-      this.$controller.handleMapClick(e);
+      let draw = this.$store.state.draw;
+      let mode = draw.getMode();
+
+      let drawLayers = this.$store.map.queryRenderedFeatures(e.mapboxEvent.point).filter(feature => [ 'mapbox-gl-draw-cold', 'mapbox-gl-draw-hot' ].includes(feature.source));
+      console.log('MapPanel.vue handleMapClick, drawLayers:', drawLayers, 'drawmode:', mode, 'e:', e, 'this.$store.map.getStyle():', this.$store.map.getStyle(), 'this.$store.state.drawStart:', this.$store.state.drawStart);
+
+      if (!drawLayers.length && this.$store.state.drawStart !== 'start') {
+        this.$controller.handleMapClick(e);
+      }
     },
     handleMapMove(e) {
       const map = this.$store.map;
