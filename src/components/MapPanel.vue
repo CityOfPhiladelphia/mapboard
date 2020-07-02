@@ -1794,6 +1794,7 @@ export default {
               //   'circle-color': '#B42222',
               // },
               'layout': {
+                'text-font': [ 'Open Sans Regular' ],
                 'text-field': [ 'get', 'description' ],
                 'text-variable-anchor': [ 'top', 'bottom', 'left', 'right' ],
                 'text-radial-offset': 0.5,
