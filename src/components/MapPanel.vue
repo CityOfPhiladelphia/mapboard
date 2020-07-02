@@ -455,6 +455,17 @@
         :layer="geojsonForTopicLayer"
       />
 
+      <!-- :source-id="layer.source" -->
+      <MglGeojsonLayer
+        v-for="(labels, index) of draw.labelLayers"
+        :key="index"
+        :source="labels.source"
+        :source-id="labels.id"
+        :layer="labels.layer"
+        :layer-id="labels.id"
+      />
+      <!-- :layer-id="layer.id" -->
+
       <MglGeojsonLayer
         v-if="cyclomediaActive"
         :source-id="'cameraPoint'"
@@ -534,11 +545,19 @@
       <!-- :color="'black'" -->
 
       <MglDrawControl
-        position="bottom-left"
+        :position="'bottom-left'"
+        :distances="draw.distances"
+        @drawCreate="getDrawDistances"
+        @drawDelete="getDrawDistances"
+        @drawUpdate="getDrawDistances"
+        @drawSelectionChange="handleDrawSelectionChange"
+        @drawModeChange="handleDrawModeChange"
       />
+      <!-- @drawActionable="handleDrawActionable" -->
+      <!-- @drawRender="handleDrawRender" -->
 
-      <MglDrawControlBox
-      />
+      <!-- <MglDrawControlBox
+      /> -->
       <!-- v-if="this.$store.state.drawStart === 'start'" -->
 
       <MglButtonControl
@@ -564,6 +583,13 @@
 
       <mapbox-basemap-select-control />
 
+      <!-- <MglIcon
+        v-for="(drawDistance, index) of draw.distances"
+        v-if="drawDistance.midPoint[0]"
+        :key="index"
+        :coordinates="drawDistance.midPoint"
+      /> -->
+
       <MglNavigationControl position="bottom-right" />
     </MglMap>
 
@@ -583,6 +609,10 @@ import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 import destination from '@turf/destination';
+import distance from '@turf/distance';
+import midpoint from '@turf/midpoint';
+
+import generateUniqueId from '../util/unique-id';
 
 // console.log('L:', L)
 const FeatureGroup = L.default.featureGroup;
@@ -650,7 +680,7 @@ export default {
     MglCircleMarker: () => import(/* webpackChunkName: "pvm_MglCircleMarker" */'@phila/vue-mapping/src/mapbox/UI/CircleMarker.vue'),
     MglNavigationControl: () => import(/* webpackChunkName: "pvm_MglNavigationControl" */'@phila/vue-mapping/src/mapbox/UI/controls/NavigationControl'),
     MglGeolocateControl: () => import(/* webpackChunkName: "pvm_MglGeolocateControl" */'@phila/vue-mapping/src/mapbox/UI/controls/GeolocateControl'),
-    MglDrawControl: () => import(/* webpackChunkName: "pvm_MglDrawControl" */'@phila/vue-mapping/src/mapbox/UI/controls/DrawControl'),
+    MglDrawControl: () => import(/* webpackChunkName: "pvm_MglDrawControl" */'@phila/vue-mapping/src/mapbox/UI/controls/DrawControl.vue'),
     MglDrawControlBox: () => import(/* webpackChunkName: "pvm_MglDrawControlBox" */'@phila/vue-mapping/src/mapbox/DrawControlBox'),
     MglRasterLayer: () => import(/* webpackChunkName: "pvm_MglRasterLayer" */'@phila/vue-mapping/src/mapbox/layer/RasterLayer'),
     MglButtonControl: () => import(/* webpackChunkName: "pvm_MglButtonControl" */'@phila/vue-mapping/src/mapbox/UI/controls/ButtonControl.vue'),
@@ -675,6 +705,90 @@ export default {
   data() {
     const data = {
       createdComplete: false,
+      draw: {
+        mode: null,
+        selection: null,
+        labelLayers: [],
+        //   'sdlkrecsdj': {
+        //     'id': 'sdlkrecsdj',
+        //     'type': 'symbol',
+        //     'source': {
+        //       type: 'geojson',
+        //       data: {
+        //         'type': 'FeatureCollection',
+        //         features: [
+        //           {
+        //             'type': 'Feature',
+        //             'properties': {
+        //               'description': '50.23',
+        //             },
+        //             'geometry': {
+        //               'type': 'Point',
+        //               'coordinates': [ -75.159132, 39.934329 ],
+        //             },
+        //           },
+        //           {
+        //             'type': 'Feature',
+        //             'properties': {
+        //               'description': '40.54',
+        //             },
+        //             'geometry': {
+        //               'type': 'Point',
+        //               'coordinates': [ -75.160462, 39.934568 ],
+        //             },
+        //           },
+        //         ],
+        //       },
+        //     },
+        //     'layout': {
+        //       'text-field': [ 'get', 'description' ],
+        //       'text-variable-anchor': [ 'top', 'bottom', 'left', 'right' ],
+        //       'text-radial-offset': 0.5,
+        //       'text-justify': 'auto',
+        //       // 'icon-image': ['concat', ['get', 'icon'], '-15']
+        //     },
+        //   },
+        //   'pewvncxnjt': {
+        //     'id': 'pewvncxnjt',
+        //     'type': 'symbol',
+        //     'source': {
+        //       type: 'geojson',
+        //       data: {
+        //         'type': 'FeatureCollection',
+        //         features: [
+        //           {
+        //             'type': 'Feature',
+        //             'properties': {
+        //               'description': '80.24',
+        //             },
+        //             'geometry': {
+        //               'type': 'Point',
+        //               'coordinates': [ -75.160677, 39.933268 ],
+        //             },
+        //           },
+        //           {
+        //             'type': 'Feature',
+        //             'properties': {
+        //               'description': '60.98',
+        //             },
+        //             'geometry': {
+        //               'type': 'Point',
+        //               'coordinates': [ -75.159143, 39.933153 ],
+        //             },
+        //           },
+        //         ],
+        //       },
+        //     },
+        //     'layout': {
+        //       'text-field': [ 'get', 'description' ],
+        //       'text-variable-anchor': [ 'top', 'bottom', 'left', 'right' ],
+        //       'text-radial-offset': 0.5,
+        //       'text-justify': 'auto',
+        //       // 'icon-image': ['concat', ['get', 'icon'], '-15']
+        //     },
+        //   },
+        // },
+      },
       zoomToShape: {
         geojsonParcels: [],
         geojsonForTopic: [],
@@ -837,6 +951,9 @@ export default {
     return data;
   },
   computed: {
+    // drawDistances() {
+    //   return this.$store.state.drawDistances;
+    // },
     boundsProp() {
       let bounds = this.$store.state.map.bounds;
       console.log('boundsProps, bounds:', bounds);
@@ -1281,10 +1398,10 @@ export default {
     },
     geojsonForTopic(nextGeojson) {
       if (this.$store.map) {
-        console.log('watch geojsonForTopic is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
+        // console.log('watch geojsonForTopic is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
       }
       if (nextGeojson[0]) {
-        console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
+        // console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
         this.$data.geojsonForTopicSource.data.geometry.coordinates = nextGeojson[0].geojson.geometry.coordinates;
       } else {
         this.$data.geojsonForTopicSource.data.geometry.coordinates = [];
@@ -1303,10 +1420,10 @@ export default {
 
     geojsonParcels(nextGeojson) {
       if (this.$store.map) {
-        console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers);
+        // console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers);
       }
       if (nextGeojson[0]) {
-        console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
+        // console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
         this.$data.geojsonParcelSource.data.geometry.coordinates = nextGeojson[0].geojson.geometry.coordinates;
       } else {
         this.$data.geojsonParcelSource.data.geometry.coordinates = [];
@@ -1406,6 +1523,9 @@ export default {
     }
   },
   methods: {
+    useGenerateUniqueId() {
+      return generateUniqueId();
+    },
     handleCycloChanges() {
       console.log('handleCycloChanges is running');
       const halfAngle = this.cycloHFov / 2.0;
@@ -1500,7 +1620,7 @@ export default {
     },
 
     setMapToBounds() {
-      console.log('AAAAAAAAAAAAAAAAA setMapToBounds is running');
+      console.log('setMapToBounds is running');
       let featureArray = [];
       let czts = this.activeTopicConfig.zoomToShape;
       if (czts) {
@@ -1566,16 +1686,154 @@ export default {
       return false;
     },
     handleMapClick(e) {
-      let draw = this.$store.state.draw;
-      let mode = draw.getMode();
-
+      let drawMode = this.$data.draw.mode;
       let drawLayers = this.$store.map.queryRenderedFeatures(e.mapboxEvent.point).filter(feature => [ 'mapbox-gl-draw-cold', 'mapbox-gl-draw-hot' ].includes(feature.source));
-      console.log('MapPanel.vue handleMapClick, drawLayers:', drawLayers, 'drawmode:', mode, 'e:', e, 'this.$store.map.getStyle():', this.$store.map.getStyle(), 'this.$store.state.drawStart:', this.$store.state.drawStart);
+      // console.log('MapPanel.vue handleMapClick, drawLayers:', drawLayers, 'drawmode:', mode, 'e:', e, 'this.$store.map.getStyle():', this.$store.map.getStyle(), 'this.$store.state.drawStart:', this.$store.state.drawStart);
 
-      if (!drawLayers.length && this.$store.state.drawStart !== 'start') {
+      if (!drawLayers.length && drawMode !== 'draw_polygon') {
         this.$controller.handleMapClick(e);
       }
+      if (drawMode === 'draw_polygon') {
+        this.getDrawDistances(e);
+      }
     },
+    getDrawDistances(e) {
+      console.log('start of getDrawDistances, e:', e);
+      let draw = this.$store.state.draw;
+      let data = draw.getAll();
+      let coordinates;
+      let lastClick, shapeId;
+      if (e.mapboxEvent) {
+        console.log('if e.mapboxEvent exists');
+        lastClick = e.mapboxEvent.point;
+        shapeId = draw.getFeatureIdsAt(lastClick)[0];
+        if (!shapeId) {
+          console.log('no shape id');
+          shapeId = data.features[data.features.length-1].id;
+        }
+      } else if (e.features.length) {
+        console.log('else if e.features.length exists');
+        shapeId = e.features[0].id;
+      }
+      // let shapeId = this.$data.draw.selected;
+      console.log('shapeId:', shapeId, 'draw.getSelectedIds():', draw.getSelectedIds());//, 'draw.getFeatureIdsAt(lastClick):', draw.getFeatureIdsAt(lastClick));
+      if (shapeId) {
+        let feature = data.features.filter(feature => feature.id === shapeId)[0];
+        console.log('if shapeId:', shapeId, 'feature:', feature);
+        coordinates = feature.geometry.coordinates[0];
+      } else {
+        let feature = data.features[data.features.length-1];
+        console.log('else (no shapeId), feature.id:', feature.id, 'feature:', feature);
+        coordinates = feature.geometry.coordinates[0];
+      }
+      // console.log('middle of getDrawDistances, draw:', draw, 'shapeId:', shapeId, 'e:', e, 'mode is draw_polygon, data:', data, 'coordinates:', coordinates);
+      coordinates.splice(coordinates.length-2, 1);
+      let i;
+      let distances = [];
+      let features = [];
+      for (i=0; i<coordinates.length-1; i++) {
+        console.log('loop, i:', i, 'coordinates[i][0]', coordinates[i][0], 'coordinates[i+1][0]:', coordinates[i+1][0], 'i+1:', i+1, 'coordinates.length:', coordinates.length);
+        let distVal = 0;
+        let midPoint = [];
+        if (coordinates[i+1]) {
+          distVal = parseFloat((distance(coordinates[i], coordinates[i+1], { units: 'miles' }) * 5280).toFixed(3));
+          // let midPoint = [];
+          // if (coordinates[i][0] !== coordinates[i+1][0] && coordinates[0][0] != coordinates[i+1][0]) {
+          if (coordinates[i][0] !== coordinates[i+1][0] && i+2 < coordinates.length) {
+            midPoint = midpoint(coordinates[i], coordinates[i+1]).geometry.coordinates;
+            console.log('if is running, midPoint:', midPoint);
+
+            features.push(
+              {
+                'type': 'Feature',
+                'properties': {
+                  'description': distVal,
+                },
+                'geometry': {
+                  'type': 'Point',
+                  'coordinates': midPoint,
+                },
+              },
+            );
+          }
+        }
+        // let distVal = 5.67;
+        // let midPoint = [ -75.159132, 39.934329 ];
+        let allVal = {
+          firstPoint: [ parseFloat(coordinates[i][0].toFixed(5)), parseFloat(coordinates[i][1].toFixed(5)) ],
+          midPoint: midPoint,
+          distance: distVal,
+        };
+        distances.push(allVal);
+      }
+      this.$data.draw.distances = distances;
+
+      // console.log('end of getDrawDistances, distances:', distances, 'distances[0].midPoint:', distances[0].midPoint, 'distances[0].midPoint[0]:', distances[0].midPoint[0]);
+      console.log('end of getDrawDistances, features:', features);
+
+      if (features.length) {
+        let theSet = {};
+        if (shapeId) {
+          theSet = {
+            id: shapeId,
+            'source': {
+              type: 'geojson',
+              data: {
+                'type': 'FeatureCollection',
+                'features': [],
+              },
+            },
+            'layer': {
+              'id': shapeId,
+              // 'type': 'circle',
+              'type': 'symbol',
+              'source': shapeId,
+              // 'layout': {},
+              // 'paint': {
+              //   'circle-radius': 6,
+              //   'circle-color': '#B42222',
+              // },
+              'layout': {
+                'text-field': [ 'get', 'description' ],
+                'text-variable-anchor': [ 'top', 'bottom', 'left', 'right' ],
+                'text-radial-offset': 0.5,
+                'text-justify': 'auto',
+              },
+            },
+          };
+
+          let location = this.$data.draw.labelLayers.filter(set => set.id === shapeId)[0];
+          if (!location) {
+            this.$data.draw.labelLayers.push(theSet);
+            location = this.$data.draw.labelLayers.filter(set => set.id === shapeId)[0];
+          }
+          location.source.data.features = features;
+        }
+      }
+      console.log('this.$store.map:', this.$store.map);
+    },
+    handleDrawModeChange(e) {
+      console.log('handleDrawModeChange is running, e:', e, 'e.mode:', e.mode);
+      this.$data.draw.mode = e.mode;
+    },
+    handleDrawSelectionChange(e) {
+      // if (e.features.length > 0) {
+      // this.$data.draw.selection = e.features[0].id;
+      let draw = this.$store.state.draw;
+      let val = draw.getSelectedIds();
+      console.log('handleDrawSelectionChange, e:', e, 'val:', val);
+      this.$data.draw.selection = val;
+      // } else {
+      //   // console.log('handleDrawSelectionChange false, e:', e);
+      //   this.$data.draw.selection = false;
+      // }
+    },
+    // handleDrawActionable(e) {
+    //   console.log('handleDrawActionable, e:', e);
+    // },
+    // handleDrawRender(e) {
+    //   console.log('drawRender, e:', e);
+    // },
     handleMapMove(e) {
       const map = this.$store.map;
       const canvas = map.getCanvas();
