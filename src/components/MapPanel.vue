@@ -546,7 +546,8 @@
 
       <MglDrawControl
         :position="'bottom-left'"
-        :distances="draw.distances"
+        :label-layers="draw.labelLayers"
+        :current-shape="draw.currentShape"
         @drawCreate="getDrawDistances"
         @drawDelete="getDrawDistances"
         @drawUpdate="getDrawDistances"
@@ -708,6 +709,7 @@ export default {
       draw: {
         mode: null,
         selection: null,
+        currentShape: null,
         labelLayers: [],
       },
       zoomToShape: {
@@ -1636,6 +1638,7 @@ export default {
         console.log('else if e.features.length exists');
         shapeId = e.features[0].id;
       }
+      this.$data.draw.currentShape = shapeId;
       // let shapeId = this.$data.draw.selected;
       console.log('shapeId:', shapeId, 'draw.getSelectedIds():', draw.getSelectedIds());//, 'draw.getFeatureIdsAt(lastClick):', draw.getFeatureIdsAt(lastClick));
       if (shapeId) {
@@ -1653,12 +1656,14 @@ export default {
       }
 
       let i;
-      let distances = [];
+      let distancesArray = [];
       let features = [];
       for (i=0; i<coordinates.length; i++) {
         console.log('loop, i:', i, 'coordinates[i][0]', coordinates[i][0], 'i+1:', i+1, 'coordinates.length:', coordinates.length, 'coordinates:', coordinates);
         let distVal = 0;
+        let lastDistVal = null;
         let midPoint = [];
+        let allVal = [];
         // if (coordinates[i+1]) {
 
         // let coord2 = coordinates[i+1];
@@ -1670,12 +1675,29 @@ export default {
           console.log('coordinates[i+1] DOES NOT exist:', coordinates[i+1], 'coordinates[0]:', coordinates[0]);
           coord2 = coordinates[0];
         }
-        distVal = parseFloat((distance(coordinates[i], coord2, { units: 'miles' }) * 5280).toFixed(3));
-        // let midPoint = [];
-        // if (coordinates[i][0] !== coord2[0] && coordinates[0][0] != coord2[0]) {
+
+        distVal = parseFloat((distance(coordinates[i], coord2, { units: 'miles' }) * 5280).toFixed(2));
+
+        if (coordinates[i-1]) {
+          lastDistVal = parseFloat((distance(coordinates[i-1], coordinates[i], { units: 'miles' }) * 5280).toFixed(2));
+        }
+
+        allVal = {
+          firstPoint: [ parseFloat(coordinates[i][0].toFixed(5)), parseFloat(coordinates[i][1].toFixed(5)) ],
+          midPoint: midPoint,
+          distance: lastDistVal,
+        };
+        distancesArray.push(allVal);
+
         if (e.mapboxEvent && coordinates[i][0] !== coord2[0] && i < coordinates.length-2) {
           midPoint = midpoint(coordinates[i], coord2).geometry.coordinates;
           console.log('if is running, midPoint:', midPoint);
+          // allVal = {
+          //   firstPoint: [ parseFloat(coordinates[i][0].toFixed(5)), parseFloat(coordinates[i][1].toFixed(5)) ],
+          //   midPoint: midPoint,
+          //   distance: distVal,
+          // };
+          // distancesArray.push(allVal);
           features.push(
             {
               'type': 'Feature',
@@ -1692,6 +1714,12 @@ export default {
         if (!e.mapboxEvent && coordinates[i][0] !== coord2[0] && i < coordinates.length-1) {
           midPoint = midpoint(coordinates[i], coord2).geometry.coordinates;
           console.log('if is running, midPoint:', midPoint);
+          // allVal = {
+          //   firstPoint: [ parseFloat(coordinates[i][0].toFixed(5)), parseFloat(coordinates[i][1].toFixed(5)) ],
+          //   midPoint: midPoint,
+          //   distance: distVal,
+          // };
+          // distancesArray.push(allVal);
           features.push(
             {
               'type': 'Feature',
@@ -1706,31 +1734,29 @@ export default {
           );
         }
 
-
-        // }
-        // let distVal = 5.67;
-        // let midPoint = [ -75.159132, 39.934329 ];
-        let allVal = {
-          firstPoint: [ parseFloat(coordinates[i][0].toFixed(5)), parseFloat(coordinates[i][1].toFixed(5)) ],
-          midPoint: midPoint,
-          distance: distVal,
-        };
-        distances.push(allVal);
+        // allVal = {
+        //   firstPoint: [ parseFloat(coordinates[i][0].toFixed(5)), parseFloat(coordinates[i][1].toFixed(5)) ],
+        //   midPoint: midPoint,
+        //   distance: distVal,
+        // };
+        // distancesArray.push(allVal);
+        console.log('allVal:', allVal, 'distancesArray:', distancesArray);
         if (e.mapboxEvent && i === coordinates.length-2) {
           console.log('quitting loop: triggered by click and', i, " = ", coordinates.length-2);
           break;
         }
-      }
-      this.$data.draw.distances = distances;
+      } // end of loop
 
-      // console.log('end of getDrawDistances, distances:', distances, 'distances[0].midPoint:', distances[0].midPoint, 'distances[0].midPoint[0]:', distances[0].midPoint[0]);
-      console.log('end of getDrawDistances, features:', features);
+      // console.log('end of getDrawdistances, distances:', distances, 'distances[0].midPoint:', distances[0].midPoint, 'distances[0].midPoint[0]:', distances[0].midPoint[0]);
+      console.log('near end of getDrawDistances, distancesArray.length:', distancesArray.length, 'distancesArray:', distancesArray, 'features:', features);
 
-      if (features.length) {
+      if (distancesArray.length) {
         let theSet = {};
         if (shapeId) {
+          console.log('if inside if is running, distancesArray[distancesArray.length-1].distance:', distancesArray[distancesArray.length-1].distance, 'distancesArray:', distancesArray);
           theSet = {
             id: shapeId,
+            'distances': distancesArray,
             'source': {
               type: 'geojson',
               data: {
@@ -1740,10 +1766,8 @@ export default {
             },
             'layer': {
               'id': shapeId,
-              // 'type': 'circle',
               'type': 'symbol',
               'source': shapeId,
-              // 'layout': {},
               'paint': {
                 'text-color': 'red',
               },
@@ -1752,7 +1776,6 @@ export default {
                 'text-font': [ 'Open Sans Regular' ],
                 'text-field': [ 'get', 'description' ],
                 'text-variable-anchor': [ 'center' ],
-                // 'text-variable-anchor': [ 'top', 'bottom', 'left', 'right' ],
                 'text-radial-offset': 0.5,
                 'text-justify': 'center',
               },
@@ -1760,14 +1783,23 @@ export default {
           };
 
           let location = this.$data.draw.labelLayers.filter(set => set.id === shapeId)[0];
+          console.log('first try on location:', location);
+
           if (!location) {
             this.$data.draw.labelLayers.push(theSet);
             location = this.$data.draw.labelLayers.filter(set => set.id === shapeId)[0];
+            console.log('second try on location:', location);
           }
+
+          location.distances = distancesArray;
           location.source.data.features = features;
         }
       }
-      console.log('this.$store.map:', this.$store.map);
+      if (!e.mapboxEvent) {
+        this.$data.currentShape = null;
+      }
+      console.log('end of getDrawDistances, distances');
+      // console.log('this.$store.map:', this.$store.map);
     },
     handleDrawModeChange(e) {
       console.log('handleDrawModeChange is running, e:', e, 'e.mode:', e.mode);
