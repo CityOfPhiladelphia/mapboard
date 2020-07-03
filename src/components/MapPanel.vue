@@ -709,85 +709,6 @@ export default {
         mode: null,
         selection: null,
         labelLayers: [],
-        //   'sdlkrecsdj': {
-        //     'id': 'sdlkrecsdj',
-        //     'type': 'symbol',
-        //     'source': {
-        //       type: 'geojson',
-        //       data: {
-        //         'type': 'FeatureCollection',
-        //         features: [
-        //           {
-        //             'type': 'Feature',
-        //             'properties': {
-        //               'description': '50.23',
-        //             },
-        //             'geometry': {
-        //               'type': 'Point',
-        //               'coordinates': [ -75.159132, 39.934329 ],
-        //             },
-        //           },
-        //           {
-        //             'type': 'Feature',
-        //             'properties': {
-        //               'description': '40.54',
-        //             },
-        //             'geometry': {
-        //               'type': 'Point',
-        //               'coordinates': [ -75.160462, 39.934568 ],
-        //             },
-        //           },
-        //         ],
-        //       },
-        //     },
-        //     'layout': {
-        //       'text-field': [ 'get', 'description' ],
-        //       'text-variable-anchor': [ 'top', 'bottom', 'left', 'right' ],
-        //       'text-radial-offset': 0.5,
-        //       'text-justify': 'auto',
-        //       // 'icon-image': ['concat', ['get', 'icon'], '-15']
-        //     },
-        //   },
-        //   'pewvncxnjt': {
-        //     'id': 'pewvncxnjt',
-        //     'type': 'symbol',
-        //     'source': {
-        //       type: 'geojson',
-        //       data: {
-        //         'type': 'FeatureCollection',
-        //         features: [
-        //           {
-        //             'type': 'Feature',
-        //             'properties': {
-        //               'description': '80.24',
-        //             },
-        //             'geometry': {
-        //               'type': 'Point',
-        //               'coordinates': [ -75.160677, 39.933268 ],
-        //             },
-        //           },
-        //           {
-        //             'type': 'Feature',
-        //             'properties': {
-        //               'description': '60.98',
-        //             },
-        //             'geometry': {
-        //               'type': 'Point',
-        //               'coordinates': [ -75.159143, 39.933153 ],
-        //             },
-        //           },
-        //         ],
-        //       },
-        //     },
-        //     'layout': {
-        //       'text-field': [ 'get', 'description' ],
-        //       'text-variable-anchor': [ 'top', 'bottom', 'left', 'right' ],
-        //       'text-radial-offset': 0.5,
-        //       'text-justify': 'auto',
-        //       // 'icon-image': ['concat', ['get', 'icon'], '-15']
-        //     },
-        //   },
-        // },
       },
       zoomToShape: {
         geojsonParcels: [],
@@ -1703,7 +1624,7 @@ export default {
       let data = draw.getAll();
       let coordinates;
       let lastClick, shapeId;
-      if (e.mapboxEvent) {
+      if (e.mapboxEvent) { // the function was called by handleMapClick
         console.log('if e.mapboxEvent exists');
         lastClick = e.mapboxEvent.point;
         shapeId = draw.getFeatureIdsAt(lastClick)[0];
@@ -1726,37 +1647,67 @@ export default {
         console.log('else (no shapeId), feature.id:', feature.id, 'feature:', feature);
         coordinates = feature.geometry.coordinates[0];
       }
-      // console.log('middle of getDrawDistances, draw:', draw, 'shapeId:', shapeId, 'e:', e, 'mode is draw_polygon, data:', data, 'coordinates:', coordinates);
-      coordinates.splice(coordinates.length-2, 1);
+      console.log('middle of getDrawDistances, draw:', draw, 'shapeId:', shapeId, 'e:', e, 'mode is draw_polygon, data:', data, 'coordinates:', coordinates);
+      if (e.mapboxEvent) {
+        coordinates.splice(coordinates.length-2, 1);
+      }
+
       let i;
       let distances = [];
       let features = [];
-      for (i=0; i<coordinates.length-1; i++) {
-        console.log('loop, i:', i, 'coordinates[i][0]', coordinates[i][0], 'coordinates[i+1][0]:', coordinates[i+1][0], 'i+1:', i+1, 'coordinates.length:', coordinates.length);
+      for (i=0; i<coordinates.length; i++) {
+        console.log('loop, i:', i, 'coordinates[i][0]', coordinates[i][0], 'i+1:', i+1, 'coordinates.length:', coordinates.length, 'coordinates:', coordinates);
         let distVal = 0;
         let midPoint = [];
-        if (coordinates[i+1]) {
-          distVal = parseFloat((distance(coordinates[i], coordinates[i+1], { units: 'miles' }) * 5280).toFixed(3));
-          // let midPoint = [];
-          // if (coordinates[i][0] !== coordinates[i+1][0] && coordinates[0][0] != coordinates[i+1][0]) {
-          if (coordinates[i][0] !== coordinates[i+1][0] && i+2 < coordinates.length) {
-            midPoint = midpoint(coordinates[i], coordinates[i+1]).geometry.coordinates;
-            console.log('if is running, midPoint:', midPoint);
+        // if (coordinates[i+1]) {
 
-            features.push(
-              {
-                'type': 'Feature',
-                'properties': {
-                  'description': distVal,
-                },
-                'geometry': {
-                  'type': 'Point',
-                  'coordinates': midPoint,
-                },
-              },
-            );
-          }
+        // let coord2 = coordinates[i+1];
+        let coord2;
+        if (coordinates[i+1]) {
+          console.log('coordinates[i+1] exists:', coordinates[i+1]);
+          coord2 = coordinates[i+1];
+        } else {
+          console.log('coordinates[i+1] DOES NOT exist:', coordinates[i+1], 'coordinates[0]:', coordinates[0]);
+          coord2 = coordinates[0];
         }
+        distVal = parseFloat((distance(coordinates[i], coord2, { units: 'miles' }) * 5280).toFixed(3));
+        // let midPoint = [];
+        // if (coordinates[i][0] !== coord2[0] && coordinates[0][0] != coord2[0]) {
+        if (e.mapboxEvent && coordinates[i][0] !== coord2[0] && i < coordinates.length-2) {
+          midPoint = midpoint(coordinates[i], coord2).geometry.coordinates;
+          console.log('if is running, midPoint:', midPoint);
+          features.push(
+            {
+              'type': 'Feature',
+              'properties': {
+                'description': distVal,
+              },
+              'geometry': {
+                'type': 'Point',
+                'coordinates': midPoint,
+              },
+            },
+          );
+        }
+        if (!e.mapboxEvent && coordinates[i][0] !== coord2[0] && i < coordinates.length-1) {
+          midPoint = midpoint(coordinates[i], coord2).geometry.coordinates;
+          console.log('if is running, midPoint:', midPoint);
+          features.push(
+            {
+              'type': 'Feature',
+              'properties': {
+                'description': distVal,
+              },
+              'geometry': {
+                'type': 'Point',
+                'coordinates': midPoint,
+              },
+            },
+          );
+        }
+
+
+        // }
         // let distVal = 5.67;
         // let midPoint = [ -75.159132, 39.934329 ];
         let allVal = {
@@ -1765,6 +1716,10 @@ export default {
           distance: distVal,
         };
         distances.push(allVal);
+        if (e.mapboxEvent && i === coordinates.length-2) {
+          console.log('quitting loop: triggered by click and', i, " = ", coordinates.length-2);
+          break;
+        }
       }
       this.$data.draw.distances = distances;
 
@@ -1789,16 +1744,17 @@ export default {
               'type': 'symbol',
               'source': shapeId,
               // 'layout': {},
-              // 'paint': {
-              //   'circle-radius': 6,
-              //   'circle-color': '#B42222',
-              // },
+              'paint': {
+                'text-color': 'red',
+              },
               'layout': {
+                'text-size': 12,
                 'text-font': [ 'Open Sans Regular' ],
                 'text-field': [ 'get', 'description' ],
-                'text-variable-anchor': [ 'top', 'bottom', 'left', 'right' ],
+                'text-variable-anchor': [ 'center' ],
+                // 'text-variable-anchor': [ 'top', 'bottom', 'left', 'right' ],
                 'text-radial-offset': 0.5,
-                'text-justify': 'auto',
+                'text-justify': 'center',
               },
             },
           };
