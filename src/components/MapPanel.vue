@@ -457,8 +457,8 @@
 
       <!-- :source-id="layer.source" -->
       <MglGeojsonLayer
-        v-for="(labels, index) of draw.labelLayers"
-        :key="index"
+        v-for="labels of draw.labelLayers"
+        :key="labels.id"
         :source="labels.source"
         :source-id="labels.id"
         :layer="labels.layer"
@@ -549,7 +549,7 @@
         :label-layers="draw.labelLayers"
         :current-shape="draw.currentShape"
         @drawCreate="getDrawDistances"
-        @drawDelete="getDrawDistances"
+        @drawDelete="deleteDrawDistances"
         @drawUpdate="getDrawDistances"
         @drawSelectionChange="handleDrawSelectionChange"
         @drawModeChange="handleDrawModeChange"
@@ -874,12 +874,9 @@ export default {
     return data;
   },
   computed: {
-    // drawDistances() {
-    //   return this.$store.state.drawDistances;
-    // },
     boundsProp() {
       let bounds = this.$store.state.map.bounds;
-      console.log('boundsProps, bounds:', bounds);
+      // console.log('boundsProps, bounds:', bounds);
       let finalBounds;
 
       if (this.mapType === 'leaflet') {
@@ -1620,37 +1617,42 @@ export default {
         this.getDrawDistances(e);
       }
     },
+    deleteDrawDistances(e) {
+      let shapeId = e.features[0].id;
+      let index = this.$data.draw.labelLayers.indexOf(this.$data.draw.labelLayers.filter(set => set.id === shapeId)[0]);
+      console.log('deleteDrawDistances is running, e:', e, 'e.features[0].id:', e.features[0].id, 'index:', index);
+      this.$data.draw.labelLayers.splice(index, 1);
+      this.$data.draw.selection = null;
+    },
     getDrawDistances(e) {
       console.log('start of getDrawDistances, e:', e);
       let draw = this.$store.state.draw;
       let data = draw.getAll();
-      let coordinates;
-      let lastClick, shapeId;
-      if (e.mapboxEvent) { // the function was called by handleMapClick
-        console.log('if e.mapboxEvent exists');
+      let coordinates, lastClick, shapeId;
+      if (e.mapboxEvent) { // if getDrawDistances was called by handleMapClick
         lastClick = e.mapboxEvent.point;
         shapeId = draw.getFeatureIdsAt(lastClick)[0];
         if (!shapeId) {
-          console.log('no shape id');
           shapeId = data.features[data.features.length-1].id;
         }
-      } else if (e.features.length) {
-        console.log('else if e.features.length exists');
+      } else if (e.features.length) { // if getDrawDistances was called a draw event firing
         shapeId = e.features[0].id;
       }
+
       this.$data.draw.currentShape = shapeId;
-      // let shapeId = this.$data.draw.selected;
-      console.log('shapeId:', shapeId, 'draw.getSelectedIds():', draw.getSelectedIds());//, 'draw.getFeatureIdsAt(lastClick):', draw.getFeatureIdsAt(lastClick));
+      // console.log('shapeId:', shapeId, 'draw.getSelectedIds():', draw.getSelectedIds());
       if (shapeId) {
         let feature = data.features.filter(feature => feature.id === shapeId)[0];
-        console.log('if shapeId:', shapeId, 'feature:', feature);
+        // console.log('if shapeId:', shapeId, 'feature:', feature);
         coordinates = feature.geometry.coordinates[0];
       } else {
         let feature = data.features[data.features.length-1];
-        console.log('else (no shapeId), feature.id:', feature.id, 'feature:', feature);
+        // console.log('else (no shapeId), feature.id:', feature.id, 'feature:', feature);
         coordinates = feature.geometry.coordinates[0];
       }
-      console.log('middle of getDrawDistances, draw:', draw, 'shapeId:', shapeId, 'e:', e, 'mode is draw_polygon, data:', data, 'coordinates:', coordinates);
+      // console.log('middle of getDrawDistances, draw:', draw, 'shapeId:', shapeId, 'e:', e, 'mode is draw_polygon, data:', data, 'coordinates:', coordinates);
+
+      // mapbox-gl-draw duplicates the points of a polygon in a way that has to be accounted for;
       if (e.mapboxEvent) {
         coordinates.splice(coordinates.length-2, 1);
       }
@@ -1659,20 +1661,16 @@ export default {
       let distancesArray = [];
       let features = [];
       for (i=0; i<coordinates.length; i++) {
-        console.log('loop, i:', i, 'coordinates[i][0]', coordinates[i][0], 'i+1:', i+1, 'coordinates.length:', coordinates.length, 'coordinates:', coordinates);
+        // console.log('loop, i:', i, 'coordinates[i][0]', coordinates[i][0], 'i+1:', i+1, 'coordinates.length:', coordinates.length, 'coordinates:', coordinates);
         let distVal = 0;
         let lastDistVal = null;
         let midPoint = [];
         let allVal = [];
-        // if (coordinates[i+1]) {
 
-        // let coord2 = coordinates[i+1];
         let coord2;
         if (coordinates[i+1]) {
-          console.log('coordinates[i+1] exists:', coordinates[i+1]);
           coord2 = coordinates[i+1];
         } else {
-          console.log('coordinates[i+1] DOES NOT exist:', coordinates[i+1], 'coordinates[0]:', coordinates[0]);
           coord2 = coordinates[0];
         }
 
@@ -1688,16 +1686,10 @@ export default {
           distance: lastDistVal,
         };
         distancesArray.push(allVal);
+        // console.log('allVal:', allVal, 'distancesArray:', distancesArray);
 
         if (e.mapboxEvent && coordinates[i][0] !== coord2[0] && i < coordinates.length-2) {
           midPoint = midpoint(coordinates[i], coord2).geometry.coordinates;
-          console.log('if is running, midPoint:', midPoint);
-          // allVal = {
-          //   firstPoint: [ parseFloat(coordinates[i][0].toFixed(5)), parseFloat(coordinates[i][1].toFixed(5)) ],
-          //   midPoint: midPoint,
-          //   distance: distVal,
-          // };
-          // distancesArray.push(allVal);
           features.push(
             {
               'type': 'Feature',
@@ -1713,13 +1705,6 @@ export default {
         }
         if (!e.mapboxEvent && coordinates[i][0] !== coord2[0] && i < coordinates.length-1) {
           midPoint = midpoint(coordinates[i], coord2).geometry.coordinates;
-          console.log('if is running, midPoint:', midPoint);
-          // allVal = {
-          //   firstPoint: [ parseFloat(coordinates[i][0].toFixed(5)), parseFloat(coordinates[i][1].toFixed(5)) ],
-          //   midPoint: midPoint,
-          //   distance: distVal,
-          // };
-          // distancesArray.push(allVal);
           features.push(
             {
               'type': 'Feature',
@@ -1734,26 +1719,18 @@ export default {
           );
         }
 
-        // allVal = {
-        //   firstPoint: [ parseFloat(coordinates[i][0].toFixed(5)), parseFloat(coordinates[i][1].toFixed(5)) ],
-        //   midPoint: midPoint,
-        //   distance: distVal,
-        // };
-        // distancesArray.push(allVal);
-        console.log('allVal:', allVal, 'distancesArray:', distancesArray);
         if (e.mapboxEvent && i === coordinates.length-2) {
-          console.log('quitting loop: triggered by click and', i, " = ", coordinates.length-2);
+          // console.log('quitting loop: triggered by click and', i, " = ", coordinates.length-2);
           break;
         }
       } // end of loop
 
-      // console.log('end of getDrawdistances, distances:', distances, 'distances[0].midPoint:', distances[0].midPoint, 'distances[0].midPoint[0]:', distances[0].midPoint[0]);
-      console.log('near end of getDrawDistances, distancesArray.length:', distancesArray.length, 'distancesArray:', distancesArray, 'features:', features);
+      // console.log('near end of getDrawDistances, distancesArray.length:', distancesArray.length, 'distancesArray:', distancesArray, 'features:', features);
 
       if (distancesArray.length) {
         let theSet = {};
         if (shapeId) {
-          console.log('if inside if is running, distancesArray[distancesArray.length-1].distance:', distancesArray[distancesArray.length-1].distance, 'distancesArray:', distancesArray);
+          // console.log('if inside if is running, distancesArray[distancesArray.length-1].distance:', distancesArray[distancesArray.length-1].distance, 'distancesArray:', distancesArray);
           theSet = {
             id: shapeId,
             'distances': distancesArray,
@@ -1783,46 +1760,31 @@ export default {
           };
 
           let location = this.$data.draw.labelLayers.filter(set => set.id === shapeId)[0];
-          console.log('first try on location:', location);
+          // console.log('first try on location:', location);
 
           if (!location) {
             this.$data.draw.labelLayers.push(theSet);
             location = this.$data.draw.labelLayers.filter(set => set.id === shapeId)[0];
-            console.log('second try on location:', location);
+            // console.log('second try on location:', location);
           }
-
           location.distances = distancesArray;
           location.source.data.features = features;
         }
       }
       if (!e.mapboxEvent) {
-        this.$data.currentShape = null;
+        this.$data.draw.currentShape = null;
       }
-      console.log('end of getDrawDistances, distances');
-      // console.log('this.$store.map:', this.$store.map);
     },
     handleDrawModeChange(e) {
-      console.log('handleDrawModeChange is running, e:', e, 'e.mode:', e.mode);
+      // console.log('handleDrawModeChange is running, e:', e, 'e.mode:', e.mode);
       this.$data.draw.mode = e.mode;
     },
     handleDrawSelectionChange(e) {
-      // if (e.features.length > 0) {
-      // this.$data.draw.selection = e.features[0].id;
       let draw = this.$store.state.draw;
       let val = draw.getSelectedIds();
-      console.log('handleDrawSelectionChange, e:', e, 'val:', val);
+      // console.log('handleDrawSelectionChange, e:', e, 'val:', val);
       this.$data.draw.selection = val;
-      // } else {
-      //   // console.log('handleDrawSelectionChange false, e:', e);
-      //   this.$data.draw.selection = false;
-      // }
     },
-    // handleDrawActionable(e) {
-    //   console.log('handleDrawActionable, e:', e);
-    // },
-    // handleDrawRender(e) {
-    //   console.log('drawRender, e:', e);
-    // },
     handleMapMove(e) {
       const map = this.$store.map;
       const canvas = map.getCanvas();
