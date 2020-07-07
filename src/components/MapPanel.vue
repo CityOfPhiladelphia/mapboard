@@ -1770,15 +1770,17 @@ export default {
       // }
     },
     handleDrawCancel(e) {
-      console.log('MapPanel.vue handleDrawCancel is running, e:', e);
-      this.$data.draw.mode = 'simple_select';
+      // this.$data.draw.mode = 'simple_select';
       let shapeId = this.$data.draw.currentShape;
+      console.log('MapPanel.vue handleDrawCancel is running, shapeId:', shapeId);
       if (shapeId) {
         let index = this.$data.draw.labelLayers.indexOf(this.$data.draw.labelLayers.filter(set => set.id === shapeId)[0]);
         this.$data.draw.labelLayers.splice(index, 1);
         this.$data.draw.selection = null;
         this.$data.draw.currentShape = null;
+        this.$store.state.draw.trash();
       }
+      this.$store.state.draw.changeMode('simple_select');
     },
     handleDrawUndo(e) {
       console.log('MapPanel.vue handleDrawUndo is running, e:', e);
