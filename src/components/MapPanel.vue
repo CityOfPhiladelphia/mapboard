@@ -535,7 +535,6 @@
         @click="handleMarkerClick"
         @mouseleave="handleMarkerMouseout"
       />
-      <!-- :color="'black'" -->
 
       <MglMarker
         v-for="(marker) in markersForAddress"
@@ -555,13 +554,10 @@
         @drawUpdate="getDrawDistances"
         @drawSelectionChange="handleDrawSelectionChange"
         @drawModeChange="handleDrawModeChange"
+        @drawCancel="handleDrawCancel"
+        @drawUndo="handleDrawUndo"
+        @drawFinish="handleDrawFinish"
       />
-      <!-- @drawActionable="handleDrawActionable" -->
-      <!-- @drawRender="handleDrawRender" -->
-
-      <!-- <MglDrawControlBox
-      /> -->
-      <!-- v-if="this.$store.state.drawStart === 'start'" -->
 
       <MglButtonControl
         :button-id="'buttonId-01'"
@@ -585,13 +581,6 @@
       />
 
       <mapbox-basemap-select-control />
-
-      <!-- <MglIcon
-        v-for="(drawDistance, index) of draw.distances"
-        v-if="drawDistance.midPoint[0]"
-        :key="index"
-        :coordinates="drawDistance.midPoint"
-      /> -->
 
       <MglNavigationControl position="bottom-right" />
     </MglMap>
@@ -684,7 +673,6 @@ export default {
     MglNavigationControl: () => import(/* webpackChunkName: "pvm_MglNavigationControl" */'@phila/vue-mapping/src/mapbox/UI/controls/NavigationControl'),
     MglGeolocateControl: () => import(/* webpackChunkName: "pvm_MglGeolocateControl" */'@phila/vue-mapping/src/mapbox/UI/controls/GeolocateControl'),
     MglDrawControl: () => import(/* webpackChunkName: "pvm_MglDrawControl" */'@phila/vue-mapping/src/mapbox/UI/controls/DrawControl.vue'),
-    MglDrawControlBox: () => import(/* webpackChunkName: "pvm_MglDrawControlBox" */'@phila/vue-mapping/src/mapbox/DrawControlBox'),
     MglRasterLayer: () => import(/* webpackChunkName: "pvm_MglRasterLayer" */'@phila/vue-mapping/src/mapbox/layer/RasterLayer'),
     MglButtonControl: () => import(/* webpackChunkName: "pvm_MglButtonControl" */'@phila/vue-mapping/src/mapbox/UI/controls/ButtonControl.vue'),
     MglControlContainer: () => import(/* webpackChunkName: "pvm_MglControlContainer" */'@phila/vue-mapping/src/mapbox/UI/controls/ControlContainer.vue'),
@@ -1107,7 +1095,7 @@ export default {
         const defaultBasemap = this.$config.map.defaultBasemap;
         basemap = this.$store.state.map.basemap || defaultBasemap;
       }
-      console.log('computing activeBasemap, basemap:', basemap);
+      // console.log('computing activeBasemap, basemap:', basemap);
       return basemap;
     },
     tiledLayers() {
@@ -1370,9 +1358,7 @@ export default {
       dzts.markersForTopic = nextMarkers;
       // console.log('exiting markersForTopic');
       this.checkBoundsChanges();
-
     },
-
     fullScreenTopicsEnabled() {
       this.$nextTick(() => {
         if (this.mapType === 'leaflet') {
@@ -1418,9 +1404,6 @@ export default {
     }
   },
   methods: {
-    // handleRasterLayerAdded() {
-    //   console.log('handleRasterLayerAdded is running');
-    // },
     shouldShowRasterLayer(layerId) {
       if (!this.$store.map) {
         return false;
@@ -1434,13 +1417,15 @@ export default {
         before = this.activeTopicConfig.dynamicMapLayers[this.activeTopicConfig.dynamicMapLayers.length-1];
       }
 
-      let beforeExists = this.$store.map.getStyle().layers.filter(function(layer) {
-        return layer.id === before;//[0].id;
-      });
+      let beforeExists = [];
+      if (this.$store.map && this.$store.map.getStyle()) {
+        beforeExists = this.$store.map.getStyle().layers.filter(function(layer) {
+          return layer.id === before;
+        });
+      }
       if (before && !beforeExists.length) {
         value = false;
       }
-
       // console.log('shouldShowRasterLayer is running, layerId:', layerId, 'before:', before, 'value:', value);
       return value;
     },
@@ -1778,8 +1763,53 @@ export default {
       }
     },
     handleDrawModeChange(e) {
-      // console.log('handleDrawModeChange is running, e:', e, 'e.mode:', e.mode);
+      console.log('handleDrawModeChange is running, e:', e, 'e.mode:', e.mode);
       this.$data.draw.mode = e.mode;
+      // if (e.mode === 'simple_select') {
+      //   this.$data.draw.currentShape = null;
+      // }
+    },
+    handleDrawCancel(e) {
+      console.log('MapPanel.vue handleDrawCancel is running, e:', e);
+      this.$data.draw.mode = 'simple_select';
+      let shapeId = this.$data.draw.currentShape;
+      if (shapeId) {
+        let index = this.$data.draw.labelLayers.indexOf(this.$data.draw.labelLayers.filter(set => set.id === shapeId)[0]);
+        this.$data.draw.labelLayers.splice(index, 1);
+        this.$data.draw.selection = null;
+        this.$data.draw.currentShape = null;
+      }
+    },
+    handleDrawUndo(e) {
+      console.log('MapPanel.vue handleDrawUndo is running, e:', e);
+    },
+    handleDrawFinish(e) {
+      let currentShape = this.$data.draw.currentShape;
+      // let currentPoints = [];
+      let fetchedPoints = this.$data.draw.labelLayers.filter(set => set.id === currentShape)[0].distances;
+
+      if (fetchedPoints.length > 2) {
+        this.$store.state.draw.changeMode('simple_select');
+      } else {
+        this.$store.state.draw.trash();
+        this.handleDrawCancel();
+      }
+
+      // for (let point of fetchedPoints) {
+      //   currentPoints.push(point.firstPoint);
+      // }
+      // currentPoints.push(fetchedPoints[0].firstPoint);
+
+      // let geojson = {
+      //   'type': 'Feature',
+      //   'geometry': {
+      //     'type': 'Polygon',
+      //     'coordinates': [ currentPoints ],
+      //   },
+      //   'properties': {},
+      // };
+      // console.log('MapPanel.vue handleDrawFinish is running e:', e, 'currentShape:', currentShape, 'currentPoints:', currentPoints, 'geojson:', geojson);
+      // this.$store.state.draw.add(geojson);
     },
     handleDrawSelectionChange(e) {
       let draw = this.$store.state.draw;
