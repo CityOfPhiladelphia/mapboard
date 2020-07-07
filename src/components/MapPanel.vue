@@ -403,7 +403,7 @@
         :layer-id="activeBasemap"
         :layer="basemapSource.layer"
         :source="basemapSource.source"
-        :before="'geojsonParcels'"
+        :before="basemapsBefore"
       />
       <!-- :before="'geojsonParcels'" -->
 
@@ -415,7 +415,7 @@
         :layer-id="key"
         :layer="basemapLabelSource.layer"
         :source="basemapLabelSource.source"
-        :before="'geojsonParcels'"
+        :before="basemapsBefore"
       />
       <!-- :before="'geojsonParcels'" -->
 
@@ -874,6 +874,13 @@ export default {
     return data;
   },
   computed: {
+    basemapsBefore() {
+      let value = 'geojsonParcels';
+      if (this.activeTopicConfig.dynamicMapLayers && this.activeTopicConfig.dynamicMapLayers.length) {
+        value = this.activeTopicConfig.dynamicMapLayers[this.activeTopicConfig.dynamicMapLayers.length-1];
+      }
+      return value;
+    },
     boundsProp() {
       let bounds = this.$store.state.map.bounds;
       // console.log('boundsProps, bounds:', bounds);
@@ -1506,6 +1513,7 @@ export default {
       this.$store.map = event.map;
     },
     handleBasemapToggleClick() {
+      console.log('handleBasemapToggleClick, this.$store.map.getStyle().layers:', this.$store.map.getStyle().layers);
       const prevShouldShowBasemapSelectControl = this.$store.state.map.shouldShowBasemapSelectControl;
       const nextShouldShowBasemapSelectControl = !prevShouldShowBasemapSelectControl;
       this.$store.commit('setShouldShowBasemapSelectControl', nextShouldShowBasemapSelectControl);
