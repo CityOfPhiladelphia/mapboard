@@ -31,26 +31,6 @@
         </div>
       </div>
 
-      <!-- basemaps -->
-      <esri-tiled-map-layer
-        v-for="(basemap, key) in this.$config.map.basemaps"
-        v-if="activeBasemap === key"
-        :key="key"
-        :url="basemap.url"
-        :max-zoom="basemap.maxZoom"
-        :attribution="basemap.attribution"
-      />
-
-      <!-- basemap labels and parcels outlines -->
-      <esri-tiled-map-layer
-        v-for="(tiledLayer, key) in this.$config.map.tiledLayers"
-        v-if="tiledLayers.includes(key)"
-        :key="key"
-        :url="tiledLayer.url"
-        :z-index="tiledLayer.zIndex"
-        :attribution="tiledLayer.attribution"
-      />
-
       <!-- tiled overlay based on topic -->
       <esri-tiled-overlay
         v-for="(tiledLayer, key) in this.$config.map.tiledOverlays"
@@ -71,6 +51,28 @@
         :transparent="true"
         :opacity="dynamicLayer.opacity"
       />
+
+      <!-- basemaps -->
+      <esri-tiled-map-layer
+        v-for="(basemap, key) in this.$config.map.basemaps"
+        v-if="activeBasemap === key"
+        :key="key"
+        :url="basemap.url"
+        :max-zoom="basemap.maxZoom"
+        :attribution="basemap.attribution"
+      />
+
+      <!-- basemap labels and parcels outlines -->
+      <esri-tiled-map-layer
+        v-for="(tiledLayer, key) in this.$config.map.tiledLayers"
+        v-if="tiledLayers.includes(key)"
+        :key="key"
+        :url="tiledLayer.url"
+        :z-index="tiledLayer.zIndex"
+        :attribution="tiledLayer.attribution"
+      />
+
+
 
       <!-- dorParcels, pwdParcels, vacantLand, vacantBuilding -->
       <esri-feature-layer
@@ -397,7 +399,7 @@
     >
       <MglRasterLayer
         v-for="(basemapSource, key) in basemapSources"
-        v-if="shouldShowRasterLayer && activeBasemap === key"
+        v-if="shouldShowRasterLayer(key) && activeBasemap === key"
         :key="key"
         :source-id="activeBasemap"
         :layer-id="activeBasemap"
@@ -409,7 +411,7 @@
 
       <MglRasterLayer
         v-for="(basemapLabelSource, key) in basemapLabelSources"
-        v-if="shouldShowRasterLayer && tiledLayers.includes(key)"
+        v-if="shouldShowRasterLayer(key) && tiledLayers.includes(key)"
         :key="key"
         :source-id="key"
         :layer-id="key"
@@ -483,15 +485,6 @@
         :layer="geojsonViewconeLayer"
       />
 
-      <MglMarker
-        v-for="(marker) in markersForAddress"
-        :key="marker.key"
-        :coordinates="[marker.latlng[1], marker.latlng[0]]"
-        :color="marker.color"
-        :icon="marker.icon"
-        :anchor="'bottom'"
-      />
-
       <MglFontAwesomeMarker
         v-for="(marker) in markersForTopic"
         :key="marker.markerType"
@@ -543,6 +536,15 @@
         @mouseleave="handleMarkerMouseout"
       />
       <!-- :color="'black'" -->
+
+      <MglMarker
+        v-for="(marker) in markersForAddress"
+        :key="marker.key"
+        :coordinates="[marker.latlng[1], marker.latlng[0]]"
+        :color="marker.color"
+        :icon="marker.icon"
+        :anchor="'bottom'"
+      />
 
       <MglDrawControl
         :position="'bottom-left'"
@@ -841,35 +843,6 @@ export default {
           'circle-opacity': 0.6,
         },
       },
-      //       overlaySources: {
-      //         zoning: {
-      //           layer: {
-      //             id: 'zoning',
-      //             type: 'raster',
-      //             minzoom: 0,
-      //             maxzoom: 22,
-      //           },
-      //           source: {
-      //             coordinates: [
-      //               [ -75.15706460445475, 39.94176500771158 ],
-      //               [ -75.15590454905609, 39.94176500771158 ],
-      //               [ -75.15590454905609, 39.94117274967866 ],
-      //               [ -75.15706460445475, 39.94117274967866 ],
-      //             ],
-      //             url: '\
-      // https://gis-svc.databridge.phila.gov/arcgis/rest/services/Atlas/ZoningMap/MapServer/export?dpi=130\
-      // &transparent=true\
-      // &format=png36\
-      // &bbox=-75.15706460445475,39.94117274967866,-75.15590454905609,39.94176500771158\
-      // &bboxSR=4326\
-      // &imageSR=3857\
-      // &size=865,576\
-      // &f=image\
-      //           ',
-      //           },
-      //         },
-      //       },
-
     };
     return data;
   },
@@ -899,13 +872,7 @@ export default {
       }
       return finalBounds;
     },
-    shouldShowRasterLayer() {
-      let value = true;
-      if (this.$config.map.tiles === 'hosted') {
-        value = false;
-      }
-      return value;
-    },
+
     basemapImageLink() {
       if (this.activeBasemap === 'pwd' || this.activeBasemap === 'dor') {
         return 'images/imagery_small.png';
@@ -1140,7 +1107,7 @@ export default {
         const defaultBasemap = this.$config.map.defaultBasemap;
         basemap = this.$store.state.map.basemap || defaultBasemap;
       }
-      // console.log('computing activeBasemap, basemap:', basemap);
+      console.log('computing activeBasemap, basemap:', basemap);
       return basemap;
     },
     tiledLayers() {
@@ -1291,6 +1258,7 @@ export default {
     activeTopicConfig(nextTopicConfig) {
       if (this.$store.map) {
         console.log('watch activeTopicConfig is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextTopicConfig:', nextTopicConfig);
+        // this.$store.map.resize();
       }
       const prevBasemap = this.$store.state.map.basemap || null;
       // const nextTopicConfig = this.config.topics.filter(topic => {
@@ -1450,6 +1418,32 @@ export default {
     }
   },
   methods: {
+    // handleRasterLayerAdded() {
+    //   console.log('handleRasterLayerAdded is running');
+    // },
+    shouldShowRasterLayer(layerId) {
+      if (!this.$store.map) {
+        return false;
+      }
+      let value = true;
+      if (this.$config.map.tiles === 'hosted') {
+        value = false;
+      }
+      let before;
+      if (this.activeTopicConfig.dynamicMapLayers && this.activeTopicConfig.dynamicMapLayers.length) {
+        before = this.activeTopicConfig.dynamicMapLayers[this.activeTopicConfig.dynamicMapLayers.length-1];
+      }
+
+      let beforeExists = this.$store.map.getStyle().layers.filter(function(layer) {
+        return layer.id === before;//[0].id;
+      });
+      if (before && !beforeExists.length) {
+        value = false;
+      }
+
+      // console.log('shouldShowRasterLayer is running, layerId:', layerId, 'before:', before, 'value:', value);
+      return value;
+    },
     useGenerateUniqueId() {
       return generateUniqueId();
     },
