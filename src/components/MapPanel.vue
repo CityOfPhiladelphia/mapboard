@@ -555,9 +555,9 @@
         @drawSelectionChange="handleDrawSelectionChange"
         @drawModeChange="handleDrawModeChange"
         @drawCancel="handleDrawCancel"
-        @drawUndo="handleDrawUndo"
         @drawFinish="handleDrawFinish"
       />
+      <!-- @drawUndo="handleDrawUndo" -->
 
       <MglButtonControl
         :button-id="'buttonId-01'"
@@ -1604,10 +1604,11 @@ export default {
         this.getDrawDistances(e);
       }
     },
-    deleteDrawDistances(e) {
-      let shapeId = e.features[0].id;
+    deleteDrawDistances(shapeId) {
+      // console.log('deleteDrawDistances is running, shapeId:', shapeId);
+      // let shapeId = e.features[0].id;
       let index = this.$data.draw.labelLayers.indexOf(this.$data.draw.labelLayers.filter(set => set.id === shapeId)[0]);
-      console.log('deleteDrawDistances is running, e:', e, 'e.features[0].id:', e.features[0].id, 'index:', index);
+      // console.log('deleteDrawDistances is running, index:', index);
       this.$data.draw.labelLayers.splice(index, 1);
       this.$data.draw.selection = null;
     },
@@ -1622,26 +1623,42 @@ export default {
         if (!shapeId) {
           shapeId = data.features[data.features.length-1].id;
         }
+        console.log('in if e.mapboxEvent, shapeId:', shapeId);
       } else if (e.features.length) { // if getDrawDistances was called a draw event firing
         shapeId = e.features[0].id;
+        console.log('in else if, shapeId:', shapeId);
       }
 
       this.$data.draw.currentShape = shapeId;
+      let feature;
       // console.log('shapeId:', shapeId, 'draw.getSelectedIds():', draw.getSelectedIds());
       if (shapeId) {
-        let feature = data.features.filter(feature => feature.id === shapeId)[0];
-        // console.log('if shapeId:', shapeId, 'feature:', feature);
-        coordinates = feature.geometry.coordinates[0];
+        feature = data.features.filter(feature => feature.id === shapeId)[0];
+        console.log('if shapeId:', shapeId, 'feature:', feature);
+        if (feature.geometry.type === 'LineString') {
+          coordinates = feature.geometry.coordinates;
+        } else {
+          coordinates = feature.geometry.coordinates[0];
+        }
       } else {
-        let feature = data.features[data.features.length-1];
-        // console.log('else (no shapeId), feature.id:', feature.id, 'feature:', feature);
-        coordinates = feature.geometry.coordinates[0];
+        feature = data.features[data.features.length-1];
+        console.log('else (no shapeId), feature.id:', feature.id, 'feature:', feature);
+        if (feature.geometry.type === 'LineString') {
+          coordinates = feature.geometry.coordinates;
+        } else {
+          coordinates = feature.geometry.coordinates[0];
+        }
       }
       // console.log('middle of getDrawDistances, draw:', draw, 'shapeId:', shapeId, 'e:', e, 'mode is draw_polygon, data:', data, 'coordinates:', coordinates);
 
       // mapbox-gl-draw duplicates the points of a polygon in a way that has to be accounted for;
       if (e.mapboxEvent) {
+        // console.log('if e.mapboxEvent is running');
         coordinates.splice(coordinates.length-2, 1);
+      }
+      if (feature.geometry.type === 'LineString') {
+        // coordinates.pop();
+        coordinates.splice(0, 1);
       }
 
       let i;
@@ -1661,11 +1678,15 @@ export default {
           coord2 = coordinates[0];
         }
 
+        console.log('MapPanel.vue in getDrawDistances, coordinates:', coordinates, 'coord2:', coord2);
         distVal = parseFloat((distance(coordinates[i], coord2, { units: 'miles' }) * 5280).toFixed(2));
+        // distVal = distance(coordinates[i], coord2, { units: 'miles' }) * 5280;
 
         if (coordinates[i-1]) {
           lastDistVal = parseFloat((distance(coordinates[i-1], coordinates[i], { units: 'miles' }) * 5280).toFixed(2));
+          // lastDistVal = distance(coordinates[i-1], coordinates[i], { units: 'miles' }) * 5280;
         }
+        console.log('distVal:', distVal, 'lastDistVal:', lastDistVal);
 
         allVal = {
           firstPoint: [ parseFloat(coordinates[i][0].toFixed(5)), parseFloat(coordinates[i][1].toFixed(5)) ],
@@ -1765,9 +1786,11 @@ export default {
     handleDrawModeChange(e) {
       console.log('handleDrawModeChange is running, e:', e, 'e.mode:', e.mode);
       this.$data.draw.mode = e.mode;
-      // if (e.mode === 'simple_select') {
-      //   this.$data.draw.currentShape = null;
-      // }
+      let currentShape = this.$data.draw.currentShape;
+
+      if (e.mode === 'simple_select' && currentShape) {
+        this.handleDrawFinish();
+      }
     },
     handleDrawCancel(e) {
       // this.$data.draw.mode = 'simple_select';
@@ -1782,36 +1805,63 @@ export default {
       }
       this.$store.state.draw.changeMode('simple_select');
     },
-    handleDrawUndo(e) {
-      console.log('MapPanel.vue handleDrawUndo is running, e:', e);
-    },
     handleDrawFinish(e) {
       let currentShape = this.$data.draw.currentShape;
       // let currentPoints = [];
       let fetchedPoints = this.$data.draw.labelLayers.filter(set => set.id === currentShape)[0].distances;
+      console.log('MapPanel.vue handleDrawFinish 1 is running, this.$store.state.draw.getMode():', this.$store.state.draw.getMode(), 'currentShape:', currentShape, 'fetchedPoints:', fetchedPoints);
+
+      let currentPoints = [];
+      for (let point of fetchedPoints) {
+        console.log('in loop, point:', point, 'point.firstPoint:', point.firstPoint);
+        currentPoints.push(point.firstPoint);
+      }
+      if (currentPoints.length > 1) {
+        currentPoints.push(fetchedPoints[0].firstPoint);
+      }
 
       if (fetchedPoints.length > 2) {
         this.$store.state.draw.changeMode('simple_select');
+        this.$data.draw.mode = 'simple_select';
+      } else if (fetchedPoints.length === 2) {
+        this.$store.state.draw.delete(currentShape);
+        this.$store.state.draw.changeMode('draw_line_string');
+
+        let geojson = {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'LineString',
+            'coordinates': currentPoints,
+          },
+          'id': currentShape,
+          'properties': {},
+        };
+        this.$store.state.draw.add(geojson);
+        this.$store.state.draw.changeMode('simple_select');
+        this.$data.draw.mode = 'simple_select';
+      } else if (fetchedPoints.length === 1 ) {
+        this.$store.state.draw.delete(currentShape);
+        this.$store.state.draw.changeMode('draw_point');
+
+        let geojson = {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': currentPoints[0],
+          },
+          'id': currentShape,
+          'properties': {},
+        };
+        this.$store.state.draw.add(geojson);
+        this.$store.state.draw.changeMode('simple_select');
+        this.$data.draw.mode = 'simple_select';
       } else {
         this.$store.state.draw.trash();
         this.handleDrawCancel();
       }
 
-      // for (let point of fetchedPoints) {
-      //   currentPoints.push(point.firstPoint);
-      // }
-      // currentPoints.push(fetchedPoints[0].firstPoint);
+      console.log('MapPanel.vue handleDrawFinish 2 is running, this.$store.state.draw.getMode():', this.$store.state.draw.getMode(), 'currentShape:', currentShape, 'fetchedPoints:', fetchedPoints);
 
-      // let geojson = {
-      //   'type': 'Feature',
-      //   'geometry': {
-      //     'type': 'Polygon',
-      //     'coordinates': [ currentPoints ],
-      //   },
-      //   'properties': {},
-      // };
-      // console.log('MapPanel.vue handleDrawFinish is running e:', e, 'currentShape:', currentShape, 'currentPoints:', currentPoints, 'geojson:', geojson);
-      // this.$store.state.draw.add(geojson);
     },
     handleDrawSelectionChange(e) {
       let draw = this.$store.state.draw;
