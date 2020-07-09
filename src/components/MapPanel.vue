@@ -407,7 +407,6 @@
         :source="basemapSource.source"
         :before="basemapsBefore"
       />
-      <!-- :before="'geojsonParcels'" -->
 
       <MglRasterLayer
         v-for="(basemapLabelSource, key) in basemapLabelSources"
@@ -419,7 +418,6 @@
         :source="basemapLabelSource.source"
         :before="basemapsBefore"
       />
-      <!-- :before="'geojsonParcels'" -->
 
       <MglRasterLayer
         v-for="(overlaySource, key) in overlaySources"
@@ -534,6 +532,7 @@
         @mouseenter="handleMarkerMouseover"
         @click="handleMarkerClick"
         @mouseleave="handleMarkerMouseout"
+
       />
 
       <MglMarker
@@ -1938,6 +1937,10 @@ https://gis-svc.databridge.phila.gov/arcgis/rest/services/Atlas/ZoningMap/MapSer
 </script>
 
 <style>
+  .mapboxgl-ctrl {
+    z-index: 12000;
+  }
+
   .mb-panel-map {
     /*this allows the loading mask to fill the div*/
     position: relative;
