@@ -579,6 +579,16 @@
         @click="handleCyclomediaButtonClick"
       />
 
+      <overlay-legend
+        v-for="legendControl in Object.keys(legendControls)"
+        v-if="legendControls[legendControl].options.topics.includes(activeTopic)"
+        :key="legendControl"
+        :position="'bottomright'"
+        :options="legendControls[legendControl].options"
+        :items="legendControls[legendControl].data"
+      >
+      </overlay-legend>
+
       <mapbox-basemap-select-control />
 
       <MglNavigationControl position="bottom-right" />
@@ -1613,7 +1623,7 @@ export default {
       this.$data.draw.selection = null;
     },
     getDrawDistances(e) {
-      console.log('start of getDrawDistances, e:', e);
+      // console.log('start of getDrawDistances, e:', e);
       let draw = this.$store.state.draw;
       let data = draw.getAll();
       let coordinates, lastClick, shapeId;
@@ -1623,10 +1633,10 @@ export default {
         if (!shapeId) {
           shapeId = data.features[data.features.length-1].id;
         }
-        console.log('in if e.mapboxEvent, shapeId:', shapeId);
+        // console.log('in if e.mapboxEvent, shapeId:', shapeId);
       } else if (e.features.length) { // if getDrawDistances was called a draw event firing
         shapeId = e.features[0].id;
-        console.log('in else if, shapeId:', shapeId);
+        // console.log('in else if, shapeId:', shapeId);
       }
 
       this.$data.draw.currentShape = shapeId;
@@ -1634,7 +1644,7 @@ export default {
       // console.log('shapeId:', shapeId, 'draw.getSelectedIds():', draw.getSelectedIds());
       if (shapeId) {
         feature = data.features.filter(feature => feature.id === shapeId)[0];
-        console.log('if shapeId:', shapeId, 'feature:', feature);
+        // console.log('if shapeId:', shapeId, 'feature:', feature);
         if (feature.geometry.type === 'LineString') {
           coordinates = feature.geometry.coordinates;
         } else {
@@ -1642,7 +1652,7 @@ export default {
         }
       } else {
         feature = data.features[data.features.length-1];
-        console.log('else (no shapeId), feature.id:', feature.id, 'feature:', feature);
+        // console.log('else (no shapeId), feature.id:', feature.id, 'feature:', feature);
         if (feature.geometry.type === 'LineString') {
           coordinates = feature.geometry.coordinates;
         } else {
@@ -1678,7 +1688,7 @@ export default {
           coord2 = coordinates[0];
         }
 
-        console.log('MapPanel.vue in getDrawDistances, coordinates:', coordinates, 'coord2:', coord2);
+        // console.log('MapPanel.vue in getDrawDistances, coordinates:', coordinates, 'coord2:', coord2);
         distVal = parseFloat((distance(coordinates[i], coord2, { units: 'miles' }) * 5280).toFixed(2));
         // distVal = distance(coordinates[i], coord2, { units: 'miles' }) * 5280;
 
@@ -1686,7 +1696,7 @@ export default {
           lastDistVal = parseFloat((distance(coordinates[i-1], coordinates[i], { units: 'miles' }) * 5280).toFixed(2));
           // lastDistVal = distance(coordinates[i-1], coordinates[i], { units: 'miles' }) * 5280;
         }
-        console.log('distVal:', distVal, 'lastDistVal:', lastDistVal);
+        // console.log('distVal:', distVal, 'lastDistVal:', lastDistVal);
 
         allVal = {
           firstPoint: [ parseFloat(coordinates[i][0].toFixed(5)), parseFloat(coordinates[i][1].toFixed(5)) ],
