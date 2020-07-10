@@ -871,13 +871,13 @@ export default {
       return this.$config.queriedLayerSources;
     },
     basemapSources() {
-      return this.$config.basemapSources;
+      return this.$config.map.basemapSources;
     },
     basemapLabelSources() {
-      return this.$config.basemapLabelSources;
+      return this.$config.map.basemapLabelSources;
     },
     overlaySources() {
-      return this.$config.overlaySources;
+      return this.$config.map.overlaySources;
     },
     mapType() {
       return this.$store.state.map.type;
@@ -893,8 +893,8 @@ export default {
 
       let map = this.$store.map;
       let overlay;
-      if (this.$config.overlaySources) {
-        let overlaySources = Object.keys(this.$config.overlaySources);
+      if (this.$config.map.overlaySources) {
+        let overlaySources = Object.keys(this.$config.map.overlaySources);
         if (map) {
           console.log('firstOverlay computed, map.getStyle().layers:', map.getStyle().layers);
           let overlays = map.getStyle().layers.filter(function(layer) {
@@ -1489,6 +1489,7 @@ export default {
     onMapLoaded(event) {
       // this.$store.commit('setMap', map);
       this.$store.map = event.map;
+      event.map.resize();
     },
     handleBasemapToggleClick() {
       console.log('handleBasemapToggleClick, this.$store.map.getStyle().layers:', this.$store.map.getStyle().layers);
@@ -1870,24 +1871,24 @@ export default {
     },
     handleMapMove(e) {
       const map = this.$store.map;
-      const canvas = map.getCanvas();
-      const w = canvas.width;
-      const h = canvas.height;
-      const cUL = map.unproject ([ 0,0 ]).toArray();
-      const cUR = map.unproject ([ w,0 ]).toArray();
-      const cLR = map.unproject ([ w,h ]).toArray();
-      const cLL = map.unproject ([ 0,h ]).toArray();
-      const coordinates = [ cUL,cUR,cLR,cLL ];
-      const url = '\
-https://gis-svc.databridge.phila.gov/arcgis/rest/services/Atlas/ZoningMap/MapServer/export?dpi=130\
-&transparent=true\
-&format=png36\
-&bbox=' + cLL[0] + ',' + cLL[1] + ',' + cUR[0] + ',' + cUR[1] + '\
-&bboxSR=4326\
-&imageSR=3857\
-&size=' + w + ',' + h + '\
-&f=image\
-      ';
+      //       const canvas = map.getCanvas();
+      //       const w = canvas.width;
+      //       const h = canvas.height;
+      //       const cUL = map.unproject ([ 0,0 ]).toArray();
+      //       const cUR = map.unproject ([ w,0 ]).toArray();
+      //       const cLR = map.unproject ([ w,h ]).toArray();
+      //       const cLL = map.unproject ([ 0,h ]).toArray();
+      //       const coordinates = [ cUL,cUR,cLR,cLL ];
+      //       const url = '\
+      // https://gis-svc.databridge.phila.gov/arcgis/rest/services/Atlas/ZoningMap/MapServer/export?dpi=130\
+      // &transparent=true\
+      // &format=png36\
+      // &bbox=' + cLL[0] + ',' + cLL[1] + ',' + cUR[0] + ',' + cUR[1] + '\
+      // &bboxSR=4326\
+      // &imageSR=3857\
+      // &size=' + w + ',' + h + '\
+      // &f=image\
+      //       ';
       // const boundingbox = [ cLL[0], cLL[1], cUR[0], cUR[1] ];
       // this.$data.overlaySources.zoning.source.coordinates = coordinates;
       // this.$data.overlaySources.zoning.source.url = url;
