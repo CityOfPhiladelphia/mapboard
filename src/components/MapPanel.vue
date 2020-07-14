@@ -418,6 +418,7 @@
         :source="basemapLabelSource.source"
         :before="basemapsBefore"
       />
+      <!-- :initial-opacity="50" -->
 
       <MglRasterLayer
         v-for="(overlaySource, key) in overlaySources"
@@ -427,6 +428,7 @@
         :layer-id="key"
         :layer="overlaySource.layer"
         :source="overlaySource.source"
+        :initial-opacity="100"
         :before="'geojsonParcels'"
       />
 
@@ -438,6 +440,7 @@
         :layer-id="item.data.properties.RECMAP"
         :layer="item.source.layer"
         :source="item.source.source"
+        :initial-opacity="50"
         :before="'geojsonParcels'"
       />
 
@@ -579,7 +582,7 @@
         @click="handleCyclomediaButtonClick"
       />
 
-      <overlay-legend
+      <!-- <overlay-legend
         v-for="legendControl in Object.keys(legendControls)"
         v-if="legendControls[legendControl].options.topics.includes(activeTopic)"
         :key="legendControl"
@@ -587,7 +590,7 @@
         :options="legendControls[legendControl].options"
         :items="legendControls[legendControl].data"
       >
-      </overlay-legend>
+      </overlay-legend> -->
 
       <mapbox-basemap-select-control />
 
@@ -682,7 +685,7 @@ export default {
     MglNavigationControl: () => import(/* webpackChunkName: "pvm_MglNavigationControl" */'@phila/vue-mapping/src/mapbox/UI/controls/NavigationControl'),
     MglGeolocateControl: () => import(/* webpackChunkName: "pvm_MglGeolocateControl" */'@phila/vue-mapping/src/mapbox/UI/controls/GeolocateControl'),
     MglDrawControl: () => import(/* webpackChunkName: "pvm_MglDrawControl" */'@phila/vue-mapping/src/mapbox/UI/controls/DrawControl.vue'),
-    MglRasterLayer: () => import(/* webpackChunkName: "pvm_MglRasterLayer" */'@phila/vue-mapping/src/mapbox/layer/RasterLayer'),
+    MglRasterLayer: () => import(/* webpackChunkName: "pvm_MglRasterLayer" */'@phila/vue-mapping/src/mapbox/layer/RasterLayer.vue'),
     MglButtonControl: () => import(/* webpackChunkName: "pvm_MglButtonControl" */'@phila/vue-mapping/src/mapbox/UI/controls/ButtonControl.vue'),
     MglControlContainer: () => import(/* webpackChunkName: "pvm_MglControlContainer" */'@phila/vue-mapping/src/mapbox/UI/controls/ControlContainer.vue'),
     MglImageLayer: () => import(/* webpackChunkName: "pvm_MglImageLayer" */'@phila/vue-mapping/src/mapbox/layer/ImageLayer'),
