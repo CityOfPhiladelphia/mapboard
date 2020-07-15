@@ -547,10 +547,11 @@
         :anchor="'bottom'"
       />
 
-      <MglDrawControl
+      <MglDistanceMeasureControl
         :position="'bottom-left'"
         :label-layers="draw.labelLayers"
         :current-shape="draw.currentShape"
+        :current-area="draw.currentArea"
         @drawCreate="getDrawDistances"
         @drawDelete="deleteDrawDistances"
         @drawUpdate="getDrawDistances"
@@ -615,6 +616,8 @@ import 'leaflet/dist/leaflet.css';
 import destination from '@turf/destination';
 import distance from '@turf/distance';
 import midpoint from '@turf/midpoint';
+import area from '@turf/area';
+import { polygon } from '@turf/helpers';
 
 import generateUniqueId from '../util/unique-id';
 
@@ -684,7 +687,7 @@ export default {
     MglCircleMarker: () => import(/* webpackChunkName: "pvm_MglCircleMarker" */'@phila/vue-mapping/src/mapbox/UI/CircleMarker.vue'),
     MglNavigationControl: () => import(/* webpackChunkName: "pvm_MglNavigationControl" */'@phila/vue-mapping/src/mapbox/UI/controls/NavigationControl'),
     MglGeolocateControl: () => import(/* webpackChunkName: "pvm_MglGeolocateControl" */'@phila/vue-mapping/src/mapbox/UI/controls/GeolocateControl'),
-    MglDrawControl: () => import(/* webpackChunkName: "pvm_MglDrawControl" */'@phila/vue-mapping/src/mapbox/UI/controls/DrawControl.vue'),
+    MglDistanceMeasureControl: () => import(/* webpackChunkName: "pvm_MglDrawDistanceMeasureControl" */'@phila/vue-mapping/src/mapbox/UI/controls/DistanceMeasureControl.vue'),
     MglRasterLayer: () => import(/* webpackChunkName: "pvm_MglRasterLayer" */'@phila/vue-mapping/src/mapbox/layer/RasterLayer.vue'),
     MglButtonControl: () => import(/* webpackChunkName: "pvm_MglButtonControl" */'@phila/vue-mapping/src/mapbox/UI/controls/ButtonControl.vue'),
     MglControlContainer: () => import(/* webpackChunkName: "pvm_MglControlContainer" */'@phila/vue-mapping/src/mapbox/UI/controls/ControlContainer.vue'),
@@ -713,6 +716,7 @@ export default {
         selection: null,
         currentShape: null,
         labelLayers: [],
+        currentArea: null,
       },
       zoomToShape: {
         geojsonParcels: [],
@@ -1674,11 +1678,18 @@ export default {
         coordinates.splice(0, 1);
       }
 
+      console.log('coordinates:', coordinates);
+      if (coordinates.length >=4) {
+        const thePolygon = polygon([ coordinates ]);
+        const theArea = area(thePolygon);
+        this.$data.draw.currentArea = theArea.toFixed(2) + ' Sq Feet';
+      }
+
       let i;
       let distancesArray = [];
       let features = [];
       for (i=0; i<coordinates.length; i++) {
-        // console.log('loop, i:', i, 'coordinates[i][0]', coordinates[i][0], 'i+1:', i+1, 'coordinates.length:', coordinates.length, 'coordinates:', coordinates);
+        console.log('loop, i:', i, 'coordinates[i][0]', coordinates[i][0], 'i+1:', i+1, 'coordinates.length:', coordinates.length, 'coordinates:', coordinates);
         let distVal = 0;
         let lastDistVal = null;
         let midPoint = [];
@@ -1746,7 +1757,7 @@ export default {
         }
       } // end of loop
 
-      // console.log('near end of getDrawDistances, distancesArray.length:', distancesArray.length, 'distancesArray:', distancesArray, 'features:', features);
+      console.log('near end of getDrawDistances, distancesArray.length:', distancesArray.length, 'distancesArray:', distancesArray, 'features:', features);
 
       if (distancesArray.length) {
         let theSet = {};
