@@ -407,6 +407,7 @@
         :source="basemapSource.source"
         :before="basemapsBefore"
       />
+      <!-- :before="firstOverlay" -->
 
       <MglRasterLayer
         v-for="(basemapLabelSource, key) in basemapLabelSources"
@@ -418,6 +419,7 @@
         :source="basemapLabelSource.source"
         :before="basemapsBefore"
       />
+      <!-- :before="firstOverlay" -->
       <!-- :initial-opacity="50" -->
 
       <MglRasterLayer
@@ -853,7 +855,9 @@ export default {
   computed: {
     basemapsBefore() {
       let value = 'geojsonParcels';
-      if (this.activeTopicConfig.dynamicMapLayers && this.activeTopicConfig.dynamicMapLayers.length) {
+      if (this.imageOverlay != null) {
+        value = this.imageOverlay;
+      } else if (this.activeTopicConfig.dynamicMapLayers && this.activeTopicConfig.dynamicMapLayers.length) {
         value = this.activeTopicConfig.dynamicMapLayers[this.activeTopicConfig.dynamicMapLayers.length-1];
       }
       return value;
@@ -907,13 +911,34 @@ export default {
       }
     },
     firstOverlay() {
-
+      console.log('firstOverlay computed is running');
       let map = this.$store.map;
       let overlay;
-      if (this.$config.map.overlaySources) {
+      if (this.imageOverlay !== null) {
+        let imageOverlay = this.imageOverlay;
+        console.log('firstOverlay computed, if imageOverlay, this.imageOverlay:', this.imageOverlay, 'typeof(this.imageOverlay):', typeof(this.imageOverlay));
+        if (map) {
+          console.log('firstOverlay computed, if imageOverlay, if map');
+          // let overlays;
+          let overlays = map.getStyle().layers.filter(function(layer) {
+            console.log('in filter, layer.id:', layer.id, 'imageOverlay:', imageOverlay);
+            // console.log('firstOverlay computed, if imageOverlay, layer.id:', layer.id, 'this.imageOverlay:', this.imageOverlay);
+            return layer.id === imageOverlay;//[0].id;
+          });
+          console.log('still going, overlays:', overlays);
+          if (overlays.length) {
+            overlay = overlays[0].id;
+            console.log('firstOverlay computed, overlay:', overlay);
+          } else if (this.cyclomediaActive) {
+            overlay = 'cameraPoints';
+          } else {
+            overlay = 'geojsonParcels';
+          }
+        }
+      } else if (this.$config.map.overlaySources) {
         let overlaySources = Object.keys(this.$config.map.overlaySources);
         if (map) {
-          console.log('firstOverlay computed, map.getStyle().layers:', map.getStyle().layers);
+          console.log('firstOverlay computed, if overlaySources, map.getStyle().layers:', map.getStyle().layers);
           let overlays = map.getStyle().layers.filter(function(layer) {
             console.log('firstOverlay computed, layer.id:', layer.id, 'overlaySources:', overlaySources);
             return overlaySources.includes(layer.id);//[0].id;
@@ -926,10 +951,7 @@ export default {
           } else {
             overlay = 'geojsonParcels';
           }
-        } //else {
-        //   overlay = 'geojsonParcel';
-        //   console.log('firstOverlay computed, overlay:', overlay);
-        // }
+        }
       } else if (this.cyclomediaActive) {
         overlay = 'cameraPoints';
       } else {
@@ -1261,7 +1283,7 @@ export default {
     },
     activeTopicConfig(nextTopicConfig) {
       if (this.$store.map) {
-        console.log('watch activeTopicConfig is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextTopicConfig:', nextTopicConfig);
+        console.log('watch activeTopicConfig is running, nextTopicConfig:', nextTopicConfig, 'map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextTopicConfig:', nextTopicConfig);
         // this.$store.map.resize();
       }
       const prevBasemap = this.$store.state.map.basemap || null;
@@ -1277,6 +1299,7 @@ export default {
         this.$store.commit('setShouldShowImagery', true);
         this.$store.commit('setImagery', nextImagery);
       }
+      this.$store.commit('setImageOverlay', null);
     },
     geocodeResult(nextGeocodeResult) {
       if (nextGeocodeResult._featureId) {
