@@ -89,6 +89,7 @@
 <script>
 // console.log('test Mapboard.vue, this:', this, 'this.$config:', this.$config);
 
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 export default {
   components: {
@@ -109,6 +110,9 @@ export default {
     return data;
   },
   computed: {
+    mapType() {
+      return this.$store.state.map.type;
+    },
     maintenanceResponse() {
       return this.$store.state.maintenanceResponse || null;
     },
@@ -170,10 +174,10 @@ export default {
       return this.$store.state.isMobileOrTablet;
     },
     shouldLoadCyclomediaWidget() {
-      return this.$config.cyclomedia.enabled && !this.isMobileOrTablet;
+      return this.$config.cyclomedia.enabled;// && !this.isMobileOrTablet;
     },
     shouldLoadPictometryWidget() {
-      return this.$config.pictometry.enabled && !this.isMobileOrTablet;
+      return this.$config.pictometry.enabled;// && !this.isMobileOrTablet;
     },
     fullScreenMapOnly() {
       return this.$store.state.fullScreen.mapOnly;
@@ -267,6 +271,16 @@ export default {
         this.$store.commit('setMapOnly', true);
       }
     }
+
+    if (this.$config.map) {
+      // if (this.$config.map.shouldInitialize === false) {
+      //   this.$store.commit('setShouldInitializeMap', false);
+      // }
+      if (this.$config.map.type) {
+        this.$store.commit('setMapType', this.$config.map.type);
+      }
+    }
+
     window.addEventListener('click', this.closeAddressCandidateList);
     window.addEventListener('resize', this.handleWindowResize);
   },

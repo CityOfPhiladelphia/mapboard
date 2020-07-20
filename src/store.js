@@ -127,7 +127,7 @@ function createHorizontalTableGroups(config) {
 function createStore(config) {
   const sources = pvdStore.createSources(config);
   const parcels = pvdStore.createParcels(config);
-  console.log('parcels:', parcels);
+  // console.log('parcels:', parcels);
 
   const initialState = {
     isMobileOrTablet: isMobileDevice(),
@@ -265,6 +265,7 @@ function createStore(config) {
 
 
       setMapBounds(state, payload) {
+        console.log('mapboard store.js setMapBounds is running');
         // const { northEast, southWest } = payload || {};
         // state.map.bounds.northEast = northEast;
         // state.map.bounds.southWest = southWest;
@@ -327,11 +328,11 @@ function createStore(config) {
         const day = fullDate.getDay();
         const t = format(fullDate,'k:mm');
 
-        console.log('store.js healthCheck, hc:', hc, 'maintenanceHours:', maintenanceHours, 'isMaintenance:', isMaintenance, 'fullDate:', fullDate, 'year', year, 'month', month, 'date', date, 'day:', day, 't:', t);
+        // console.log('store.js healthCheck, hc:', hc, 'maintenanceHours:', maintenanceHours, 'isMaintenance:', isMaintenance, 'fullDate:', fullDate, 'year', year, 'month', month, 'date', date, 'day:', day, 't:', t);
         let response = {};
 
         if (maintenanceHours.length === 1) {
-          console.log('healthCheck if is running');
+          // console.log('healthCheck if is running');
           for (let period of maintenanceHours[0].condition) {
             // console.log('format(fullDate, "k:mm")', format(fullDate,'k:mm'), 'period.day:', period.day, 'period.startTime:', period.startTime, 'period.endTime:', period.endTime);
             if (day === period.day) {
@@ -341,7 +342,7 @@ function createStore(config) {
               let periodEndTime = new Date(format(new Date(year, month, date, endTime[0], endTime[1]), "MMMM d, yyyy k:mm") + ' GMT-05:00');
               // console.log('Date.parse(periodStartTime):', Date.parse(periodStartTime), 'Date.parse(fullDate):', Date.parse(fullDate), 'Date.parse(periodEndTime):', Date.parse(periodEndTime));
               if (Date.parse(periodStartTime) <= Date.parse(fullDate) && Date.parse(fullDate) <= Date.parse(periodEndTime)) {
-                console.log('fullDate is between start and end time');
+                // console.log('fullDate is between start and end time');
                 isMaintenanceHours = true;
                 commit('setMaintenanceResponse', 'maintenanceHours');
                 if (!isMaintenance) {
@@ -368,7 +369,7 @@ function createStore(config) {
 
           if (maintenanceAPI.length === 1) {
             response = await axios.get(maintenanceAPI[0].condition);
-            console.log('Health-Check response:', response);
+            // console.log('Health-Check response:', response);
             if (response.data && response.data.maintenance || response.status !== 200) {
               commit('setMaintenanceResponse', 'maintenanceAPI');
               if (!isMaintenance) {
@@ -376,14 +377,14 @@ function createStore(config) {
                 return;
               }
             } else {
-              console.log('health check has a good response');
+              // console.log('health check has a good response');
               commit('setMaintenanceResponse', null);
               if (isMaintenance) {
-                console.log('isMaintenance is null');
+                // console.log('isMaintenance is null');
                 window.location.href = process.env.VUE_APP_PUBLIC_PATH;
                 return;
               } else {
-                console.log('isMaintenance is null');
+                // console.log('isMaintenance is null');
               }
             }
           }
@@ -406,7 +407,7 @@ function createStore(config) {
   mergeStore = mergeDeep(mergeStore, pvcStore);
   mergeStore = mergeDeep(mergeStore, mb);
 
-  console.log('mergeStore:', mergeStore);
+  // console.log('mergeStore:', mergeStore);
   // let mergeStore = mergeDeep(mb, pvdStore.store);
   // mergeStore = mergeDeep(mergeStore, pvmStore);
   // mergeStore = mergeDeep(mergeStore, pvcStore);

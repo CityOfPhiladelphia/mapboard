@@ -1,9 +1,18 @@
 export default {
   watch: {
+
     activeFeature(nextActiveFeature, prevActiveFeature) {
 
-      const layerMap = this.$store.state.map.map._layers;
-      const layers = Object.values(layerMap);
+      let layerMap, layers;
+      // console.log('watch activeFeature, this.$store.map.getStyle():', this.$store.map.getStyle(), 'this.$store.map:', this.$store.map);
+      if (this.mapType === 'leaflet') {
+        layerMap = this.$store.state.map.map._layers;
+        layers = Object.values(layerMap);
+      } else if (this.mapType === 'mapbox') {
+        // layerMap = this.$store.map.getStyle().layers;
+        // layers = layerMap;
+        layers = this.getVisibleMarkers();
+      }
       // console.log('WATCH active feature', prevActiveFeature, '=>', nextActiveFeature, 'layers:', layers);
 
       let updateFeaturePrev,
@@ -15,40 +24,75 @@ export default {
         matchingLayerPrev;
 
       if (prevActiveFeature && prevActiveFeature.tableId && prevActiveFeature.featureId) {
-        // console.log('prevActiveFeature:', prevActiveFeature);
+        // console.log('first if prevActiveFeature:', prevActiveFeature);
         updateFeaturePrev = prevActiveFeature;
         tableId = updateFeaturePrev.tableId;
         featureIdPrev = updateFeaturePrev.featureId;
-        matchingLayerPrev = layers.filter(layer => {
-          const options = layer.options || {};
-          const data = options.data;
-          if (!data) {
-            return;
+        if (this.mapType === 'leaflet') {
+          matchingLayerPrev = layers.filter(layer => {
+            const options = layer.options || {};
+            const data = options.data;
+            if (!data) {
+              return;
+            }
+            const layerFeatureId = data.featureId;
+            const layerTableId = data.tableId;
+            return layerFeatureId === featureIdPrev && layerTableId === tableId;
+          })[0];
+        } else if (this.mapType === 'mapbox') {
+          for (let layer of layers) {
+            if (layer.attributes.feature.value === featureIdPrev) {
+              matchingLayerPrev = {
+                options: {
+                  data: {
+                    featureId: featureIdPrev,
+                    tableId: tableId,
+                    layer: layer,
+                  },
+                },
+              };
+            }
           }
-          const layerFeatureId = data.featureId;
-          const layerTableId = data.tableId;
-          return layerFeatureId === featureIdPrev && layerTableId === tableId;
-        })[0];
+        }
         this.updateMarkerStyle(matchingLayerPrev);
       }
 
       if (nextActiveFeature && nextActiveFeature.tableId && nextActiveFeature.featureId) {
-        // console.log('nextActiveFeature:', nextActiveFeature);
+        // console.log('second if nextActiveFeature:', nextActiveFeature);
         updateFeatureNext = nextActiveFeature;
         tableId = updateFeatureNext.tableId;
         featureIdNext = updateFeatureNext.featureId;
-        matchingLayerNext = layers.filter(layer => {
-          const options = layer.options || {};
-          const data = options.data;
-          if (!data) {
-            return;
+        if (this.mapType === 'leaflet') {
+          matchingLayerNext = layers.filter(layer => {
+            const options = layer.options || {};
+            const data = options.data;
+            if (!data) {
+              return;
+            }
+            const layerFeatureId = data.featureId;
+            const layerTableId = data.tableId;
+            return layerFeatureId === featureIdNext && layerTableId === tableId;
+          })[0];
+        } else if (this.mapType === 'mapbox') {
+          for (let layer of layers) {
+            if (layer.attributes.feature.value === featureIdNext) {
+              matchingLayerNext = {
+                options: {
+                  data: {
+                    featureId: featureIdNext,
+                    tableId: tableId,
+                    layer: layer,
+                  },
+                },
+              };
+            }
           }
-          const layerFeatureId = data.featureId;
-          const layerTableId = data.tableId;
-          return layerFeatureId === featureIdNext && layerTableId === tableId;
-        })[0];
+        }
+        // console.log('matchingLayerNext:', matchingLayerNext);
         this.updateMarkerStyle(matchingLayerNext);
-        this.bringMarkerToFront(matchingLayerNext);
+        if (this.mapType === 'leaflet') {
+          this.bringMarkerToFront(matchingLayerNext);
+        }
       }
 
     },
@@ -130,6 +174,7 @@ export default {
     },
 
     reactiveCircleMarkers() {
+      // console.log('computed reactiveCircleMarkers is running');
       const filteredData = this.$store.state.horizontalTables.filteredData;
       // const filteredData = this.filteredData;
       let circleMarkers = [];
@@ -176,6 +221,7 @@ export default {
 
           // check for active feature TODO - bind style props to state
           let props = Object.assign({}, style);
+          props.size = 14;
           props.latlng = latlng;
           props.featureId = item._featureId;
           props.tableId = tableId;
@@ -346,6 +392,32 @@ export default {
     },
   },
   methods: {
+    intersectRect(r1, r2) {
+      // console.log('intersectRect is running, r1:', r1, 'r2:', r2);
+      return !(r2.left > r1.right ||
+        r2.right < r1.left ||
+        r2.top > r1.bottom ||
+        r2.bottom < r1.top);
+    },
+
+    getVisibleMarkers() {
+      // console.log('getVisibleMarkers is running');
+      let map = this.$store.map;
+      var cc = map.getContainer();
+      var els = cc.getElementsByClassName('circle-div');
+      var ccRect = cc.getBoundingClientRect();
+      var visibles = [];
+      for (var i = 0; i < els.length; i++) {
+        var el = els.item(i);
+        var elRect = el.getBoundingClientRect();
+        this.intersectRect(ccRect, elRect) && visibles.push(el);
+      }
+      if (visibles.length > 0) {
+        // console.log('visibles:', visibles);
+      }
+      return visibles;
+    },
+
     getTableFromComps(comps, tableId) {
       const matchingComps = comps.filter(comp => {
         return (
@@ -355,6 +427,7 @@ export default {
       }) || [];
       return matchingComps[0];
     },
+
     getConfigForTable(tableId) {
       const topics = this.$config.topics || [];
 
@@ -387,10 +460,11 @@ export default {
     },
     bringMarkerToFront(circleMarker) {
       if (!circleMarker) {
-        return; 
+        return;
       }
       // put marker on top
       const el = circleMarker._path;
+      console.log('bringMarkerToFront is running, circleMarker:', circleMarker, 'el:', el);
 
       // remove from parent
       const group = circleMarker._renderer._rootGroup;
@@ -399,23 +473,33 @@ export default {
       // append to end (which brings it to the front)
       group.appendChild(el);
     },
-    handleMarkerMouseover(e) {
-      // console.log('handleMarkerMouseover is starting');
+    handleMarkerMouseover(event) {
+      // console.log('handleMarkerMouseover is starting, event:', event, 'event.map:', event.map);
       if (!this.isMobileOrTablet) {
-        // console.log('handleMarkerMouseover actions are running');
-        const { target } = e;
-        const { featureId, tableId } = target.options.data;
-        // console.log('target:', target, 'featureId:', featureId, 'tableId:', tableId);
+        let e, target, featureId, tableId;
+        if (this.mapType === 'leaflet') {
+          e = event;
+          target= e.target;
+          featureId = e.target.options.data.featureId;
+          tableId = e.target.options.data.tableId;
+        } else if (this.mapType === 'mapbox') {
+          let map = this.$store.map;
+          let features = map.queryRenderedFeatures();
+          // console.log('features:', features);
+          e = event.component._props;
+          featureId = event.component._props.data.featureId;
+          tableId = event.component._props.data.tableId;
+        }
         this.$store.commit('setActiveFeature', { featureId, tableId });
       }
     },
     handleMarkerClick(e) {
-      // console.log('handleMarkerClick is starting');
+      console.log('handleMarkerClick is starting');
       if (this.isMobileOrTablet) {
-        // console.log('handleMarkerClick actions are running');
+        // console.log('handleMarkesrClick actions are running');
         const { target } = e;
         const { featureId, tableId } = target.options.data;
-        // console.log('target:', target, 'featureId:', featureId, 'tableId:', tableId);
+        console.log('target:', target, 'featureId:', featureId, 'tableId:', tableId);
         this.$store.commit('setActiveFeature', { featureId, tableId });
       }
     },
@@ -428,15 +512,16 @@ export default {
       // }
     },
     updateMarkerStyle(marker) {
-      // console.log('updateMarkerStyle, marker:', marker);
       if (!marker) {
-        return; 
+        return;
       }
       // get next fill color
       const { featureId, tableId, type } = marker.options.data;
       const nextStyles = this.styleForOverlayMarker(featureId, tableId);
+      // console.log('updateMarkerStyle, marker:', marker, 'nextStyles:', nextStyles);
       const nextFillColor = nextStyles.fillColor;
       const nextWeight = nextStyles.weight;
+      const nextZIndex = nextStyles['z-index'];
 
       // highlight. we're doing this here (non-reactively) because binding the
       // fill color property was not performing well enough.
@@ -448,7 +533,14 @@ export default {
       } else {
         nextStyle.fillColor = nextFillColor;
       }
-      marker.setStyle(nextStyle);
+
+      if (this.mapType === 'leaflet') {
+        marker.setStyle(nextStyle);
+      } else if (this.mapType === 'mapbox') {
+        // console.log('end of updateMarkerStyle, nextStyle:', nextStyle);
+        marker.options.data.layer.style['background-color'] = nextStyle.fillColor;
+        marker.options.data.layer.style['z-index'] = nextZIndex;
+      }
     },
   },
 };
