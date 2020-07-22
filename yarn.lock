@@ -1052,9 +1052,9 @@
     vue "^2.6.10"
     vuex "^3.1.2"
 
-"@phila/vue-mapping@https://github.com/CityOfPhiladelphia/phila-vue-mapping#9e6064ed9f7b202e99ad303e63e5c68c33ae698d":
+"@phila/vue-mapping@https://github.com/CityOfPhiladelphia/phila-vue-mapping#290ed9fe474eb79b5e739b3c7551df015ab2b646":
   version "2.1.12"
-  resolved "https://github.com/CityOfPhiladelphia/phila-vue-mapping#9e6064ed9f7b202e99ad303e63e5c68c33ae698d"
+  resolved "https://github.com/CityOfPhiladelphia/phila-vue-mapping#290ed9fe474eb79b5e739b3c7551df015ab2b646"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-regular-svg-icons" "^5.7.2"

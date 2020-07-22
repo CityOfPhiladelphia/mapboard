@@ -577,19 +577,20 @@
         :button-id="'buttonId-01'"
         :button-class="'right top-button-1'"
         :image-link="basemapImageLink"
+        :image-align="'top'"
         @click="handleBasemapToggleClick"
       />
 
       <MglButtonControl
         :button-id="'buttonId-02'"
-        :button-class="'right top-button-2'"
+        :button-class="pictometryActive ? 'right top-button-2 active' : 'right top-button-2 inactive'"
         :image-link="sitePath + 'images/pictometry.png'"
         @click="handlePictometryButtonClick"
       />
 
       <MglButtonControl
         :button-id="'buttonId-03'"
-        :button-class="'right top-button-3'"
+        :button-class="cyclomediaActive ? 'right top-button-3 active' : 'right top-button-3 inactive'"
         :image-link="sitePath + 'images/cyclomedia.png'"
         @click="handleCyclomediaButtonClick"
       />
@@ -1282,7 +1283,7 @@ export default {
       if (this.$config.map.geocodeZoom) {
         return this.$config.map.geocodeZoom;
       }
-      return 19;
+      return 18;
 
     },
   },
