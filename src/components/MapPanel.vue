@@ -1284,14 +1284,14 @@ export default {
         return this.$config.map.geocodeZoom;
       }
       return 18;
-
     },
   },
   watch: {
-    watchedZoom() {
+    watchedZoom(nextWatchedZoom) {
       if (this.cyclomediaActive) {
         this.handleCycloChanges();
       }
+      this.$store.map.setZoom(nextWatchedZoom);
     },
     cycloLatlng(nextCycloLatlng) {
       console.log('watch cycloLatlng, nextCycloLatlng:', nextCycloLatlng, 'this.$data.geojsonCameraSource:', this.$data.geojsonCameraSource);
@@ -1329,9 +1329,11 @@ export default {
       this.$store.commit('setImageOverlay', null);
     },
     geocodeResult(nextGeocodeResult) {
+      // console.log('watch geocodeResult is firing, nextGeocodeResult:', nextGeocodeResult, 'this.geocodeZoom:', this.geocodeZoom);
       if (nextGeocodeResult._featureId) {
         this.$store.commit('setMapCenter', nextGeocodeResult.geometry.coordinates);
         this.$store.commit('setMapZoom', this.geocodeZoom);
+        this.$data.watchedZoom = this.geocodeZoom;
       } else {
         this.$store.commit('setBasemap', 'pwd');
       }
