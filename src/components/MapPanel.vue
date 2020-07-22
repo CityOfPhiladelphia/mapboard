@@ -611,7 +611,7 @@
         position="bottom-right"
         :position-options="geolocationPositionOptions"
       />
-      
+
     </MglMap>
 
     <slot
@@ -763,7 +763,8 @@ export default {
         'source': 'cameraPoint',
         'layout': {
           'icon-image': 'cameraMarker',
-          'icon-size': 0.13,
+          'icon-size': 0.09,
+          // 'icon-size': 0.13,
           'icon-rotate': 0,
           'icon-rotation-alignment': 'map',
         },
@@ -1502,8 +1503,34 @@ export default {
       let angle2 = this.cycloRotationAngle + halfAngle;
       // console.log('handleCycloChanges, halfAngle:', halfAngle, 'angle1:', angle1, 'this.cycloRotationAngle:', this.cycloRotationAngle, 'angle2:', angle2);
 
-      let distance = 50 * (22 - this.$data.watchedZoom);
-      console.log('handleCycloChanges is running, distance:', distance);
+      let distance;
+      if (this.$data.watchedZoom < 9) {
+        distance = 2000 * (21 - this.$data.watchedZoom);
+      } else if (this.$data.watchedZoom < 10) {
+        distance = 1000 * (21 - this.$data.watchedZoom);
+      } else if (this.$data.watchedZoom < 11) {
+        distance = 670 * (21 - this.$data.watchedZoom);
+      } else if (this.$data.watchedZoom < 12) {
+        distance = 420 * (21 - this.$data.watchedZoom);
+      } else if (this.$data.watchedZoom < 13) {
+        distance = 270 * (21 - this.$data.watchedZoom);
+      } else if (this.$data.watchedZoom < 14) {
+        distance = 150 * (21 - this.$data.watchedZoom);
+      } else if (this.$data.watchedZoom < 15) {
+        distance = 100 * (21 - this.$data.watchedZoom);
+      } else if (this.$data.watchedZoom < 16) {
+        distance = 55 * (21 - this.$data.watchedZoom);
+      } else if (this.$data.watchedZoom < 17) {
+        distance = 30 * (21 - this.$data.watchedZoom);
+      } else if (this.$data.watchedZoom < 18) {
+        distance = 25 * (21 - this.$data.watchedZoom);
+      } else if (this.$data.watchedZoom < 20.4) {
+        distance = 15 * (21 - this.$data.watchedZoom);
+      } else {
+        distance = 10;
+      }
+
+      console.log('handleCycloChanges is running, this.$data.watchedZoom:', this.$data.watchedZoom, 'distance:', distance);
       let options = { units: 'feet' };
 
       if (!this.cycloLatlng) {
