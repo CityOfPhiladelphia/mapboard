@@ -488,6 +488,15 @@
         :layer="geojsonViewconeLayer"
       />
 
+      <!-- <MglTriangleMarker
+        v-if="cyclomediaActive"
+        :coordinates="[cycloLatlng[1], cycloLatlng[0]]"
+        :size="14"
+        :rotation-angle="cycloRotationAngle"
+        :h-fov="cycloHFov"
+        :weight="1"
+      /> -->
+
       <MglFontAwesomeMarker
         v-for="(marker) in markersForTopic"
         :key="marker.markerType"
@@ -598,6 +607,11 @@
       <mapbox-basemap-select-control />
 
       <MglNavigationControl position="bottom-right" />
+      <MglGeolocateControl
+        position="bottom-right"
+        :position-options="geolocationPositionOptions"
+      />
+      
     </MglMap>
 
     <slot
@@ -687,6 +701,7 @@ export default {
     MglMarker: () => import(/* webpackChunkName: "pvm_MglMarker" */'@phila/vue-mapping/src/mapbox/UI/Marker.vue'),
     MglIcon: () => import(/* webpackChunkName: "mbmp_pvm_MglIcon" */'@phila/vue-mapping/src/mapbox/UI/Icon.vue'),
     MglCircleMarker: () => import(/* webpackChunkName: "pvm_MglCircleMarker" */'@phila/vue-mapping/src/mapbox/UI/CircleMarker.vue'),
+    MglTriangleMarker: () => import(/* webpackChunkName: "pvm_MglTriangleMarker" */'@phila/vue-mapping/src/mapbox/UI/TriangleMarker.vue'),
     MglNavigationControl: () => import(/* webpackChunkName: "pvm_MglNavigationControl" */'@phila/vue-mapping/src/mapbox/UI/controls/NavigationControl'),
     MglGeolocateControl: () => import(/* webpackChunkName: "pvm_MglGeolocateControl" */'@phila/vue-mapping/src/mapbox/UI/controls/GeolocateControl'),
     MglDistanceMeasureControl: () => import(/* webpackChunkName: "pvm_MglDrawDistanceMeasureControl" */'@phila/vue-mapping/src/mapbox/UI/controls/DistanceMeasureControl.vue'),
@@ -713,6 +728,10 @@ export default {
   data() {
     const data = {
       createdComplete: false,
+      geolocationPositionOptions: {
+        enableHighAccuracy: true,
+        timeout: 6000,
+      },
       draw: {
         mode: null,
         selection: null,
@@ -726,6 +745,7 @@ export default {
         markersForAddress: [],
         markersForTopic: [],
       },
+      watchedZoom: null,
       accessToken: process.env.VUE_APP_MAPBOX_ACCESSTOKEN,
       geojsonCameraSource: {
         'type': 'geojson',
@@ -911,24 +931,24 @@ export default {
       }
     },
     firstOverlay() {
-      console.log('firstOverlay computed is running');
+      // console.log('firstOverlay computed is running');
       let map = this.$store.map;
       let overlay;
       if (this.imageOverlay !== null) {
         let imageOverlay = this.imageOverlay;
-        console.log('firstOverlay computed, if imageOverlay, this.imageOverlay:', this.imageOverlay, 'typeof(this.imageOverlay):', typeof(this.imageOverlay));
+        // console.log('firstOverlay computed, if imageOverlay, this.imageOverlay:', this.imageOverlay, 'typeof(this.imageOverlay):', typeof(this.imageOverlay));
         if (map) {
-          console.log('firstOverlay computed, if imageOverlay, if map');
+          // console.log('firstOverlay computed, if imageOverlay, if map');
           // let overlays;
           let overlays = map.getStyle().layers.filter(function(layer) {
-            console.log('in filter, layer.id:', layer.id, 'imageOverlay:', imageOverlay);
+            // console.log('in filter, layer.id:', layer.id, 'imageOverlay:', imageOverlay);
             // console.log('firstOverlay computed, if imageOverlay, layer.id:', layer.id, 'this.imageOverlay:', this.imageOverlay);
             return layer.id === imageOverlay;//[0].id;
           });
-          console.log('still going, overlays:', overlays);
+          // console.log('still going, overlays:', overlays);
           if (overlays.length) {
             overlay = overlays[0].id;
-            console.log('firstOverlay computed, overlay:', overlay);
+            // console.log('firstOverlay computed, overlay:', overlay);
           } else if (this.cyclomediaActive) {
             overlay = 'cameraPoints';
           } else {
@@ -938,14 +958,14 @@ export default {
       } else if (this.$config.map.overlaySources) {
         let overlaySources = Object.keys(this.$config.map.overlaySources);
         if (map) {
-          console.log('firstOverlay computed, if overlaySources, map.getStyle().layers:', map.getStyle().layers);
+          // console.log('firstOverlay computed, if overlaySources, map.getStyle().layers:', map.getStyle().layers);
           let overlays = map.getStyle().layers.filter(function(layer) {
-            console.log('firstOverlay computed, layer.id:', layer.id, 'overlaySources:', overlaySources);
+            // console.log('firstOverlay computed, layer.id:', layer.id, 'overlaySources:', overlaySources);
             return overlaySources.includes(layer.id);//[0].id;
           });
           if (overlays.length) {
             overlay = overlays[0].id;
-            console.log('firstOverlay computed, overlay:', overlay);
+            // console.log('firstOverlay computed, overlay:', overlay);
           } else if (this.cyclomediaActive) {
             overlay = 'cameraPoints';
           } else {
@@ -957,7 +977,7 @@ export default {
       } else {
         overlay = 'geojsonParcels';
       }
-      console.log('firstOverlay computed at end, overlay:', overlay);
+      // console.log('firstOverlay computed at end, overlay:', overlay);
       return overlay;
     },
 
@@ -1266,6 +1286,11 @@ export default {
     },
   },
   watch: {
+    watchedZoom() {
+      if (this.cyclomediaActive) {
+        this.handleCycloChanges();
+      }
+    },
     cycloLatlng(nextCycloLatlng) {
       console.log('watch cycloLatlng, nextCycloLatlng:', nextCycloLatlng, 'this.$data.geojsonCameraSource:', this.$data.geojsonCameraSource);
       this.$data.geojsonCameraSource.data.geometry.coordinates = [ nextCycloLatlng[1], nextCycloLatlng[0] ];
@@ -1472,14 +1497,14 @@ export default {
       return generateUniqueId();
     },
     handleCycloChanges() {
-      console.log('handleCycloChanges is running');
       const halfAngle = this.cycloHFov / 2.0;
       let angle1 = this.cycloRotationAngle - halfAngle;
       let angle2 = this.cycloRotationAngle + halfAngle;
       // console.log('handleCycloChanges, halfAngle:', halfAngle, 'angle1:', angle1, 'this.cycloRotationAngle:', this.cycloRotationAngle, 'angle2:', angle2);
 
-      var distance = 1300;
-      var options = { units: 'feet' };
+      let distance = 50 * (22 - this.$data.watchedZoom);
+      console.log('handleCycloChanges is running, distance:', distance);
+      let options = { units: 'feet' };
 
       if (!this.cycloLatlng) {
         return;
@@ -1947,11 +1972,12 @@ export default {
       const { lat, lng } = center;
       const coords = [ lng, lat ];
 
+      const zoom = map.getZoom();
+      this.$data.watchedZoom = zoom;
+
       if (pictometryConfig.enabled) {
         // update state for pictometry
         this.$store.commit('setPictometryMapCenter', coords);
-
-        const zoom = map.getZoom();
         this.$store.commit('setPictometryMapZoom', zoom);
       }
 
