@@ -625,15 +625,15 @@
         @click="handleCyclomediaButtonClick"
       />
 
-      <!-- <overlay-legend
+      <overlay-legend
         v-for="legendControl in Object.keys(legendControls)"
         v-if="legendControls[legendControl].options.topics.includes(activeTopic)"
         :key="legendControl"
-        :position="'bottomright'"
         :options="legendControls[legendControl].options"
         :items="legendControls[legendControl].data"
       >
-      </overlay-legend> -->
+      <!-- :position="'bottomleft'" -->
+      </overlay-legend>
 
       <mapbox-basemap-select-control />
 
