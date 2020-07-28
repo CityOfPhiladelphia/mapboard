@@ -1405,14 +1405,16 @@ export default {
       this.$store.commit('setImageOverlay', null);
     },
     geocodeResult(nextGeocodeResult) {
-      // console.log('watch geocodeResult is firing, nextGeocodeResult:', nextGeocodeResult, 'this.geocodeZoom:', this.geocodeZoom);
+      console.log('watch geocodeResult is firing, nextGeocodeResult:', nextGeocodeResult, 'this.geocodeZoom:', this.geocodeZoom);
       if (nextGeocodeResult._featureId) {
+        console.log('watch geocodeResult if is running');
         this.$store.commit('setMapCenter', nextGeocodeResult.geometry.coordinates);
         this.$store.commit('setMapZoom', this.geocodeZoom);
         this.$data.watchedZoom = this.geocodeZoom;
-      } else {
-        this.$store.commit('setBasemap', 'pwd');
-      }
+      } //else {
+      //   console.log('watch geocodeResult else is running');
+      //   this.$store.commit('setBasemap', 'pwd');
+      // }
     },
     picOrCycloActive(value) {
       this.$nextTick(() => {
