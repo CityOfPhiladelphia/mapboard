@@ -870,7 +870,7 @@ export default {
         'paint': {
           // 'fill-color': 'rgb(0,102,255)',
           'fill-color': '#9e9ac8',
-          'fill-opacity': 0.2,
+          'fill-opacity': 0.4,
           'fill-outline-color': 'rgb(0,102,255)',
         },
       },
@@ -935,7 +935,9 @@ export default {
         value = this.imageOverlay;
       } else if (this.activeTopicConfig.dynamicMapLayers && this.activeTopicConfig.dynamicMapLayers.length) {
         value = this.activeTopicConfig.dynamicMapLayers[this.activeTopicConfig.dynamicMapLayers.length-1];
-      } //else if (this.)
+      } else if (this.activeTopicConfig.geojsonForTopic) {
+        value = 'geojsonForTopicFill';
+      }
       return value;
     },
     boundsProp() {
