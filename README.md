@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.1.3 - 7/29/2020
+
+* fixes to all libraries for final bugs in adding mapbox to mapboard
+
 ### 4.1.2 - 7/20/2020
 
 * uses pvm 2.1.12 - includes updates for using mapbox in mapboard
