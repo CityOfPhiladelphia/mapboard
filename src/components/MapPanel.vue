@@ -431,8 +431,9 @@
         :layer="overlaySource.layer"
         :source="overlaySource.source"
         :initial-opacity="100"
-        :before="'geojsonParcelFill'"
+        :before="basemapsBefore"
       />
+      <!-- :before="'geojsonParcelFill'" -->
 
       <MglRasterLayer
         v-for="item in imageOverlayItems"
@@ -443,8 +444,9 @@
         :layer="item.source.layer"
         :source="item.source.source"
         :initial-opacity="50"
-        :before="'geojsonParcelFill'"
+        :before="basemapsBefore"
       />
+      <!-- :before="'geojsonParcelFill'" -->
 
       <MglGeojsonLayer
         v-if="activeTopicConfig.parcels === 'dor'"
@@ -930,14 +932,15 @@ export default {
   },
   computed: {
     basemapsBefore() {
-      let value = 'geojsonParcelFill';
+      // let value = 'geojsonParcelFill';
+      let value = [ 'gl-draw-polygon-fill-inactive.cold', 'geojsonParcelFill', 'geojsonForTopicFill' ];
       if (this.imageOverlay != null) {
-        value = this.imageOverlay;
+        value.push(this.imageOverlay);
       } else if (this.activeTopicConfig.dynamicMapLayers && this.activeTopicConfig.dynamicMapLayers.length) {
-        value = this.activeTopicConfig.dynamicMapLayers[this.activeTopicConfig.dynamicMapLayers.length-1];
-      } else if (this.activeTopicConfig.geojsonForTopic) {
-        value = 'geojsonForTopicFill';
-      }
+        value.push(this.activeTopicConfig.dynamicMapLayers[this.activeTopicConfig.dynamicMapLayers.length-1]);
+      } //else if (this.activeTopicConfig.geojsonForTopic) {
+      //   value = 'geojsonForTopicFill';
+      // }
       return value;
     },
     boundsProp() {
@@ -1967,7 +1970,7 @@ export default {
       }
     },
     handleDrawModeChange(e) {
-      console.log('handleDrawModeChange is running, e:', e, 'e.mode:', e.mode);
+      console.log('handleDrawModeChange is running, e:', e, 'e.mode:', e.mode, 'this.$store.map.getStyle():', this.$store.map.getStyle());
       this.$data.draw.mode = e.mode;
       let currentShape = this.$data.draw.currentShape;
 
@@ -2054,6 +2057,7 @@ export default {
     },
     handleMapMove(e) {
       const map = this.$store.map;
+      console.log('handleMapMove, this.$store.map.getStyle():', this.$store.map.getStyle());
       //       const canvas = map.getCanvas();
       //       const w = canvas.width;
       //       const h = canvas.height;
