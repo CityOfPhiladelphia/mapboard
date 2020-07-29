@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.1.4 - 7/29/2020
+
+* uses @phila/vue-mapping with small fix to year dropdown in mapbox
+
 ### 4.1.3 - 7/29/2020
 
 * fixes to all libraries for final bugs in adding mapbox to mapboard
