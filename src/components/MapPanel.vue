@@ -591,7 +591,7 @@
       />
 
       <MglDistanceMeasureControl
-        :position="'bottom-left'"
+        :position="'bottom-right'"
         :label-layers="draw.labelLayers"
         :current-shape="draw.currentShape"
         :current-area="draw.currentArea"
@@ -639,9 +639,9 @@
 
       <mapbox-basemap-select-control />
 
-      <MglNavigationControl position="bottom-right" />
+      <MglNavigationControl position="bottom-left" />
       <MglGeolocateControl
-        position="bottom-right"
+        position="bottom-left"
         :position-options="geolocationPositionOptions"
       />
 

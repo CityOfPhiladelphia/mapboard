@@ -28,6 +28,11 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.1.5 - 7/30/2020
+
+* uses @phila/vue-mapping that uses a version of mapbox-gl-draw that does not prevent clicks in mobile
+* switches positions of the draw widget and the zoom and geolocate widgets, so that on mobile they do not overlap buttons if cyclomedia or pictometry is turned on
+
 ### 4.1.4 - 7/29/2020
 
 * uses @phila/vue-mapping with small fix to year dropdown in mapbox
