@@ -1053,10 +1053,10 @@
     vue "^2.6.10"
     vuex "^3.1.2"
 
-"@phila/vue-mapping@2.1.16":
-  version "2.1.16"
-  resolved "https://registry.yarnpkg.com/@phila/vue-mapping/-/vue-mapping-2.1.16.tgz#c31e60bae42a7ead01f19a86245ae3b9d9b8bf03"
-  integrity sha512-pnh7PNp+47q/re6fx95IQUk5DUEn8s1Rp/ZNw+plYW+VJu/v6UWsAEA2LpQcAdn+xVUWTlNnAPsXUeAeUP1jNg==
+"@phila/vue-mapping@2.1.17":
+  version "2.1.17"
+  resolved "https://registry.yarnpkg.com/@phila/vue-mapping/-/vue-mapping-2.1.17.tgz#3cb54f998a97443823f1931085439361c8c947a9"
+  integrity sha512-dQWalAUrTcCMiA1kbyw+d8qjHJF6HX2RVjaSqE8mJNEYJZdzwuaeVoGy2a4650419jN8NvxopX/FKj5kwbkd6g==
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-regular-svg-icons" "^5.7.2"

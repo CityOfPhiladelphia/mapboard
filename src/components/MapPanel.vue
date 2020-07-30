@@ -633,8 +633,8 @@
         :key="legendControl"
         :options="legendControls[legendControl].options"
         :items="legendControls[legendControl].data"
+        :position="'bottom-right'"
       >
-      <!-- :position="'bottomleft'" -->
       </overlay-legend>
 
       <mapbox-basemap-select-control />
