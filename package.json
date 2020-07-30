@@ -16,7 +16,7 @@
   "dependencies": {
     "@phila/vue-comps": "2.1.5",
     "@phila/vue-datafetch": "1.3.1",
-    "@phila/vue-mapping": "2.1.14",
+    "@phila/vue-mapping": "https://github.com/CityOfPhiladelphia/phila-vue-mapping#976da6fa79c4878fff043716fac0bae293f85ef2",
     "vue": "^2.6.10",
     "vuex": "^3.1.2"
   },
