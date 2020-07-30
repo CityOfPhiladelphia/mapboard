@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.1.6 - 7/30/2020
+
+* allows moving legend to right side of map
+
 ### 4.1.5 - 7/30/2020
 
 * uses @phila/vue-mapping that uses a version of mapbox-gl-draw that does not prevent clicks in mobile
