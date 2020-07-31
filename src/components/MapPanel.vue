@@ -666,7 +666,8 @@ import destination from '@turf/destination';
 import distance from '@turf/distance';
 import midpoint from '@turf/midpoint';
 import area from '@turf/area';
-import { polygon } from '@turf/helpers';
+// import convertArea from '@turf/convertArea';
+import { polygon, convertArea } from '@turf/helpers';
 
 import generateUniqueId from '../util/unique-id';
 
@@ -1840,10 +1841,11 @@ export default {
         coordinates.splice(0, 1);
       }
 
-      console.log('coordinates:', coordinates);
+      // console.log('coordinates:', coordinates);
       if (coordinates.length >=4) {
         const thePolygon = polygon([ coordinates ]);
-        const theArea = area(thePolygon);
+        const theArea = convertArea(area(thePolygon), 'meters', 'feet');
+        // console.log('calculating the area:', theArea);
         this.$data.draw.currentArea = theArea.toFixed(2) + ' Sq Feet';
       }
 
@@ -1851,7 +1853,7 @@ export default {
       let distancesArray = [];
       let features = [];
       for (i=0; i<coordinates.length; i++) {
-        console.log('loop, i:', i, 'coordinates[i][0]', coordinates[i][0], 'i+1:', i+1, 'coordinates.length:', coordinates.length, 'coordinates:', coordinates);
+        // console.log('loop, i:', i, 'coordinates[i][0]', coordinates[i][0], 'i+1:', i+1, 'coordinates.length:', coordinates.length, 'coordinates:', coordinates);
         let distVal = 0;
         let lastDistVal = null;
         let midPoint = [];
@@ -1995,11 +1997,11 @@ export default {
       let currentShape = this.$data.draw.currentShape;
       // let currentPoints = [];
       let fetchedPoints = this.$data.draw.labelLayers.filter(set => set.id === currentShape)[0].distances;
-      console.log('MapPanel.vue handleDrawFinish 1 is running, this.$store.state.draw.getMode():', this.$store.state.draw.getMode(), 'currentShape:', currentShape, 'fetchedPoints:', fetchedPoints);
+      // console.log('MapPanel.vue handleDrawFinish 1 is running, this.$store.state.draw.getMode():', this.$store.state.draw.getMode(), 'currentShape:', currentShape, 'fetchedPoints:', fetchedPoints);
 
       let currentPoints = [];
       for (let point of fetchedPoints) {
-        console.log('in loop, point:', point, 'point.firstPoint:', point.firstPoint);
+        // console.log('in loop, point:', point, 'point.firstPoint:', point.firstPoint);
         currentPoints.push(point.firstPoint);
       }
       if (currentPoints.length > 1) {
@@ -2046,7 +2048,7 @@ export default {
         this.handleDrawCancel();
       }
 
-      console.log('MapPanel.vue handleDrawFinish 2 is running, this.$store.state.draw.getMode():', this.$store.state.draw.getMode(), 'currentShape:', currentShape, 'fetchedPoints:', fetchedPoints);
+      // console.log('MapPanel.vue handleDrawFinish 2 is running, this.$store.state.draw.getMode():', this.$store.state.draw.getMode(), 'currentShape:', currentShape, 'fetchedPoints:', fetchedPoints);
 
     },
     handleDrawSelectionChange(e) {
@@ -2057,7 +2059,7 @@ export default {
     },
     handleMapMove(e) {
       const map = this.$store.map;
-      console.log('handleMapMove, this.$store.map.getStyle():', this.$store.map.getStyle());
+      // console.log('handleMapMove, this.$store.map.getStyle():', this.$store.map.getStyle());
       //       const canvas = map.getCanvas();
       //       const w = canvas.width;
       //       const h = canvas.height;

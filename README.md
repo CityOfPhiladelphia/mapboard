@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.1.7 - 7/31/2020
+
+* converts measure tool area to square feet from square meters
+
 ### 4.1.6 - 7/30/2020
 
 * allows moving legend to right side of map
