@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.1.8 - 8/3/2020
+
+* uses pvc with small fix to optional buttons in HorizontalTable.vue
+
 ### 4.1.7 - 7/31/2020
 
 * converts measure tool area to square feet from square meters
