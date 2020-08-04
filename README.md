@@ -2,8 +2,8 @@
 
 Mapboard is a framework for building data-rich mapping applications for the City of Philadelphia.  It can be used as a template for creating any application which presents information about an address.  It *can* have either of the following two elements alone, or both side-by-side: the *map panel* and *topic panel*.
 
-![Atlas](https://s3.amazonaws.com/mapboard-images/Mapboard2.jpg)
-![RealEstate](https://s3.amazonaws.com/mapboard-images/RealEstate/mobile.jpg)
+![Atlas](https://s3.amazonaws.com/mapboard-images/Mapboard4.jpg)
+![RealEstate](https://s3.amazonaws.com/mapboard-images/RealEstate/mobile2.jpg)
 
 Mapboard uses functions of the library [phila-vue-datafetch](https://github.com/CityOfPhiladelphia/phila-vue-datafetch) ([@phila/vue-datafetch](https://www.npmjs.com/package/@phila/vue-datafetch) in [npmjs.com](https://npmjs.com)), allowing it to return data based on any address.
 
