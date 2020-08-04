@@ -548,9 +548,9 @@
         @handle-search-form-submit="handleSearchFormSubmit"
       />
 
+      <!-- v-if="!fullScreenMapEnabled" -->
       <MglCircleMarker
         v-for="recording in cyclomediaRecordings"
-        v-if="!fullScreenMapEnabled"
         :key="recording.imageId"
         :coordinates="[recording.lng, recording.lat]"
         :image-id="recording.imageId"

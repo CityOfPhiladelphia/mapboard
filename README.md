@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.1.9 - 8/4/2020
+
+* fixes small bug with cyclomedia circles when mapbox map is used
+
 ### 4.1.8 - 8/3/2020
 
 * uses pvc with small fix to optional buttons in HorizontalTable.vue
