@@ -433,6 +433,18 @@
         :initial-opacity="100"
         :before="basemapsBefore"
       />
+
+      <!-- v-for="(overlaySource, key) in overlaySources"
+      v-if="activeDynamicMaps.includes(key)" -->
+      <!-- :key="key" -->
+      <MglRasterLayer
+        :source-id="'pwdParcels'"
+        :layer-id="'pwdParcels'"
+        :layer="$config.map.parcelOutlineSources.pwdParcels.layer"
+        :source="$config.map.parcelOutlineSources.pwdParcels.source"
+        :before="basemapsBefore"
+      />
+      <!-- :initial-opacity="100" -->
       <!-- :before="'geojsonParcelFill'" -->
 
       <MglRasterLayer
