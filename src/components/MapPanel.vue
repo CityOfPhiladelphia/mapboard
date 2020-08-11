@@ -422,6 +422,18 @@
       <!-- :before="firstOverlay" -->
       <!-- :initial-opacity="50" -->
 
+      <!-- v-if="shouldShowRasterLayer(key) && tiledLayers.includes(key)" -->
+      <MglRasterLayer
+        v-for="(tiledOverlaySource, key) in tiledOverlaySources"
+        v-if="tiledLayers.includes(key)"
+        :key="key"
+        :source-id="key"
+        :layer-id="key"
+        :layer="tiledOverlaySource.layer"
+        :source="tiledOverlaySource.source"
+        :before="basemapsBefore"
+      />
+
       <MglRasterLayer
         v-for="(overlaySource, key) in overlaySources"
         v-if="activeDynamicMaps.includes(key)"
@@ -578,7 +590,6 @@
         @mouseenter="handleMarkerMouseover"
         @click="handleMarkerClick"
         @mouseleave="handleMarkerMouseout"
-
       />
 
       <MglMarker
@@ -634,8 +645,7 @@
         :options="legendControls[legendControl].options"
         :items="legendControls[legendControl].data"
         :position="'bottom-right'"
-      >
-      </overlay-legend>
+      />
 
       <mapbox-basemap-select-control />
 
@@ -644,7 +654,6 @@
         position="bottom-left"
         :position-options="geolocationPositionOptions"
       />
-
     </MglMap>
 
     <slot
@@ -934,7 +943,7 @@ export default {
   computed: {
     basemapsBefore() {
       // let value = 'geojsonParcelFill';
-      let value = [ 'gl-draw-polygon-fill-inactive.cold', 'geojsonParcelFill', 'geojsonForTopicFill' ];
+      let value = [ 'gl-draw-polygon-fill-inactive.cold', 'geojsonParcelFill', 'geojsonForTopicFill', 'parcels' ];
       if (this.imageOverlay != null) {
         value.push(this.imageOverlay);
       } else if (this.activeTopicConfig.dynamicMapLayers && this.activeTopicConfig.dynamicMapLayers.length) {
@@ -978,6 +987,9 @@ export default {
     },
     basemapLabelSources() {
       return this.$config.map.basemapLabelSources;
+    },
+    tiledOverlaySources() {
+      return this.$config.map.tiledOverlaySources;
     },
     overlaySources() {
       return this.$config.map.overlaySources;
@@ -1219,9 +1231,13 @@ export default {
       return basemap;
     },
     tiledLayers() {
+      let tiledLayers = [];
       const activeBasemap = this.activeBasemap;
       const activeBasemapConfig = this.configForBasemap(activeBasemap);
-      return activeBasemapConfig.tiledLayers || [];
+      for (let activeTiledLayer of activeBasemapConfig.tiledLayers) {
+        tiledLayers.push(activeTiledLayer);
+      }
+      return tiledLayers;
     },
     activeTiledOverlays() {
       if (!this.activeTopicConfig || !this.activeTopicConfig.tiledOverlays) {
@@ -1347,6 +1363,10 @@ export default {
     },
   },
   watch: {
+    activeBasemap() {
+      console.log('watch activeBasemap is firing');
+      this.$store.map.resize();
+    },
     activeDorParcel(nextActiveDorParcel) {
       // console.log('watch activeDorParcel is running, nextActiveDorParcel:', nextActiveDorParcel, 'this.$store.state.parcels.dor.data:', this.$store.state.parcels.dor.data);
       let nextGeojson = this.$store.state.parcels.dor.data.filter(function(item) {
