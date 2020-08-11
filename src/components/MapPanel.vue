@@ -423,6 +423,17 @@
       <!-- :initial-opacity="50" -->
 
       <MglRasterLayer
+        v-for="(tiledOverlaySource, key) in tiledOverlaySources"
+        v-if="tiledLayers.includes(key)"
+        :key="key"
+        :source-id="key"
+        :layer-id="key"
+        :layer="tiledOverlaySource.layer"
+        :source="tiledOverlaySource.source"
+        :before="basemapsBefore"
+      />
+
+      <MglRasterLayer
         v-for="(overlaySource, key) in overlaySources"
         v-if="activeDynamicMaps.includes(key)"
         :key="key"
@@ -934,7 +945,7 @@ export default {
   computed: {
     basemapsBefore() {
       // let value = 'geojsonParcelFill';
-      let value = [ 'gl-draw-polygon-fill-inactive.cold', 'geojsonParcelFill', 'geojsonForTopicFill' ];
+      let value = [ 'gl-draw-polygon-fill-inactive.cold', 'geojsonParcelFill', 'geojsonForTopicFill', 'parcels' ];
       if (this.imageOverlay != null) {
         value.push(this.imageOverlay);
       } else if (this.activeTopicConfig.dynamicMapLayers && this.activeTopicConfig.dynamicMapLayers.length) {
@@ -978,6 +989,9 @@ export default {
     },
     basemapLabelSources() {
       return this.$config.map.basemapLabelSources;
+    },
+    tiledOverlaySources() {
+      return this.$config.map.tiledOverlaySources;
     },
     overlaySources() {
       return this.$config.map.overlaySources;
@@ -1211,17 +1225,27 @@ export default {
       let basemap;
       if (shouldShowBasemapSelectControl) {
         basemap = this.$store.state.map.imagery;
-      } else {
+      } else if (this.$config && this.$config.map) {
+        // console.log('in activeBasemap, this.$config:', this.$config);
         const defaultBasemap = this.$config.map.defaultBasemap;
         basemap = this.$store.state.map.basemap || defaultBasemap;
+      } else {
+        basemap = this.$store.state.map.basemap;
       }
       // console.log('computing activeBasemap, basemap:', basemap);
       return basemap;
     },
     tiledLayers() {
+      let tiledLayers = [];
       const activeBasemap = this.activeBasemap;
       const activeBasemapConfig = this.configForBasemap(activeBasemap);
-      return activeBasemapConfig.tiledLayers || [];
+      const configTiledLayers = activeBasemapConfig.tiledLayers;
+      if (configTiledLayers) {
+        for (let activeTiledLayer of configTiledLayers) {
+          tiledLayers.push(activeTiledLayer);
+        }
+      }
+      return tiledLayers;
     },
     activeTiledOverlays() {
       if (!this.activeTopicConfig || !this.activeTopicConfig.tiledOverlays) {
@@ -1347,6 +1371,11 @@ export default {
     },
   },
   watch: {
+    activeBasemap() {
+      if (this.$store && this.$store.map) {
+        this.$store.map.resize();
+      }
+    },
     activeDorParcel(nextActiveDorParcel) {
       // console.log('watch activeDorParcel is running, nextActiveDorParcel:', nextActiveDorParcel, 'this.$store.state.parcels.dor.data:', this.$store.state.parcels.dor.data);
       let nextGeojson = this.$store.state.parcels.dor.data.filter(function(item) {

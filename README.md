@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.1.10 - 8/11/2020
+
+* adds the parcel overlay for imagery to the mapbox map
+
 ### 4.1.9 - 8/4/2020
 
 * fixes small bug with cyclomedia circles when mapbox map is used
