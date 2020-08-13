@@ -435,6 +435,17 @@
       />
 
       <MglRasterLayer
+        v-for="(tiledOverlaySource, key) in tiledOverlaySources"
+        v-if="tiledLayers.includes(key)"
+        :key="key"
+        :source-id="key"
+        :layer-id="key"
+        :layer="tiledOverlaySource.layer"
+        :source="tiledOverlaySource.source"
+        :before="basemapsBefore"
+      />
+
+      <MglRasterLayer
         v-for="(overlaySource, key) in overlaySources"
         v-if="activeDynamicMaps.includes(key)"
         :key="key"
@@ -1223,9 +1234,12 @@ export default {
       let basemap;
       if (shouldShowBasemapSelectControl) {
         basemap = this.$store.state.map.imagery;
-      } else {
+      } else if (this.$config && this.$config.map) {
+        // console.log('in activeBasemap, this.$config:', this.$config);
         const defaultBasemap = this.$config.map.defaultBasemap;
         basemap = this.$store.state.map.basemap || defaultBasemap;
+      } else {
+        basemap = this.$store.state.map.basemap;
       }
       // console.log('computing activeBasemap, basemap:', basemap);
       return basemap;
@@ -1234,8 +1248,11 @@ export default {
       let tiledLayers = [];
       const activeBasemap = this.activeBasemap;
       const activeBasemapConfig = this.configForBasemap(activeBasemap);
-      for (let activeTiledLayer of activeBasemapConfig.tiledLayers) {
-        tiledLayers.push(activeTiledLayer);
+      const configTiledLayers = activeBasemapConfig.tiledLayers;
+      if (configTiledLayers) {
+        for (let activeTiledLayer of configTiledLayers) {
+          tiledLayers.push(activeTiledLayer);
+        }
       }
       return tiledLayers;
     },
@@ -1364,8 +1381,9 @@ export default {
   },
   watch: {
     activeBasemap() {
-      console.log('watch activeBasemap is firing');
-      this.$store.map.resize();
+      if (this.$store && this.$store.map) {
+        this.$store.map.resize();
+      }
     },
     activeDorParcel(nextActiveDorParcel) {
       // console.log('watch activeDorParcel is running, nextActiveDorParcel:', nextActiveDorParcel, 'this.$store.state.parcels.dor.data:', this.$store.state.parcels.dor.data);
