@@ -6,8 +6,7 @@
     <!-- <full-screen-map-toggle-tab /> -->
     <full-screen-map-toggle-tab v-once />
 
-    <!-- :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }" -->
-    <map_
+    <!-- <map_
       v-if="mapType === 'leaflet'"
       id="map-tag"
       :center="this.$store.state.map.center"
@@ -19,8 +18,6 @@
       @l-click="handleMapClick"
       @l-moveend="handleMapMove"
     >
-      <!-- :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }" -->
-      <!-- loading mask -->
       <div
         v-show="isGeocoding"
         class="mb-map-loading-mask"
@@ -31,7 +28,6 @@
         </div>
       </div>
 
-      <!-- tiled overlay based on topic -->
       <esri-tiled-overlay
         v-for="(tiledLayer, key) in this.$config.map.tiledOverlays"
         v-if="activeTiledOverlays.includes(key)"
@@ -52,7 +48,6 @@
         :opacity="dynamicLayer.opacity"
       />
 
-      <!-- basemaps -->
       <esri-tiled-map-layer
         v-for="(basemap, key) in this.$config.map.basemaps"
         v-if="activeBasemap === key"
@@ -62,7 +57,6 @@
         :attribution="basemap.attribution"
       />
 
-      <!-- basemap labels and parcels outlines -->
       <esri-tiled-map-layer
         v-for="(tiledLayer, key) in this.$config.map.tiledLayers"
         v-if="tiledLayers.includes(key)"
@@ -72,9 +66,6 @@
         :attribution="tiledLayer.attribution"
       />
 
-
-
-      <!-- dorParcels, pwdParcels, vacantLand, vacantBuilding -->
       <esri-feature-layer
         v-for="(featureLayer, key) in this.$config.map.featureLayers"
         v-if="shouldShowFeatureLayer(key, featureLayer.minZoom)"
@@ -94,7 +85,6 @@
         :interactive="featureLayer.interactive"
       />
 
-      <!-- regmaps -->
       <esri-dynamic-map-layer
         v-for="(item, key) in imageOverlayItems"
         v-if="shouldShowImageOverlay(item.properties.RECMAP)"
@@ -105,19 +95,7 @@
         :transparent="true"
         :opacity="0.5"
       />
-      <!-- :url="'//gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/'" -->
-      <!-- :url="this.imageOverlayInfo.url"
-      :opacity="this.imageOverlayInfo.opacity" -->
 
-      <!-- address marker -->
-      <!-- REVIEW why does this need a key? it's not a list... -->
-      <!-- <vector-marker v-if="identifyFeature === 'address-marker' && geocodeGeom"
-                    :latlng="[...geocodeGeom.coordinates].reverse()"
-                    :key="streetAddress"
-      /> -->
-
-      <!-- NEW METHOD: try rendering markers generically based on marker type -->
-      <!-- vector markers -->
       <vector-marker
         v-for="marker in markersForAddress"
         :key="marker.key"
@@ -126,7 +104,6 @@
         :icon="marker.icon"
       />
 
-      <!-- vector markers -->
       <vector-marker
         v-for="marker in markersForTopic"
         :key="marker.key"
@@ -135,7 +112,6 @@
         :icon="marker.icon"
       />
 
-      <!-- marker using a png and ablility to rotate it -->
       <png-marker
         v-if="cyclomediaInitializationComplete && cyclomediaActive"
         :icon="sitePath + 'images/camera.png'"
@@ -143,7 +119,6 @@
         :rotation-angle="cycloRotationAngle"
       />
 
-      <!-- marker using custom code extending icons - https://github.com/iatkin/leaflet-svgicon -->
       <svg-view-cone-marker
         v-if="cyclomediaInitializationComplete && cyclomediaActive"
         :latlng="cycloLatlng"
@@ -151,8 +126,6 @@
         :h-fov="cycloHFov"
       />
 
-
-      <!-- non-reactive geojson parcels -->
       <geojson
         v-for="geojsonFeature in geojsonParcels"
         v-if="shouldShowGeojson(geojsonFeature.key)"
@@ -169,7 +142,6 @@
         }"
       />
 
-      <!-- non-reactive geojson features for topics -->
       <geojson
         v-for="geojsonFeature in geojsonForTopic"
         v-if="shouldShowGeojson(geojsonFeature.key)"
@@ -186,7 +158,6 @@
         }"
       />
 
-      <!-- reactive geojson features -->
       <geojson
         v-for="geojsonFeature in reactiveGeojsonFeatures"
         v-if="shouldShowGeojson(geojsonFeature.key)"
@@ -206,9 +177,6 @@
         @l-mouseout="handleMarkerMouseout"
       />
 
-      <!-- reactive polyline features -->
-      <!-- v-if="shouldShowPolyline(geojsonFeature.key)" -->
-      <!-- :fillOpacity="geojsonFeature.fillOpacity" -->
       <polyline_
         v-for="polyline in reactivePolylineFeatures"
         :key="polyline.key"
@@ -227,7 +195,6 @@
         @l-mouseout="handleMarkerMouseout"
       />
 
-      <!-- location marker -->
       <circle-marker
         v-if="this.$store.state.map.location.lat != null"
         :key="Math.random()"
@@ -240,8 +207,6 @@
         :fill-opacity="locationMarker.fillOpacity"
       />
 
-      <!-- TODO give these a real key -->
-      <!-- :key="Math.random()" -->
       <circle-marker
         v-for="circleMarker in reactiveCircleMarkers"
         :key="circleMarker.featureId"
@@ -261,15 +226,6 @@
         @l-mouseout="handleMarkerMouseout"
       />
 
-      <!-- <vector-marker v-for="marker in threeOneOneMarkers"
-                      v-if="activeTopicConfig.key === 'threeOneOne'"
-                      :latlng="[marker.geometry.coordinates[1], marker.geometry.coordinates[0]]"
-                      :key="marker.id"
-                      :markerColor="'#b2ffb2'"
-       /> -->
-
-      <!-- CONTROLS: -->
-      <!-- basemap control -->
       <control-corner
         :v-side="'top'"
         :h-side="'almostright'"
@@ -279,9 +235,6 @@
         :v-side="'top'"
         :h-side="'almostleft'"
       />
-
-      <!-- <basemap-tooltip :position="'topright'"
-      /> -->
 
       <div v-once>
         <basemap-toggle-control
@@ -349,14 +302,6 @@
         />
       </div>
 
-      <!-- <basemap-tooltip :position="'bottomalmostleft'"
-      /> -->
-
-      <!-- <scale-control :vSide="'top'"
-                     :hSide="'almostright'"
-      >
-      </scale-control> -->
-
       <div v-once>
         <map-address-input
           :position="addressInputPosition"
@@ -371,7 +316,6 @@
         :width-from-config="addressInputWidth"
       />
 
-
       <cyclomedia-recording-circle
         v-for="recording in cyclomediaRecordings"
         v-if="cyclomediaActive"
@@ -383,7 +327,7 @@
         :weight="1"
         @l-click="handleCyclomediaRecordingClick"
       />
-    </map_>
+    </map_> -->
 
     <MglMap
       v-if="mapType === 'mapbox'"
@@ -679,22 +623,24 @@
 </template>
 
 <script>
-import * as L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+// import * as L from 'leaflet';
+// import 'leaflet/dist/leaflet.css';
 
+import bbox from '@turf/bbox';
+import bboxPolygon from '@turf/bbox-polygon';
 import destination from '@turf/destination';
 import distance from '@turf/distance';
 import midpoint from '@turf/midpoint';
 import area from '@turf/area';
 // import convertArea from '@turf/convertArea';
-import { polygon, convertArea } from '@turf/helpers';
+import { point, polygon, convertArea, featureCollection } from '@turf/helpers';
 
 import generateUniqueId from '../util/unique-id';
 
 // console.log('L:', L)
-const FeatureGroup = L.default.featureGroup;
-const GeoJSON = L.default.geoJSON;
-const Lmarker = L.default.marker;
+// const FeatureGroup = L.default.featureGroup;
+// const GeoJSON = L.default.geoJSON;
+// const Lmarker = L.default.marker;
 // console.log('FeatureGroup:', FeatureGroup, 'GeoJSON:', GeoJSON)
 // import { featureGroup, geoJSON } from 'leaflet';
 // import { marker as Lmarker } from 'leaflet';
@@ -709,18 +655,19 @@ import pictometryMixin from '@phila/vue-mapping/src/pictometry/map-panel-mixin.j
 
 // components
 import CyclomediaRecordingsClient from '@phila/vue-mapping/src/cyclomedia/recordings-client.js';
-import ControlCorner from '@phila/vue-mapping/src/leaflet/ControlCorner.vue';
 import FullScreenMapToggleTab from '@phila/vue-mapping/src/components/FullScreenMapToggleTab.vue';
-import Map_ from '@phila/vue-mapping/src/leaflet/Map.vue';
-import LocationControl from '@phila/vue-mapping/src/components/LocationControl.vue';
-import BasemapToggleControl from '@phila/vue-mapping/src/components/BasemapToggleControl.vue';
-import BasemapSelectControl from '@phila/vue-mapping/src/components/BasemapSelectControl.vue';
-import OverlaySelectControl from '@phila/vue-mapping/src/components/OverlaySelectControl.vue';
-import PictometryButton from '@phila/vue-mapping/src/pictometry/Button.vue';
-import CyclomediaButton from '@phila/vue-mapping/src/cyclomedia/Button.vue';
-import MeasureControl from '@phila/vue-mapping/src/components/MeasureControl.vue';
-import LegendControl from '@phila/vue-mapping/src/components/LegendControl.vue';
-import MapAddressInput from '@phila/vue-mapping/src/components/MapAddressInput.vue';
+
+// import ControlCorner from '@phila/vue-mapping/src/leaflet/ControlCorner.vue';
+// import Map_ from '@phila/vue-mapping/src/leaflet/Map.vue';
+// import LocationControl from '@phila/vue-mapping/src/components/LocationControl.vue';
+// import BasemapToggleControl from '@phila/vue-mapping/src/components/BasemapToggleControl.vue';
+// import BasemapSelectControl from '@phila/vue-mapping/src/components/BasemapSelectControl.vue';
+// import OverlaySelectControl from '@phila/vue-mapping/src/components/OverlaySelectControl.vue';
+// import PictometryButton from '@phila/vue-mapping/src/pictometry/Button.vue';
+// import CyclomediaButton from '@phila/vue-mapping/src/cyclomedia/Button.vue';
+// import MeasureControl from '@phila/vue-mapping/src/components/MeasureControl.vue';
+// import LegendControl from '@phila/vue-mapping/src/components/LegendControl.vue';
+// import MapAddressInput from '@phila/vue-mapping/src/components/MapAddressInput.vue';
 
 export default {
   name: 'MapPanel',
@@ -736,18 +683,18 @@ export default {
     PngMarker: () => import(/* webpackChunkName: "mbmp_pvm_PngMarker" */'@phila/vue-mapping/src/components/PngMarker.vue'),
     CyclomediaRecordingCircle: () => import(/* webpackChunkName: "mbmp_pvm_CyclomediaRecordingCircle" */'@phila/vue-mapping/src/cyclomedia/RecordingCircle.vue'),
     SvgViewConeMarker: () => import(/* webpackChunkName: "mbmp_pvm_CyclomediaSvgViewConeMarker" */'@phila/vue-mapping/src/cyclomedia/SvgViewConeMarker.vue'),
-    ControlCorner,
     FullScreenMapToggleTab,
-    Map_,
-    LocationControl,
-    BasemapToggleControl,
-    BasemapSelectControl,
-    OverlaySelectControl,
-    PictometryButton,
-    CyclomediaButton,
-    MeasureControl,
-    LegendControl,
-    MapAddressInput,
+    // ControlCorner,
+    // Map_,
+    // LocationControl,
+    // BasemapToggleControl,
+    // BasemapSelectControl,
+    // OverlaySelectControl,
+    // PictometryButton,
+    // CyclomediaButton,
+    // MeasureControl,
+    // LegendControl,
+    // MapAddressInput,
     // Control: () => import(/* webpackChunkName: "mbmp_pvm_Control" */'@phila/vue-mapping/src/leaflet/Control.vue'),
     Polyline_: () => import(/* webpackChunkName: "mbmp_pvm_Geojson" */'@phila/vue-mapping/src/leaflet/Polyline.vue'),
     // BasemapTooltip: () => import(/* webpackChunkName: "mbmp_pvm_BasemapTooltip" */'@phila/vue-mapping/src/components/BasemapTooltip.vue'),
@@ -1753,37 +1700,50 @@ export default {
           for (let geojsonFeature of this.geojsonParcels) {
             // featureArray.push(geoJson(geojsonFeature.geojson))
             // featureArray.push(L.geoJSON(geojsonFeature.geojson))
-            featureArray.push(GeoJSON(geojsonFeature.geojson));
+            console.log('geojsonFeature.geojson:', geojsonFeature.geojson);
+            featureArray.push(polygon([ geojsonFeature.geojson.geometry.coordinates ]));
           }
         }
         if (czts.includes('geojsonForTopic')) {
           for (let geojsonFeature of this.geojsonForTopic) {
             // featureArray.push(geoJson(geojsonFeature.geojson))
             // featureArray.push(L.geoJSON(geojsonFeature.geojson))
-            featureArray.push(GeoJSON(geojsonFeature.geojson));
+            let theCoords = geojsonFeature.geojson.geometry.coordinates;
+            console.log('theCoords:', theCoords);
+            let thePolygon = polygon(theCoords);
+            // let thePolygon = polygon(geojsonFeature.geojson.geometry.coordinates);
+            console.log('geojsonFeature.geojson:', geojsonFeature.geojson, 'thePolygon:', thePolygon);
+            featureArray.push(thePolygon);
+            // featureArray.push(polygon(geojsonFeature.geojson.geometry.coordinates));
           }
         }
         if (czts.includes('markersForAddress')) {
           for (let marker of this.markersForAddress) {
-            featureArray.push(Lmarker(marker.latlng));
+            featureArray.push(point([ marker.latlng[1], marker.latlng[0] ]));
             // featureArray.push(L.marker(marker.latlng))
           }
         }
         if (czts.includes('markersForTopic')) {
           for (let marker of this.markersForTopic) {
-            featureArray.push(Lmarker(marker.latlng));
+            featureArray.push(point([ marker.latlng[1], marker.latlng[0] ]));
             // featureArray.push(L.marker(marker.latlng))
           }
         }
-        const group = new FeatureGroup(featureArray);
+        // const group = new FeatureGroup(featureArray);
         // const group = new featureGroup(featureArray);
         // const group = new L.featureGroup(featureArray);
-        const bounds = group.getBounds();
+        // const bounds = group.getBounds();
+        const theFeatureCollection = featureCollection(featureArray);
+        console.log('featureArray:', featureArray, 'theFeatureCollection:', theFeatureCollection);
+        const bounds = bbox(theFeatureCollection);
+        // const theBbox = theFeatureCollection.bbox;
+        // const bounds = bboxPolygon(theBbox);
         console.log('bounds:', bounds);
         if (this.mapType === 'leaflet') {
           this.$store.commit('setMapBounds', bounds);
         } else if (this.mapType === 'mapbox') {
-          let bounds2 = [[ bounds._southWest.lng, bounds._southWest.lat ], [ bounds._northEast.lng, bounds._northEast.lat ]];
+          // let bounds2 = [[ bounds._southWest.lng, bounds._southWest.lat ], [ bounds._northEast.lng, bounds._northEast.lat ]];
+          let bounds2 = [[ bounds[0], bounds[1] ], [ bounds[2], bounds[3] ]];
           this.$store.commit('setMapBounds', bounds2);
         }
       }
