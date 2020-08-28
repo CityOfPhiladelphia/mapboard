@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.2.0 - 8/29/2020
+
+* uses releases of pvd and pvm that remove imports of leaflet and esri-leaflet
+
 ### 4.1.10 - 8/11/2020
 
 * adds the parcel overlay for imagery to the mapbox map
