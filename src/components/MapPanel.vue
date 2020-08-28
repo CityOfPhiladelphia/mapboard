@@ -1394,9 +1394,9 @@ export default {
       this.$store.commit('setImageOverlay', null);
     },
     geocodeResult(nextGeocodeResult) {
-      console.log('watch geocodeResult is firing, nextGeocodeResult:', nextGeocodeResult, 'this.geocodeZoom:', this.geocodeZoom);
+      // console.log('watch geocodeResult is firing, nextGeocodeResult:', nextGeocodeResult, 'this.geocodeZoom:', this.geocodeZoom);
       if (nextGeocodeResult._featureId) {
-        console.log('watch geocodeResult if is running');
+        // console.log('watch geocodeResult if is running');
         this.$store.commit('setMapCenter', nextGeocodeResult.geometry.coordinates);
         this.$store.commit('setMapZoom', this.geocodeZoom);
         this.$data.watchedZoom = this.geocodeZoom;
@@ -1439,7 +1439,7 @@ export default {
     },
 
     geojsonParcels(nextGeojson) {
-      console.log('watch geojsonParcels is firing');
+      // console.log('watch geojsonParcels is firing');
       if (this.$store.map) {
         // console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers);
       }
