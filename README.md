@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.2.3 - 9/15/2020
+
+* fixes issue in real estate tax by allowing the app to use input in tips if geocode fails
+
 ### 4.2.2 - 9/15/2020
 
 * fixes issue with map loading for the first time
