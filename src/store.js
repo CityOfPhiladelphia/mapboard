@@ -191,7 +191,10 @@ function createStore(config) {
 
         // get horizontal table ids for that topic
         const activeTopicConfig = (config.topics.filter(topic => topic.key === activeTopic) || [])[0];
-        const comps = activeTopicConfig.components;
+        let comps;
+        if (activeTopicConfig) {
+          comps = activeTopicConfig.components;
+        }
 
         const compTableGroup = getHorizontalTableGroupIdsFromComps(comps);
         if (compTableGroup) {

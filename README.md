@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.2.2 - 9/15/2020
+
+* fixes issue with map loading for the first time
+
 ### 4.2.1 - 9/4/2020
 
 * uses updated pvc and pvm for WAVE

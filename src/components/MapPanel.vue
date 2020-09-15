@@ -341,9 +341,11 @@
       @click="handleMapClick"
       @load="onMapLoaded"
     >
+
+    <!-- v-if="shouldShowRasterLayer(key) && activeBasemap === key" -->
       <MglRasterLayer
         v-for="(basemapSource, key) in basemapSources"
-        v-if="shouldShowRasterLayer(key) && activeBasemap === key"
+        v-if="activeBasemap === key"
         :key="key"
         :source-id="activeBasemap"
         :layer-id="activeBasemap"
@@ -351,11 +353,11 @@
         :source="basemapSource.source"
         :before="basemapsBefore"
       />
-      <!-- :before="firstOverlay" -->
 
+      <!-- v-if="shouldShowRasterLayer(key) && tiledLayers.includes(key)" -->
       <MglRasterLayer
         v-for="(basemapLabelSource, key) in basemapLabelSources"
-        v-if="shouldShowRasterLayer(key) && tiledLayers.includes(key)"
+        v-if="tiledLayers.includes(key)"
         :key="key"
         :source-id="key"
         :layer-id="key"
@@ -363,8 +365,6 @@
         :source="basemapLabelSource.source"
         :before="basemapsBefore"
       />
-      <!-- :before="firstOverlay" -->
-      <!-- :initial-opacity="50" -->
 
       <!-- v-if="shouldShowRasterLayer(key) && tiledLayers.includes(key)" -->
       <MglRasterLayer
@@ -580,6 +580,7 @@
       />
 
       <MglButtonControl
+        v-if="shouldShowPictometryButton"
         :button-id="'buttonId-02'"
         :button-class="pictometryActive ? 'right top-button-2 active' : 'right top-button-2 inactive'"
         :image-link="sitePath + 'images/pictometry.png'"
@@ -587,6 +588,7 @@
       />
 
       <MglButtonControl
+        v-if="shouldShowCyclomediaButton"
         :button-id="'buttonId-03'"
         :button-class="cyclomediaActive ? 'right top-button-3 active' : 'right top-button-3 inactive'"
         :image-link="sitePath + 'images/cyclomedia.png'"
@@ -1329,6 +1331,7 @@ export default {
   watch: {
     activeBasemap() {
       if (this.$store && this.$store.map) {
+        // console.log('watch activeBasemap is calling resize');
         this.$store.map.resize();
       }
     },
@@ -1410,13 +1413,14 @@ export default {
         if (this.mapType === 'leaflet') {
           this.$store.map.invalidateSize();
         } else if (this.mapType === 'mapbox') {
+          // console.log('watch picOrCycloActive is calling resize');
           this.$store.map.resize();
         }
       });
     },
     geojsonForTopic(nextGeojson) {
       if (this.$store.map) {
-        console.log('watch geojsonForTopic is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
+        // console.log('watch geojsonForTopic is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
       }
       if (nextGeojson[0]) {
         // console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
@@ -1502,14 +1506,18 @@ export default {
         if (this.mapType === 'leaflet') {
           this.$store.map.invalidateSize();
         } else if (this.mapType === 'mapbox') {
+          // console.log('watch fullScreenTopicsEnabled is calling this.$store.map.resize()');
           this.$store.map.resize();
+          // console.log('watch fullScreenTopicsEnabled completed calling resize');
         }
       });
     },
     fullScreenMapEnabled() {
       this.$nextTick(() => {
         if (this.mapType === 'mapbox') {
+          // console.log('watch fullScreenMapEnabled is calling this.$store.map.resize()');
           this.$store.map.resize();
+          // console.log('watch fullScreenMapEnabled completed calling resize');
         }
       });
     },
@@ -1543,6 +1551,7 @@ export default {
   },
   methods: {
     shouldShowRasterLayer(layerId) {
+      // console.log('shouldShowRasterLayer is running');
       if (!this.$store.map) {
         return false;
       }
@@ -1564,7 +1573,7 @@ export default {
       if (before && !beforeExists.length) {
         value = false;
       }
-      // console.log('shouldShowRasterLayer is running, layerId:', layerId, 'before:', before, 'value:', value);
+      // console.log('shouldShowRasterLayer is completing, layerId:', layerId, 'before:', before, 'value:', value);
       return value;
     },
     useGenerateUniqueId() {
@@ -1652,12 +1661,17 @@ export default {
       }
     },
     onMapLoaded(event) {
+      // console.log('onMapLoaded event is running is calling resize');
       // this.$store.commit('setMap', map);
       this.$store.map = event.map;
-      event.map.resize();
+      // setTimeout(function () {
+      // event.map.resize();
+      this.$store.map.resize();
+      // }, 3000);
+      // console.log('after map resize happens');
     },
     handleBasemapToggleClick() {
-      console.log('handleBasemapToggleClick, this.$store.map.getStyle().layers:', this.$store.map.getStyle().layers);
+      // console.log('handleBasemapToggleClick, this.$store.map.getStyle().layers:', this.$store.map.getStyle().layers);
       const prevShouldShowBasemapSelectControl = this.$store.state.map.shouldShowBasemapSelectControl;
       const nextShouldShowBasemapSelectControl = !prevShouldShowBasemapSelectControl;
       this.$store.commit('setShouldShowBasemapSelectControl', nextShouldShowBasemapSelectControl);
