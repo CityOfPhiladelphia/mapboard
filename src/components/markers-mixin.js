@@ -280,12 +280,24 @@ export default {
       if (topicGeojson) {
         const state = this.$store.state;
         const topicData = topicGeojson.data(state);
+        // console.log('topicData:', topicData);
         if (topicData !== null) {
-          for (let geojson of topicData) {
-            let props = Object.assign({}, topicGeojson.style);
-            props.key = geojson[topicGeojson.key];
-            props.geojson = geojson;
-            features.push(props);
+          if (!topicData.type || topicData.type !== "FeatureCollection") {
+            for (let geojson of topicData) {
+              // console.log('geojson:', geojson);
+              let props = Object.assign({}, topicGeojson.style);
+              props.key = geojson[topicGeojson.key];
+              props.geojson = geojson;
+              features.push(props);
+            }
+          } else {
+            for (let geojson of topicData.features) {
+              // console.log('geojson:', geojson);
+              let props = Object.assign({}, topicGeojson.style);
+              props.key = geojson[topicGeojson.key];
+              props.geojson = geojson;
+              features.push(props);
+            }
           }
         }
       }
