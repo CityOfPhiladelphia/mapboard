@@ -849,10 +849,10 @@ export default {
         'source': 'geojsonCollectionForTopic',
         'layout': {},
         'paint': {
-          // 'fill-color': 'rgb(0,102,255)',
           'fill-color': '#9e9ac8',
-          'fill-opacity': 0.4,
-          'fill-outline-color': 'rgb(0,102,255)',
+          // 'fill-opacity': 1,
+          // 'fill-opacity': 0.4,
+          // 'fill-outline-color': 'rgb(0,102,255)',
         },
       },
       geojsonForTopicSource: {
@@ -1455,14 +1455,26 @@ export default {
         // console.log('watch geojsonForTopic is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
       }
       if (nextGeojson[0]) {
-        // console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
+        console.log('watch geojsonForTopic is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
         this.$data.geojsonCollectionForTopicSource.data.features = [];
         for (let feature of nextGeojson) {
           this.$data.geojsonCollectionForTopicSource.data.features.push(feature.geojson);
         }
+
+        const valOrGetter = nextGeojson[0].fillColor;
+        const valOrGetterType = typeof valOrGetter;
+        let val;
+
+        if (valOrGetterType === 'function') {
+          const state = this.$store.state;
+          const getter = valOrGetter;
+          val = getter(state);
+        } else {
+          val = valOrGetter;
+        }
+        this.$data.geojsonCollectionForTopicFillLayer.paint['fill-color'] = val;
         this.$data.geojsonForTopicBoolean = true;
-        // this.$data.geojsonForTopicSource.data.geometry.coordinates = nextGeojson[0].geojson.geometry.coordinates;
-        // this.$data.geojsonForTopicBoolean = true;
+
       } else {
         this.$data.geojsonForTopicSource.data.geometry.coordinates = [];
         this.$data.geojsonForTopicBoolean = false;
