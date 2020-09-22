@@ -473,6 +473,18 @@
 
       <MglGeojsonLayer
         v-if="geojsonForTopicBoolean"
+        key="'geojsonCollectionForTopicLabels'"
+        :source-id="'geojsonCollectionForTopic'"
+        :source="geojsonCollectionForTopicSource"
+        :layer-id="'geojsonCollectionForTopicLabels'"
+        :layer="geojsonCollectionForTopicLabelsLayer"
+        :clear-source="true"
+        :replace-source="true"
+        :replace="true"
+      />
+
+      <MglGeojsonLayer
+        v-if="geojsonForTopicBoolean"
         key="'geojsonCollectionForTopicLine'"
         :source-id="'geojsonCollectionForTopic'"
         :source="geojsonCollectionForTopicSource"
@@ -866,6 +878,16 @@ export default {
           // 'fill-opacity': 0.4,
           // 'fill-outline-color': 'rgb(0,102,255)',
         },
+      },
+      geojsonCollectionForTopicLabelsLayer: {
+        'id': 'geojsonCollectionForTopicLabels',
+        'type': 'symbol',
+        'source': 'geojsonCollectionForTopic',
+        'minzoom': 14,
+        'layout': {},
+        // 'paint': {
+        //   'fill-color': '#9e9ac8',
+        // },
       },
       geojsonCollectionForTopicLineLayer: {
         'id': 'geojsonCollectionForTopicLine',
@@ -1501,6 +1523,17 @@ export default {
         }
         this.$data.geojsonCollectionForTopicFillLayer.paint['fill-color'] = val;
         this.$data.geojsonCollectionForTopicFillLayer.paint['fill-opacity'] = nextGeojson[0].fillOpacity;
+
+        this.$data.geojsonCollectionForTopicLabelsLayer.layout = {
+          'text-font': [ 'Open Sans Regular' ],
+          'text-field': [ 'get', 'PropZone' ],
+          'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
+          'text-radial-offset': 0.5,
+          'text-justify': 'auto',
+          // 'icon-image': ['concat', ['get', 'icon'], '-15']
+        };
+        this.$data.geojsonCollectionForTopicLabelsLayer.minzoom = nextGeojson[0].labelMinZoom;
+
         this.$data.geojsonForTopicBoolean = true;
 
       } else {
