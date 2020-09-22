@@ -449,6 +449,18 @@
 
       <MglGeojsonLayer
         v-if="geojsonForTopicBoolean"
+        key="'geojsonForTopicLine'"
+        :source-id="'geojsonForTopic'"
+        :source="geojsonForTopicSource"
+        :layer-id="'geojsonForTopicLine'"
+        :layer="geojsonForTopicLineLayer"
+        :clear-source="true"
+        :replace-source="true"
+        :replace="true"
+      />
+
+      <MglGeojsonLayer
+        v-if="geojsonForTopicBoolean"
         key="'geojsonCollectionForTopicFill'"
         :source-id="'geojsonCollectionForTopic'"
         :source="geojsonCollectionForTopicSource"
@@ -461,11 +473,11 @@
 
       <MglGeojsonLayer
         v-if="geojsonForTopicBoolean"
-        key="'geojsonForTopicLine'"
-        :source-id="'geojsonForTopic'"
-        :source="geojsonForTopicSource"
-        :layer-id="'geojsonForTopicLine'"
-        :layer="geojsonForTopicLineLayer"
+        key="'geojsonCollectionForTopicLine'"
+        :source-id="'geojsonCollectionForTopic'"
+        :source="geojsonCollectionForTopicSource"
+        :layer-id="'geojsonCollectionForTopicLine'"
+        :layer="geojsonCollectionForTopicLineLayer"
         :clear-source="true"
         :replace-source="true"
         :replace="true"
@@ -853,6 +865,22 @@ export default {
           // 'fill-opacity': 1,
           // 'fill-opacity': 0.4,
           // 'fill-outline-color': 'rgb(0,102,255)',
+        },
+      },
+      geojsonCollectionForTopicLineLayer: {
+        'id': 'geojsonCollectionForTopicLine',
+        'type': 'line',
+        'source': 'geojsonCollectionForTopic',
+        'layout': {},
+        'paint': {
+          'line-color': 'black',
+          'line-width': {
+            stops: [
+              [1, 1],
+              [15, 1],
+              [19, 4],
+            ],
+          },
         },
       },
       geojsonForTopicSource: {
@@ -1451,12 +1479,11 @@ export default {
     },
     geojsonForTopic(nextGeojson) {
       console.log('watch geojsonForTopic, nextGeojson:', nextGeojson);
-      if (this.$store.map) {
-        // console.log('watch geojsonForTopic is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
-      }
+
       if (nextGeojson[0]) {
         console.log('watch geojsonForTopic is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
         this.$data.geojsonCollectionForTopicSource.data.features = [];
+
         for (let feature of nextGeojson) {
           this.$data.geojsonCollectionForTopicSource.data.features.push(feature.geojson);
         }
@@ -1473,6 +1500,7 @@ export default {
           val = valOrGetter;
         }
         this.$data.geojsonCollectionForTopicFillLayer.paint['fill-color'] = val;
+        this.$data.geojsonCollectionForTopicFillLayer.paint['fill-opacity'] = nextGeojson[0].fillOpacity;
         this.$data.geojsonForTopicBoolean = true;
 
       } else {
