@@ -1524,15 +1524,19 @@ export default {
         this.$data.geojsonCollectionForTopicFillLayer.paint['fill-color'] = val;
         this.$data.geojsonCollectionForTopicFillLayer.paint['fill-opacity'] = nextGeojson[0].fillOpacity;
 
-        this.$data.geojsonCollectionForTopicLabelsLayer.layout = {
-          'text-font': [ 'Open Sans Regular' ],
-          'text-field': [ 'get', 'PropZone' ],
-          'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
-          'text-radial-offset': 0.5,
-          'text-justify': 'auto',
-          // 'icon-image': ['concat', ['get', 'icon'], '-15']
-        };
-        this.$data.geojsonCollectionForTopicLabelsLayer.minzoom = nextGeojson[0].labelMinZoom;
+        if (nextGeojson[0].labelField) {
+          this.$data.geojsonCollectionForTopicLabelsLayer.layout = {
+            'text-font': [ 'Open Sans Regular' ],
+            'text-field': [ 'get', nextGeojson[0].labelField ],
+            'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
+            'text-radial-offset': 0.5,
+            'text-justify': 'auto',
+            // 'icon-image': ['concat', ['get', 'icon'], '-15']
+          };
+        }
+        if (nextGeojson[0].labelMinZoom) {
+          this.$data.geojsonCollectionForTopicLabelsLayer.minzoom = nextGeojson[0].labelMinZoom;
+        }
 
         this.$data.geojsonForTopicBoolean = true;
 
