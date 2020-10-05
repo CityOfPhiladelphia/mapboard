@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.2.4 - 10/5/2020
+
+* uses pvm 2.2.8 fixing bug with cyclomedia and pictometry popout
+
 ### 4.2.3 - 9/15/2020
 
 * fixes issue in real estate tax by allowing the app to use input in tips if geocode fails
