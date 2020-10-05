@@ -824,6 +824,51 @@ export default {
         },
       },
       geojsonForTopicBoolean: false,
+      geojsonCollectionForTopicSource: {
+        'type': 'geojson',
+        'data': {
+          'type': 'FeatureCollection',
+          'features': [],
+        },
+      },
+      geojsonCollectionForTopicFillLayer: {
+        'id': 'geojsonCollectionForTopicFill',
+        'type': 'fill',
+        'source': 'geojsonCollectionForTopic',
+        'layout': {},
+        'paint': {
+          'fill-color': '#9e9ac8',
+          // 'fill-opacity': 1,
+          // 'fill-opacity': 0.4,
+          // 'fill-outline-color': 'rgb(0,102,255)',
+        },
+      },
+      geojsonCollectionForTopicLabelsLayer: {
+        'id': 'geojsonCollectionForTopicLabels',
+        'type': 'symbol',
+        'source': 'geojsonCollectionForTopic',
+        'minzoom': 14,
+        'layout': {},
+        // 'paint': {
+        //   'fill-color': '#9e9ac8',
+        // },
+      },
+      geojsonCollectionForTopicLineLayer: {
+        'id': 'geojsonCollectionForTopicLine',
+        'type': 'line',
+        'source': 'geojsonCollectionForTopic',
+        'layout': {},
+        'paint': {
+          'line-color': 'black',
+          'line-width': {
+            stops: [
+              [ 1, 1 ],
+              [ 15, 1 ],
+              [ 19, 4 ],
+            ],
+          },
+        },
+      },
       geojsonForTopicSource: {
         'type': 'geojson',
         'data': {
@@ -1423,8 +1468,41 @@ export default {
         // console.log('watch geojsonForTopic is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
       }
       if (nextGeojson[0]) {
-        // console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
-        this.$data.geojsonForTopicSource.data.geometry.coordinates = nextGeojson[0].geojson.geometry.coordinates;
+        console.log('watch geojsonForTopic is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
+        this.$data.geojsonCollectionForTopicSource.data.features = [];
+
+        for (let feature of nextGeojson) {
+          this.$data.geojsonCollectionForTopicSource.data.features.push(feature.geojson);
+        }
+
+        const valOrGetter = nextGeojson[0].fillColor;
+        const valOrGetterType = typeof valOrGetter;
+        let val;
+
+        if (valOrGetterType === 'function') {
+          const state = this.$store.state;
+          const getter = valOrGetter;
+          val = getter(state);
+        } else {
+          val = valOrGetter;
+        }
+        this.$data.geojsonCollectionForTopicFillLayer.paint['fill-color'] = val;
+        this.$data.geojsonCollectionForTopicFillLayer.paint['fill-opacity'] = nextGeojson[0].fillOpacity;
+
+        if (nextGeojson[0].labelField) {
+          this.$data.geojsonCollectionForTopicLabelsLayer.layout = {
+            'text-font': [ 'Open Sans Regular' ],
+            'text-field': [ 'get', nextGeojson[0].labelField ],
+            'text-variable-anchor': [ 'top', 'bottom', 'left', 'right' ],
+            'text-radial-offset': 0.5,
+            'text-justify': 'auto',
+            // 'icon-image': ['concat', ['get', 'icon'], '-15']
+          };
+        }
+        if (nextGeojson[0].labelMinZoom) {
+          this.$data.geojsonCollectionForTopicLabelsLayer.minzoom = nextGeojson[0].labelMinZoom;
+        }
+
         this.$data.geojsonForTopicBoolean = true;
       } else {
         this.$data.geojsonForTopicSource.data.geometry.coordinates = [];

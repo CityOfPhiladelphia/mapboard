@@ -1057,10 +1057,10 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@phila/vue-comps@2.1.8":
-  version "2.1.8"
-  resolved "https://registry.yarnpkg.com/@phila/vue-comps/-/vue-comps-2.1.8.tgz#1eed4573be50a782a896e1399e275726c331f0c4"
-  integrity sha512-T35Gb7mcTK5JJ7jX1+6WXrrfYxjx90A2PvTwgjcEvG3C2LoPH/fweQlEYL1FkH+T8ttFIVRsUPu4gQ22xdG3fw==
+"@phila/vue-comps@2.1.14":
+  version "2.1.14"
+  resolved "https://registry.yarnpkg.com/@phila/vue-comps/-/vue-comps-2.1.14.tgz#70622b16b0fae0de91b66ff4f1fec7112418e01b"
+  integrity sha512-hTMHJPnS/2dAT2wBRFh4zx+0/UO3gm3K7IRwUfISkU2IFSeFTVlk/0tXAwuHBa/gCV5e0i4Rkb4iLCv2VJCq0g==
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-regular-svg-icons" "^5.7.2"
@@ -1076,10 +1076,10 @@
     vue "^2.6.11"
     vuex "^3.1.2"
 
-"@phila/vue-datafetch@1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@phila/vue-datafetch/-/vue-datafetch-1.4.1.tgz#c132f7d26286bcc90418261a8e9c66b36761cb48"
-  integrity sha512-QmoPOJQ5fjTjpm4S/bhTuDe0e1Wl4JoylTQlHFA9fPNVlNwAmG2RrnqTHnbPI+7hZ/J3xriQfXfM64MCl5w3FA==
+"@phila/vue-datafetch@1.4.2":
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/@phila/vue-datafetch/-/vue-datafetch-1.4.2.tgz#508a5ac9748b1a6339776232b9a9f7c837d05428"
+  integrity sha512-M6tlcEGLDNUUBw2oCPiL3XHpAmtBjhhHrbaO8o27+WAgrVVx0gkIUI7BEwVooJUCVA/cGHdTvfy9tFQyUFelJg==
   dependencies:
     "@turf/turf" "^5.1.6"
     airtable "^0.8.1"
@@ -1092,10 +1092,10 @@
     vue "^2.6.11"
     vuex "^3.5.1"
 
-"@phila/vue-mapping@2.2.3":
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/@phila/vue-mapping/-/vue-mapping-2.2.3.tgz#5525cf9ea373e06ed61f1a69eb79c2d80f287593"
-  integrity sha512-nqjM1h8xj335A0GYO6EE5UhSw1RrZS6mYmqAwBZAEDo9GgToH+5EBc937N99sl5Y4FStK+soQ65EVzTDPI/C4w==
+"@phila/vue-mapping@2.2.8":
+  version "2.2.8"
+  resolved "https://registry.yarnpkg.com/@phila/vue-mapping/-/vue-mapping-2.2.8.tgz#0264c84b25eee242aacf565d7a1b39d2e22a7c1c"
+  integrity sha512-xhnUCo7qehp/xGPrm0R3Qyb34LYJ2Po8YCK2soHt0+8xSPEpYsaeocr1vSXLzLN27aBNzQu+FWc1RRGYNM0IlQ==
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-regular-svg-icons" "^5.7.2"
@@ -1109,7 +1109,7 @@
     blueimp-md5 "^2.10.0"
     date-fns "^2.8.1"
     esri-leaflet "^2.3.1"
-    esri-leaflet-legend "https://github.com/CityOfPhiladelphia/esri-leaflet-legend#8d42cbc1ed71c630fd8f9c6795877b5f7498b49f"
+    esri-leaflet-legend "https://github.com/CityOfPhiladelphia/esri-leaflet-legend#8fc0a7949b1ce80340261167a1aa4302177bb380"
     esri-leaflet-renderers "2.0.6"
     leaflet "1.5.1"
     leaflet-easybutton "^2.3.0"
@@ -5419,9 +5419,9 @@ esrecurse@^4.1.0, esrecurse@^4.3.0:
   dependencies:
     estraverse "^5.2.0"
 
-"esri-leaflet-legend@git+https://github.com/CityOfPhiladelphia/esri-leaflet-legend.git#8d42cbc1ed71c630fd8f9c6795877b5f7498b49f":
+"esri-leaflet-legend@git+https://github.com/CityOfPhiladelphia/esri-leaflet-legend.git#8fc0a7949b1ce80340261167a1aa4302177bb380":
   version "2.0.1"
-  resolved "git+https://github.com/CityOfPhiladelphia/esri-leaflet-legend.git#8d42cbc1ed71c630fd8f9c6795877b5f7498b49f"
+  resolved "git+https://github.com/CityOfPhiladelphia/esri-leaflet-legend.git#8fc0a7949b1ce80340261167a1aa4302177bb380"
   dependencies:
     esri-leaflet "^2.2.3"
     leaflet "^1.4.0"
@@ -5736,7 +5736,7 @@ file-loader@^4.2.0:
     loader-utils "^1.2.3"
     schema-utils "^2.5.0"
 
-"file-saver@github:eligrey/FileSaver.js#1.3.8":
+file-saver@eligrey/FileSaver.js#1.3.8:
   version "1.3.8"
   resolved "https://codeload.github.com/eligrey/FileSaver.js/tar.gz/e865e37af9f9947ddcced76b549e27dc45c1cb2e"
 
