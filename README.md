@@ -28,6 +28,13 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.2.5 - 10/7/2020
+
+* uses upgraded vue libraries:
+    * @phila/vue-mapping 2.2.9
+    * @phila/vue-comps 2.1.15
+    * @phila/vue-datafetch 1.4.3
+
 ### 4.2.4 - 10/5/2020
 
 * uses pvm 2.2.8 fixing bug with cyclomedia and pictometry popout
