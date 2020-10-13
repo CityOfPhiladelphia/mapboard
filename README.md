@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.2.6 - 10/13/2020
+
+* fixes geojsonForTopic issue for voting topic of atlas
+
 ### 4.2.5 - 10/7/2020
 
 * uses upgraded vue libraries:
