@@ -12,6 +12,9 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import controllerMixin from '@phila/vue-datafetch/src/controller.js';
 
+import Router from 'vue-router';
+// import router from './router';
+
 // conssole.log('in mapboard main.js, createStore:', createStore, 'controllerMixin:', controllerMixin);
 
 
@@ -66,6 +69,9 @@ function assignHorizontalTableGroupIds(comps) {
 function finishInit(config) {
   // console.log('finishInit is running, config:', config);
   // assign table ids
+
+  config.router.pattern = 'address-and-topic';
+
   for (let topic of config.topics) {
     assignTableIds(topic.components);
     assignHorizontalTableGroupIds(topic.components);
@@ -78,8 +84,26 @@ function finishInit(config) {
   const store = createStore(config);
   let opts = { config, store };
 
+  Vue.use(Router);
+  let router = new Router({
+    routes: [
+      // {
+      //   path: '/:address',
+      //   name: 'address-only',
+      // },
+      {
+        path: '/:topic',
+        name: 'topic-only',
+      },
+      {
+        path: '/:address?/:topic?',
+        name: 'address-and-topic',
+      },
+    ],
+  });
+
   // mix in controller
-  Vue.use(controllerMixin, { config, store });
+  Vue.use(controllerMixin, { config, store, router });
   // Vue.use(controllerMixin, { config });
 
   // console.log('in finishInit, config:', config, 'store:', store, 'opts.store:', opts.store);
@@ -100,6 +124,7 @@ function finishInit(config) {
   const vm = new Vue({
     el: config.el || '#mapboard',
     render: h => h(Mapboard),
+    router,
     store,
   });
 }
