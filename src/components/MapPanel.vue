@@ -341,8 +341,7 @@
       @click="handleMapClick"
       @load="onMapLoaded"
     >
-
-    <!-- v-if="shouldShowRasterLayer(key) && activeBasemap === key" -->
+      <!-- v-if="shouldShowRasterLayer(key) && activeBasemap === key" -->
       <MglRasterLayer
         v-for="(basemapSource, key) in basemapSources"
         v-if="activeBasemap === key"
@@ -1465,9 +1464,9 @@ export default {
     },
     geojsonForTopic(nextGeojson) {
       if (this.$store.map) {
-        // console.log('watch geojsonForTopic is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
+        console.log('watch geojsonForTopic is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
       }
-      if (nextGeojson[0]) {
+      if (nextGeojson[0] && nextGeojson.length > 1) {
         console.log('watch geojsonForTopic is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
         this.$data.geojsonCollectionForTopicSource.data.features = [];
 
@@ -1503,6 +1502,9 @@ export default {
           this.$data.geojsonCollectionForTopicLabelsLayer.minzoom = nextGeojson[0].labelMinZoom;
         }
 
+        this.$data.geojsonForTopicBoolean = true;
+      } else if (nextGeojson[0]) {
+        this.$data.geojsonForTopicSource.data.geometry.coordinates = nextGeojson[0].geojson.geometry.coordinates;
         this.$data.geojsonForTopicBoolean = true;
       } else {
         this.$data.geojsonForTopicSource.data.geometry.coordinates = [];
