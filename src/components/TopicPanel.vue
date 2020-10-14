@@ -409,11 +409,21 @@ export default {
   mounted() {
     this.handleWindowResize(this.windowDim);
     // console.log('TopicPanel.vue mounted');
+    if (this.$store.state.activeTopic === null || this.$store.state.activeTopic === '') {
+      this.setDefaultTopicActive();
+    }
   },
   methods: {
-    testEmit() {
-      // console.log('TopicPanel.vue testEmit is running');
+    setDefaultTopicActive() {
+      console.log('TopicPanel setDefaultTopicActive is running');
+      if (this.$config.defaultTopic) {
+        this.$store.commit('setActiveTopic', this.$config.defaultTopic);
+        // this.$store.state.activeTopic = this.$props.options.defaultTopic;
+      }
     },
+    // testEmit() {
+    //   // console.log('TopicPanel.vue testEmit is running');
+    // },
     getMoreRecords(dataSource, highestPageRetrieved) {
       // console.log('TopicPanel getMoreRecords is running');
       this.$controller.getMoreRecords(dataSource, highestPageRetrieved);
