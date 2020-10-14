@@ -88,7 +88,8 @@
       class="topics-container cell medium-cell-block-y"
       :style="topicsContainerStyle"
     >
-      <greeting
+      <component
+        :is="greetingComponent"
         v-show="shouldShowGreeting"
         :message="greetingText"
         :options="greetingOptions"
@@ -155,6 +156,27 @@ export default {
     return data;
   },
   computed: {
+    greetings() {
+      let greetings = [];
+      for (let comp of Object.keys(this.$config.customComps)) {
+        if (comp.includes('greeting')) {
+          greetings.push(comp.slice(8, comp.length));
+        }
+      }
+      return greetings;
+    },
+    activeTopic() {
+      return this.$store.state.activeTopic;
+    },
+    greetingComponent() {
+      let value;
+      if (this.greetings.includes(this.activeTopic)) {
+        value = 'greeting' + this.activeTopic;
+      } else {
+        value = 'greeting';
+      }
+      return value;
+    },
     windowDim() {
       return this.$store.state.windowDimensions;
     },
