@@ -96,6 +96,10 @@ function finishInit(config) {
         name: 'topic-only',
       },
       {
+        path: '/:address',
+        name: 'address-only',
+      },
+      {
         path: '/:address?/:topic?',
         name: 'address-and-topic',
       },
