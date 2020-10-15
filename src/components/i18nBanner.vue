@@ -3,7 +3,7 @@
     <!-- <table class="fixed centered no-margin-bottom"> -->
     <table class="fixed centered bottom-padding bottom-margin stack">
       <th
-        v-for="(lang, key) in this.i18nMessages"
+        v-for="(lang, key) in i18nMessages"
         :key="key"
         :class="{ selected: isSelected === key, 'bottom-padding': true, 'light-header' : true }"
         @click="handleTableHeaderClick(key)"
@@ -36,6 +36,7 @@ export default {
     },
     i18nMessages() {
       let values = {};
+      console.log('i18nMessages computed, this.$i18n.messages:', this.$i18n.messages, 'this.$config.i18n.languages:', this.$config.i18n.languages);
       if (this.$config.i18n.languages) {
         for (let language of this.$config.i18n.languages) {
           values[language] = this.$i18n.messages[language];

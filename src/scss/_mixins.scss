@@ -1,0 +1,38 @@
+// sass-lint:disable no-important
+@mixin pad-box($unit) {
+  padding:rem-calc($unit);
+}
+
+@mixin list-columns($num, $pad) {
+  column-count: $num;
+  column-gap:rem-calc($pad);
+}
+
+@mixin secondary-font($weight){
+  font-family: 'Montserrat', 'Tahoma', sans-serif;
+  font-weight:$weight;
+}
+
+@mixin word-wrap() {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+@mixin transition( $property, $speed ){
+  transition: $property $speed ease-in-out;
+}
+
+@mixin valign-cell(){
+  display: table-cell;
+  vertical-align: middle;
+}
+
+@mixin center(){
+  text-align:center !important;
+}
+@mixin inherit-colors(){
+  background: inherit;
+  color:inherit;
+}

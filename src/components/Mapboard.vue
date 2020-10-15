@@ -14,10 +14,30 @@
       />
       <!-- slot="i18n-banner" -->
       <i18nBanner
-        v-if="this.$config.i18n && this.$config.i18n.enabled && shouldShowi18nBanner"
+        v-if="shouldShowi18nBanner"
         class="hide-for-small-only"
       />
-      
+
+      <div
+        v-if="!shouldShowi18nBanner"
+        class="cell mobile-menu show-for-small-only small-2"
+      >
+        <font-awesome-icon
+          v-show="!i18nListIsOpen"
+          icon="globe"
+          size="2x"
+          :style="{ color: 'white' }"
+          @click="togglei18nMenu"
+        />
+        <font-awesome-icon
+          v-show="i18nListIsOpen"
+          icon="times"
+          size="2x"
+          :style="{ color: 'white' }"
+          @click="togglei18nMenu"
+        />
+      </div>
+
     </component>
 
     <component
@@ -114,6 +134,7 @@ export default {
       mbRootStyle: {
         'height': '100px',
       },
+      i18nListIsOpen: false,
     };
     return data;
   },
@@ -123,9 +144,9 @@ export default {
     },
     shouldShowi18nBanner() {
       let topics = this.$config.i18n.topics;
-      console.log('shouldShowi18nBanner, topics:', topics);
+      // console.log('shouldShowi18nBanner, topics:', topics);
       let value = false;
-      if (topics.includes(this.activeTopic)) {
+      if (this.$config.i18n && this.$config.i18n.enabled && topics.includes(this.activeTopic)) {
         value = true;
       }
       return value;
@@ -316,6 +337,11 @@ export default {
     }
   },
   methods: {
+    togglei18nMenu() {
+      console.log('togglei18nMenu is running');
+      this.i18nListIsOpen = !this.i18nListIsOpen;
+      this.toggleBodyClass('no-scroll');
+    },
     closeAddressCandidateList() {
       this.$store.commit('setShouldShowAddressCandidateList', false);
     },
@@ -373,6 +399,20 @@ export default {
 
   .topic-panel-false {
     /* display: none; */
+  }
+
+  .mobile-menu-content-container{
+    margin-top:1rem;
+    overflow: hidden;
+    color: white;
+    z-index: 100;
+    background: color(dark-ben-franklin);
+    height: 100vh;
+    width:100%;
+
+    .mobile-menu-content{
+      text-align: center;
+    }
   }
 
   @media screen and (min-width: 46.875em) {

@@ -1,0 +1,50 @@
+html, body, h1, h2, h3, h4, h5, h6{
+  padding: 0;
+  margin: 0;
+}
+
+//these need to be added manually
+.black {
+  color: black;
+}
+.bg-black{
+  background-color: black;
+}
+.bdr-black{
+  border-color: black;
+}
+.white {
+  color: white;
+}
+.bg-white{
+  background-color: white;
+}
+.bdr-white{
+  border-color:white;
+}
+
+// Heading sizes
+h1, .h1,
+h2, .h2,
+h3, .h3,
+h4, .h4,
+h5, .h5,
+h6, .h6 {
+  @include secondary-font(400);
+
+  &.contrast {
+    border-bottom:10px solid color(ben-franklin-blue);
+  }
+
+}
+
+//add header classes
+@each $size, $headers in $header-styles {
+  @media screen and ($size) {
+    @each $header, $font-size in $headers {
+      .#{$header} {
+        font-size: map-values($font-size) + px;
+      }
+    }
+  }
+}
