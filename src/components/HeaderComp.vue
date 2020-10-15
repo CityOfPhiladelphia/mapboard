@@ -39,7 +39,12 @@
 
 <script>
 
+import i18nBanner from './i18nBanner.vue';
+
 export default {
+  components: {
+    i18nBanner,
+  },
   data() {
     const data = {
       // this will only affect the app size if the app is set to "plugin" mode

@@ -12,6 +12,12 @@
         :is="this.$config.alerts.header"
         v-if="this.$config.alerts && this.$config.alerts.header != null"
       />
+      <!-- slot="i18n-banner" -->
+      <i18nBanner
+        v-if="this.$config.i18n && this.$config.i18n.enabled && shouldShowi18nBanner"
+        class="hide-for-small-only"
+      />
+      
     </component>
 
     <component
@@ -90,6 +96,7 @@
 // console.log('test Mapboard.vue, this:', this, 'this.$config:', this.$config);
 
 import 'mapbox-gl/dist/mapbox-gl.css';
+import i18nBanner from './i18nBanner.vue';
 
 export default {
   components: {
@@ -99,6 +106,7 @@ export default {
     PictometryPngMarker: () => import(/* webpackChunkName: "mbmb_pvm_PictometryPngMarker" */'@phila/vue-mapping/src/pictometry/PngMarker.vue'),
     PictometryViewCone: () => import(/* webpackChunkName: "mbmb_pvm_PictometryViewCone" */'@phila/vue-mapping/src/pictometry/ViewCone.vue'),
     Popover: () => import(/* webpackChunkName: "mbmb_pvc_Popover" */'@phila/vue-comps/src/components/Popover.vue'),
+    i18nBanner,
   },
   data() {
     const data = {
@@ -110,6 +118,18 @@ export default {
     return data;
   },
   computed: {
+    activeTopic() {
+      return this.$store.state.activeTopic;
+    },
+    shouldShowi18nBanner() {
+      let topics = this.$config.i18n.topics;
+      console.log('shouldShowi18nBanner, topics:', topics);
+      let value = false;
+      if (topics.includes(this.activeTopic)) {
+        value = true;
+      }
+      return value;
+    },
     mapType() {
       return this.$store.state.map.type;
     },
