@@ -1,6 +1,6 @@
 
 import Vue from 'vue';
-import VueI18n from 'vue-i18n'
+import VueI18n from 'vue-i18n';
 import axios from 'axios';
 import createStore from './store';
 import configMixin from './util/config-mixin';
@@ -108,7 +108,7 @@ function finishInit(config) {
   Vue.use(controllerMixin, { config, store, router });
   // Vue.use(controllerMixin, { config });
 
-  Vue.use(VueI18n)
+  Vue.use(VueI18n);
   let i18nData;
   if (config.i18n && config.i18n.data) {
     i18nData = config.i18n.data;
