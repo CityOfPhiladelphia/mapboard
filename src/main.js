@@ -1,5 +1,6 @@
 
 import Vue from 'vue';
+import VueI18n from 'vue-i18n'
 import axios from 'axios';
 import createStore from './store';
 import configMixin from './util/config-mixin';
@@ -88,10 +89,6 @@ function finishInit(config) {
   let router = new Router({
     mode: 'history',
     routes: [
-      // {
-      //   path: '/:address',
-      //   name: 'address-only',
-      // },
       {
         path: '/:topic',
         name: 'topic-only',
@@ -110,6 +107,15 @@ function finishInit(config) {
   // mix in controller
   Vue.use(controllerMixin, { config, store, router });
   // Vue.use(controllerMixin, { config });
+
+  Vue.use(VueI18n)
+  let i18nData;
+  if (config.i18n && config.i18n.data) {
+    i18nData = config.i18n.data;
+  } else {
+    i18nData = {};
+  }
+  const i18n = new VueI18n(i18nData);
 
   // console.log('in finishInit, config:', config, 'store:', store, 'opts.store:', opts.store);
   if (config.healthChecks) {
@@ -130,6 +136,7 @@ function finishInit(config) {
     el: config.el || '#mapboard',
     render: h => h(Mapboard),
     router,
+    i18n,
     store,
   });
 }
