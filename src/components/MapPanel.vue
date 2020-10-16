@@ -153,8 +153,9 @@
         :source="geojsonCameraSource"
         :layer-id="'cameraPoints'"
         :layer="geojsonCameraLayer"
-        :icon="sitePath + 'images/camera.png'"
+        :icon="sitePath + '/images/camera.png'"
       />
+      <!-- :icon="sitePath + 'images/camera.png'" -->
 
       <MglGeojsonLayer
         v-if="cyclomediaActive"
@@ -260,7 +261,7 @@
         v-if="shouldShowPictometryButton"
         :button-id="'buttonId-02'"
         :button-class="pictometryActive ? 'right top-button-2 active' : 'right top-button-2 inactive'"
-        :image-link="sitePath + 'images/pictometry.png'"
+        :image-link="sitePath + '/images/pictometry.png'"
         @click="handlePictometryButtonClick"
       />
 
@@ -268,7 +269,7 @@
         v-if="shouldShowCyclomediaButton"
         :button-id="'buttonId-03'"
         :button-class="cyclomediaActive ? 'right top-button-3 active' : 'right top-button-3 inactive'"
-        :image-link="sitePath + 'images/cyclomedia.png'"
+        :image-link="sitePath + '/images/cyclomedia.png'"
         @click="handleCyclomediaButtonClick"
       />
 
@@ -665,9 +666,9 @@ export default {
 
     basemapImageLink() {
       if (this.activeBasemap === 'pwd' || this.activeBasemap === 'dor') {
-        return 'images/imagery_small.png';
+        return window.location.origin + '/images/imagery_small.png';
       } else {
-        return 'images/basemap_small.png';
+        return window.location.origin + '/images/basemap_small.png';
       }
     },
     queriedLayerSources() {

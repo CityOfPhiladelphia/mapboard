@@ -40,7 +40,7 @@
               />
 
             </div>
-            
+
           </div>
         </div>
       </header>
@@ -111,9 +111,9 @@ export default {
     },
     imgSrc() {
       if (this.$store.state.windowDimensions.width >= 750) {
-        return 'images/city-of-philadelphia-yellow-white.png';
+        return window.location.origin + '/images/city-of-philadelphia-yellow-white.png';
       } else {
-        return 'images/city-of-philadelphia-bell.png';
+        return window.location.origin + '/images/city-of-philadelphia-bell.png';
       }
     },
   },

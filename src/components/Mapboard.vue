@@ -53,7 +53,7 @@
         <pictometry-png-marker
           v-if="pictometryShowAddressMarker"
           :latlng="[geocodeData.geometry.coordinates[1], geocodeData.geometry.coordinates[0]]"
-          :icon="'images/markers.png'"
+          :icon="sitePath + '/images/markers.png'"
           :height="60"
           :width="40"
           :offset-x="0"
@@ -63,7 +63,7 @@
         <pictometry-png-marker
           v-if="cyclomediaActive && pictometryActive"
           :latlng="cycloLatlng"
-          :icon="'images/camera2.png'"
+          :icon="sitePath + '/images/camera2.png'"
           :height="20"
           :width="30"
           :offset-x="-2"
@@ -120,6 +120,12 @@ export default {
     return data;
   },
   computed: {
+    sitePath() {
+      if (process.env.VUE_APP_PUBLICPATH) {
+        return window.location.origin + process.env.VUE_APP_PUBLICPATH;
+      }
+      return '';
+    },
     activeTopic() {
       return this.$store.state.activeTopic;
     },
