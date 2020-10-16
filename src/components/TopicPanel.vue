@@ -168,10 +168,13 @@ export default {
     activeTopic() {
       return this.$store.state.activeTopic;
     },
+    routerTopic() {
+      return this.$store.state.routerTopic;
+    },
     greetingComponent() {
       let value;
-      if (this.greetings.includes(this.activeTopic)) {
-        value = 'greeting' + this.activeTopic;
+      if (this.greetings.includes(this.routerTopic)) {
+        value = 'greeting' + this.routerTopic;
       } else {
         value = 'greeting';
       }
@@ -389,6 +392,9 @@ export default {
     },
   },
   watch: {
+    activeTopic() {
+      this.handleWindowResize(this.windowDim);
+    },
     geocodeStatus() {
       this.handleWindowResize(this.windowDim);
     },

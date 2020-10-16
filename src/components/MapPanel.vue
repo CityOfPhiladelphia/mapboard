@@ -1061,8 +1061,11 @@ export default {
     },
   },
   watch: {
-    windowDim(nextDim) {
-      this.handleWindowResize(nextDim);
+    windowDim() {
+      this.handleWindowResize();
+    },
+    activeTopic() {
+      this.handleWindowResize();
     },
     headerLoaded() {
       this.handleWindowResize(this.windowDim);
@@ -1287,14 +1290,14 @@ export default {
       });
     },
     fullScreenMapEnabled() {
-      this.handleWindowResize(this.windowDim);
-      this.$nextTick(() => {
-        if (this.mapType === 'mapbox') {
-          // console.log('watch fullScreenMapEnabled is calling this.$store.map.resize()');
-          this.$store.map.resize();
-          // console.log('watch fullScreenMapEnabled completed calling resize');
-        }
-      });
+      this.handleWindowResize();
+      // this.$nextTick(() => {
+      //   if (this.mapType === 'mapbox') {
+      //     // console.log('watch fullScreenMapEnabled is calling this.$store.map.resize()');
+      //     this.$store.map.resize();
+      //     // console.log('watch fullScreenMapEnabled completed calling resize');
+      //   }
+      // });
     },
   },
   created() {
@@ -1325,7 +1328,7 @@ export default {
     }
   },
   methods: {
-    handleWindowResize(dim) {
+    handleWindowResize() {
       let mapHeight;
       const windowHeight = window.innerHeight;
       const siteHeaderHeightNum = parseInt(document.getElementsByClassName('combo-header')[0].getBoundingClientRect().height);
@@ -1336,6 +1339,13 @@ export default {
         mapHeight = 400;
       }
       this.mapContainerStyle['min-height'] = mapHeight.toString() + 'px';
+      this.$nextTick(() => {
+        if (this.mapType === 'mapbox') {
+          // console.log('watch fullScreenMapEnabled is calling this.$store.map.resize()');
+          this.$store.map.resize();
+          // console.log('watch fullScreenMapEnabled completed calling resize');
+        }
+      });
     },
     shouldShowRasterLayer(layerId) {
       // console.log('shouldShowRasterLayer is running');
