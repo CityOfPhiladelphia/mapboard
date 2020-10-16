@@ -440,7 +440,7 @@ export default {
       this.$store.state.shouldShowAddressCandidateList = false;
     },
     handleWindowResize(dim) {
-      // console.log('TopicPanel handleWindowResize is running');
+      console.log('TopicPanel handleWindowResize is running');
       let topicsHeight;
       if (this.$config.plugin) {
         if (this.$config.plugin.enabled) {

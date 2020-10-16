@@ -28,22 +28,49 @@
                 </h1>
               </a>
             </div>
+
+            <div
+              v-if="shouldShowi18nBanner"
+              class="show-for-small-only small-2 globe-container"
+            >
+              <popover-icon
+                :slots="popoverIconSlots"
+                :options="popoverIconOptions"
+              >
+              </popover-icon>
+              <!-- <font-awesome-icon
+                v-show="!i18nListIsOpen"
+                icon="globe"
+                size="2x"
+                :style="{ color: 'white' }"
+                @click="togglei18nMenu"
+              /> -->
+              <!-- <font-awesome-icon
+                v-show="i18nListIsOpen"
+                icon="times"
+                size="2x"
+                :style="{ color: 'white' }"
+                @click="togglei18nMenu"
+              /> -->
+            </div>
           </div>
         </div>
       </header>
 
-      <slot />
+      <slot name="i18nBanner" />
+      <slot name="alertBanner" />
     </div>
   </div>
 </template>
 
 <script>
 
-import i18nBanner from './i18nBanner.vue';
+// import i18nBanner from './i18nBanner.vue';
 
 export default {
   components: {
-    i18nBanner,
+    PopoverIcon: () => import(/* webpackChunkName: "mbmp_pvc_PopoverIcon" */'@phila/vue-comps/src/components/PopoverIcon.vue'),
+    // i18nBanner,
   },
   data() {
     const data = {
@@ -52,10 +79,34 @@ export default {
         'font-size': '30px',
         'line-height': '30px',
       },
+      i18nListIsOpen: false,
+      popoverIconSlots: {
+        value: 'Select Language',
+      },
+      popoverIconOptions: {
+        height: '100%',
+        components: [
+          {
+            type: 'i18n-banner',
+          },
+        ],
+      },
     };
     return data;
   },
   computed: {
+    activeTopic() {
+      return this.$store.state.activeTopic;
+    },
+    shouldShowi18nBanner() {
+      let topics = this.$config.i18n.topics;
+      // console.log('shouldShowi18nBanner, topics:', topics);
+      let value = false;
+      if (this.$config.i18n && this.$config.i18n.enabled && topics.includes(this.activeTopic)) {
+        value = true;
+      }
+      return value;
+    },
     headerText() {
       if (this.$config.header) {
         return this.$config.header.text;
@@ -87,6 +138,13 @@ export default {
     this.$store.commit('setHeaderLoaded', true);
   },
   methods: {
+    togglei18nMenu() {
+      this.$emit('togglei18nMenu');
+    },
+    toggleBodyClass(className) {
+      const el = document.body;
+      return this.footerListIsOpen || this.i18nListIsOpen ? el.classList.add(className) : el.classList.remove(className);
+    },
     handleWindowResize() {
       // this only actually affects the size if it is set to "plugin mode"
       if (window.innerWidth >= 750) {
@@ -126,12 +184,9 @@ export default {
     width: 42px;
   }
 
-  /* .page-title-container {
-    display: inline-block;
-  } */
-
-  /* .combo-header {
-    display: block;
-  } */
+  .globe-container {
+    float: right;
+    margin-top: 8px;
+  }
 
 </style>

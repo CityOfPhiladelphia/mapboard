@@ -7,37 +7,18 @@
     <component
       :is="headerCompLoader"
       v-if="shouldShowHeader"
+      @togglei18nMenu="togglei18nMenu"
     >
       <component
         :is="this.$config.alerts.header"
         v-if="this.$config.alerts && this.$config.alerts.header != null"
+        slot="alertBanner"
       />
-      <!-- slot="i18n-banner" -->
       <i18nBanner
         v-if="shouldShowi18nBanner"
+        slot="i18nBanner"
         class="hide-for-small-only"
       />
-
-      <div
-        v-if="!shouldShowi18nBanner"
-        class="cell mobile-menu show-for-small-only small-2"
-      >
-        <font-awesome-icon
-          v-show="!i18nListIsOpen"
-          icon="globe"
-          size="2x"
-          :style="{ color: 'white' }"
-          @click="togglei18nMenu"
-        />
-        <font-awesome-icon
-          v-show="i18nListIsOpen"
-          icon="times"
-          size="2x"
-          :style="{ color: 'white' }"
-          @click="togglei18nMenu"
-        />
-      </div>
-
     </component>
 
     <component
@@ -183,6 +164,7 @@ export default {
       }
       // console.log('else is true, importing topicPanel.vue');
       return () => import(/* webpackChunkName: "mbmb_headerCompLoader" */'./HeaderComp.vue');//.then(console.log('after HeaderComp import'))
+      // return () => import(/* webpackChunkName: "mbmb_headerCompLoader" */'./PhilaHeader.vue');//.then(console.log('after HeaderComp import'))
 
     },
     shouldShowHeader() {
@@ -338,9 +320,11 @@ export default {
   },
   methods: {
     togglei18nMenu() {
-      console.log('togglei18nMenu is running');
-      this.i18nListIsOpen = !this.i18nListIsOpen;
-      this.toggleBodyClass('no-scroll');
+      console.log('Mapboard.vue togglei18nMenu is running');
+      this.$nextTick(() => {
+        this.i18nListIsOpen = !this.i18nListIsOpen;
+      });
+      // this.toggleBodyClass('no-scroll');
     },
     closeAddressCandidateList() {
       this.$store.commit('setShouldShowAddressCandidateList', false);
@@ -424,6 +408,11 @@ export default {
 
     .map-panel-false {
       display: none;
+    }
+
+    .globe-container {
+      // float: right;
+      display: inline-block;
     }
   }
 

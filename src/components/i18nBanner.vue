@@ -23,8 +23,11 @@
 
 <script>
 
+import TopicComponent from '@phila/vue-comps/src/components/TopicComponent.vue';
+
 export default {
   name: 'i18nBanner',
+  mixins: [ TopicComponent ],
   data() {
     return {
       isSelected: 'en-US',
