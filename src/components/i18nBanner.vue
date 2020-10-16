@@ -39,7 +39,7 @@ export default {
     },
     i18nMessages() {
       let values = {};
-      console.log('i18nMessages computed, this.$i18n.messages:', this.$i18n.messages, 'this.$config.i18n.languages:', this.$config.i18n.languages);
+      // console.log('i18nMessages computed, this.$i18n.messages:', this.$i18n.messages, 'this.$config.i18n.languages:', this.$config.i18n.languages);
       if (this.$config.i18n.languages) {
         for (let language of this.$config.i18n.languages) {
           values[language] = this.$i18n.messages[language];
@@ -59,6 +59,18 @@ export default {
       return values;
     },
   },
+  watch: {
+    i18nLocale(nexti18nLocale) {
+      console.log('watch i18nLocale is firing, nexti18nLocale:', nexti18nLocale);
+      this.$data.isSelected = nexti18nLocale;
+    },
+  },
+  mounted() {
+    console.log('i18nBanner mounted is running, this.$i18n.locale:', this.$i18n.locale, 'this.$data.isSelected:', this.$data.isSelected);
+    if (this.$data.isSelected !== this.$i18n.locale) {
+      this.$data.isSelected = this.$i18n.locale;
+    }
+  },
   methods: {
     handleTableHeaderClick(key) {
       // console.log('handleTableHeaderClick is running');
@@ -71,6 +83,7 @@ export default {
         this.$i18n.locale = key;
         this.$data.isSelected = key;
         this.$emit('language-selected', key);
+        this.$emit('close-popover');
       }
     },
   },

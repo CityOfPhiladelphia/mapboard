@@ -164,8 +164,6 @@ export default {
       }
       // console.log('else is true, importing topicPanel.vue');
       return () => import(/* webpackChunkName: "mbmb_headerCompLoader" */'./HeaderComp.vue');//.then(console.log('after HeaderComp import'))
-      // return () => import(/* webpackChunkName: "mbmb_headerCompLoader" */'./PhilaHeader.vue');//.then(console.log('after HeaderComp import'))
-
     },
     shouldShowHeader() {
       if (this.$config.header) {

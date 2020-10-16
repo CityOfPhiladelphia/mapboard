@@ -36,23 +36,11 @@
               <popover-icon
                 :slots="popoverIconSlots"
                 :options="popoverIconOptions"
-              >
-              </popover-icon>
-              <!-- <font-awesome-icon
-                v-show="!i18nListIsOpen"
-                icon="globe"
-                size="2x"
-                :style="{ color: 'white' }"
-                @click="togglei18nMenu"
-              /> -->
-              <!-- <font-awesome-icon
-                v-show="i18nListIsOpen"
-                icon="times"
-                size="2x"
-                :style="{ color: 'white' }"
-                @click="togglei18nMenu"
-              /> -->
+                @language-selected="testMethod"
+              />
+
             </div>
+            
           </div>
         </div>
       </header>
@@ -138,12 +126,8 @@ export default {
     this.$store.commit('setHeaderLoaded', true);
   },
   methods: {
-    togglei18nMenu() {
-      this.$emit('togglei18nMenu');
-    },
-    toggleBodyClass(className) {
-      const el = document.body;
-      return this.footerListIsOpen || this.i18nListIsOpen ? el.classList.add(className) : el.classList.remove(className);
+    testMethod() {
+      console.log('HeaderComp testMethod is running');
     },
     handleWindowResize() {
       // this only actually affects the size if it is set to "plugin mode"
