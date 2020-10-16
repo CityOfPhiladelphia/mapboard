@@ -392,7 +392,7 @@ export default {
     },
   },
   watch: {
-    activeTopic() {
+    routerTopic() {
       this.handleWindowResize(this.windowDim);
     },
     geocodeStatus() {

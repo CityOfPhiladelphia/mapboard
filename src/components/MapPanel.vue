@@ -1064,7 +1064,7 @@ export default {
     windowDim() {
       this.handleWindowResize();
     },
-    activeTopic() {
+    routerTopic() {
       this.handleWindowResize();
     },
     headerLoaded() {
