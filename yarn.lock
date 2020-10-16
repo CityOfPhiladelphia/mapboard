@@ -1075,9 +1075,9 @@
     vue "^2.6.11"
     vuex "^3.1.2"
 
-"@phila/vue-datafetch@https://github.com/CityOfPhiladelphia/phila-vue-datafetch#7f36d1677e19357bc6ae87a1a9d2b2448cb57250":
+"@phila/vue-datafetch@https://github.com/CityOfPhiladelphia/phila-vue-datafetch#9289dc235d3a824cc29695db2c9f9859938b6334":
   version "1.4.3"
-  resolved "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#7f36d1677e19357bc6ae87a1a9d2b2448cb57250"
+  resolved "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#9289dc235d3a824cc29695db2c9f9859938b6334"
   dependencies:
     "@turf/turf" "^5.1.6"
     airtable "^0.8.1"
