@@ -69,7 +69,6 @@ function assignHorizontalTableGroupIds(comps) {
 
 function finishInit(config) {
   // console.log('finishInit is running, config:', config);
-  // assign table ids
 
   config.router.pattern = 'address-and-topic';
 
@@ -83,7 +82,7 @@ function finishInit(config) {
 
   // create store
   const store = createStore(config);
-  let opts = { config, store };
+  // let opts = { config, store };
 
   Vue.use(Router);
   let router = new Router({
