@@ -28,6 +28,25 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.3.0 - 10/22/2020
+
+* uses vue-router and i18n
+
+### 4.2.6 - 10/13/2020
+
+* fixes geojsonForTopic issue for voting topic of atlas
+
+### 4.2.5 - 10/7/2020
+
+* uses upgraded vue libraries:
+    * @phila/vue-mapping 2.2.9
+    * @phila/vue-comps 2.1.15
+    * @phila/vue-datafetch 1.4.3
+
+### 4.2.4 - 10/5/2020
+
+* uses pvm 2.2.8 fixing bug with cyclomedia and pictometry popout
+
 ### 4.2.3 - 9/15/2020
 
 * fixes issue in real estate tax by allowing the app to use input in tips if geocode fails

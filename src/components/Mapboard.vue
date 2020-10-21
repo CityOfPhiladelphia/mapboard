@@ -7,10 +7,17 @@
     <component
       :is="headerCompLoader"
       v-if="shouldShowHeader"
+      @togglei18nMenu="togglei18nMenu"
     >
       <component
         :is="this.$config.alerts.header"
         v-if="this.$config.alerts && this.$config.alerts.header != null"
+        slot="alertBanner"
+      />
+      <i18nBanner
+        v-if="shouldShowi18nBanner"
+        slot="i18nBanner"
+        class="hide-for-small-only"
       />
     </component>
 
@@ -46,7 +53,7 @@
         <pictometry-png-marker
           v-if="pictometryShowAddressMarker"
           :latlng="[geocodeData.geometry.coordinates[1], geocodeData.geometry.coordinates[0]]"
-          :icon="'images/markers.png'"
+          :icon="sitePath + '/images/markers.png'"
           :height="60"
           :width="40"
           :offset-x="0"
@@ -56,7 +63,7 @@
         <pictometry-png-marker
           v-if="cyclomediaActive && pictometryActive"
           :latlng="cycloLatlng"
-          :icon="'images/camera2.png'"
+          :icon="sitePath + '/images/camera2.png'"
           :height="20"
           :width="30"
           :offset-x="-2"
@@ -90,6 +97,7 @@
 // console.log('test Mapboard.vue, this:', this, 'this.$config:', this.$config);
 
 import 'mapbox-gl/dist/mapbox-gl.css';
+import i18nBanner from './i18nBanner.vue';
 
 export default {
   components: {
@@ -99,6 +107,7 @@ export default {
     PictometryPngMarker: () => import(/* webpackChunkName: "mbmb_pvm_PictometryPngMarker" */'@phila/vue-mapping/src/pictometry/PngMarker.vue'),
     PictometryViewCone: () => import(/* webpackChunkName: "mbmb_pvm_PictometryViewCone" */'@phila/vue-mapping/src/pictometry/ViewCone.vue'),
     Popover: () => import(/* webpackChunkName: "mbmb_pvc_Popover" */'@phila/vue-comps/src/components/Popover.vue'),
+    i18nBanner,
   },
   data() {
     const data = {
@@ -106,10 +115,32 @@ export default {
       mbRootStyle: {
         'height': '100px',
       },
+      i18nListIsOpen: false,
     };
     return data;
   },
   computed: {
+    sitePath() {
+      if (process.env.VUE_APP_PUBLICPATH) {
+        return window.location.origin + process.env.VUE_APP_PUBLICPATH;
+      }
+      return '';
+    },
+    activeTopic() {
+      return this.$store.state.activeTopic;
+    },
+    routerTopic() {
+      return this.$store.state.routerTopic;
+    },
+    shouldShowi18nBanner() {
+      let topics = this.$config.i18n.topics;
+      // console.log('shouldShowi18nBanner, topics:', topics);
+      let value = false;
+      if (this.$config.i18n && this.$config.i18n.enabled && topics.includes(this.routerTopic)) {
+        value = true;
+      }
+      return value;
+    },
     mapType() {
       return this.$store.state.map.type;
     },
@@ -142,7 +173,6 @@ export default {
       }
       // console.log('else is true, importing topicPanel.vue');
       return () => import(/* webpackChunkName: "mbmb_headerCompLoader" */'./HeaderComp.vue');//.then(console.log('after HeaderComp import'))
-
     },
     shouldShowHeader() {
       if (this.$config.header) {
@@ -296,6 +326,13 @@ export default {
     }
   },
   methods: {
+    togglei18nMenu() {
+      console.log('Mapboard.vue togglei18nMenu is running');
+      this.$nextTick(() => {
+        this.i18nListIsOpen = !this.i18nListIsOpen;
+      });
+      // this.toggleBodyClass('no-scroll');
+    },
     closeAddressCandidateList() {
       this.$store.commit('setShouldShowAddressCandidateList', false);
     },
@@ -332,7 +369,9 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
+@import "@/scss/global.scss";
+
   /*don't highlight any form elements*/
   input:focus,
   select:focus,
@@ -355,6 +394,20 @@ export default {
     /* display: none; */
   }
 
+  .mobile-menu-content-container{
+    margin-top:1rem;
+    overflow: hidden;
+    color: white;
+    z-index: 100;
+    background: color(dark-ben-franklin);
+    height: 100vh;
+    width:100%;
+
+    .mobile-menu-content{
+      text-align: center;
+    }
+  }
+
   @media screen and (min-width: 46.875em) {
     .topic-panel-false {
       display: none;
@@ -362,6 +415,11 @@ export default {
 
     .map-panel-false {
       display: none;
+    }
+
+    .globe-container {
+      // float: right;
+      display: inline-block;
     }
   }
 

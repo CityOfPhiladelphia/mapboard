@@ -1,0 +1,74 @@
+$global-font-size: 14px;
+
+$white: #fff;
+$black: #000;
+
+$breakpoints: (
+  small: 0,
+  medium: 750px,
+  large: 1050px,
+  xlarge: 1200px,
+  xxlarge: 1440px,
+);
+
+$header-styles: (
+  small: (
+    'h1': ('font-size': 25),
+    'h2': ('font-size': 20),
+    'h3': ('font-size': 18),
+    'h4': ('font-size': 15),
+    'h5': ('font-size': 14),
+    'h6': ('font-size': 12),
+  ),
+  medium: (
+    'h1': ('font-size': 30),
+    'h2': ('font-size': 25),
+    'h3': ('font-size': 20),
+    'h4': ('font-size': 17),
+    'h5': ('font-size': 15),
+    'h6': ('font-size': 14),
+  ),
+);
+
+//spacing
+$spacing-none: 0;
+$spacing-extra-small: .25rem;
+$spacing-small: .5rem;
+$spacing-medium: 1rem;
+$spacing-large: 2rem;
+$spacing-extra: 4rem;
+$spacing-extra-large: 6rem;
+$spacing-extra-extra-large: 10rem;
+
+$large-font-base: 6rem;
+
+$colors: (
+  ben-franklin-blue: #2176d2,
+  dark-ben-franklin: #0f4d90,
+  light-ben-franklin: #96c9ff,
+  electric-blue: #25cef7,
+
+  bell-yellow: #f3c613,
+  light-bell: #ffefa2,
+
+  pride-purple:#9400c6,
+  punk-pink: #dd2662,
+
+  phanatic-green: #3a833c,
+  kelly-drive-green: #58c04d,
+  light-kelly-drive: #b9f2b1,
+
+  flyers-orange: #f99300,
+  love-park-red: #cc3000,
+  light-red: #fed0d0,
+  light-blue: #daedfe,
+
+  dark-gray: #444,
+  medium-gray: #a1a1a1,
+  sidewalk: #cfcfcf,
+  ghost-gray: #f0f0f0,
+);
+
+@function color($color-name) {
+  @return map-get($colors, $color-name);
+}

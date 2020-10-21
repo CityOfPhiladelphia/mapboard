@@ -88,7 +88,8 @@
       class="topics-container cell medium-cell-block-y"
       :style="topicsContainerStyle"
     >
-      <greeting
+      <component
+        :is="greetingComponent"
         v-show="shouldShowGreeting"
         :message="greetingText"
         :options="greetingOptions"
@@ -155,6 +156,30 @@ export default {
     return data;
   },
   computed: {
+    greetings() {
+      let greetings = [];
+      for (let comp of Object.keys(this.$config.customComps)) {
+        if (comp.includes('greeting')) {
+          greetings.push(comp.slice(8, comp.length));
+        }
+      }
+      return greetings;
+    },
+    activeTopic() {
+      return this.$store.state.activeTopic;
+    },
+    routerTopic() {
+      return this.$store.state.routerTopic;
+    },
+    greetingComponent() {
+      let value;
+      if (this.greetings.includes(this.routerTopic)) {
+        value = 'greeting' + this.routerTopic;
+      } else {
+        value = 'greeting';
+      }
+      return value;
+    },
     windowDim() {
       return this.$store.state.windowDimensions;
     },
@@ -367,6 +392,9 @@ export default {
     },
   },
   watch: {
+    routerTopic() {
+      this.handleWindowResize(this.windowDim);
+    },
     geocodeStatus() {
       this.handleWindowResize(this.windowDim);
     },
@@ -387,11 +415,21 @@ export default {
   mounted() {
     this.handleWindowResize(this.windowDim);
     // console.log('TopicPanel.vue mounted');
+    if (this.$store.state.activeTopic === null || this.$store.state.activeTopic === '') {
+      this.setDefaultTopicActive();
+    }
   },
   methods: {
-    testEmit() {
-      // console.log('TopicPanel.vue testEmit is running');
+    setDefaultTopicActive() {
+      console.log('TopicPanel setDefaultTopicActive is running');
+      if (this.$config.defaultTopic) {
+        this.$store.commit('setActiveTopic', this.$config.defaultTopic);
+        // this.$store.state.activeTopic = this.$props.options.defaultTopic;
+      }
     },
+    // testEmit() {
+    //   // console.log('TopicPanel.vue testEmit is running');
+    // },
     getMoreRecords(dataSource, highestPageRetrieved) {
       // console.log('TopicPanel getMoreRecords is running');
       this.$controller.getMoreRecords(dataSource, highestPageRetrieved);
@@ -408,7 +446,7 @@ export default {
       this.$store.state.shouldShowAddressCandidateList = false;
     },
     handleWindowResize(dim) {
-      // console.log('TopicPanel handleWindowResize is running');
+      console.log('TopicPanel handleWindowResize is running');
       let topicsHeight;
       if (this.$config.plugin) {
         if (this.$config.plugin.enabled) {

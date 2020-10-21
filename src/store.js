@@ -130,6 +130,7 @@ function createStore(config) {
   // console.log('parcels:', parcels);
 
   const initialState = {
+    shouldShowi18nBanner: false,
     isMobileOrTablet: isMobileDevice(),
     headerLoaded: false,
     fullScreen: {
@@ -209,6 +210,9 @@ function createStore(config) {
       },
     },
     mutations: {
+      shouldShowi18nBanner(state, payload) {
+        state.shouldShowi18nBanner = payload;
+      },
       setHeaderLoaded(state, payload) {
         state.headerLoaded = payload;
       },

@@ -2,332 +2,10 @@
   <div
     id="map-panel-container"
     :class="mapPanelContainerClass"
+    :style="mapContainerStyle"
   >
     <!-- <full-screen-map-toggle-tab /> -->
     <full-screen-map-toggle-tab v-once />
-
-    <!-- <map_
-      v-if="mapType === 'leaflet'"
-      id="map-tag"
-      :center="this.$store.state.map.center"
-      :zoom="this.$store.state.map.zoom"
-      attribution-position="bottomright"
-      zoom-control-position="bottomright"
-      :min-zoom="this.$config.map.minZoom"
-      :max-zoom="this.$config.map.maxZoom"
-      @l-click="handleMapClick"
-      @l-moveend="handleMapMove"
-    >
-      <div
-        v-show="isGeocoding"
-        class="mb-map-loading-mask"
-      >
-        <div class="mb-map-loading-mask-inner">
-          <i class="fa fa-spinner fa-4x spin" />
-          <h1>Finding address...</h1>
-        </div>
-      </div>
-
-      <esri-tiled-overlay
-        v-for="(tiledLayer, key) in this.$config.map.tiledOverlays"
-        v-if="activeTiledOverlays.includes(key)"
-        :key="key"
-        :url="tiledLayer.url"
-        :z-index="tiledLayer.zIndex"
-        :opacity="tiledLayer.opacity"
-        :test="key"
-      />
-
-      <esri-dynamic-map-layer
-        v-for="(dynamicLayer, key) in this.$config.map.dynamicMapLayers"
-        v-if="activeDynamicMaps.includes(key)"
-        :key="key"
-        :url="dynamicLayer.url"
-        :attribution="dynamicLayer.attribution"
-        :transparent="true"
-        :opacity="dynamicLayer.opacity"
-      />
-
-      <esri-tiled-map-layer
-        v-for="(basemap, key) in this.$config.map.basemaps"
-        v-if="activeBasemap === key"
-        :key="key"
-        :url="basemap.url"
-        :max-zoom="basemap.maxZoom"
-        :attribution="basemap.attribution"
-      />
-
-      <esri-tiled-map-layer
-        v-for="(tiledLayer, key) in this.$config.map.tiledLayers"
-        v-if="tiledLayers.includes(key)"
-        :key="key"
-        :url="tiledLayer.url"
-        :z-index="tiledLayer.zIndex"
-        :attribution="tiledLayer.attribution"
-      />
-
-      <esri-feature-layer
-        v-for="(featureLayer, key) in this.$config.map.featureLayers"
-        v-if="shouldShowFeatureLayer(key, featureLayer.minZoom)"
-        :key="key"
-        :layer-name="key"
-        :url="featureLayer.url"
-        :color="featureLayer.color"
-        :fill-color="featureLayer.color"
-        :fill-opacity="featureLayer.fillOpacity"
-        :weight="featureLayer.weight"
-        :style_="featureLayer.style"
-        :min-zoom="featureLayer.minZoom"
-        :max-zoom="featureLayer.maxZoom"
-        :z-index="featureLayer.zIndex"
-        :marker-type="featureLayer.markerType"
-        :radius="featureLayer.radius"
-        :interactive="featureLayer.interactive"
-      />
-
-      <esri-dynamic-map-layer
-        v-for="(item, key) in imageOverlayItems"
-        v-if="shouldShowImageOverlay(item.properties.RECMAP)"
-        :key="key"
-        :url="'//gis-svc.databridge.phila.gov/arcgis/rest/services/Atlas/RegMaps/MapServer'"
-        :layers="[0]"
-        :layer-defs="'0:NAME=\'g' + item.properties.RECMAP.toLowerCase() + '.tif\''"
-        :transparent="true"
-        :opacity="0.5"
-      />
-
-      <vector-marker
-        v-for="marker in markersForAddress"
-        :key="marker.key"
-        :latlng="marker.latlng"
-        :marker-color="marker.color"
-        :icon="marker.icon"
-      />
-
-      <vector-marker
-        v-for="marker in markersForTopic"
-        :key="marker.key"
-        :latlng="marker.latlng"
-        :marker-color="marker.color"
-        :icon="marker.icon"
-      />
-
-      <png-marker
-        v-if="cyclomediaInitializationComplete && cyclomediaActive"
-        :icon="sitePath + 'images/camera.png'"
-        :latlng="cycloLatlng"
-        :rotation-angle="cycloRotationAngle"
-      />
-
-      <svg-view-cone-marker
-        v-if="cyclomediaInitializationComplete && cyclomediaActive"
-        :latlng="cycloLatlng"
-        :rotation-angle="cycloRotationAngle"
-        :h-fov="cycloHFov"
-      />
-
-      <geojson
-        v-for="geojsonFeature in geojsonParcels"
-        v-if="shouldShowGeojson(geojsonFeature.key)"
-        :key="geojsonFeature.key"
-        :geojson="geojsonFeature.geojson"
-        :fill-color="geojsonFeature.fillColor"
-        :color="geojsonFeature.color"
-        :weight="geojsonFeature.weight"
-        :opacity="geojsonFeature.opacity"
-        :fill-opacity="geojsonFeature.fillOpacity"
-        :data="{
-          featureId: geojsonFeature.featureId,
-          tableId: geojsonFeature.tableId
-        }"
-      />
-
-      <geojson
-        v-for="geojsonFeature in geojsonForTopic"
-        v-if="shouldShowGeojson(geojsonFeature.key)"
-        :key="geojsonFeature.key"
-        :geojson="geojsonFeature.geojson"
-        :fill-color="geojsonFeature.fillColor"
-        :color="geojsonFeature.color"
-        :weight="geojsonFeature.weight"
-        :opacity="geojsonFeature.opacity"
-        :fill-opacity="geojsonFeature.fillOpacity"
-        :data="{
-          featureId: geojsonFeature.featureId,
-          tableId: geojsonFeature.tableId
-        }"
-      />
-
-      <geojson
-        v-for="geojsonFeature in reactiveGeojsonFeatures"
-        v-if="shouldShowGeojson(geojsonFeature.key)"
-        :key="geojsonFeature.key"
-        :geojson="geojsonFeature.geojson"
-        :fill-color="geojsonFeature.fillColor"
-        :color="geojsonFeature.color"
-        :weight="geojsonFeature.weight"
-        :opacity="geojsonFeature.opacity"
-        :fill-opacity="geojsonFeature.fillOpacity"
-        :data="{
-          featureId: geojsonFeature.featureId,
-          tableId: geojsonFeature.tableId
-        }"
-        @l-mouseover="handleMarkerMouseover"
-        @l-click="handleMarkerClick"
-        @l-mouseout="handleMarkerMouseout"
-      />
-
-      <polyline_
-        v-for="polyline in reactivePolylineFeatures"
-        :key="polyline.key"
-        :latlngs="polyline.latlngs"
-        :color="polyline.color"
-        :fill-color="polyline.fillColor"
-        :weight="polyline.weight"
-        :opacity="polyline.opacity"
-        :data="{
-          featureId: polyline.featureId,
-          tableId: polyline.tableId,
-          type: 'polyline'
-        }"
-        @l-mouseover="handleMarkerMouseover"
-        @l-click="handleMarkerClick"
-        @l-mouseout="handleMarkerMouseout"
-      />
-
-      <circle-marker
-        v-if="this.$store.state.map.location.lat != null"
-        :key="Math.random()"
-        :latlng="locationMarker.latlng"
-        :radius="locationMarker.radius"
-        :fill-color="locationMarker.fillColor"
-        :color="locationMarker.color"
-        :weight="locationMarker.weight"
-        :opacity="locationMarker.opacity"
-        :fill-opacity="locationMarker.fillOpacity"
-      />
-
-      <circle-marker
-        v-for="circleMarker in reactiveCircleMarkers"
-        :key="circleMarker.featureId"
-        :latlng="circleMarker.latlng"
-        :radius="circleMarker.radius"
-        :fill-color="circleMarker.fillColor"
-        :color="circleMarker.color"
-        :weight="circleMarker.weight"
-        :opacity="circleMarker.opacity"
-        :fill-opacity="circleMarker.fillOpacity"
-        :data="{
-          featureId: circleMarker.featureId,
-          tableId: circleMarker.tableId
-        }"
-        @l-mouseover="handleMarkerMouseover"
-        @l-click="handleMarkerClick"
-        @l-mouseout="handleMarkerMouseout"
-      />
-
-      <control-corner
-        :v-side="'top'"
-        :h-side="'almostright'"
-      />
-
-      <control-corner
-        :v-side="'top'"
-        :h-side="'almostleft'"
-      />
-
-      <div v-once>
-        <basemap-toggle-control
-          v-if="shouldShowBasemapToggleControl"
-          v-once
-          :position="'topright'"
-        />
-      </div>
-
-      <div v-once>
-        <basemap-select-control :position="basemapSelectControlPosition" />
-      </div>
-
-      <div v-once>
-        <overlay-select-control
-          v-if="shouldShowOverlaySelectControl"
-          :position="overlaySelectControlPosition"
-        />
-      </div>
-
-      <div v-once>
-        <pictometry-button
-          v-if="shouldShowPictometryButton"
-          v-once
-          :position="'topright'"
-          :link="'pictometry'"
-          :img-src="sitePath + 'images/pictometry.png'"
-          @handle-pictometry-button-click="handlePictometryButtonClick"
-        />
-      </div>
-
-      <div v-once>
-        <cyclomedia-button
-          v-if="shouldShowCyclomediaButton"
-          v-once
-          :position="'topright'"
-          :link="'cyclomedia'"
-          :img-src="sitePath + 'images/cyclomedia.png'"
-          @handle-cyclomedia-button-click="handleCyclomediaButtonClick"
-        />
-      </div>
-
-      <div
-        v-if="measureControlEnabled"
-        v-once
-      >
-        <measure-control :position="'bottomleft'" />
-      </div>
-
-      <div v-once>
-        <legend-control
-          v-for="legendControl in Object.keys(legendControls)"
-          :key="legendControl"
-          :position="'bottomleft'"
-          :options="legendControls[legendControl].options"
-          :items="legendControls[legendControl].data"
-        />
-      </div>
-
-      <div v-once>
-        <location-control
-          v-if="geolocationEnabled"
-          v-once
-          :position="'bottomright'"
-        />
-      </div>
-
-      <div v-once>
-        <map-address-input
-          :position="addressInputPosition"
-          :placeholder="addressInputPlaceholder"
-          :width-from-config="addressInputWidth"
-          @handle-search-form-submit="handleSearchFormSubmit"
-        />
-      </div>
-      <map-address-candidate-list
-        v-if="addressAutocompleteEnabled"
-        :position="addressInputPosition"
-        :width-from-config="addressInputWidth"
-      />
-
-      <cyclomedia-recording-circle
-        v-for="recording in cyclomediaRecordings"
-        v-if="cyclomediaActive"
-        :key="recording.imageId"
-        :image-id="recording.imageId"
-        :latlng="[recording.lat, recording.lng]"
-        :size="1.2"
-        :color="'#3388ff'"
-        :weight="1"
-        @l-click="handleCyclomediaRecordingClick"
-      />
-    </map_> -->
 
     <MglMap
       v-if="mapType === 'mapbox'"
@@ -341,8 +19,7 @@
       @click="handleMapClick"
       @load="onMapLoaded"
     >
-
-    <!-- v-if="shouldShowRasterLayer(key) && activeBasemap === key" -->
+      <!-- v-if="shouldShowRasterLayer(key) && activeBasemap === key" -->
       <MglRasterLayer
         v-for="(basemapSource, key) in basemapSources"
         v-if="activeBasemap === key"
@@ -512,8 +189,9 @@
         :source="geojsonCameraSource"
         :layer-id="'cameraPoints'"
         :layer="geojsonCameraLayer"
-        :icon="sitePath + 'images/camera.png'"
+        :icon="sitePath + '/images/camera.png'"
       />
+      <!-- :icon="sitePath + 'images/camera.png'" -->
 
       <MglGeojsonLayer
         v-if="cyclomediaActive"
@@ -619,7 +297,7 @@
         v-if="shouldShowPictometryButton"
         :button-id="'buttonId-02'"
         :button-class="pictometryActive ? 'right top-button-2 active' : 'right top-button-2 inactive'"
-        :image-link="sitePath + 'images/pictometry.png'"
+        :image-link="sitePath + '/images/pictometry.png'"
         @click="handlePictometryButtonClick"
       />
 
@@ -627,7 +305,7 @@
         v-if="shouldShowCyclomediaButton"
         :button-id="'buttonId-03'"
         :button-class="cyclomediaActive ? 'right top-button-3 active' : 'right top-button-3 inactive'"
-        :image-link="sitePath + 'images/cyclomedia.png'"
+        :image-link="sitePath + '/images/cyclomedia.png'"
         @click="handleCyclomediaButtonClick"
       />
 
@@ -766,6 +444,9 @@ export default {
   ],
   data() {
     const data = {
+      mapContainerStyle: {
+        'min-height': '100px',
+      },
       createdComplete: false,
       geolocationPositionOptions: {
         enableHighAccuracy: true,
@@ -898,9 +579,9 @@ export default {
           'line-color': 'black',
           'line-width': {
             stops: [
-              [1, 1],
-              [15, 1],
-              [19, 4],
+              [ 1, 1 ],
+              [ 15, 1 ],
+              [ 19, 4 ],
             ],
           },
         },
@@ -982,6 +663,12 @@ export default {
     return data;
   },
   computed: {
+    windowDim() {
+      return this.$store.state.windowDimensions;
+    },
+    headerLoaded() {
+      return this.$store.state.headerLoaded;
+    },
     basemapsBefore() {
       // let value = 'geojsonParcelFill';
       let value = [ 'gl-draw-polygon-fill-inactive.cold', 'geojsonParcelFill', 'geojsonForTopicFill', 'parcels' ];
@@ -1015,9 +702,9 @@ export default {
 
     basemapImageLink() {
       if (this.activeBasemap === 'pwd' || this.activeBasemap === 'dor') {
-        return 'images/imagery_small.png';
+        return window.location.origin + '/images/imagery_small.png';
       } else {
-        return 'images/basemap_small.png';
+        return window.location.origin + '/images/basemap_small.png';
       }
     },
     queriedLayerSources() {
@@ -1410,6 +1097,15 @@ export default {
     },
   },
   watch: {
+    windowDim() {
+      this.handleWindowResize();
+    },
+    routerTopic() {
+      this.handleWindowResize();
+    },
+    headerLoaded() {
+      this.handleWindowResize(this.windowDim);
+    },
     activeBasemap() {
       if (this.$store && this.$store.map) {
         // console.log('watch activeBasemap is calling resize');
@@ -1500,9 +1196,10 @@ export default {
       });
     },
     geojsonForTopic(nextGeojson) {
-      console.log('watch geojsonForTopic, nextGeojson:', nextGeojson);
-
-      if (nextGeojson[0]) {
+      if (this.$store.map) {
+        console.log('watch geojsonForTopic is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
+      }
+      if (nextGeojson[0] && nextGeojson.length > 1) {
         console.log('watch geojsonForTopic is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
         this.$data.geojsonCollectionForTopicSource.data.features = [];
 
@@ -1528,7 +1225,7 @@ export default {
           this.$data.geojsonCollectionForTopicLabelsLayer.layout = {
             'text-font': [ 'Open Sans Regular' ],
             'text-field': [ 'get', nextGeojson[0].labelField ],
-            'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
+            'text-variable-anchor': [ 'top', 'bottom', 'left', 'right' ],
             'text-radial-offset': 0.5,
             'text-justify': 'auto',
             // 'icon-image': ['concat', ['get', 'icon'], '-15']
@@ -1538,6 +1235,9 @@ export default {
           this.$data.geojsonCollectionForTopicLabelsLayer.minzoom = nextGeojson[0].labelMinZoom;
         }
 
+        this.$data.geojsonForTopicBoolean = true;
+      } else if (nextGeojson[0]) {
+        this.$data.geojsonForTopicSource.data.geometry.coordinates = nextGeojson[0].geojson.geometry.coordinates;
         this.$data.geojsonForTopicBoolean = true;
 
       } else {
@@ -1627,13 +1327,14 @@ export default {
       });
     },
     fullScreenMapEnabled() {
-      this.$nextTick(() => {
-        if (this.mapType === 'mapbox') {
-          // console.log('watch fullScreenMapEnabled is calling this.$store.map.resize()');
-          this.$store.map.resize();
-          // console.log('watch fullScreenMapEnabled completed calling resize');
-        }
-      });
+      this.handleWindowResize();
+      // this.$nextTick(() => {
+      //   if (this.mapType === 'mapbox') {
+      //     // console.log('watch fullScreenMapEnabled is calling this.$store.map.resize()');
+      //     this.$store.map.resize();
+      //     // console.log('watch fullScreenMapEnabled completed calling resize');
+      //   }
+      // });
     },
   },
   created() {
@@ -1664,6 +1365,25 @@ export default {
     }
   },
   methods: {
+    handleWindowResize() {
+      let mapHeight;
+      const windowHeight = window.innerHeight;
+      const siteHeaderHeightNum = parseInt(document.getElementsByClassName('combo-header')[0].getBoundingClientRect().height);
+      const appFooterHeightNum = parseInt(document.getElementsByClassName('app-footer')[0].getBoundingClientRect().height);
+      if (window.innerWidth >= 750) {
+        mapHeight = windowHeight - siteHeaderHeightNum - appFooterHeightNum;
+      } else {
+        mapHeight = 400;
+      }
+      this.mapContainerStyle['min-height'] = mapHeight.toString() + 'px';
+      this.$nextTick(() => {
+        if (this.mapType === 'mapbox') {
+          // console.log('watch fullScreenMapEnabled is calling this.$store.map.resize()');
+          this.$store.map.resize();
+          // console.log('watch fullScreenMapEnabled completed calling resize');
+        }
+      });
+    },
     shouldShowRasterLayer(layerId) {
       // console.log('shouldShowRasterLayer is running');
       if (!this.$store.map) {

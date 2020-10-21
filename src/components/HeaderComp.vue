@@ -28,18 +28,38 @@
                 </h1>
               </a>
             </div>
+
+            <div
+              v-if="shouldShowi18nBanner"
+              class="show-for-small-only small-2 globe-container"
+            >
+              <popover-icon
+                :slots="popoverIconSlots"
+                :options="popoverIconOptions"
+                @language-selected="testMethod"
+              />
+
+            </div>
+
           </div>
         </div>
       </header>
 
-      <slot />
+      <slot name="i18nBanner" />
+      <slot name="alertBanner" />
     </div>
   </div>
 </template>
 
 <script>
 
+// import i18nBanner from './i18nBanner.vue';
+
 export default {
+  components: {
+    PopoverIcon: () => import(/* webpackChunkName: "mbmp_pvc_PopoverIcon" */'@phila/vue-comps/src/components/PopoverIcon.vue'),
+    // i18nBanner,
+  },
   data() {
     const data = {
       // this will only affect the app size if the app is set to "plugin" mode
@@ -47,10 +67,34 @@ export default {
         'font-size': '30px',
         'line-height': '30px',
       },
+      i18nListIsOpen: false,
+      popoverIconSlots: {
+        value: 'Select Language',
+      },
+      popoverIconOptions: {
+        height: '100%',
+        components: [
+          {
+            type: 'i18n-banner',
+          },
+        ],
+      },
     };
     return data;
   },
   computed: {
+    activeTopic() {
+      return this.$store.state.activeTopic;
+    },
+    shouldShowi18nBanner() {
+      let topics = this.$config.i18n.topics;
+      // console.log('shouldShowi18nBanner, topics:', topics);
+      let value = false;
+      if (this.$config.i18n && this.$config.i18n.enabled && topics.includes(this.activeTopic)) {
+        value = true;
+      }
+      return value;
+    },
     headerText() {
       if (this.$config.header) {
         return this.$config.header.text;
@@ -67,9 +111,9 @@ export default {
     },
     imgSrc() {
       if (this.$store.state.windowDimensions.width >= 750) {
-        return 'images/city-of-philadelphia-yellow-white.png';
+        return window.location.origin + '/images/city-of-philadelphia-yellow-white.png';
       } else {
-        return 'images/city-of-philadelphia-bell.png';
+        return window.location.origin + '/images/city-of-philadelphia-bell.png';
       }
     },
   },
@@ -82,6 +126,9 @@ export default {
     this.$store.commit('setHeaderLoaded', true);
   },
   methods: {
+    testMethod() {
+      console.log('HeaderComp testMethod is running');
+    },
     handleWindowResize() {
       // this only actually affects the size if it is set to "plugin mode"
       if (window.innerWidth >= 750) {
@@ -121,12 +168,9 @@ export default {
     width: 42px;
   }
 
-  /* .page-title-container {
-    display: inline-block;
-  } */
-
-  /* .combo-header {
-    display: block;
-  } */
+  .globe-container {
+    float: right;
+    margin-top: 8px;
+  }
 
 </style>

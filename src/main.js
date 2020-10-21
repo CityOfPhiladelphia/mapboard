@@ -1,5 +1,6 @@
 
 import Vue from 'vue';
+import VueI18n from 'vue-i18n';
 import axios from 'axios';
 import createStore from './store';
 import configMixin from './util/config-mixin';
@@ -11,6 +12,9 @@ import * as faAll from './fa.js';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import controllerMixin from '@phila/vue-datafetch/src/controller.js';
+
+import Router from 'vue-router';
+// import router from './router';
 
 // conssole.log('in mapboard main.js, createStore:', createStore, 'controllerMixin:', controllerMixin);
 
@@ -65,7 +69,9 @@ function assignHorizontalTableGroupIds(comps) {
 
 function finishInit(config) {
   // console.log('finishInit is running, config:', config);
-  // assign table ids
+
+  config.router.pattern = 'address-and-topic';
+
   for (let topic of config.topics) {
     assignTableIds(topic.components);
     assignHorizontalTableGroupIds(topic.components);
@@ -76,11 +82,39 @@ function finishInit(config) {
 
   // create store
   const store = createStore(config);
-  let opts = { config, store };
+  // let opts = { config, store };
+
+  Vue.use(Router);
+  let router = new Router({
+    mode: 'history',
+    routes: [
+      {
+        path: '/:topic',
+        name: 'topic-only',
+      },
+      {
+        path: '/:address',
+        name: 'address-only',
+      },
+      {
+        path: '/:address?/:topic?',
+        name: 'address-and-topic',
+      },
+    ],
+  });
 
   // mix in controller
-  Vue.use(controllerMixin, { config, store });
+  Vue.use(controllerMixin, { config, store, router });
   // Vue.use(controllerMixin, { config });
+
+  Vue.use(VueI18n);
+  let i18nData;
+  if (config.i18n && config.i18n.data) {
+    i18nData = config.i18n.data;
+  } else {
+    i18nData = {};
+  }
+  const i18n = new VueI18n(i18nData);
 
   // console.log('in finishInit, config:', config, 'store:', store, 'opts.store:', opts.store);
   if (config.healthChecks) {
@@ -100,6 +134,8 @@ function finishInit(config) {
   const vm = new Vue({
     el: config.el || '#mapboard',
     render: h => h(Mapboard),
+    router,
+    i18n,
     store,
   });
 }
