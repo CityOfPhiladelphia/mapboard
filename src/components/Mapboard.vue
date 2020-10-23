@@ -133,11 +133,12 @@ export default {
       return this.$store.state.routerTopic;
     },
     shouldShowi18nBanner() {
-      let topics = this.$config.i18n.topics;
-      // console.log('shouldShowi18nBanner, topics:', topics);
       let value = false;
-      if (this.$config.i18n && this.$config.i18n.enabled && topics.includes(this.routerTopic)) {
-        value = true;
+      if (this.$config.i18n && this.$config.i18n.topics) {
+        let topics = this.$config.i18n.topics;
+        if (this.$config.i18n && this.$config.i18n.enabled && topics.includes(this.routerTopic)) {
+          value = true;
+        }
       }
       return value;
     },
