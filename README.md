@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.3.1 - 10/27/2020
+
+* uses github actions to push to npmjs
+
 ### 4.3.0 - 10/22/2020
 
 * uses vue-router and i18n
