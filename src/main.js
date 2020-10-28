@@ -84,29 +84,29 @@ function finishInit(config) {
   const store = createStore(config);
   // let opts = { config, store };
 
-  // let publicPath = '';
-  // if (process.env.VUE_APP_PUBLIC_PATH) {
-  //   publicPath = process.env.VUE_APP_PUBLIC_PATH;
-  // }
-  // console.log('mapboard main.js publicPath:', publicPath);
+  let publicPath = '';
+  if (process.env.VUE_APP_PUBLIC_PATH) {
+    publicPath = process.env.VUE_APP_PUBLIC_PATH;
+  }
+  console.log('mapboard main.js publicPath:', publicPath);
 
   Vue.use(Router);
   let router = new Router({
     mode: 'history',
     routes: [
       {
-        // path: publicPath + '/:topic',
-        path: '/:topic',
+        // path: '/:topic',
+        path: publicPath + '/:topic',
         name: 'topic-only',
       },
       {
-        // path: publicPath + '/:address',
-        path: '/:address',
+        // path: '/:address',
+        path: publicPath + '/:address',
         name: 'address-only',
       },
       {
-        // path: publicPath + '/:address?/:topic?',
-        path: '/:address?/:topic?',
+        // path: '/:address?/:topic?',
+        path: publicPath + '/:address?/:topic?',
         name: 'address-and-topic',
       },
     ],
