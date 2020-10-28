@@ -87,7 +87,10 @@ export default {
       return this.$store.state.activeTopic;
     },
     shouldShowi18nBanner() {
-      let topics = this.$config.i18n.topics;
+      let topics;
+      if (this.$config.i18n && this.$config.i18n.topics) {
+        let topics = this.$config.i18n.topics;
+      }
       // console.log('shouldShowi18nBanner, topics:', topics);
       let value = false;
       if (this.$config.i18n && this.$config.i18n.enabled && topics.includes(this.activeTopic)) {
