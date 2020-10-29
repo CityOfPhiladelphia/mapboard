@@ -89,7 +89,7 @@ export default {
     shouldShowi18nBanner() {
       let topics;
       if (this.$config.i18n && this.$config.i18n.topics) {
-        let topics = this.$config.i18n.topics;
+        topics = this.$config.i18n.topics;
       }
       // console.log('shouldShowi18nBanner, topics:', topics);
       let value = false;
@@ -112,11 +112,18 @@ export default {
         return 'large-image';
       }
     },
+    publicPath() {
+      let publicPath = '';
+      if (this.$config.publicPath) {
+        publicPath = this.$config.publicPath;
+      }
+      return publicPath;
+    },
     imgSrc() {
       if (this.$store.state.windowDimensions.width >= 750) {
-        return window.location.origin + '/images/city-of-philadelphia-yellow-white.png';
+        return window.location.origin + this.publicPath + '/images/city-of-philadelphia-yellow-white.png';
       } else {
-        return window.location.origin + '/images/city-of-philadelphia-bell.png';
+        return window.location.origin + this.publicPath + '/images/city-of-philadelphia-bell.png';
       }
     },
   },

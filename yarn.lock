@@ -1076,10 +1076,10 @@
     vue "^2.6.11"
     vuex "^3.1.2"
 
-"@phila/vue-datafetch@1.4.6":
-  version "1.4.6"
-  resolved "https://registry.yarnpkg.com/@phila/vue-datafetch/-/vue-datafetch-1.4.6.tgz#737053d2d762dbe7b2e3915299305effcebeff80"
-  integrity sha512-p90DOmwskkEyYTYXHpfAgeERO4dxpLbOKF7Yn+OlTGU3dKF7Dsvdc7NJVx4FkWa2dmyQw0AP1fqU5MHRbm1ZfQ==
+"@phila/vue-datafetch@1.4.7":
+  version "1.4.7"
+  resolved "https://registry.yarnpkg.com/@phila/vue-datafetch/-/vue-datafetch-1.4.7.tgz#bc79616c3059772680def277d8dfdc86b1c24df0"
+  integrity sha512-aVptQYPWe5+Rg8gfIdDapncvCaTHAA/F//m1ZsIu9pPlh5OQHj6S9RgfD446gQI/cSGvQdMzlSLrboxTDNJxrw==
   dependencies:
     "@turf/turf" "^5.1.6"
     airtable "^0.8.1"

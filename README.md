@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.3.6 - 10/29/2020
+
+* fixes bugs related to routing
+
 ### 4.3.5 - 10/29/2020
 
 * fixes bug in real estate tax routing

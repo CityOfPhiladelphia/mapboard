@@ -97,17 +97,17 @@ function finishInit(config) {
     routes: [
       {
         // path: '/:topic',
-        path: publicPath + ':topic',
+        path: publicPath + '/:topic',
         name: 'topic-only',
       },
       {
         // path: '/:address',
-        path: publicPath + ':address',
+        path: publicPath + '/:address',
         name: 'address-only',
       },
       {
         // path: '/:address?/:topic?',
-        path: publicPath + ':address?/:topic?',
+        path: publicPath + '/:address?/:topic?',
         name: 'address-and-topic',
       },
     ],

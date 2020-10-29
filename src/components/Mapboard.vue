@@ -135,7 +135,7 @@ export default {
     shouldShowi18nBanner() {
       let topics;
       if (this.$config.i18n && this.$config.i18n.topics) {
-        let topics = this.$config.i18n.topics;
+        topics = this.$config.i18n.topics;
       }
       // console.log('shouldShowi18nBanner, topics:', topics);
       let value = false;
