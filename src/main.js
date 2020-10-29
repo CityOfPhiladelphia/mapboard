@@ -85,8 +85,9 @@ function finishInit(config) {
   // let opts = { config, store };
 
   let publicPath = '';
-  if (process.env.VUE_APP_PUBLIC_PATH) {
-    publicPath = process.env.VUE_APP_PUBLIC_PATH;
+  // if (process.env.VUE_APP_PUBLIC_PATH) {
+  if (config.publicPath) {
+    publicPath = config.publicPath;
   }
   console.log('mapboard main.js publicPath:', publicPath);
 
