@@ -28,6 +28,11 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.3.8 - 11/12/2020
+
+* uses pvc 2.1.22 which is removes code specific to real estate tax
+* fixes on load css issue in real estate tax
+
 ### 4.3.7 - 10/29/2020
 
 * uses pvd that fixes bugs related to routing
