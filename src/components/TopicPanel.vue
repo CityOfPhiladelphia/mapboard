@@ -355,7 +355,7 @@ export default {
         // a DOR address might be found even if there is no geocode
       } else if (activeDorAddress) {
         address = activeDorAddress;
-      } else if (this.$config.onGeocodeFail) {
+      } else if (this.$config && this.$config.onGeocodeFail) {
         // this was added to allow fetchData to run even without a geocode result
         // for the real estate tax site which sometimes needs data from TIPS
         // even if the property is not in OPA and AIS
@@ -396,7 +396,11 @@ export default {
       this.handleWindowResize(this.windowDim);
     },
     geocodeStatus() {
-      this.handleWindowResize(this.windowDim);
+      let handleWindowResize = this.handleWindowResize;
+      let windowDim = this.windowDim;
+      setTimeout(function () {
+        handleWindowResize(windowDim);
+      }, 500);
     },
     windowDim(nextDim) {
       this.handleWindowResize(nextDim);
