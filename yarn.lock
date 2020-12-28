@@ -1092,10 +1092,9 @@
     vue "^2.6.11"
     vuex "^3.5.1"
 
-"@phila/vue-mapping@2.2.10":
+"@phila/vue-mapping@https://github.com/CityOfPhiladelphia/phila-vue-mapping#ab6929e1917a80cff593481d5218c85e5c26faa3":
   version "2.2.10"
-  resolved "https://registry.yarnpkg.com/@phila/vue-mapping/-/vue-mapping-2.2.10.tgz#593c6f789ad2a40b946687f4e7fcfcd0a35f1f23"
-  integrity sha512-2CsKv8AKTOhzWTK7ZaYy/ShARdWKFXPzBieA7/igjefzSI31BvBfWnv6cWU8kskIhCJRcwwGqCv93pPjMLrUfw==
+  resolved "https://github.com/CityOfPhiladelphia/phila-vue-mapping#ab6929e1917a80cff593481d5218c85e5c26faa3"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-regular-svg-icons" "^5.7.2"
@@ -1120,7 +1119,7 @@
     leaflet-vector-icon "https://github.com/CityOfPhiladelphia/leaflet-vector-icon#c37571e92c66ce0003f22058f2d246b31d3941a5"
     lodash-es "^4.17.14"
     map-promisified "^0.4.0"
-    mapbox-gl "^1.6.1"
+    maplibre-gl ">=1.13.0-rc.1"
     phila-standards "^1.0.2"
     proj4 "^2.6.0"
     sdleafletdraw "https://github.com/CityOfPhiladelphia/SDLeafletDraw#a3e8e8a860e75d370e533247bd31dfd55e865a62"
@@ -7711,10 +7710,10 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-mapbox-gl@^1.6.1:
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/mapbox-gl/-/mapbox-gl-1.12.0.tgz#7d1c73b1153d7ee219d30d80728d7df079bc7c05"
-  integrity sha512-B3URR4qY9R/Bx+DKqP8qmGCai8IOZYMSZF7ZSvcCZaYTaOYhQQi8ErTEDZtFMOR0ZPj7HFWOkkhl5SqvDfpJpA==
+maplibre-gl@>=1.13.0-rc.1:
+  version "1.13.0-rc.4"
+  resolved "https://registry.yarnpkg.com/maplibre-gl/-/maplibre-gl-1.13.0-rc.4.tgz#7b5ab1d42358ef0eb65e5083f8b8db378ff8d94a"
+  integrity sha512-QQ4b0fjGxXTGdS/sTKaXp8kyL/DsC93zAm2zGkhyExywvvsduFup9GTzCDas7g4VljYGgTsNhaWkxWewu0gG9A==
   dependencies:
     "@mapbox/geojson-rewind" "^0.5.0"
     "@mapbox/geojson-types" "^1.0.2"
