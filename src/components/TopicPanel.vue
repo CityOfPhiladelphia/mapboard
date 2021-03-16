@@ -394,9 +394,9 @@ export default {
   watch: {
     $route(to, from) {
       console.log('TopicPanel watch route changes, to:', to, 'from:', from);
-      if (to.params.address && to.params.address !== from.params.address) {
+      if (to.params.address && to.params.address !== this.address) {
         this.handleSearchFormSubmit(to.params.address);
-      } else if (to.params.topic && to.params.topic !== from.params.topic) {
+      } else if (to.params.topic && to.params.topic !== this.activeTopic) {
         this.$store.commit('setActiveTopic', to.params.topic);
       }
       // react to route changes...
@@ -448,7 +448,7 @@ export default {
       this.$controller.getMoreRecords(dataSource, highestPageRetrieved);
     },
     handleSearchFormSubmit(value) {
-      // console.log('TopicPanel handleSearchFormSubmit is running');
+      console.log('TopicPanel handleSearchFormSubmit is running, value:', value);
       this.$controller.handleSearchFormSubmit(value).then(() => {
         if (this.$config.router.returnToDefaultTopicOnGeocode) {
           if (this.$config.topics != undefined) {
@@ -460,11 +460,11 @@ export default {
             }
           }
         }
-        // if (this.activeTopic) {
-        //   this.$router.push({ name: 'address-and-topic', params: { address: this.address, topic: this.activeTopic }});
-        // } else {
-        //   this.$router.push({ name: 'address-only', params: { address: this.address }});
-        // }
+        if (this.activeTopic) {
+          this.$router.push({ name: 'address-and-topic', params: { address: this.address, topic: this.activeTopic }});
+        } else {
+          this.$router.push({ name: 'address-only', params: { address: this.address }});
+        }
       });
     },
     handleTopicHeaderClick(nextTopic) {
