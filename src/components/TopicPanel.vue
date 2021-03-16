@@ -392,6 +392,15 @@ export default {
     },
   },
   watch: {
+    $route(to, from) {
+      console.log('TopicPanel watch route changes, to:', to, 'from:', from);
+      if (to.params.address && to.params.address !== from.params.address) {
+        this.handleSearchFormSubmit(to.params.address);
+      } else if (to.params.topic && to.params.topic !== from.params.topic) {
+        this.$store.commit('setActiveTopic', to.params.topic);
+      }
+      // react to route changes...
+    },
     routerTopic() {
       this.handleWindowResize(this.windowDim);
     },
@@ -440,11 +449,32 @@ export default {
     },
     handleSearchFormSubmit(value) {
       // console.log('TopicPanel handleSearchFormSubmit is running');
-      this.$controller.handleSearchFormSubmit(value);
+      this.$controller.handleSearchFormSubmit(value).then(() => {
+        if (this.$config.router.returnToDefaultTopicOnGeocode) {
+          if (this.$config.topics != undefined) {
+            if (this.$config.defaultTopic || this.$config.defaultTopic === null) {
+              this.$store.commit('setActiveTopic', this.$config.defaultTopic);
+            } else {
+              // console.log('about to setActiveTopic, config:', this.config.topics[0].key);
+              this.$store.commit('setActiveTopic', this.$config.topics[0].key);
+            }
+          }
+        }
+        // if (this.activeTopic) {
+        //   this.$router.push({ name: 'address-and-topic', params: { address: this.address, topic: this.activeTopic }});
+        // } else {
+        //   this.$router.push({ name: 'address-only', params: { address: this.address }});
+        // }
+      });
     },
     handleTopicHeaderClick(nextTopic) {
       // console.log('TopicPanel handleTopicHeaderClick is running');
       this.$controller.handleTopicHeaderClick(nextTopic);
+      // if (this.activeTopic) {
+      //   this.$router.push({ name: 'address-and-topic', params: { address: this.address, topic: this.activeTopic }});
+      // } else {
+      //   this.$router.push({ name: 'address-only', params: { address: this.address }});
+      // }
     },
     closeAddressCandidateList() {
       this.$store.state.shouldShowAddressCandidateList = false;

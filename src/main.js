@@ -114,6 +114,7 @@ function finishInit(config) {
   });
 
   // mix in controller
+  // Vue.use(controllerMixin, { config, store });
   Vue.use(controllerMixin, { config, store, router });
   // Vue.use(controllerMixin, { config });
 

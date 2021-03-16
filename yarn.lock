@@ -1057,10 +1057,10 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@phila/vue-comps@2.1.22":
-  version "2.1.22"
-  resolved "https://registry.yarnpkg.com/@phila/vue-comps/-/vue-comps-2.1.22.tgz#2d46cf70fecefd2937edab2e6312495abcfc2db9"
-  integrity sha512-LvODBqFrv/TS8ufv1Q/tQVKTs1q979iB+qW8DAB1DR7jqjlYX6bFdsjwy0YuYFtOXRC2xBtEsTd/PCoEAwnt+g==
+"@phila/vue-comps@2.1.23":
+  version "2.1.23"
+  resolved "https://registry.yarnpkg.com/@phila/vue-comps/-/vue-comps-2.1.23.tgz#2c8fca28c2bfc849039ae6601dd5d07a3c49a2b6"
+  integrity sha512-P6DCdRNNreR5Dvs/v0gje4edIt1LsO2W7S08CocvjqewbZrwZ1I4F0l0Okc0JVm39nRP6ugtBq/ocVE3+cxpfQ==
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-regular-svg-icons" "^5.7.2"
@@ -1076,10 +1076,10 @@
     vue "^2.6.11"
     vuex "^3.1.2"
 
-"@phila/vue-datafetch@1.4.8":
-  version "1.4.8"
-  resolved "https://registry.yarnpkg.com/@phila/vue-datafetch/-/vue-datafetch-1.4.8.tgz#68b96dc59ccc68d1014c5715a7fac6af06178db2"
-  integrity sha512-BLdF92XX5TrYCpiVOz5XzDi01MguSh5zJDX/MqyFWSHSx8MaSF5/0ebfESIzOLc0Bikc+33BpAZvsbJFD9zs2A==
+"@phila/vue-datafetch@1.4.10":
+  version "1.4.10"
+  resolved "https://registry.yarnpkg.com/@phila/vue-datafetch/-/vue-datafetch-1.4.10.tgz#450cdd916a3661115fd198b5e27c871a8760f7c0"
+  integrity sha512-GiSWz/3JSelGdPRD4GpPDa36ch/GqzCzLmwciHEKR7hM0SG395ActX/OXYzyOmryU1z+SNm/S94LEw74Pw+x4A==
   dependencies:
     "@turf/turf" "^5.1.6"
     airtable "^0.8.1"
