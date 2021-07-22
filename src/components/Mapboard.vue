@@ -96,7 +96,7 @@
 <script>
 // console.log('test Mapboard.vue, this:', this, 'this.$config:', this.$config);
 
-import 'mapbox-gl/dist/mapbox-gl.css';
+import 'maplibre-gl/dist/mapbox-gl.css';
 import i18nBanner from './i18nBanner.vue';
 
 export default {
