@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.3.9 - 10/14/2020
+
+* allows bypassing of errors for mapmarkers with missing data
+
 ### 4.3.8 - 11/12/2020
 
 * uses pvc 2.1.22 which is removes code specific to real estate tax
