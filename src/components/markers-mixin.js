@@ -137,29 +137,14 @@ export default {
     },
 
     markersForTopic() {
-      // console.log('markers-mixin.js markersForTopic computed is running');
       const markers = [];
-
       // marker for topic from config
       const topicMarkers = this.activeTopicConfig.markersForTopic;
-      if (topicMarkers) {
+      // console.log('markers-mixin.js markersForTopic computed is running, topicMarkers:', topicMarkers);
+      if (topicMarkers && topicMarkers.lat) {
         const state = this.$store.state;
         const topicData = topicMarkers.data(state);
-        if (topicData !== null) {
-          // if (Array.isArray(topicData)) {
-          //   for (let marker of topicData) {
-          //     console.log('topicData marker:', marker);
-          //     // }
-          //     // if (path !== null && path !== undefined) {
-          //     const latlng = [marker.lat, marker.lng];
-          //     const key = marker.key;
-          //     const color = marker.color || 'green';
-          //     const markerType = 'overlay';
-          //     const icon = marker.icon;
-          //     const markerObject = {latlng, key, color, markerType, icon};
-          //     markers.push(markerObject);
-          //   }
-          // } else {
+        if (typeof topicdata !== 'undefined' && topicData !== null) {
           const latlng = [ topicData[topicMarkers.lat], topicData[topicMarkers.lng] ];
           const key = topicData[topicMarkers.key];
           const color = topicMarkers.color || 'green';
@@ -167,7 +152,6 @@ export default {
           const icon = topicMarkers.icon;
           const markerObject = { latlng, key, color, markerType, icon };
           markers.push(markerObject);
-          // }
         }
       }
       return markers;
