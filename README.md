@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.3.10 - 10/15/2020
+
+* fixes typo
+
 ### 4.3.9 - 10/14/2020
 
 * allows bypassing of errors for mapmarkers with missing data

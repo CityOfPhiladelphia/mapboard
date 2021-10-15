@@ -144,7 +144,7 @@ export default {
       if (topicMarkers && topicMarkers.lat) {
         const state = this.$store.state;
         const topicData = topicMarkers.data(state);
-        if (typeof topicdata !== 'undefined' && topicData !== null) {
+        if (typeof topicData !== 'undefined' && topicData !== null) {
           const latlng = [ topicData[topicMarkers.lat], topicData[topicMarkers.lng] ];
           const key = topicData[topicMarkers.key];
           const color = topicMarkers.color || 'green';
