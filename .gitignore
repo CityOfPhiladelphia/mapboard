@@ -24,7 +24,6 @@ yarn-error.log*
 /test/e2e/reports/
 selenium-debug.log
 _bin/
-package-lock.json
 .npmrc
 
 statistics.html

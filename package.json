@@ -14,9 +14,9 @@
     "lintFix": "vue-cli-service lint --fix"
   },
   "dependencies": {
-    "@phila/vue-comps": "2.1.22",
-    "@phila/vue-datafetch": "1.4.8",
-    "@phila/vue-mapping": "2.2.10",
+    "@phila/vue-comps": "3.0.0",
+    "@phila/vue-datafetch": "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#44ad39e558e532638dcf37e63fac5232bc8a8547",
+    "@phila/vue-mapping": "https://github.com/CityOfPhiladelphia/phila-vue-mapping#9cdc98ca239137a9f227b455c6be017462a0bb6a",
     "vue": "^2.6.10",
     "vue-i18n": "^8.22.0",
     "vue-router": "^3.4.6",
@@ -44,5 +44,8 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "engines": {
+    "yarn": "YARN NO LONGER USED - use npm instead."
+  }
 }
