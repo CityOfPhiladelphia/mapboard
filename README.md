@@ -28,11 +28,15 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
-### 4.3.10 - 10/15/2020
+### 4.4.0 - 11/15/2021
+
+* deyarns
+
+### 4.3.10 - 10/15/2021
 
 * fixes typo
 
-### 4.3.9 - 10/14/2020
+### 4.3.9 - 10/14/2021
 
 * allows bypassing of errors for mapmarkers with missing data
 
