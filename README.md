@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.4.3 - 1/31/2022
+
+* uses pvd 2.2.6 which fixes bug with using geocode of otherParcel if there is no geocode
+
 ### 4.4.2 - 1/31/2022
 
 * uses pvd 2.2.5 which fixes bug with missing variable in console log
