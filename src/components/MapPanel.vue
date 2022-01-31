@@ -378,7 +378,8 @@ export default {
     // Control: () => import(/* webpackChunkName: "mbmp_pvm_Control" */'@phila/vue-mapping/src/leaflet/Control.vue'),
     Polyline_: () => import(/* webpackChunkName: "mbmp_pvm_Geojson" */'@phila/vue-mapping/src/leaflet/Polyline.vue'),
     // BasemapTooltip: () => import(/* webpackChunkName: "mbmp_pvm_BasemapTooltip" */'@phila/vue-mapping/src/components/BasemapTooltip.vue'),
-    MglMap: () => import(/* webpackChunkName: "pvm_MglMap" */'@phila/vue-mapping/src/mapbox/map/GlMap.vue'),
+    MglMap: () => import(/* webpackChunkName: "pvm_MglMap" */'@phila/vue-mapping/src/mapbox/map/MaplibreGlMap.vue'),
+    // MglMap: () => import(/* webpackChunkName: "pvm_MglMap" */'@phila/vue-mapping/src/mapbox/map/GlMap.vue'),
     MglMarker: () => import(/* webpackChunkName: "pvm_MglMarker" */'@phila/vue-mapping/src/mapbox/UI/Marker.vue'),
     MglIcon: () => import(/* webpackChunkName: "mbmp_pvm_MglIcon" */'@phila/vue-mapping/src/mapbox/UI/Icon.vue'),
     MglCircleMarker: () => import(/* webpackChunkName: "pvm_MglCircleMarker" */'@phila/vue-mapping/src/mapbox/UI/CircleMarker.vue'),
@@ -1868,7 +1869,7 @@ export default {
     },
     handleMapMove(e) {
       const map = this.$store.map;
-      // console.log('handleMapMove, this.$store.map.getStyle():', this.$store.map.getStyle());
+      console.log('handleMapMove, this.$store.map:', this.$store.map, 'this.$store.state.map:', this.$store.state.map, 'this.$store.map.getStyle():', this.$store.map.getStyle());
       //       const canvas = map.getCanvas();
       //       const w = canvas.width;
       //       const h = canvas.height;

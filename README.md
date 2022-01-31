@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.4.2 - 1/31/2022
+
+* uses pvd 2.2.5 which fixes bug with missing variable in console log
+
 ### 4.4.1 - 11/15/2021
 
 * uses pvd 2.2.3 and pvm 3.1.0
