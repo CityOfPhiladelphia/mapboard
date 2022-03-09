@@ -18,7 +18,6 @@ import Router from 'vue-router';
 
 // conssole.log('in mapboard main.js, createStore:', createStore, 'controllerMixin:', controllerMixin);
 
-
 // helper function to auto-assign ids to horizontal tables
 function assignTableIds(comps) {
   for (let comp of comps) {
