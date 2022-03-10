@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.4.4 - 3/2/2022
+
+* uses pvd 2.2.7 which allows esri-client.js fetchBySpatialQuery to take a where clause 
+
 ### 4.4.3 - 1/31/2022
 
 * uses pvd 2.2.6 which fixes bug with using geocode of otherParcel if there is no geocode
