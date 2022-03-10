@@ -28,9 +28,14 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.4.5 - 3/10/2022
+
+* uses pvm 3.1.7, pvc 3.0.1, and fontawesome 6.0.0
+* uses fontawesome-svg-core 1.2.36, because 1.3.0 causes errors
+
 ### 4.4.4 - 3/2/2022
 
-* uses pvd 2.2.7 which allows esri-client.js fetchBySpatialQuery to take a where clause 
+* uses pvd 2.2.7 which allows esri-client.js fetchBySpatialQuery to take a where clause
 
 ### 4.4.3 - 1/31/2022
 
