@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.4.6 - 3/18/2022
+
+* uses pvm 3.1.8 and pvc 3.0.2 which roll back to fontawesome 5.15.4 so that they are not ahead of @phila/phila-ui
+
 ### 4.4.5 - 3/10/2022
 
 * uses pvm 3.1.7, pvc 3.0.1, and fontawesome 6.0.0
