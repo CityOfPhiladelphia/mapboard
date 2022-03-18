@@ -7,9 +7,9 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons/faSpinner';
 import { faBook } from '@fortawesome/free-solid-svg-icons/faBook';
 import { faWrench } from '@fortawesome/free-solid-svg-icons/faWrench';
-import { faBuildingColumns } from '@fortawesome/free-solid-svg-icons/faBuildingColumns';
+import { faUniversity } from '@fortawesome/free-solid-svg-icons/faUniversity';
 import { faGavel } from '@fortawesome/free-solid-svg-icons/faGavel';
 import { faGlobe } from '@fortawesome/free-solid-svg-icons/faGlobe';
-library.add(faSpinner, faBook, faWrench, faBuildingColumns, faGavel, faGlobe);
+library.add(faSpinner, faBook, faWrench, faUniversity, faGavel, faGlobe);
 
 export default library;
