@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.4.8 - 8/3/2022
+
+* uses pvc 3.0.4 with fix for translating subtitles of vertical tables
+
 ### 4.4.7 - 7/22/2022
 
 * uses pvc 3.0.3, adds subtitle to vertical table
