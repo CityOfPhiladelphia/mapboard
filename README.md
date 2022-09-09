@@ -28,6 +28,11 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.4.9 - 9/9/2022
+
+* uses updated @phila/... packages
+* ran package updates
+
 ### 4.4.8 - 8/3/2022
 
 * uses pvc 3.0.4 with fix for translating subtitles of vertical tables
