@@ -28,7 +28,7 @@
         :layer-id="activeBasemap"
         :layer="basemapSource.layer"
         :source="basemapSource.source"
-        :before="basemapsBefore"
+        :before="basemapsAndLabelsBefore"
       />
 
       <!-- v-if="shouldShowRasterLayer(key) && tiledLayers.includes(key)" -->
@@ -55,7 +55,7 @@
         :before="basemapsBefore"
       />
 
-      <MglRasterLayer
+      <!-- <MglRasterLayer
         v-for="(tiledOverlaySource, key) in tiledOverlaySources"
         v-if="tiledLayers.includes(key)"
         :key="key"
@@ -64,7 +64,7 @@
         :layer="tiledOverlaySource.layer"
         :source="tiledOverlaySource.source"
         :before="basemapsBefore"
-      />
+      /> -->
 
       <MglRasterLayer
         v-for="(overlaySource, key) in overlaySources"
@@ -633,6 +633,11 @@ export default {
     },
     headerLoaded() {
       return this.$store.state.headerLoaded;
+    },
+    basemapsAndLabelsBefore() {
+      let basemapsBefore = this.basemapsBefore;
+      basemapsBefore.push('imageryBasemapLabels');
+      return basemapsBefore;      
     },
     basemapsBefore() {
       // let value = 'geojsonParcelFill';
