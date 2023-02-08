@@ -28,6 +28,11 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.4.11 - 2/8/2023
+
+* uses updated @phila/... packages
+* ran package updates 
+
 ### 4.4.10 - 1/3/2023
 
 * adds 2022 imagery and fixes bug with labels on imagery when it is switched
