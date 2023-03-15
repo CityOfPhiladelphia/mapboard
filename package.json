@@ -16,7 +16,7 @@
   "dependencies": {
     "@phila/vue-comps": "3.0.6",
     "@phila/vue-datafetch": "2.2.11",
-    "@phila/vue-mapping": "3.1.12",
+    "@phila/vue-mapping": "3.1.13",
     "vue": "^2.7.10",
     "vue-i18n": "^8.22.0",
     "vue-router": "^3.4.6",

@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.4.13 - 3/15/2023
+
+* uses @phila/vue-mapping that fixes cyclomedia and pictometry popouts
+
 ### 4.4.12 - 3/15/2023
 
 * changes for using cyclomedia 23.2
