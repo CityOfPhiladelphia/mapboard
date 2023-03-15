@@ -413,6 +413,11 @@ export default {
   }
 
   @media screen and (min-width: 46.875em) {
+
+    body {
+      overflow: hidden;
+    }
+
     .topic-panel-false {
       display: none;
     }

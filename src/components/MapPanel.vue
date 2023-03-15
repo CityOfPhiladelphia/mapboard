@@ -1415,7 +1415,7 @@ export default {
         distance = 10;
       }
 
-      console.log('handleCycloChanges is running, this.$data.watchedZoom:', this.$data.watchedZoom, 'distance:', distance);
+      console.log('handleCycloChanges is running, this.$data.watchedZoom:', this.$data.watchedZoom, 'distance:', distance, 'this.cycloLatlng:', this.cycloLatlng);
       let options = { units: 'feet' };
 
       if (!this.cycloLatlng) {
