@@ -7,7 +7,7 @@
     <!-- <full-screen-map-toggle-tab /> -->
     <full-screen-map-toggle-tab v-once />
 
-    <MglMap
+    <MaplibreGlMap
       v-if="mapType === 'mapbox'"
       :access-token="accessToken"
       :map-style.sync="$config.mbStyle"
@@ -289,7 +289,7 @@
         position="bottom-left"
         :position-options="geolocationPositionOptions"
       />
-    </MglMap>
+    </MaplibreGlMap>
 
     <slot
       class="widget-slot"
@@ -303,8 +303,6 @@
 </template>
 
 <script>
-// import * as L from 'leaflet';
-// import 'leaflet/dist/leaflet.css';
 
 import bbox from '@turf/bbox';
 import bboxPolygon from '@turf/bbox-polygon';
@@ -316,16 +314,6 @@ import area from '@turf/area';
 import { point, polygon, convertArea, featureCollection } from '@turf/helpers';
 
 import generateUniqueId from '../util/unique-id';
-
-// console.log('L:', L)
-// const FeatureGroup = L.default.featureGroup;
-// const GeoJSON = L.default.geoJSON;
-// const Lmarker = L.default.marker;
-// console.log('FeatureGroup:', FeatureGroup, 'GeoJSON:', GeoJSON)
-// import { featureGroup, geoJSON } from 'leaflet';
-// import { marker as Lmarker } from 'leaflet';
-// import { FeatureGroup, GeoJSON } from 'leaflet';
-// import { Marker as Lmarker } from 'leaflet';
 
 // mixins
 import markersMixin from './markers-mixin';
@@ -378,7 +366,7 @@ export default {
     // Control: () => import(/* webpackChunkName: "mbmp_pvm_Control" */'@phila/vue-mapping/src/leaflet/Control.vue'),
     Polyline_: () => import(/* webpackChunkName: "mbmp_pvm_Geojson" */'@phila/vue-mapping/src/leaflet/Polyline.vue'),
     // BasemapTooltip: () => import(/* webpackChunkName: "mbmp_pvm_BasemapTooltip" */'@phila/vue-mapping/src/components/BasemapTooltip.vue'),
-    MglMap: () => import(/* webpackChunkName: "pvm_MglMap" */'@phila/vue-mapping/src/mapbox/map/MaplibreGlMap.vue'),
+    MaplibreGlMap: () => import(/* webpackChunkName: "pvm_MglMap" */'@phila/vue-mapping/src/mapbox/map/MaplibreGlMap.vue'),
     // MglMap: () => import(/* webpackChunkName: "pvm_MglMap" */'@phila/vue-mapping/src/mapbox/map/GlMap.vue'),
     MglMarker: () => import(/* webpackChunkName: "pvm_MglMarker" */'@phila/vue-mapping/src/mapbox/UI/Marker.vue'),
     MglIcon: () => import(/* webpackChunkName: "mbmp_pvm_MglIcon" */'@phila/vue-mapping/src/mapbox/UI/Icon.vue'),
