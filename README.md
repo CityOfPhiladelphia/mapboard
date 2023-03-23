@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.4.15 - 3/23/2023
+
+* uses @phila/vue-datafetch that replaces geometry server
+
 ### 4.4.14 - 3/21/2023
 
 * uses @phila/vue-mapping that uses maplibre 2.4.0 and turf 6.5.0
