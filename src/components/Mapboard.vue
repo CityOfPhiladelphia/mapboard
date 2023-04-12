@@ -328,6 +328,10 @@ export default {
         this.$store.commit('setPopoverText', this.$config.initialPopover.slots.text);
       }
     }
+
+    if (this.$config.gtag && this.$config.gtag.category) {
+      this.$store.commit('setGtagCategory', this.$config.gtag.category);
+    }
   },
   methods: {
     togglei18nMenu() {

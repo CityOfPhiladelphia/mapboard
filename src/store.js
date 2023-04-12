@@ -166,6 +166,9 @@ function createStore(config) {
       width: 0,
     },
     maintenanceResponse: null,
+    gtag: {
+      category: 'unspecified-pinboard-app'
+    },
   };
 
   if (config.map) {
@@ -317,6 +320,9 @@ function createStore(config) {
         // console.log('setDidToggleModal, name:', name);
         // state.modals[name].open = open === null ? !state.modals[name].open : open
         state.modals.open = name;
+      },
+      setGtagCategory(state, payload) {
+        state.gtag.category = payload;
       },
     },
     actions: {

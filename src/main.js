@@ -7,6 +7,7 @@ import configMixin from './util/config-mixin';
 import Mapboard from './components/Mapboard.vue';
 import mergeDeep from './util/merge-deep';
 import generateUniqueId from './util/unique-id';
+import VueGtag from 'vue-gtag';
 
 import * as faAll from './fa.js';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -124,6 +125,15 @@ function finishInit(config) {
     i18nData = {};
   }
   const i18n = new VueI18n(i18nData);
+
+  Vue.use(VueGtag, {
+    config:{
+      id: 'UA-860026-1',
+      appName: 'My application',
+      pageTrackerScreenviewEnabled: true,
+      params: {},
+    }
+  }, router);
 
   // console.log('in finishInit, config:', config, 'store:', store, 'opts.store:', opts.store);
   if (config.healthChecks) {
