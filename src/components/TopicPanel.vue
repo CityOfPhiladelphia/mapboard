@@ -422,6 +422,11 @@ export default {
     if (this.$store.state.activeTopic === null || this.$store.state.activeTopic === '') {
       this.setDefaultTopicActive();
     }
+
+    this.$gtag.event('topicpanel-mounted', {
+      'event_category': this.$store.state.gtag.category,
+      'event_label': 'mounted topic panel',
+    });
   },
   methods: {
     setDefaultTopicActive() {

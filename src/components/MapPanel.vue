@@ -1470,6 +1470,12 @@ export default {
 
     handleSearchFormSubmit(value) {
       console.log('MapPanel.vue handleSearchFormSubmit is running');
+      
+      this.$gtag.event('mb-search', {
+        'event_category': this.$store.state.gtag.category,
+        'event_label': 'atlas search',
+      });
+
       this.$controller.handleSearchFormSubmit(value);
     },
     checkBoundsChanges() {
