@@ -1433,6 +1433,13 @@ export default {
 
       this.$store.commit('setCyclomediaActive', willBeActive);
 
+      if (willBeActive) {
+        this.$gtag.event('cyclomedia-clicked', {
+          'event_category': this.$store.state.gtag.category,
+          'event_label': 'cyclomedia clicked',
+        });
+      }
+
       if (this.isMobileOrTablet) {
         // console.log('isMobileOrTablet is true');
         if (this.$store.state.pictometry.active) {

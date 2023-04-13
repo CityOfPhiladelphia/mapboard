@@ -418,7 +418,7 @@ export default {
   // },
   mounted() {
     this.handleWindowResize(this.windowDim);
-    // console.log('TopicPanel.vue mounted');
+    // console.log('TopicPanel.vue mounted, this.$store.state.gtag.category:', this.$store.state.gtag.category);
     if (this.$store.state.activeTopic === null || this.$store.state.activeTopic === '') {
       this.setDefaultTopicActive();
     }
@@ -448,7 +448,13 @@ export default {
       this.$controller.handleSearchFormSubmit(value);
     },
     handleTopicHeaderClick(nextTopic) {
-      // console.log('TopicPanel handleTopicHeaderClick is running');
+      // console.log('TopicPanel handleTopicHeaderClick is running, nextTopic:', nextTopic, 'this.$gtag:', this.$gtag);
+      if (nextTopic) {
+        this.$gtag.event('topic-clicked', {
+          'event_category': this.$store.state.gtag.category,
+          'event_label': 'topic-clicked-' + nextTopic,
+        });
+      }
       this.$controller.handleTopicHeaderClick(nextTopic);
     },
     closeAddressCandidateList() {
