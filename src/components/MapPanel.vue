@@ -1434,9 +1434,9 @@ export default {
       this.$store.commit('setCyclomediaActive', willBeActive);
 
       if (willBeActive) {
-        this.$gtag.event('cyclomedia-clicked', {
+        this.$gtag.event('cyclomedia opened', {
           'event_category': this.$store.state.gtag.category,
-          'event_label': 'cyclomedia clicked',
+          'event_label': 'cyclomedia opened',
         });
       }
 
@@ -1450,6 +1450,13 @@ export default {
     handlePictometryButtonClick(e) {
       // console.log('handlePictometryButtonClick is running');
       this.$store.commit('setPictometryActive', !this.$store.state.pictometry.active);
+
+      if (this.$store.state.pictometry.active) {
+        this.$gtag.event('pictometry opened', {
+          'event_category': this.$store.state.gtag.category,
+          'event_label': 'pictometry opened',
+        });
+      }
 
       if (this.isMobileOrTablet) {
         // console.log('isMobileOrTablet is true');
@@ -1478,7 +1485,7 @@ export default {
     handleSearchFormSubmit(value) {
       console.log('MapPanel.vue handleSearchFormSubmit is running');
       
-      this.$gtag.event('mb-search', {
+      this.$gtag.event('atlas map search', {
         'event_category': this.$store.state.gtag.category,
         'event_label': 'atlas search',
       });
@@ -1594,6 +1601,13 @@ export default {
       console.log('MapPanel.vue handleMapClick, drawLayers:', drawLayers, 'drawMode:', drawMode, 'e:', e, 'this.$store.map.getStyle():', this.$store.map.getStyle(), 'this.$store.state.drawStart:', this.$store.state.drawStart);
 
       if (!drawLayers.length && drawMode !== 'draw_polygon') {
+
+        if (this.$store.state.pictometry.active) {
+          this.$gtag.event('map clicked', {
+            'event_category': this.$store.state.gtag.category,
+            'event_label': 'map clicked',
+          });
+        }
         this.$controller.handleMapClick(e);
       }
       if (drawMode === 'draw_polygon') {
@@ -1794,6 +1808,11 @@ export default {
 
       if (e.mode === 'simple_select' && currentShape) {
         this.handleDrawFinish();
+      } else {
+        this.$gtag.event('draw tool used', {
+          'event_category': this.$store.state.gtag.category,
+          'event_label': 'draw tool used',
+        });
       }
     },
     handleDrawCancel(e) {

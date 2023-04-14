@@ -30,16 +30,9 @@
             v-if="!fullScreenTopicsOnly"
             icon="map-marker-alt"
           />
-          <!-- <i class="fa fa-map-marker-alt"
-             v-if="!this.fullScreenTopicsOnly"
-          ></i> -->
           {{ address }}
         </h1>
-        <!-- <div class="address-header-line-2"
-             v-show="!this.geocode"
-        >
 
-        </div> -->
         <div
           v-show="geocode"
           class="address-header-line-2"
@@ -124,10 +117,8 @@ export default {
     AnyHeader: () => import(/* webpackChunkName: "mbmp_pvc_AnyHeader" */'@phila/vue-comps/src/components/AnyHeader.vue'),
     Greeting: () => import(/* webpackChunkName: "mbmp_pvc_Greeting" */'@phila/vue-comps/src/components/Greeting.vue'),
     TopicComponentGroup: () => import(/* webpackChunkName: "mbmp_pvc_TopicComponentGroup" */'@phila/vue-comps/src/components/TopicComponentGroup.vue'),
-    // Topic: () => import(/* webpackChunkName: "mbmp_pvc_Topic" */'@phila/vue-comps/src/components/Topic.vue'),
     AddressInput: () => import(/* webpackChunkName: "mbmp_pvc_AddressInput" */'@phila/vue-comps/src/components/AddressInput.vue'),
     AddressCandidateList: () => import(/* webpackChunkName: "mbmp_pvc_AddressCandidateList" */'@phila/vue-comps/src/components/AddressCandidateList.vue'),
-    // FullScreenTopicsToggleTab: () => import(/* webpackChunkName: "mbmp_pvc_FullScreenTopicsToggleTab" */'@phila/vue-comps/src/components/FullScreenTopicsToggleTab.vue')
     FullScreenTopicsToggleTab,
   },
   data() {
@@ -422,29 +413,25 @@ export default {
     if (this.$store.state.activeTopic === null || this.$store.state.activeTopic === '') {
       this.setDefaultTopicActive();
     }
-
-    this.$gtag.event('topicpanel-mounted', {
-      'event_category': this.$store.state.gtag.category,
-      'event_label': 'mounted topic panel',
-    });
   },
   methods: {
     setDefaultTopicActive() {
       console.log('TopicPanel setDefaultTopicActive is running');
       if (this.$config.defaultTopic) {
         this.$store.commit('setActiveTopic', this.$config.defaultTopic);
-        // this.$store.state.activeTopic = this.$props.options.defaultTopic;
       }
     },
-    // testEmit() {
-    //   // console.log('TopicPanel.vue testEmit is running');
-    // },
     getMoreRecords(dataSource, highestPageRetrieved) {
       // console.log('TopicPanel getMoreRecords is running');
       this.$controller.getMoreRecords(dataSource, highestPageRetrieved);
     },
     handleSearchFormSubmit(value) {
       // console.log('TopicPanel handleSearchFormSubmit is running');
+      this.$gtag.event('atlas topic panel search', {
+        'event_category': this.$store.state.gtag.category,
+        'event_label': 'atlas topic panel search',
+      });
+
       this.$controller.handleSearchFormSubmit(value);
     },
     handleTopicHeaderClick(nextTopic) {
