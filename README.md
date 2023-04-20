@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.4.17 - 4/20/2023
+
+* fixes bug with zoomToShape if the markerForTopic is missing
+
 ### 4.4.16 - 4/19/2023
 
 * uses @phila/vue-comps 3.0.7 which fixes hard-coded bug with BadgeSet.vue

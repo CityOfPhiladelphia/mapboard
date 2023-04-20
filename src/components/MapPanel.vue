@@ -1245,6 +1245,7 @@ export default {
     // },
 
     markersForAddress(nextMarkers) {
+      // console.log('watch markersForAddress is running, nextMarkers:', nextMarkers);
       let czts = this.activeTopicConfig.zoomToShape;
       let dzts = this.$data.zoomToShape;
       if (!czts || !czts.includes('markersForAddress')) {
@@ -1261,6 +1262,7 @@ export default {
     // it does not update zoomToShape unless there is a change
     // because the markers computed recalculates extremely often, this is needed
     markersForTopic(nextMarkers) {
+      // console.log('watch markersForTopic is running, nextMarkers:', nextMarkers);
       let czts = this.activeTopicConfig.zoomToShape;
       let dzts = this.$data.zoomToShape;
       if (!czts || !czts.includes('markersForTopic')) {
@@ -1528,7 +1530,8 @@ export default {
             // featureArray.push(L.marker(marker.latlng))
           }
         }
-        if (czts.includes('markersForTopic')) {
+        if (czts.includes('markersForTopic') && this.markersForTopic[0].latlng[0] != null) {
+          // console.log('in setMapToBounds, markersForTopic:', this.markersForTopic);
           for (let marker of this.markersForTopic) {
             featureArray.push(point([ marker.latlng[1], marker.latlng[0] ]));
             // featureArray.push(L.marker(marker.latlng))
