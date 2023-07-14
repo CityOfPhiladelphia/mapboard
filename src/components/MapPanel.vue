@@ -136,6 +136,30 @@
         :replace="true"
       />
 
+      <MglGeojsonLayer
+        v-if="geojsonForBuildingBoolean"
+        key="'geojsonForBuildingFill'"
+        :source-id="'geojsonForBuilding'"
+        :source="geojsonForBuildingSource"
+        :layer-id="'geojsonForBuildingFill'"
+        :layer="geojsonForBuildingFillLayer"
+        :clear-source="false"
+        :replace-source="true"
+        :replace="true"
+      />
+
+      <MglGeojsonLayer
+        v-if="geojsonForBuildingBoolean"
+        key="'geojsonForBuildingLine'"
+        :source-id="'geojsonForBuilding'"
+        :source="geojsonForBuildingSource"
+        :layer-id="'geojsonForBuildingLine'"
+        :layer="geojsonForBuildingLineLayer"
+        :clear-source="true"
+        :replace-source="true"
+        :replace="true"
+      />
+
       <!-- :source-id="layer.source" -->
       <MglGeojsonLayer
         v-for="labels of draw.labelLayers"
@@ -571,6 +595,39 @@ export default {
           'line-width': 2,
         },
       },
+      geojsonForBuildingBoolean: false,
+      geojsonForBuildingSource: {
+        'type': 'geojson',
+        'data': {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Polygon',
+            'coordinates': [],
+          },
+        },
+      },
+      geojsonForBuildingFillLayer: {
+        'id': 'geojsonForBuildingFill',
+        'type': 'fill',
+        'source': 'geojsonForBuilding',
+        'layout': {},
+        'paint': {
+          // 'fill-color': 'rgb(0,102,255)',
+          'fill-color': '#9e9ac8',
+          'fill-opacity': 0.4,
+          'fill-outline-color': 'rgb(0,102,255)',
+        },
+      },
+      geojsonForBuildingLineLayer: {
+        'id': 'geojsonForBuildingLine',
+        'type': 'line',
+        'source': 'geojsonForBuilding',
+        'layout': {},
+        'paint': {
+          'line-color': '#9e9ac8',
+          'line-width': 2,
+        },
+      },
       geojsonReactiveSource: {
         'type': 'geojson',
         'data': {
@@ -616,6 +673,9 @@ export default {
     return data;
   },
   computed: {
+    activeLiBuilding() {
+      return this.$store.state.activeLiBuilding;
+    },
     windowDim() {
       return this.$store.state.windowDimensions;
     },
@@ -1068,6 +1128,24 @@ export default {
       if (this.$store && this.$store.map) {
         // console.log('watch activeBasemap is calling resize');
         this.$store.map.resize();
+      }
+    },
+    activeLiBuilding(nextActiveLiBuilding) {
+      let nextGeojson = this.$store.state.sources.liBuildingFootprints.data.features.filter(function(item) {
+        // console.log('in filter, item:', item, 'item.id:', item.id);
+        return item.attributes.BIN === nextActiveLiBuilding;
+      });
+      // console.log('watch activeDorParcel is running, nextActiveDorParcel:', nextActiveDorParcel, 'nextGeojson:', nextGeojson);
+      if (this.$store.map) {
+        // console.log('watch activeDorParcel is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
+      }
+      if (nextGeojson[0]) {
+        // console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
+        this.geojsonForBuildingBoolean = true;
+        this.$data.geojsonForBuildingSource.data.geometry.coordinates = nextGeojson[0].geometry.rings;
+      } else {
+        this.geojsonForBuildingBoolean = false;
+        this.$data.geojsonParcelSource.data.geometry.coordinates = [];
       }
     },
     activeDorParcel(nextActiveDorParcel) {

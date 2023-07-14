@@ -317,18 +317,23 @@ export default {
       return this.$store.state.parcels.dor.data.length > 0;
       // return this.$store.state.parcels.dor.length > 0;
     },
+    windowLocation() {
+      return window.location.pathname;
+    },
     shouldShowGreeting() {
       // this was added to allow fetchData to run even without a geocode result
       // for the real estate tax site which sometimes needs data from TIPS
       // even if the property is not in OPA and AIS
-      if (this.$config.onGeocodeFail) {
-        if (this.$store.state.geocode.status === null) {
-          return true;
-        }
-        return !(this.$store.state.sources[this.$config.onGeocodeFail.data]);
-      }
-      return !(this.geocode || this.dorParcels);
 
+      return (this.geocodeStatus == null || this.geocodeStatus == 'error');
+
+      // if (this.$config.onGeocodeFail) {
+      //   if (this.$store.state.geocode.status === null) {
+      //     return true;
+      //   }
+      //   return !(this.$store.state.sources[this.$config.onGeocodeFail.data]);
+      // }
+      // return !(this.geocode || this.dorParcels);
     },
     // this returns the address shown in the address header
     address() {

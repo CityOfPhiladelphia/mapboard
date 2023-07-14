@@ -130,6 +130,7 @@ function createStore(config) {
   // console.log('parcels:', parcels);
 
   const initialState = {
+    activeLiBuilding: null,
     shouldShowi18nBanner: false,
     isMobileOrTablet: isMobileDevice(),
     headerLoaded: false,
@@ -210,6 +211,9 @@ function createStore(config) {
       },
     },
     mutations: {
+      setActiveLiBuilding(state, payload) {
+        state.activeLiBuilding = payload;
+      },
       shouldShowi18nBanner(state, payload) {
         state.shouldShowi18nBanner = payload;
       },
