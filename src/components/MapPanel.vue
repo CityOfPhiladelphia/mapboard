@@ -137,24 +137,46 @@
       />
 
       <MglGeojsonLayer
-        v-if="geojsonForBuildingBoolean"
-        key="'geojsonForBuildingFill'"
-        :source-id="'geojsonForBuilding'"
-        :source="geojsonForBuildingSource"
-        :layer-id="'geojsonForBuildingFill'"
-        :layer="geojsonForBuildingFillLayer"
+        v-for="(geojsonBuildingSource, index) in geojsonBuildingSources"
+        :key="'dorParcelLine'+index"
+        :source-id="'geojsonBuilding'+index"
+        :source="geojsonBuildingSource"
+        :layer-id="'geojsonBuildingLine'+index"
+        :layer="geojsonBuildingLineLayer"
+        :clear-source="true"
+      />
+
+      <MglGeojsonLayer
+        v-for="(geojsonBuildingSource, index) in geojsonBuildingSources"
+        :key="'dorParcelFill'+index"
+        :source-id="'geojsonBuilding'+index"
+        :source="geojsonBuildingSource"
+        :layer-id="'geojsonBuildingFill'+index"
+        :layer="geojsonBuildingFillLayer"
+        :clear-source="true"
+      />
+      <!-- @mouseenter="handleMarkerMouseover"
+      @mouseleave="handleMarkerMouseout" -->
+
+      <MglGeojsonLayer
+        v-if="geojsonForActiveBuildingBoolean"
+        key="'geojsonForActiveBuildingFill'"
+        :source-id="'geojsonForActiveBuilding'"
+        :source="geojsonForActiveBuildingSource"
+        :layer-id="'geojsonForActiveBuildingFill'"
+        :layer="geojsonForActiveBuildingFillLayer"
         :clear-source="false"
         :replace-source="true"
         :replace="true"
       />
 
       <MglGeojsonLayer
-        v-if="geojsonForBuildingBoolean"
-        key="'geojsonForBuildingLine'"
-        :source-id="'geojsonForBuilding'"
-        :source="geojsonForBuildingSource"
-        :layer-id="'geojsonForBuildingLine'"
-        :layer="geojsonForBuildingLineLayer"
+        v-if="geojsonForActiveBuildingBoolean"
+        key="'geojsonForActiveBuildingLine'"
+        :source-id="'geojsonForActiveBuilding'"
+        :source="geojsonForActiveBuildingSource"
+        :layer-id="'geojsonForActiveBuildingLine'"
+        :layer="geojsonForActiveBuildingLineLayer"
         :clear-source="true"
         :replace-source="true"
         :replace="true"
@@ -595,8 +617,27 @@ export default {
           'line-width': 2,
         },
       },
-      geojsonForBuildingBoolean: false,
-      geojsonForBuildingSource: {
+      geojsonBuildingSources: null,
+      geojsonBuildingFillLayer: {
+        'id': 'geojsonParcelFill',
+        'type': 'fill',
+        'layout': {},
+        'paint': {
+          'fill-color': '#bed3ed',
+          'fill-opacity': 0.3,
+        },
+      },
+      geojsonBuildingLineLayer: {
+        'id': 'geojsonParcelLine',
+        'type': 'line',
+        'layout': {},
+        'paint': {
+          'line-color': '#bed3ed',
+          'line-width': 2,
+        },
+      },
+      geojsonForActiveBuildingBoolean: false,
+      geojsonForActiveBuildingSource: {
         'type': 'geojson',
         'data': {
           'type': 'Feature',
@@ -606,25 +647,26 @@ export default {
           },
         },
       },
-      geojsonForBuildingFillLayer: {
-        'id': 'geojsonForBuildingFill',
+      geojsonForActiveBuildingFillLayer: {
+        'id': 'geojsonForActiveBuildingFill',
         'type': 'fill',
-        'source': 'geojsonForBuilding',
+        'source': 'geojsonForActiveBuilding',
         'layout': {},
         'paint': {
-          // 'fill-color': 'rgb(0,102,255)',
-          'fill-color': '#9e9ac8',
+          // 'fill-color': '#9e9ac8',
+          'fill-color': '#d9d464',
           'fill-opacity': 0.4,
           'fill-outline-color': 'rgb(0,102,255)',
         },
       },
-      geojsonForBuildingLineLayer: {
-        'id': 'geojsonForBuildingLine',
+      geojsonForActiveBuildingLineLayer: {
+        'id': 'geojsonForActiveBuildingLine',
         'type': 'line',
-        'source': 'geojsonForBuilding',
+        'source': 'geojsonForActiveBuilding',
         'layout': {},
         'paint': {
-          'line-color': '#9e9ac8',
+          // 'line-color': '#9e9ac8',
+          'line-color': '#d9d464',
           'line-width': 2,
         },
       },
@@ -1113,8 +1155,44 @@ export default {
       }
       return 18;
     },
+    geojsonBuildings() {
+      // return null;
+      if (this.$store.state.sources.liBuildingFootprints.data) {
+        return this.$store.state.sources.liBuildingFootprints.data.features.filter(item => item.attributes.BIN !== this.activeLiBuilding);
+      } else {
+        return [];
+      }
+    },
   },
   watch: {
+    geojsonBuildings(nextGeojson) {
+      console.log('watch geojsonBuildings is running, nextGeojson:', nextGeojson);
+      let value = []
+      if (nextGeojson && nextGeojson.length) {
+        for (let parcel of nextGeojson) {
+          // console.log('in loop, parcel:', parcel);
+          // if (parcel.attributes.BIN !== this.activeLiBuilding) {
+          value.push(
+            {
+              'type': 'geojson',
+              'data': {
+                'type': 'Feature',
+                'geometry': {
+                  'type': 'Polygon',
+                  'coordinates': parcel.geometry.rings,
+                },
+                'properties': {
+                  'parcelId': parcel.attributes.BIN,
+                  'featureId': parcel._featureId,
+                },
+              },
+            },
+          )
+          // }
+        }
+      }
+      this.geojsonBuildingSources = value;
+    },
     windowDim() {
       this.handleWindowResize();
     },
@@ -1141,10 +1219,10 @@ export default {
       }
       if (nextGeojson[0]) {
         // console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
-        this.geojsonForBuildingBoolean = true;
-        this.$data.geojsonForBuildingSource.data.geometry.coordinates = nextGeojson[0].geometry.rings;
+        this.geojsonForActiveBuildingBoolean = true;
+        this.$data.geojsonForActiveBuildingSource.data.geometry.coordinates = nextGeojson[0].geometry.rings;
       } else {
-        this.geojsonForBuildingBoolean = false;
+        this.geojsonForActiveBuildingBoolean = false;
         this.$data.geojsonParcelSource.data.geometry.coordinates = [];
       }
     },
