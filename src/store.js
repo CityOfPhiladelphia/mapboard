@@ -131,6 +131,7 @@ function createStore(config) {
 
   const initialState = {
     activeLiBuilding: null,
+    activeGeojsonForTopic: null,
     shouldShowi18nBanner: false,
     isMobileOrTablet: isMobileDevice(),
     headerLoaded: false,
@@ -211,6 +212,9 @@ function createStore(config) {
       },
     },
     mutations: {
+      setActiveGeojsonForTopic(state, payload) {
+        state.activeGeojsonForTopic = payload;
+      },
       setActiveLiBuilding(state, payload) {
         state.activeLiBuilding = payload;
       },
