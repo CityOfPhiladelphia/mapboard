@@ -100,6 +100,8 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 // import 'mapbox-gl/dist/mapbox-gl.css';
 import i18nBanner from './i18nBanner.vue';
 
+import axios from 'axios';
+
 export default {
   components: {
     CyclomediaWidget: () => import(/* webpackChunkName: "mbmb_pvm_CyclomediaWidget" */'@phila/vue-mapping/src/cyclomedia/Widget.vue'),
@@ -317,6 +319,33 @@ export default {
 
     window.addEventListener('click', this.closeAddressCandidateList);
     window.addEventListener('resize', this.handleWindowResize);
+
+    let token_url = 'https://www.arcgis.com/sharing/rest/generateToken';
+    // let token_url = 'https://www.arcgis.com/sharing/rest/oauth2/token';
+    // let token_url = 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/ArcGIS/tokens/generateToken'
+    let params = {
+      username: 'maps.phl.data',
+      password: 'EbkX9D4Rj2wxdCE8qeqqkFd',
+      // 'client': 'requestip',
+      referer: 'https://www.arcgis.com',
+      f: 'json',
+    }
+
+    axios.request({
+      method: 'POST',
+      url: token_url,
+      headers: {
+        // 'Authorization': 'Basic bWFwcy5waGwuZGF0YTpFYmtYOUQ0Umoyd3hkQ0U4cWVxcWtGZA==',
+        'content-type': 'application/x-www-form-urlencoded',
+      },
+      data: params,
+      // body: {
+      //   test: 'lets add something here'
+      // },
+    }).then(function(response, error) {
+      console.log('after post, response:', response, 'error:', error);
+    });
+
   },
   mounted() {
     this.handleWindowResize();
