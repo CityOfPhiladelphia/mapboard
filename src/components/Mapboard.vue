@@ -322,7 +322,6 @@ export default {
     window.addEventListener('resize', this.handleWindowResize);
 
     if (this.$config.agoTokenNeeded) {
-      console.log('process.env.VUE_APP_AGO_USERNAME:', process.env.VUE_APP_AGO_USERNAME);
 
       let data = qs.stringify({
         'f': 'json',
