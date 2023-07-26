@@ -101,6 +101,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import i18nBanner from './i18nBanner.vue';
 
 import axios from 'axios';
+import qs from 'qs';
 
 export default {
   components: {
@@ -320,31 +321,36 @@ export default {
     window.addEventListener('click', this.closeAddressCandidateList);
     window.addEventListener('resize', this.handleWindowResize);
 
-    let token_url = 'https://www.arcgis.com/sharing/rest/generateToken';
-    // let token_url = 'https://www.arcgis.com/sharing/rest/oauth2/token';
-    // let token_url = 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/ArcGIS/tokens/generateToken'
-    let params = {
-      username: 'maps.phl.data',
-      password: 'EbkX9D4Rj2wxdCE8qeqqkFd',
-      // 'client': 'requestip',
-      referer: 'https://www.arcgis.com',
-      f: 'json',
-    }
+    if (this.$config.agoTokenNeeded) {
 
-    axios.request({
-      method: 'POST',
-      url: token_url,
-      headers: {
-        // 'Authorization': 'Basic bWFwcy5waGwuZGF0YTpFYmtYOUQ0Umoyd3hkQ0U4cWVxcWtGZA==',
-        'content-type': 'application/x-www-form-urlencoded',
-      },
-      data: params,
-      // body: {
-      //   test: 'lets add something here'
-      // },
-    }).then(function(response, error) {
-      console.log('after post, response:', response, 'error:', error);
-    });
+      let data = qs.stringify({
+        'f': 'json',
+        'username': process.env.VUE_APP_AGO_USERNAME,
+        'password': process.env.VUE_APP_AGO_PASSWORD,
+        'referer': 'https://www.mydomain.com' 
+      });
+  
+      let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: 'https://www.arcgis.com/sharing/rest/generateToken',
+        headers: { 
+          'Content-Type': 'application/x-www-form-urlencoded', 
+          // 'Authorization': 'Basic Og=='
+        },
+        data : data
+      };
+  
+      axios.request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+        this.$store.commit('setAgoToken', response.data.token);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    }
 
   },
   mounted() {

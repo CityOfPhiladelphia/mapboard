@@ -130,6 +130,7 @@ function createStore(config) {
   // console.log('parcels:', parcels);
 
   const initialState = {
+    agoToken: null,
     shouldShowi18nBanner: false,
     isMobileOrTablet: isMobileDevice(),
     headerLoaded: false,
@@ -210,6 +211,9 @@ function createStore(config) {
       },
     },
     mutations: {
+      setAgoToken(state, payload) {
+        state.agoToken = payload;
+      },
       shouldShowi18nBanner(state, payload) {
         state.shouldShowi18nBanner = payload;
       },

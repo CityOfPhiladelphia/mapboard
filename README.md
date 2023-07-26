@@ -28,6 +28,11 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.4.18 - 7/26/2023
+
+* requests esri token on load
+* uses @phila/vue-datafetch 2.2.14 which allows adding esri token
+
 ### 4.4.17 - 4/20/2023
 
 * fixes bug with zoomToShape if the markerForTopic is missing
