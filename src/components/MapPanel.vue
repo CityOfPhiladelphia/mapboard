@@ -1863,7 +1863,11 @@ export default {
       return false;
     },
     handleGeojsonCollectionForTopicClick(e) {
-      console.log('handleGeojsonCollectionForTopicClick is running, e:', e);
+      let structureId = e.component.source.data.properties.parcelId;
+      let activeLiBuilding = this.$store.state.sources.liBuildingCerts.data.rows.filter(item => item.structure_id === structureId)[0];
+      console.log('handleGeojsonCollectionForTopicClick is running, e:', e, 'activeLiBuilding:', activeLiBuilding, 'e.component.source.data.properties.parcelId:', e.component.source.data.properties.parcelId);
+      this.$store.commit('setActiveLiBuilding', activeLiBuilding);
+      this.$store.commit('setActiveGeojsonForTopic', structureId);
       // e.clickOnLayer = true;
     },
     handleMapClick(e) {
