@@ -130,7 +130,7 @@ function createStore(config) {
   // console.log('parcels:', parcels);
 
   const initialState = {
-    activeLiBuilding: null,
+    activeLiBuilding: {},
     activeGeojsonForTopic: null,
     shouldShowi18nBanner: false,
     isMobileOrTablet: isMobileDevice(),
