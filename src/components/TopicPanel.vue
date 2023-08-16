@@ -449,6 +449,7 @@ export default {
     },
     handleTopicHeaderClick(nextTopic) {
       // console.log('TopicPanel handleTopicHeaderClick is running');
+      this.$store.commit('setActiveGeojsonForTopic', null);
       this.$controller.handleTopicHeaderClick(nextTopic);
     },
     closeAddressCandidateList() {

@@ -627,14 +627,16 @@ export default {
         // 'source': 'geojsonCollectionForTopic',
         'layout': {},
         'paint': {
-          'line-color': '#9e9ac8',
-          'line-width': {
-            stops: [
-              [ 1, 1 ],
-              [ 15, 1 ],
-              [ 19, 4 ],
-            ],
-          },
+          // 'line-color': '#9e9ac8',
+          'line-color': '#bdbadb',
+          'line-width': 1.5,
+          // 'line-width': {
+          //   stops: [
+          //     [ 1, 1 ],
+          //     [ 15, 1 ],
+          //     [ 19, 4 ],
+          //   ],
+          // },
         },
       },
       geojsonForTopicSource: {
@@ -707,7 +709,7 @@ export default {
         'paint': {
           // 'fill-color': '#9e9ac8',
           'fill-color': '#d9d464',
-          'fill-opacity': 0.4,
+          'fill-opacity': 0.6,
           'fill-outline-color': 'rgb(0,102,255)',
         },
       },
@@ -719,7 +721,7 @@ export default {
         'paint': {
           // 'line-color': '#9e9ac8',
           'line-color': '#d9d464',
-          'line-width': 2,
+          'line-width': 1,
         },
       },
       geojsonForActiveBuildingBoolean: false,
@@ -1247,7 +1249,8 @@ export default {
     geojsonBuildings() {
       // return null;
       if (this.$store.state.sources.liBuildingFootprints.data) {
-        return this.$store.state.sources.liBuildingFootprints.data.features.filter(item => item.attributes.BIN !== this.activeLiBuilding);
+        return this.$store.state.sources.liBuildingFootprints.data.features;
+        // return this.$store.state.sources.liBuildingFootprints.data.features.filter(item => item.attributes.BIN !== this.activeLiBuilding);
       } else {
         return [];
       }
