@@ -1250,15 +1250,17 @@ export default {
     // mapBounds() {
     //   // TODO calculate map bounds based on leaflet markers above
     // },
-    boundsBasedOnShape() {
-      return this.$store.state.map.boundsBasedOnShape;
-    },
+    // boundsBasedOnShape() {
+    //   return this.$store.state.map.boundsBasedOnShape;
+    // },
     isGeocoding() {
       return this.$store.state.geocode.status === 'waiting';
     },
     geocodeZoom() {
       if (this.$config.map.geocodeZoom) {
         return this.$config.map.geocodeZoom;
+      } else if (this.activeTopicConfig.zoom) {
+        return this.activeTopicConfig.zoom;
       }
       return 18;
     },
@@ -1344,10 +1346,21 @@ export default {
       }
     },
     watchedZoom(nextWatchedZoom) {
+      console.log('watchedZoom is firing, nextWatchedZoom:', nextWatchedZoom);
       if (this.cyclomediaActive) {
         this.handleCycloChanges();
       }
       let map = this.$store.map;
+      // if (map && this.activeTopicConfig.zoom) {
+      //   console.log('watchedZoom, this.$store.map.easeTo:', this.$store.map.easeTo, 'map:', map, 'map.getCenter():', map.getCenter(), 'this.$store.state.map.center:', this.$store.state.map.center);
+      //   let currentCenter = this.$store.state.map.center;
+      //   let target = {
+      //     center: currentCenter,
+      //     zoom: this.activeTopicConfig.zoom,
+      //     duration: 1000,
+      //   };
+      //   this.$store.map.easeTo(target);
+      // } else if (map) {
       if (map) {
         this.$store.map.setZoom(nextWatchedZoom);
       }
@@ -1386,6 +1399,23 @@ export default {
         this.$store.commit('setImagery', nextImagery);
       }
       this.$store.commit('setImageOverlay', null);
+
+      if (nextTopicConfig.zoom) {
+        console.log('watch activeTopicConfig is running, nextTopicConfig.zoom:', nextTopicConfig.zoom);
+        // this.$store.commit('setMapZoom', nextTopicConfig.zoom);
+        // this.$data.watchedZoom = nextTopicConfig.zoom;
+        if (this.$store.map) {
+          console.log('watch activeTopicConfig, this.$store.map.easeTo:', this.$store.map.easeTo, 'this.$store.state.map.center:', this.$store.state.map.center);
+          let currentCenter = this.$store.state.map.center;
+          let target = {
+            center: currentCenter,
+            // zoom: this.activeTopicConfig.zoom,
+            zoom: nextTopicConfig.zoom,
+            duration: 2000,
+          };
+          this.$store.map.easeTo(target);
+        } 
+      }
     },
     geocodeResult(nextGeocodeResult) {
       // console.log('watch geocodeResult is firing, nextGeocodeResult:', nextGeocodeResult, 'this.geocodeZoom:', this.geocodeZoom);
