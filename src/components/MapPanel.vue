@@ -1437,7 +1437,7 @@ export default {
           let thePolygon = polygon(nextGeojson[0].geometry.coordinates);
           let parcelBbox = bbox(thePolygon);
           
-          let size = [100, 100];
+          let size = [300, 300];
           
           // Calculate a zoom level and centerpoint for this map.
           let vp = geoViewport.viewport(parcelBbox, size);
@@ -1462,7 +1462,7 @@ export default {
         let thePolygon = polygon(nextPwdParcel.geometry.coordinates);
         let parcelBbox = bbox(thePolygon);
         
-        let size = [100, 100];
+        let size = [300, 300];
         
         // Calculate a zoom level and centerpoint for this map.
         let vp = geoViewport.viewport(parcelBbox, size);
