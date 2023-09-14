@@ -809,6 +809,9 @@ export default {
     activeLiBuilding() {
       return this.$store.state.activeLiBuilding;
     },
+    activeLiBuildingCert() {
+      return this.$store.state.activeLiBuildingCert;
+    },
     windowDim() {
       return this.$store.state.windowDimensions;
     },
@@ -1867,9 +1870,11 @@ export default {
     },
     handleGeojsonCollectionForTopicClick(e) {
       let structureId = e.component.source.data.properties.parcelId;
-      let activeLiBuilding = this.$store.state.sources.liBuildingCerts.data.rows.filter(item => item.structure_id === structureId)[0];
+      let activeLiBuilding = this.$store.state.sources.liBuildingCertSummary.data.rows.filter(item => item.structure_id === structureId)[0];
+      let activeLiBuildingCert = this.$store.state.sources.liBuildingCerts.data.rows.filter(item => item.bin === structureId);
       console.log('handleGeojsonCollectionForTopicClick is running, e:', e, 'activeLiBuilding:', activeLiBuilding, 'e.component.source.data.properties.parcelId:', e.component.source.data.properties.parcelId);
       this.$store.commit('setActiveLiBuilding', activeLiBuilding);
+      this.$store.commit('setActiveLiBuildingCert', activeLiBuildingCert);
       this.$store.commit('setActiveGeojsonForTopic', structureId);
       // e.clickOnLayer = true;
     },

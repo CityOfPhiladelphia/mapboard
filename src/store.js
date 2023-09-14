@@ -131,6 +131,7 @@ function createStore(config) {
 
   const initialState = {
     activeLiBuilding: {},
+    activeLiBuildingCert: [],
     activeGeojsonForTopic: null,
     shouldShowi18nBanner: false,
     isMobileOrTablet: isMobileDevice(),
@@ -217,6 +218,9 @@ function createStore(config) {
       },
       setActiveLiBuilding(state, payload) {
         state.activeLiBuilding = payload;
+      },
+      setActiveLiBuildingCert(state, payload) {
+        state.activeLiBuildingCert = payload;
       },
       shouldShowi18nBanner(state, payload) {
         state.shouldShowi18nBanner = payload;
