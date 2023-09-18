@@ -132,6 +132,7 @@ function createStore(config) {
   const initialState = {
     activeLiBuilding: {},
     activeLiBuildingCert: [],
+    activeLiBuildingFootprint: [],
     activeGeojsonForTopic: null,
     shouldShowi18nBanner: false,
     isMobileOrTablet: isMobileDevice(),
@@ -221,6 +222,10 @@ function createStore(config) {
       },
       setActiveLiBuildingCert(state, payload) {
         state.activeLiBuildingCert = payload;
+      },
+      setActiveLiBuildingFootprint(state, payload) {
+        console.log('setActiveLiBuildingFootprint is running, payload:', payload);
+        state.activeLiBuildingFootprint = payload;
       },
       shouldShowi18nBanner(state, payload) {
         state.shouldShowi18nBanner = payload;

@@ -1872,9 +1872,11 @@ export default {
       let structureId = e.component.source.data.properties.parcelId;
       let activeLiBuilding = this.$store.state.sources.liBuildingCertSummary.data.rows.filter(item => item.structure_id === structureId)[0];
       let activeLiBuildingCert = this.$store.state.sources.liBuildingCerts.data.rows.filter(item => item.bin === structureId);
+      let activeLiBuildingFootprint = this.$store.state.sources.liBuildingFootprints.data.features.filter(item => item.attributes.BIN === structureId)[0];
       console.log('handleGeojsonCollectionForTopicClick is running, e:', e, 'activeLiBuilding:', activeLiBuilding, 'e.component.source.data.properties.parcelId:', e.component.source.data.properties.parcelId);
       this.$store.commit('setActiveLiBuilding', activeLiBuilding);
       this.$store.commit('setActiveLiBuildingCert', activeLiBuildingCert);
+      this.$store.commit('setActiveLiBuildingFootprint', activeLiBuildingFootprint);
       this.$store.commit('setActiveGeojsonForTopic', structureId);
       // e.clickOnLayer = true;
     },
