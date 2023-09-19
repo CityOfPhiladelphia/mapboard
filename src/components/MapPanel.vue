@@ -1438,11 +1438,19 @@ export default {
           let parcelBbox = bbox(thePolygon);
           
           let size = [300, 300];
+
+          let currentZoom = this.$store.state.map.zoom;
           
           // Calculate a zoom level and centerpoint for this map.
           let vp = geoViewport.viewport(parcelBbox, size);
           
-          let zooms = [ vp.zoom, this.geocodeZoom ];
+          let zooms;
+
+          if (this.$store.state.parcels.dor.data.length > 1) {
+            zooms = [ vp.zoom, this.geocodeZoom, currentZoom ];
+          } else {
+            zooms = [ vp.zoom, this.geocodeZoom ];
+          }
           console.log('watch activeDorParcel is running, zooms:', zooms, 'vp.zoom:', vp.zoom, 'parcelBbox:', parcelBbox, 'nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
 
           this.$store.commit('setMapZoom', Math.min(...zooms));
