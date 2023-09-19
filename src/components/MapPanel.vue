@@ -1434,23 +1434,28 @@ export default {
         
         if (this.activeTopicConfig.parcels === 'dor') {
 
-          let thePolygon = polygon(nextGeojson[0].geometry.coordinates);
-          let parcelBbox = bbox(thePolygon);
-          
+          let thePolygon;
+          let parcelBbox;
+          let vp;
           let size = [300, 300];
+          let zooms = [ this.geocodeZoom ];
 
-          let currentZoom = this.$store.state.map.zoom;
+          for (let parcel of this.$store.state.parcels.dor.data) {
+            // thePolygon = polygon(nextGeojson[0].geometry.coordinates);
+            thePolygon = polygon(parcel.geometry.coordinates);
+            parcelBbox = bbox(thePolygon);
+            vp = geoViewport.viewport(parcelBbox, size);
+            zooms.push(vp.zoom);
+          }
+          
+
+          // let currentZoom = this.$store.state.map.zoom;
           
           // Calculate a zoom level and centerpoint for this map.
-          let vp = geoViewport.viewport(parcelBbox, size);
           
-          let zooms;
-
-          if (this.$store.state.parcels.dor.data.length > 1) {
-            zooms = [ vp.zoom, this.geocodeZoom, currentZoom ];
-          } else {
-            zooms = [ vp.zoom, this.geocodeZoom ];
-          }
+          // let zooms;
+          // zooms = [ vp.zoom, this.geocodeZoom ];
+          
           console.log('watch activeDorParcel is running, zooms:', zooms, 'vp.zoom:', vp.zoom, 'parcelBbox:', parcelBbox, 'nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
 
           this.$store.commit('setMapZoom', Math.min(...zooms));
