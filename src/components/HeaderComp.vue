@@ -120,10 +120,21 @@ export default {
       return publicPath;
     },
     imgSrc() {
-      if (this.$store.state.windowDimensions.width >= 750) {
-        return window.location.origin + this.publicPath + '/images/city-of-philadelphia-yellow-white.png';
+      let imageName, smallImageName;
+      if (this.$config.headerImg) {
+        imageName = this.$config.headerImg;
       } else {
-        return window.location.origin + this.publicPath + '/images/city-of-philadelphia-bell.png';
+        imageName = 'city-of-philadelphia-yellow-white.png';
+      }
+      if (this.$config.smallHeaderImg) {
+        smallImageName = this.$config.smallHeaderImg;
+      } else {
+        smallImageName = 'city-of-philadelphia-bell.png';
+      }
+      if (this.$store.state.windowDimensions.width >= 750) {
+        return window.location.origin + this.publicPath + '/images/' + imageName; //city-of-philadelphia-yellow-white.png';
+      } else {
+        return window.location.origin + this.publicPath + '/images/' + smallImageName;//city-of-philadelphia-bell.png';
       }
     },
   },
