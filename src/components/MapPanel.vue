@@ -2227,7 +2227,7 @@ export default {
     },
     handleMapMove(e) {
       const map = this.$store.map;
-      console.log('handleMapMove, this.$store.map:', this.$store.map, 'this.$store.state.map:', this.$store.state.map, 'this.$store.map.getStyle():', this.$store.map.getStyle());
+      // console.log('handleMapMove, this.$store.map:', this.$store.map, 'this.$store.state.map:', this.$store.state.map, 'this.$store.map.getStyle():', this.$store.map.getStyle());
       //       const canvas = map.getCanvas();
       //       const w = canvas.width;
       //       const h = canvas.height;
