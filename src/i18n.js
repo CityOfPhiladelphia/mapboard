@@ -3,6 +3,9 @@ export default {
   i18n: {
     data: {
       locale: 'en-US',
+      missingWarn: false, 
+      fallbackWarn: false,
+      silentTranslationWarn: false,
       messages: {
         'en-US': {
           language: 'English',

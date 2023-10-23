@@ -1260,34 +1260,6 @@ export default {
     },
   },
   watch: {
-    geojsonBuildings(nextGeojson) {
-      console.log('watch geojsonBuildings is running, nextGeojson:', nextGeojson);
-      let value = []
-      if (nextGeojson && nextGeojson.length) {
-        for (let parcel of nextGeojson) {
-          // console.log('in loop, parcel:', parcel);
-          // if (parcel.attributes.BIN !== this.activeLiBuilding) {
-          value.push(
-            {
-              'type': 'geojson',
-              'data': {
-                'type': 'Feature',
-                'geometry': {
-                  'type': 'Polygon',
-                  'coordinates': parcel.geometry.rings,
-                },
-                'properties': {
-                  'parcelId': parcel.attributes.BIN,
-                  'featureId': parcel._featureId,
-                },
-              },
-            },
-          )
-          // }
-        }
-      }
-      this.geojsonBuildingSources = value;
-    },
     windowDim() {
       this.handleWindowResize();
     },
@@ -1309,9 +1281,6 @@ export default {
         return item.attributes.BIN === nextActiveGeojsonForTopic;
       });
       // console.log('watch activeDorParcel is running, nextActiveDorParcel:', nextActiveDorParcel, 'nextGeojson:', nextGeojson);
-      // if (this.$store.map) {
-      //   // console.log('watch activeDorParcel is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
-      // }
       if (nextGeojson[0]) {
         // console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
         this.activeGeojsonForTopicBoolean = true;
@@ -1327,9 +1296,9 @@ export default {
         return item.attributes.BIN === nextActiveLiBuilding;
       });
       // console.log('watch activeDorParcel is running, nextActiveDorParcel:', nextActiveDorParcel, 'nextGeojson:', nextGeojson);
-      if (this.$store.map) {
-        // console.log('watch activeDorParcel is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
-      }
+      // if (this.$store.map) {
+      //   console.log('watch activeDorParcel is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
+      // }
       if (nextGeojson[0]) {
         // console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
         this.geojsonForActiveBuildingBoolean = true;
@@ -1346,9 +1315,9 @@ export default {
         return item.id === nextActiveDorParcel;
       });
       // console.log('watch activeDorParcel is running, nextActiveDorParcel:', nextActiveDorParcel, 'nextGeojson:', nextGeojson);
-      if (this.$store.map) {
-        // console.log('watch activeDorParcel is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
-      }
+      // if (this.$store.map) {
+      //   console.log('watch activeDorParcel is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
+      // }
       if (nextGeojson[0]) {
         // console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
         this.$data.geojsonParcelSource.data.geometry.coordinates = nextGeojson[0].geometry.coordinates;
@@ -1423,10 +1392,10 @@ export default {
       });
     },
     geojsonForTopic(nextGeojson) {
-      console.log('watch geojsonForTopic start, nextGeojson:', nextGeojson);
-      if (this.$store.map) {
-        console.log('watch geojsonForTopic is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
-      }
+      // console.log('watch geojsonForTopic start, nextGeojson:', nextGeojson);
+      // if (this.$store.map) {
+      //   console.log('watch geojsonForTopic is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
+      // }
       if (nextGeojson[0] && nextGeojson.length > 1 || nextGeojson[0] && this.activeTopicConfig.geojsonForTopic.collection) {
         console.log('watch geojsonForTopic is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
         this.$data.geojsonCollectionForTopicSource.data.features = [];
@@ -1903,18 +1872,18 @@ export default {
 
         if (this.$data.activeGeojsonForTopicSource.data.geometry.coordinates.length) {
           let coordinates = this.$data.activeGeojsonForTopicSource.data.geometry.coordinates;
-          console.log('in if, coordinates:', coordinates);
+          // console.log('in if, coordinates:', coordinates);
           poly = polygon(coordinates);
           booleanPIP1 = booleanPointInPolygon(pt, poly);
         }
         
         if (this.geojsonCollectionForTopicSource.data.features.length == 1) {
           let coordinates = this.geojsonCollectionForTopicSource.data.features[0].data.geometry.coordinates;
-          console.log('in if 2, coordinates:', coordinates);
+          // console.log('in if 2, coordinates:', coordinates);
           poly = polygon(coordinates);
           booleanPIP2 = booleanPointInPolygon(pt, poly);
         } else if (this.geojsonCollectionForTopicSource.data.features.length > 1) {
-          console.log('in else if');
+          // console.log('in else if');
           // if (this.$data.activeGeojsonForTopicSource.data.geometry) {
           //   let coordinates = this.$data.activeGeojsonForTopicSource.data.geometry.coordinates;
           //   console.log('in else if, if, coordinates:', coordinates);

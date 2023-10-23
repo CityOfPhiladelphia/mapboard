@@ -134,7 +134,8 @@ function createStore(config) {
     activeLiBuildingCert: [],
     activeLiBuildingFootprint: [],
     activeGeojsonForTopic: null,
-    shouldShowi18nBanner: false,
+    // shouldShowi18nBanner: false,
+    shouldUsei18n: false,
     isMobileOrTablet: isMobileDevice(),
     headerLoaded: false,
     fullScreen: {
@@ -227,8 +228,11 @@ function createStore(config) {
         console.log('setActiveLiBuildingFootprint is running, payload:', payload);
         state.activeLiBuildingFootprint = payload;
       },
-      shouldShowi18nBanner(state, payload) {
-        state.shouldShowi18nBanner = payload;
+      // shouldShowi18nBanner(state, payload) {
+      //   state.shouldShowi18nBanner = payload;
+      // },
+      setShouldUsei18n(state, payload) {
+        state.shouldUsei18n = payload;
       },
       setHeaderLoaded(state, payload) {
         state.headerLoaded = payload;
