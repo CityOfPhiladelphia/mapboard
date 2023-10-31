@@ -1249,15 +1249,15 @@ export default {
       }
       return 18;
     },
-    geojsonBuildings() {
-      // return null;
-      if (this.$store.state.sources.liBuildingFootprints.data) {
-        return this.$store.state.sources.liBuildingFootprints.data.features;
-        // return this.$store.state.sources.liBuildingFootprints.data.features.filter(item => item.attributes.BIN !== this.activeLiBuilding);
-      } else {
-        return [];
-      }
-    },
+    // geojsonBuildings() {
+    //   // return null;
+    //   if (this.$store.state.sources.liBuildingFootprints.data) {
+    //     return this.$store.state.sources.liBuildingFootprints.data[0].features;
+    //     // return this.$store.state.sources.liBuildingFootprints.data.features.filter(item => item.attributes.BIN !== this.activeLiBuilding);
+    //   } else {
+    //     return [];
+    //   }
+    // },
   },
   watch: {
     windowDim() {
@@ -1276,7 +1276,8 @@ export default {
       }
     },
     activeGeojsonForTopic(nextActiveGeojsonForTopic) {
-      let nextGeojson = this.$store.state.sources.liBuildingFootprints.data.features.filter(function(item) {
+      // let nextGeojson = this.$store.state.sources.liBuildingFootprints.data.features.filter(function(item) {
+      let nextGeojson = this.$store.state.sources.liBuildingFootprints.data.filter(function(item) {
         // console.log('in filter, item:', item, 'item.id:', item.id);
         return item.attributes.BIN === nextActiveGeojsonForTopic;
       });
@@ -1291,7 +1292,8 @@ export default {
       }
     },
     activeLiBuilding(nextActiveLiBuilding) {
-      let nextGeojson = this.$store.state.sources.liBuildingFootprints.data.features.filter(function(item) {
+      // let nextGeojson = this.$store.state.sources.liBuildingFootprints.data.features.filter(function(item) {
+      let nextGeojson = this.$store.state.sources.liBuildingFootprints.data.filter(function(item) {
         // console.log('in filter, item:', item, 'item.id:', item.id);
         return item.attributes.BIN === nextActiveLiBuilding;
       });
@@ -1392,7 +1394,7 @@ export default {
       });
     },
     geojsonForTopic(nextGeojson) {
-      // console.log('watch geojsonForTopic start, nextGeojson:', nextGeojson);
+      console.log('watch geojsonForTopic start, nextGeojson:', nextGeojson);
       // if (this.$store.map) {
       //   console.log('watch geojsonForTopic is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
       // }
@@ -1837,12 +1839,36 @@ export default {
       }
       return false;
     },
+    // concatDataSource(data) {
+    //   let value = [];
+    //   let dataPoints;
+    //   if (data[0].features) {
+    //     dataPoints = 'features';
+    //   } else if (data[0].rows) {
+    //     dataPoints = 'rows';
+    //   }
+    //   // console.log('data:', data, 'Array.isArray(data):', Array.isArray(data));
+    //   if (data && Array.isArray(data)) {
+    //     value = data[0][dataPoints];
+    //     for (let i=1;i<data.length;i++) {
+    //       // console.log('TabGroupBuildings.vue concatDataSource value:', value, 'data.length:', data.length, 'data[i]', data[i]);
+    //       value = value.concat(data[i][dataPoints]);
+    //     }
+    //   } else if (data && data[dataPoints]) {
+    //     value = data[dataPoints];
+    //   }
+    //   // console.log('li.js TabGroupBuildings.vue concatDataSource, value:', value);
+    //   return value;
+    // },
     handleGeojsonCollectionForTopicClick(e) {
       let structureId = e.component.source.data.properties.parcelId;
       // console.log('this.$store.state.sources.liBuildingCertSummary.data[0].rows[0].structure_id:', this.$store.state.sources.liBuildingCertSummary.data[0].rows[0].structure_id);
-      let activeLiBuilding = this.$store.state.sources.liBuildingCertSummary.data[0].rows.filter(item => item.structure_id === structureId)[0];
-      let activeLiBuildingCert = this.$store.state.sources.liBuildingCerts.data[0].rows.filter(item => item.bin === structureId);
-      let activeLiBuildingFootprint = this.$store.state.sources.liBuildingFootprints.data.features.filter(item => item.attributes.BIN === structureId)[0];
+      let activeLiBuilding = this.$store.state.sources.liBuildingCertSummary.data.filter(item => item.structure_id === structureId)[0];
+      let activeLiBuildingCert = this.$store.state.sources.liBuildingCerts.data.filter(item => item.bin === structureId);
+      let activeLiBuildingFootprint = this.$store.state.sources.liBuildingFootprints.data.filter(item => item.attributes.BIN === structureId)[0];
+      // let activeLiBuilding = this.concatDataSource(this.$store.state.sources.liBuildingCertSummary.data).filter(structure => structure.structure_id == this.$data.activeItem)[0];
+      // let activeLiBuildingCert = this.concatDataSource(this.$store.state.sources.liBuildingCerts.data).filter(item => item.bin === this.$data.activeItem);
+      // let activeLiBuildingFootprint = this.concatDataSource(this.$store.state.sources.liBuildingFootprints.data).filter(item => item.attributes.BIN === this.$data.activeItem)[0];
       console.log('handleGeojsonCollectionForTopicClick is running, e:', e, 'activeLiBuilding:', activeLiBuilding, 'e.component.source.data.properties.parcelId:', e.component.source.data.properties.parcelId);
       this.$store.commit('setActiveLiBuilding', activeLiBuilding);
       this.$store.commit('setActiveLiBuildingCert', activeLiBuildingCert);
