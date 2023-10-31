@@ -137,55 +137,6 @@
       />
 
       <MglGeojsonLayer
-        v-if="geojsonCollectionForTopicSource.data.features.length > 0"
-        v-for="(geojsonSource, index) in geojsonCollectionForTopicSource.data.features"
-        :key="'geojsonCollectionForTopicFill'+index"
-        :source-id="'geojsonCollectionForTopicSource'+index"
-        :source="geojsonCollectionForTopicSource.data.features[index]"
-        :layer-id="'geojsonCollectionForTopicFill'+index"
-        :layer="geojsonCollectionForTopicFillLayer"
-        :clear-source="false"
-        :replace-source="true"
-        :replace="true"
-        @click="handleGeojsonCollectionForTopicClick"
-      />
-
-      <MglGeojsonLayer
-        v-if="geojsonCollectionForTopicSource.data.features.length > 0"
-        v-for="(geojsonSource, index) in geojsonCollectionForTopicSource.data.features"
-        :key="'geojsonCollectionForTopicLine'+index"
-        :source-id="'geojsonCollectionForTopicSource'+index"
-        :source="geojsonCollectionForTopicSource.data.features[index]"
-        :layer-id="'geojsonCollectionForTopicLine'+index"
-        :layer="geojsonCollectionForTopicLineLayer"
-        :clear-source="true"
-        :replace-source="true"
-        :replace="true"
-      />
-
-      <!-- <MglGeojsonLayer
-        v-for="(geojsonBuildingSource, index) in geojsonBuildingSources"
-        :key="'dorParcelLine'+index"
-        :source-id="'geojsonBuilding'+index"
-        :source="geojsonBuildingSource"
-        :layer-id="'geojsonBuildingLine'+index"
-        :layer="geojsonBuildingLineLayer"
-        :clear-source="true"
-      />
-
-      <MglGeojsonLayer
-        v-for="(geojsonBuildingSource, index) in geojsonBuildingSources"
-        :key="'dorParcelFill'+index"
-        :source-id="'geojsonBuilding'+index"
-        :source="geojsonBuildingSource"
-        :layer-id="'geojsonBuildingFill'+index"
-        :layer="geojsonBuildingFillLayer"
-        :clear-source="true"
-      /> -->
-      <!-- @mouseenter="handleMarkerMouseover"
-      @mouseleave="handleMarkerMouseout" -->
-
-      <MglGeojsonLayer
         v-if="activeGeojsonForTopicBoolean"
         key="'activeGeojsonForTopicFill'"
         :source-id="'activeGeojsonForTopic'"
@@ -208,6 +159,59 @@
         :replace-source="true"
         :replace="true"
       />
+
+      <MglGeojsonLayer
+        v-if="geojsonCollectionForTopicSource.data.features.length > 0"
+        v-for="(geojsonSource, index) in geojsonCollectionForTopicSource.data.features"
+        :key="'geojsonCollectionForTopicFill'+index"
+        :source-id="'geojsonCollectionForTopicSource'+index"
+        :source="geojsonCollectionForTopicSource.data.features[index]"
+        :layer-id="'geojsonCollectionForTopicFill'+index"
+        :layer="geojsonCollectionForTopicFillLayer"
+        :clear-source="false"
+        :replace-source="true"
+        :replace="true"
+        @click="handleGeojsonCollectionForTopicClick"
+        :before="geojsonBefore"
+      />
+      <!-- :before="['activeGeojsonForTopicFill', 'activeGeojsonForTopicLine']" -->
+
+      <MglGeojsonLayer
+        v-if="geojsonCollectionForTopicSource.data.features.length > 0"
+        v-for="(geojsonSource, index) in geojsonCollectionForTopicSource.data.features"
+        :key="'geojsonCollectionForTopicLine'+index"
+        :source-id="'geojsonCollectionForTopicSource'+index"
+        :source="geojsonCollectionForTopicSource.data.features[index]"
+        :layer-id="'geojsonCollectionForTopicLine'+index"
+        :layer="geojsonCollectionForTopicLineLayer"
+        :clear-source="true"
+        :replace-source="true"
+        :replace="true"
+        :before="geojsonBefore"
+      />
+      <!-- :before="['activeGeojsonForTopicFill', 'activeGeojsonForTopicLine']" -->
+
+      <!-- <MglGeojsonLayer
+        v-for="(geojsonBuildingSource, index) in geojsonBuildingSources"
+        :key="'dorParcelLine'+index"
+        :source-id="'geojsonBuilding'+index"
+        :source="geojsonBuildingSource"
+        :layer-id="'geojsonBuildingLine'+index"
+        :layer="geojsonBuildingLineLayer"
+        :clear-source="true"
+      />
+
+      <MglGeojsonLayer
+        v-for="(geojsonBuildingSource, index) in geojsonBuildingSources"
+        :key="'dorParcelFill'+index"
+        :source-id="'geojsonBuilding'+index"
+        :source="geojsonBuildingSource"
+        :layer-id="'geojsonBuildingFill'+index"
+        :layer="geojsonBuildingFillLayer"
+        :clear-source="true"
+      /> -->
+      <!-- @mouseenter="handleMarkerMouseover"
+      @mouseleave="handleMarkerMouseout" -->
 
       <!-- <MglGeojsonLayer
         v-if="geojsonForActiveBuildingBoolean"
@@ -629,7 +633,7 @@ export default {
         'paint': {
           // 'line-color': '#9e9ac8',
           'line-color': '#bdbadb',
-          'line-width': 1.5,
+          'line-width': 1,
           // 'line-width': {
           //   stops: [
           //     [ 1, 1 ],
@@ -708,7 +712,8 @@ export default {
         'layout': {},
         'paint': {
           // 'fill-color': '#9e9ac8',
-          'fill-color': '#d9d464',
+          // 'fill-color': '#d9d464',
+          'fill-color': '#FFFF94',
           'fill-opacity': 0.6,
           'fill-outline-color': 'rgb(0,102,255)',
         },
@@ -720,8 +725,9 @@ export default {
         'layout': {},
         'paint': {
           // 'line-color': '#9e9ac8',
-          'line-color': '#d9d464',
-          'line-width': 1,
+          // 'line-color': '#d9d464',
+          'line-color': '#FFFF94',
+          'line-width': 3,
         },
       },
       geojsonForActiveBuildingBoolean: false,
@@ -817,6 +823,13 @@ export default {
     },
     headerLoaded() {
       return this.$store.state.headerLoaded;
+    },
+    geojsonBefore() {
+      let value = [];
+      if (this.activeLiBuilding) {
+        value = [ 'activeGeojsonForTopicFill', 'activeGeojsonForTopicLine' ];
+      }
+      return value;
     },
     basemapsAndLabelsBefore() {
       let basemapsBefore = this.basemapsBefore;
