@@ -28,6 +28,13 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.4.19 - 11/10/2023
+
+* uses @phila/vue-mapping 3.1.20
+* uses @phila/vue-comps 3.0.8
+* uses @phila/vue-datafetch 2.2.15
+* all changes for adding building certs to atlas
+
 ### 4.4.18 - 7/26/2023
 
 * requests esri token on load
