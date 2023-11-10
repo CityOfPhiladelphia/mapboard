@@ -130,6 +130,12 @@ function createStore(config) {
   // console.log('parcels:', parcels);
 
   const initialState = {
+    activeLiBuilding: {},
+    activeLiBuildingCert: [],
+    activeLiBuildingFootprint: [],
+    activeGeojsonForTopic: null,
+    // shouldShowi18nBanner: false,
+    shouldUsei18n: false,
     agoToken: null,
     shouldShowi18nBanner: false,
     isMobileOrTablet: isMobileDevice(),
@@ -211,6 +217,24 @@ function createStore(config) {
       },
     },
     mutations: {
+      setActiveGeojsonForTopic(state, payload) {
+        state.activeGeojsonForTopic = payload;
+      },
+      setActiveLiBuilding(state, payload) {
+        state.activeLiBuilding = payload;
+      },
+      setActiveLiBuildingCert(state, payload) {
+        state.activeLiBuildingCert = payload;
+      },
+      setActiveLiBuildingFootprint(state, payload) {
+        console.log('setActiveLiBuildingFootprint is running, payload:', payload);
+        state.activeLiBuildingFootprint = payload;
+      },
+      // shouldShowi18nBanner(state, payload) {
+      //   state.shouldShowi18nBanner = payload;
+      // },
+      setShouldUsei18n(state, payload) {
+        state.shouldUsei18n = payload;
       setAgoToken(state, payload) {
         state.agoToken = payload;
       },

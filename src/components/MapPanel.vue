@@ -136,6 +136,107 @@
         :replace="true"
       />
 
+      <MglGeojsonLayer
+        v-if="activeGeojsonForTopicBoolean"
+        key="'activeGeojsonForTopicFill'"
+        :source-id="'activeGeojsonForTopic'"
+        :source="activeGeojsonForTopicSource"
+        :layer-id="'activeGeojsonForTopicFill'"
+        :layer="activeGeojsonForTopicFillLayer"
+        :clear-source="false"
+        :replace-source="true"
+        :replace="true"
+      />
+
+      <MglGeojsonLayer
+        v-if="activeGeojsonForTopicBoolean"
+        key="'activeGeojsonForTopicLine'"
+        :source-id="'activeGeojsonForTopic'"
+        :source="activeGeojsonForTopicSource"
+        :layer-id="'activeGeojsonForTopicLine'"
+        :layer="activeGeojsonForTopicLineLayer"
+        :clear-source="true"
+        :replace-source="true"
+        :replace="true"
+      />
+
+      <MglGeojsonLayer
+        v-if="geojsonCollectionForTopicSource.data.features.length > 0"
+        v-for="(geojsonSource, index) in geojsonCollectionForTopicSource.data.features"
+        :key="'geojsonCollectionForTopicFill'+index"
+        :source-id="'geojsonCollectionForTopicSource'+index"
+        :source="geojsonCollectionForTopicSource.data.features[index]"
+        :layer-id="'geojsonCollectionForTopicFill'+index"
+        :layer="geojsonCollectionForTopicFillLayer"
+        :clear-source="false"
+        :replace-source="true"
+        :replace="true"
+        @click="handleGeojsonCollectionForTopicClick"
+        :before="geojsonBefore"
+      />
+      <!-- :before="['activeGeojsonForTopicFill', 'activeGeojsonForTopicLine']" -->
+
+      <MglGeojsonLayer
+        v-if="geojsonCollectionForTopicSource.data.features.length > 0"
+        v-for="(geojsonSource, index) in geojsonCollectionForTopicSource.data.features"
+        :key="'geojsonCollectionForTopicLine'+index"
+        :source-id="'geojsonCollectionForTopicSource'+index"
+        :source="geojsonCollectionForTopicSource.data.features[index]"
+        :layer-id="'geojsonCollectionForTopicLine'+index"
+        :layer="geojsonCollectionForTopicLineLayer"
+        :clear-source="true"
+        :replace-source="true"
+        :replace="true"
+        :before="geojsonBefore"
+      />
+      <!-- :before="['activeGeojsonForTopicFill', 'activeGeojsonForTopicLine']" -->
+
+      <!-- <MglGeojsonLayer
+        v-for="(geojsonBuildingSource, index) in geojsonBuildingSources"
+        :key="'dorParcelLine'+index"
+        :source-id="'geojsonBuilding'+index"
+        :source="geojsonBuildingSource"
+        :layer-id="'geojsonBuildingLine'+index"
+        :layer="geojsonBuildingLineLayer"
+        :clear-source="true"
+      />
+
+      <MglGeojsonLayer
+        v-for="(geojsonBuildingSource, index) in geojsonBuildingSources"
+        :key="'dorParcelFill'+index"
+        :source-id="'geojsonBuilding'+index"
+        :source="geojsonBuildingSource"
+        :layer-id="'geojsonBuildingFill'+index"
+        :layer="geojsonBuildingFillLayer"
+        :clear-source="true"
+      /> -->
+      <!-- @mouseenter="handleMarkerMouseover"
+      @mouseleave="handleMarkerMouseout" -->
+
+      <!-- <MglGeojsonLayer
+        v-if="geojsonForActiveBuildingBoolean"
+        key="'geojsonForActiveBuildingFill'"
+        :source-id="'geojsonForActiveBuilding'"
+        :source="geojsonForActiveBuildingSource"
+        :layer-id="'geojsonForActiveBuildingFill'"
+        :layer="geojsonForActiveBuildingFillLayer"
+        :clear-source="false"
+        :replace-source="true"
+        :replace="true"
+      />
+
+      <MglGeojsonLayer
+        v-if="geojsonForActiveBuildingBoolean"
+        key="'geojsonForActiveBuildingLine'"
+        :source-id="'geojsonForActiveBuilding'"
+        :source="geojsonForActiveBuildingSource"
+        :layer-id="'geojsonForActiveBuildingLine'"
+        :layer="geojsonForActiveBuildingLineLayer"
+        :clear-source="true"
+        :replace-source="true"
+        :replace="true"
+      /> -->
+
       <!-- :source-id="layer.source" -->
       <MglGeojsonLayer
         v-for="labels of draw.labelLayers"
@@ -310,8 +411,9 @@ import destination from '@turf/destination';
 import distance from '@turf/distance';
 import midpoint from '@turf/midpoint';
 import area from '@turf/area';
+import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 // import convertArea from '@turf/convertArea';
-import { point, polygon, convertArea, featureCollection } from '@turf/helpers';
+import { point, polygon, multiPolygon, convertArea, featureCollection } from '@turf/helpers';
 
 import generateUniqueId from '../util/unique-id';
 
@@ -504,7 +606,7 @@ export default {
       geojsonCollectionForTopicFillLayer: {
         'id': 'geojsonCollectionForTopicFill',
         'type': 'fill',
-        'source': 'geojsonCollectionForTopic',
+        // 'source': 'geojsonCollectionForTopic',
         'layout': {},
         'paint': {
           'fill-color': '#9e9ac8',
@@ -516,7 +618,7 @@ export default {
       geojsonCollectionForTopicLabelsLayer: {
         'id': 'geojsonCollectionForTopicLabels',
         'type': 'symbol',
-        'source': 'geojsonCollectionForTopic',
+        // 'source': 'geojsonCollectionForTopic',
         'minzoom': 14,
         'layout': {},
         // 'paint': {
@@ -526,17 +628,19 @@ export default {
       geojsonCollectionForTopicLineLayer: {
         'id': 'geojsonCollectionForTopicLine',
         'type': 'line',
-        'source': 'geojsonCollectionForTopic',
+        // 'source': 'geojsonCollectionForTopic',
         'layout': {},
         'paint': {
-          'line-color': 'black',
-          'line-width': {
-            stops: [
-              [ 1, 1 ],
-              [ 15, 1 ],
-              [ 19, 4 ],
-            ],
-          },
+          // 'line-color': '#9e9ac8',
+          'line-color': '#bdbadb',
+          'line-width': 1,
+          // 'line-width': {
+          //   stops: [
+          //     [ 1, 1 ],
+          //     [ 15, 1 ],
+          //     [ 19, 4 ],
+          //   ],
+          // },
         },
       },
       geojsonForTopicSource: {
@@ -568,6 +672,95 @@ export default {
         'layout': {},
         'paint': {
           'line-color': '#9e9ac8',
+          'line-width': 2,
+        },
+      },
+      geojsonBuildingSources: null,
+      geojsonBuildingFillLayer: {
+        'id': 'geojsonParcelFill',
+        'type': 'fill',
+        'layout': {},
+        'paint': {
+          'fill-color': '#bed3ed',
+          'fill-opacity': 0.3,
+        },
+      },
+      geojsonBuildingLineLayer: {
+        'id': 'geojsonParcelLine',
+        'type': 'line',
+        'layout': {},
+        'paint': {
+          'line-color': '#bed3ed',
+          'line-width': 2,
+        },
+      },
+      activeGeojsonForTopicBoolean: false,
+      activeGeojsonForTopicSource: {
+        'type': 'geojson',
+        'data': {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Polygon',
+            'coordinates': [],
+          },
+        },
+      },
+      activeGeojsonForTopicFillLayer: {
+        'id': 'activeGeojsonForTopicFill',
+        'type': 'fill',
+        'source': 'activeGeojsonForTopic',
+        'layout': {},
+        'paint': {
+          // 'fill-color': '#9e9ac8',
+          // 'fill-color': '#d9d464',
+          'fill-color': '#FFFF94',
+          'fill-opacity': 0.6,
+          'fill-outline-color': 'rgb(0,102,255)',
+        },
+      },
+      activeGeojsonForTopicLineLayer: {
+        'id': 'activeGeojsonForTopicLine',
+        'type': 'line',
+        'source': 'activeGeojsonForTopic',
+        'layout': {},
+        'paint': {
+          // 'line-color': '#9e9ac8',
+          // 'line-color': '#d9d464',
+          'line-color': '#FFFF94',
+          'line-width': 3,
+        },
+      },
+      geojsonForActiveBuildingBoolean: false,
+      geojsonForActiveBuildingSource: {
+        'type': 'geojson',
+        'data': {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Polygon',
+            'coordinates': [],
+          },
+        },
+      },
+      geojsonForActiveBuildingFillLayer: {
+        'id': 'geojsonForActiveBuildingFill',
+        'type': 'fill',
+        'source': 'geojsonForActiveBuilding',
+        'layout': {},
+        'paint': {
+          // 'fill-color': '#9e9ac8',
+          'fill-color': '#d9d464',
+          'fill-opacity': 0.4,
+          'fill-outline-color': 'rgb(0,102,255)',
+        },
+      },
+      geojsonForActiveBuildingLineLayer: {
+        'id': 'geojsonForActiveBuildingLine',
+        'type': 'line',
+        'source': 'geojsonForActiveBuilding',
+        'layout': {},
+        'paint': {
+          // 'line-color': '#9e9ac8',
+          'line-color': '#d9d464',
           'line-width': 2,
         },
       },
@@ -616,11 +809,27 @@ export default {
     return data;
   },
   computed: {
+    activeGeojsonForTopic() {
+      return this.$store.state.activeGeojsonForTopic;
+    },
+    activeLiBuilding() {
+      return this.$store.state.activeLiBuilding;
+    },
+    activeLiBuildingCert() {
+      return this.$store.state.activeLiBuildingCert;
+    },
     windowDim() {
       return this.$store.state.windowDimensions;
     },
     headerLoaded() {
       return this.$store.state.headerLoaded;
+    },
+    geojsonBefore() {
+      let value = [];
+      if (this.activeLiBuilding) {
+        value = [ 'activeGeojsonForTopicFill', 'activeGeojsonForTopicLine' ];
+      }
+      return value;
     },
     basemapsAndLabelsBefore() {
       let basemapsBefore = this.basemapsBefore;
@@ -1053,6 +1262,15 @@ export default {
       }
       return 18;
     },
+    // geojsonBuildings() {
+    //   // return null;
+    //   if (this.$store.state.sources.liBuildingFootprints.data) {
+    //     return this.$store.state.sources.liBuildingFootprints.data[0].features;
+    //     // return this.$store.state.sources.liBuildingFootprints.data.features.filter(item => item.attributes.BIN !== this.activeLiBuilding);
+    //   } else {
+    //     return [];
+    //   }
+    // },
   },
   watch: {
     windowDim() {
@@ -1070,6 +1288,41 @@ export default {
         this.$store.map.resize();
       }
     },
+    activeGeojsonForTopic(nextActiveGeojsonForTopic) {
+      // let nextGeojson = this.$store.state.sources.liBuildingFootprints.data.features.filter(function(item) {
+      let nextGeojson = this.$store.state.sources.liBuildingFootprints.data.filter(function(item) {
+        // console.log('in filter, item:', item, 'item.id:', item.id);
+        return item.attributes.BIN === nextActiveGeojsonForTopic;
+      });
+      // console.log('watch activeDorParcel is running, nextActiveDorParcel:', nextActiveDorParcel, 'nextGeojson:', nextGeojson);
+      if (nextGeojson[0]) {
+        // console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
+        this.activeGeojsonForTopicBoolean = true;
+        this.$data.activeGeojsonForTopicSource.data.geometry.coordinates = nextGeojson[0].geometry.rings;
+      } else {
+        this.activeGeojsonForTopicBoolean = false;
+        this.$data.activeGeojsonForTopicSource.data.geometry.coordinates = [];
+      }
+    },
+    activeLiBuilding(nextActiveLiBuilding) {
+      // let nextGeojson = this.$store.state.sources.liBuildingFootprints.data.features.filter(function(item) {
+      let nextGeojson = this.$store.state.sources.liBuildingFootprints.data.filter(function(item) {
+        // console.log('in filter, item:', item, 'item.id:', item.id);
+        return item.attributes.BIN === nextActiveLiBuilding;
+      });
+      // console.log('watch activeDorParcel is running, nextActiveDorParcel:', nextActiveDorParcel, 'nextGeojson:', nextGeojson);
+      // if (this.$store.map) {
+      //   console.log('watch activeDorParcel is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
+      // }
+      if (nextGeojson[0]) {
+        // console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
+        this.geojsonForActiveBuildingBoolean = true;
+        this.$data.geojsonForActiveBuildingSource.data.geometry.coordinates = nextGeojson[0].geometry.rings;
+      } else {
+        this.geojsonForActiveBuildingBoolean = false;
+        this.$data.geojsonParcelSource.data.geometry.coordinates = [];
+      }
+    },
     activeDorParcel(nextActiveDorParcel) {
       // console.log('watch activeDorParcel is running, nextActiveDorParcel:', nextActiveDorParcel, 'this.$store.state.parcels.dor.data:', this.$store.state.parcels.dor.data);
       let nextGeojson = this.$store.state.parcels.dor.data.filter(function(item) {
@@ -1077,9 +1330,9 @@ export default {
         return item.id === nextActiveDorParcel;
       });
       // console.log('watch activeDorParcel is running, nextActiveDorParcel:', nextActiveDorParcel, 'nextGeojson:', nextGeojson);
-      if (this.$store.map) {
-        // console.log('watch activeDorParcel is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
-      }
+      // if (this.$store.map) {
+      //   console.log('watch activeDorParcel is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
+      // }
       if (nextGeojson[0]) {
         // console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
         this.$data.geojsonParcelSource.data.geometry.coordinates = nextGeojson[0].geometry.coordinates;
@@ -1154,15 +1407,32 @@ export default {
       });
     },
     geojsonForTopic(nextGeojson) {
-      if (this.$store.map) {
-        console.log('watch geojsonForTopic is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
-      }
-      if (nextGeojson[0] && nextGeojson.length > 1) {
-        console.log('watch geojsonForTopic is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
+      // console.log('watch geojsonForTopic start, nextGeojson:', nextGeojson);
+      if (nextGeojson[0] && nextGeojson.length > 1 || nextGeojson[0] && this.activeTopicConfig.geojsonForTopic.collection) {
+        // console.log('watch geojsonForTopic is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
         this.$data.geojsonCollectionForTopicSource.data.features = [];
 
         for (let feature of nextGeojson) {
-          this.$data.geojsonCollectionForTopicSource.data.features.push(feature.geojson);
+          if (true) {
+            this.$data.geojsonCollectionForTopicSource.data.features.push(
+              {
+                'type': 'geojson',
+                'data': {
+                  'type': 'Feature',
+                  'geometry': {
+                    'type': 'Polygon',
+                    'coordinates': feature.geojson.geometry.rings,
+                  },
+                  'properties': {
+                    'parcelId': feature.geojson.attributes.BIN,
+                    'featureId': feature.geojson._featureId,
+                  },
+                },
+              },
+            )
+          } else {
+            this.$data.geojsonCollectionForTopicSource.data.features.push(feature.geojson);
+          }
         }
 
         const valOrGetter = nextGeojson[0].fillColor;
@@ -1200,6 +1470,7 @@ export default {
       } else {
         this.$data.geojsonForTopicSource.data.geometry.coordinates = [];
         this.$data.geojsonForTopicBoolean = false;
+        this.$data.geojsonCollectionForTopicSource.data.features = [];
       }
       let czts = this.activeTopicConfig.zoomToShape;
       let dzts = this.$data.zoomToShape;
@@ -1578,10 +1849,107 @@ export default {
       }
       return false;
     },
+    // concatDataSource(data) {
+    //   let value = [];
+    //   let dataPoints;
+    //   if (data[0].features) {
+    //     dataPoints = 'features';
+    //   } else if (data[0].rows) {
+    //     dataPoints = 'rows';
+    //   }
+    //   // console.log('data:', data, 'Array.isArray(data):', Array.isArray(data));
+    //   if (data && Array.isArray(data)) {
+    //     value = data[0][dataPoints];
+    //     for (let i=1;i<data.length;i++) {
+    //       // console.log('TabGroupBuildings.vue concatDataSource value:', value, 'data.length:', data.length, 'data[i]', data[i]);
+    //       value = value.concat(data[i][dataPoints]);
+    //     }
+    //   } else if (data && data[dataPoints]) {
+    //     value = data[dataPoints];
+    //   }
+    //   // console.log('li.js TabGroupBuildings.vue concatDataSource, value:', value);
+    //   return value;
+    // },
+    handleGeojsonCollectionForTopicClick(e) {
+      let structureId = e.component.source.data.properties.parcelId;
+      // console.log('this.$store.state.sources.liBuildingCertSummary.data[0].rows[0].structure_id:', this.$store.state.sources.liBuildingCertSummary.data[0].rows[0].structure_id);
+      let activeLiBuilding = this.$store.state.sources.liBuildingCertSummary.data.filter(item => item.structure_id === structureId)[0];
+      let activeLiBuildingCert = this.$store.state.sources.liBuildingCerts.data.filter(item => item.bin === structureId);
+      let activeLiBuildingFootprint = this.$store.state.sources.liBuildingFootprints.data.filter(item => item.attributes.BIN === structureId)[0];
+      // let activeLiBuilding = this.concatDataSource(this.$store.state.sources.liBuildingCertSummary.data).filter(structure => structure.structure_id == this.$data.activeItem)[0];
+      // let activeLiBuildingCert = this.concatDataSource(this.$store.state.sources.liBuildingCerts.data).filter(item => item.bin === this.$data.activeItem);
+      // let activeLiBuildingFootprint = this.concatDataSource(this.$store.state.sources.liBuildingFootprints.data).filter(item => item.attributes.BIN === this.$data.activeItem)[0];
+      console.log('handleGeojsonCollectionForTopicClick is running, e:', e, 'activeLiBuilding:', activeLiBuilding, 'e.component.source.data.properties.parcelId:', e.component.source.data.properties.parcelId);
+      this.$store.commit('setActiveLiBuilding', activeLiBuilding);
+      this.$store.commit('setActiveLiBuildingCert', activeLiBuildingCert);
+      this.$store.commit('setActiveLiBuildingFootprint', activeLiBuildingFootprint);
+      this.$store.commit('setActiveGeojsonForTopic', structureId);
+      // e.clickOnLayer = true;
+    },
     handleMapClick(e) {
+
+      if (this.geojsonCollectionForTopicSource.data.features.length) {
+        let latLng;
+        
+        if (e.latlng) {
+          latLng = e.latlng;
+        } else if (e.mapboxEvent) {
+          if (e.mapboxEvent.lngLat) {
+            latLng = {
+              lat: e.mapboxEvent.lngLat.lat,
+              lng: e.mapboxEvent.lngLat.lng,
+            };
+          }
+        }
+
+        let pt = point([latLng.lng, latLng.lat]);
+        let poly;
+        let booleanPIP1 = false;
+        let booleanPIP2 = false;
+
+        if (this.$data.activeGeojsonForTopicSource.data.geometry.coordinates.length) {
+          let coordinates = this.$data.activeGeojsonForTopicSource.data.geometry.coordinates;
+          // console.log('in if, coordinates:', coordinates);
+          poly = polygon(coordinates);
+          booleanPIP1 = booleanPointInPolygon(pt, poly);
+        }
+        
+        if (this.geojsonCollectionForTopicSource.data.features.length == 1) {
+          let coordinates = this.geojsonCollectionForTopicSource.data.features[0].data.geometry.coordinates;
+          // console.log('in if 2, coordinates:', coordinates);
+          poly = polygon(coordinates);
+          booleanPIP2 = booleanPointInPolygon(pt, poly);
+        } else if (this.geojsonCollectionForTopicSource.data.features.length > 1) {
+          // console.log('in else if');
+          // if (this.$data.activeGeojsonForTopicSource.data.geometry) {
+          //   let coordinates = this.$data.activeGeojsonForTopicSource.data.geometry.coordinates;
+          //   console.log('in else if, if, coordinates:', coordinates);
+          //   poly = polygon(coordinates);
+          //   booleanPIP = booleanPointInPolygon(pt, poly);
+          // }
+          for (let feature of this.geojsonCollectionForTopicSource.data.features) {
+            let coordinates = feature.data.geometry.coordinates;
+            if (booleanPointInPolygon(pt, polygon(coordinates))) {
+              booleanPIP2 = true;
+              break;
+            }
+          }
+          // console.log('in else if, coordinates:', coordinates);
+          // poly = multiPolygon(coordinates);
+        }
+
+        console.log('MapPanel.vue handleMapClick 1, this.geojsonCollectionForTopicSource.data.features:', this.geojsonCollectionForTopicSource.data.features, 'latLng:', latLng, 'pt:', pt, 'poly:', poly, 'booleanPIP1:', booleanPIP1, 'booleanPIP2:', booleanPIP2);
+        
+        if (booleanPIP1 || booleanPIP2) {
+          return;
+        }
+      }
+
+      this.$store.commit('setActiveGeojsonForTopic', null);
+
       let drawMode = this.$data.draw.mode;
       let drawLayers = this.$store.map.queryRenderedFeatures(e.mapboxEvent.point).filter(feature => [ 'mapbox-gl-draw-cold', 'mapbox-gl-draw-hot' ].includes(feature.source));
-      console.log('MapPanel.vue handleMapClick, drawLayers:', drawLayers, 'drawMode:', drawMode, 'e:', e, 'this.$store.map.getStyle():', this.$store.map.getStyle(), 'this.$store.state.drawStart:', this.$store.state.drawStart);
+      console.log('MapPanel.vue handleMapClick 2, e:', e, 'drawLayers:', drawLayers, 'drawMode:', drawMode, 'e:', e, 'this.$store.map.getStyle():', this.$store.map.getStyle(), 'this.$store.state.drawStart:', this.$store.state.drawStart);
 
       if (!drawLayers.length && drawMode !== 'draw_polygon') {
         this.$controller.handleMapClick(e);
@@ -1865,7 +2233,7 @@ export default {
     },
     handleMapMove(e) {
       const map = this.$store.map;
-      console.log('handleMapMove, this.$store.map:', this.$store.map, 'this.$store.state.map:', this.$store.state.map, 'this.$store.map.getStyle():', this.$store.map.getStyle());
+      // console.log('handleMapMove, this.$store.map:', this.$store.map, 'this.$store.state.map:', this.$store.state.map, 'this.$store.map.getStyle():', this.$store.map.getStyle());
       //       const canvas = map.getCanvas();
       //       const w = canvas.width;
       //       const h = canvas.height;
