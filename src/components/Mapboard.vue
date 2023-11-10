@@ -100,6 +100,9 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 // import 'mapbox-gl/dist/mapbox-gl.css';
 import i18nBanner from './i18nBanner.vue';
 
+import axios from 'axios';
+import qs from 'qs';
+
 export default {
   components: {
     CyclomediaWidget: () => import(/* webpackChunkName: "mbmb_pvm_CyclomediaWidget" */'@phila/vue-mapping/src/cyclomedia/Widget.vue'),
@@ -317,6 +320,38 @@ export default {
 
     window.addEventListener('click', this.closeAddressCandidateList);
     window.addEventListener('resize', this.handleWindowResize);
+
+    if (this.$config.agoTokenNeeded) {
+
+      let data = qs.stringify({
+        'f': 'json',
+        'username': process.env.VUE_APP_AGO_USERNAME,
+        'password': process.env.VUE_APP_AGO_PASSWORD,
+        'referer': 'https://www.mydomain.com' 
+      });
+  
+      let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: 'https://www.arcgis.com/sharing/rest/generateToken',
+        headers: { 
+          'Content-Type': 'application/x-www-form-urlencoded', 
+          // 'Authorization': 'Basic Og=='
+        },
+        data : data
+      };
+  
+      axios.request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+        this.$store.commit('setAgoToken', response.data.token);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    }
+
   },
   mounted() {
     this.handleWindowResize();

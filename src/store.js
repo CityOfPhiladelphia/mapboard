@@ -136,6 +136,8 @@ function createStore(config) {
     activeGeojsonForTopic: null,
     // shouldShowi18nBanner: false,
     shouldUsei18n: false,
+    agoToken: null,
+    shouldShowi18nBanner: false,
     isMobileOrTablet: isMobileDevice(),
     headerLoaded: false,
     fullScreen: {
@@ -233,6 +235,11 @@ function createStore(config) {
       // },
       setShouldUsei18n(state, payload) {
         state.shouldUsei18n = payload;
+      setAgoToken(state, payload) {
+        state.agoToken = payload;
+      },
+      shouldShowi18nBanner(state, payload) {
+        state.shouldShowi18nBanner = payload;
       },
       setHeaderLoaded(state, payload) {
         state.headerLoaded = payload;
