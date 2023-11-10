@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.4.21 - 11/10/2023
+
+* fixes issue that causes non-effecting error in console from MapPanel.vue when searching an address with the L&I topic open
+
 ### 4.4.20 - 11/10/2023
 
 * fixes bug in store.js

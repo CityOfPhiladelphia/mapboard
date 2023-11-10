@@ -1289,11 +1289,14 @@ export default {
       }
     },
     activeGeojsonForTopic(nextActiveGeojsonForTopic) {
-      // let nextGeojson = this.$store.state.sources.liBuildingFootprints.data.features.filter(function(item) {
-      let nextGeojson = this.$store.state.sources.liBuildingFootprints.data.filter(function(item) {
-        // console.log('in filter, item:', item, 'item.id:', item.id);
-        return item.attributes.BIN === nextActiveGeojsonForTopic;
-      });
+      let liBuildingFootprints = this.$store.state.sources.liBuildingFootprints.data;
+      let nextGeojson;
+      if (liBuildingFootprints) {
+        nextGeojson = this.$store.state.sources.liBuildingFootprints.data.filter(function(item) {
+          // console.log('in filter, item:', item, 'item.id:', item.id);
+          return item.attributes.BIN === nextActiveGeojsonForTopic;
+        });
+      }
       // console.log('watch activeDorParcel is running, nextActiveDorParcel:', nextActiveDorParcel, 'nextGeojson:', nextGeojson);
       if (nextGeojson[0]) {
         // console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
@@ -1305,16 +1308,16 @@ export default {
       }
     },
     activeLiBuilding(nextActiveLiBuilding) {
-      // let nextGeojson = this.$store.state.sources.liBuildingFootprints.data.features.filter(function(item) {
-      let nextGeojson = this.$store.state.sources.liBuildingFootprints.data.filter(function(item) {
-        // console.log('in filter, item:', item, 'item.id:', item.id);
-        return item.attributes.BIN === nextActiveLiBuilding;
-      });
-      // console.log('watch activeDorParcel is running, nextActiveDorParcel:', nextActiveDorParcel, 'nextGeojson:', nextGeojson);
-      // if (this.$store.map) {
-      //   console.log('watch activeDorParcel is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
-      // }
-      if (nextGeojson[0]) {
+      let liBuildingFootprints = this.$store.state.sources.liBuildingFootprints.data;
+      let nextGeojson;
+      if (liBuildingFootprints) {
+        nextGeojson = this.$store.state.sources.liBuildingFootprints.data.filter(function(item) {
+          // console.log('in filter, item:', item, 'item.id:', item.id);
+          return item.attributes.BIN === nextActiveLiBuilding;
+        });
+      }
+
+      if (nextGeojson && nextGeojson[0]) {
         // console.log('watch geojsonParcels is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
         this.geojsonForActiveBuildingBoolean = true;
         this.$data.geojsonForActiveBuildingSource.data.geometry.coordinates = nextGeojson[0].geometry.rings;
