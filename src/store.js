@@ -235,6 +235,7 @@ function createStore(config) {
       // },
       setShouldUsei18n(state, payload) {
         state.shouldUsei18n = payload;
+      },
       setAgoToken(state, payload) {
         state.agoToken = payload;
       },

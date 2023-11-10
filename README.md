@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.4.20 - 11/10/2023
+
+* fixes bug in store.js
+
 ### 4.4.19 - 11/10/2023
 
 * uses @phila/vue-mapping 3.1.20
