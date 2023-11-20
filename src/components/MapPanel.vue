@@ -1470,7 +1470,7 @@ export default {
     },
     pwdParcel(nextPwdParcel) {
       console.log('watch geocode pwdParcel, nextPwdParcel:', nextPwdParcel);
-      if (this.activeTopicConfig.parcels === 'pwd') {
+      if (this.activeTopicConfig.parcels === 'pwd' && nextPwdParcel) {
 
         let thePolygon = polygon(nextPwdParcel.geometry.coordinates);
         let parcelBbox = bbox(thePolygon);
