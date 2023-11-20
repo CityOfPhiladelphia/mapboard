@@ -405,6 +405,7 @@
 
 <script>
 
+import geoViewport from '@mapbox/geo-viewport';
 import bbox from '@turf/bbox';
 import bboxPolygon from '@turf/bbox-polygon';
 import destination from '@turf/destination';
@@ -1417,13 +1418,74 @@ export default {
         } 
       }
     },
+    activeDorParcel(nextActiveDorParcel) {
+      // console.log('watch activeDorParcel is running, nextActiveDorParcel:', nextActiveDorParcel, 'this.$store.state.parcels.dor.data:', this.$store.state.parcels.dor.data);
+      let nextGeojson = this.$store.state.parcels.dor.data.filter(function(item) {
+        // console.log('in filter, item:', item, 'item.id:', item.id);
+        return item.id === nextActiveDorParcel;
+      });
+      // console.log('watch activeDorParcel is running, nextActiveDorParcel:', nextActiveDorParcel, 'nextGeojson:', nextGeojson);
+      if (this.$store.map) {
+        // console.log('watch activeDorParcel is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
+      }
+      if (nextGeojson[0]) {
+        this.$data.geojsonParcelSource.data.geometry.coordinates = nextGeojson[0].geometry.coordinates;
+        console.log('watch activeDorParcel is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geometry.coordinates[0]:', nextGeojson[0].geometry.coordinates[0]);
+        
+        if (this.activeTopicConfig.parcels === 'dor') {
+
+          let thePolygon = polygon(nextGeojson[0].geometry.coordinates);
+          let parcelBbox = bbox(thePolygon);
+          
+          let size = [100, 100];
+          
+          // Calculate a zoom level and centerpoint for this map.
+          let vp = geoViewport.viewport(parcelBbox, size);
+          
+          let zooms = [ vp.zoom, this.geocodeZoom ];
+          console.log('watch activeDorParcel is running, zooms:', zooms, 'vp.zoom:', vp.zoom, 'parcelBbox:', parcelBbox, 'nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
+
+          this.$store.commit('setMapZoom', Math.min(...zooms));
+          this.$data.watchedZoom = Math.min(...zooms);
+          // this.$store.commit('setMapZoom', this.geocodeZoom);
+          // this.$data.watchedZoom = this.geocodeZoom;
+        }
+
+      } else {
+        this.$data.geojsonParcelSource.data.geometry.coordinates = [];
+      }
+    },
+    pwdParcel(nextPwdParcel) {
+      console.log('watch geocode pwdParcel, nextPwdParcel:', nextPwdParcel);
+      if (this.activeTopicConfig.parcels === 'pwd') {
+
+        let thePolygon = polygon(nextPwdParcel.geometry.coordinates);
+        let parcelBbox = bbox(thePolygon);
+        
+        let size = [100, 100];
+        
+        // Calculate a zoom level and centerpoint for this map.
+        let vp = geoViewport.viewport(parcelBbox, size);
+
+        let zooms = [ vp.zoom, this.geocodeZoom ];
+        console.log('watch pwdParcel is running, zooms:', zooms, 'Math.min(...zooms):', Math.min(...zooms), 'vp.zoom:', vp.zoom, 'parcelBbox:', parcelBbox, 'nextPwdParcel:', nextPwdParcel);
+
+        this.$store.commit('setMapZoom', Math.min(...zooms));
+        this.$data.watchedZoom = Math.min(...zooms);
+        // this.$store.commit('setMapZoom', vp.zoom);
+        // this.$data.watchedZoom = vp.zoom;
+
+        // this.$store.commit('setMapZoom', this.geocodeZoom);
+        // this.$data.watchedZoom = this.geocodeZoom;
+      }
+    },
     geocodeResult(nextGeocodeResult) {
       // console.log('watch geocodeResult is firing, nextGeocodeResult:', nextGeocodeResult, 'this.geocodeZoom:', this.geocodeZoom);
       if (nextGeocodeResult._featureId) {
-        // console.log('watch geocodeResult if is running');
+        console.log('watch geocodeResult if is running, this.pwdParcel:', this.pwdParcel, 'this.activeDorParcel:', this.activeDorParcel);
         this.$store.commit('setMapCenter', nextGeocodeResult.geometry.coordinates);
-        this.$store.commit('setMapZoom', this.geocodeZoom);
-        this.$data.watchedZoom = this.geocodeZoom;
+        // this.$store.commit('setMapZoom', this.geocodeZoom);
+        // this.$data.watchedZoom = this.geocodeZoom;
       } //else {
       //   console.log('watch geocodeResult else is running');
       //   this.$store.commit('setBasemap', 'pwd');

@@ -14,6 +14,7 @@
     "lintFix": "vue-cli-service lint --fix"
   },
   "dependencies": {
+    "@mapbox/geo-viewport": "^0.5.0",
     "@phila/vue-comps": "3.0.8",
     "@phila/vue-datafetch": "2.2.15",
     "@phila/vue-mapping": "3.1.20",
