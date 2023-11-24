@@ -1347,7 +1347,7 @@ export default {
       }
     },
     watchedZoom(nextWatchedZoom) {
-      console.log('watchedZoom is firing, nextWatchedZoom:', nextWatchedZoom);
+      // console.log('watchedZoom is firing, nextWatchedZoom:', nextWatchedZoom);
       if (this.cyclomediaActive) {
         this.handleCycloChanges();
       }
