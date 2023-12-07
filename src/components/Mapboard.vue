@@ -352,6 +352,13 @@ export default {
 
     }
 
+    window.addEventListener("popstate", (event) => {
+      console.log('popstate event:', document.location, event.state);
+      // this.handlePopStateChange();
+      // this.filterPoints();
+      location.reload();
+    });
+
   },
   mounted() {
     this.handleWindowResize();

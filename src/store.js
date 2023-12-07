@@ -119,6 +119,8 @@ function createHorizontalTableGroups(config) {
     horizontalTableGroups[tableGroupId] = {
       activeTable: null,
       activeTableId: null,
+      activeFilterValues: {},
+      activeSortValues: null,
     };
   }
   return horizontalTableGroups;
@@ -280,6 +282,15 @@ function createStore(config) {
         state.horizontalTableGroups[payload.tableGroupId].activeTableId = payload.activeTableId;
         state.horizontalTableGroups[payload.tableGroupId].activeTable = payload.activeTable;
       },
+
+      setHorizontalTableGroupActiveFilters(state, payload) {
+        state.horizontalTableGroups[payload.tableGroupId].activeFilterValues = payload.activeFilterValues;
+      },
+
+      setHorizontalTableGroupActiveSort(state, payload) {
+        state.horizontalTableGroups[payload.tableGroupId].activeSortValues = payload.activeSortValues;
+      },
+      
       setHorizontalTableFilteredData(state, payload) {
         const { tableId, data } = payload;
 

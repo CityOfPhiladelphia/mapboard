@@ -405,6 +405,7 @@
 
 <script>
 
+import geoViewport from '@mapbox/geo-viewport';
 import bbox from '@turf/bbox';
 import bboxPolygon from '@turf/bbox-polygon';
 import destination from '@turf/destination';
@@ -1250,15 +1251,17 @@ export default {
     // mapBounds() {
     //   // TODO calculate map bounds based on leaflet markers above
     // },
-    boundsBasedOnShape() {
-      return this.$store.state.map.boundsBasedOnShape;
-    },
+    // boundsBasedOnShape() {
+    //   return this.$store.state.map.boundsBasedOnShape;
+    // },
     isGeocoding() {
       return this.$store.state.geocode.status === 'waiting';
     },
     geocodeZoom() {
       if (this.$config.map.geocodeZoom) {
         return this.$config.map.geocodeZoom;
+      } else if (this.activeTopicConfig.zoom) {
+        return this.activeTopicConfig.zoom;
       }
       return 18;
     },
@@ -1344,10 +1347,21 @@ export default {
       }
     },
     watchedZoom(nextWatchedZoom) {
+      // console.log('watchedZoom is firing, nextWatchedZoom:', nextWatchedZoom);
       if (this.cyclomediaActive) {
         this.handleCycloChanges();
       }
       let map = this.$store.map;
+      // if (map && this.activeTopicConfig.zoom) {
+      //   console.log('watchedZoom, this.$store.map.easeTo:', this.$store.map.easeTo, 'map:', map, 'map.getCenter():', map.getCenter(), 'this.$store.state.map.center:', this.$store.state.map.center);
+      //   let currentCenter = this.$store.state.map.center;
+      //   let target = {
+      //     center: currentCenter,
+      //     zoom: this.activeTopicConfig.zoom,
+      //     duration: 1000,
+      //   };
+      //   this.$store.map.easeTo(target);
+      // } else if (map) {
       if (map) {
         this.$store.map.setZoom(nextWatchedZoom);
       }
@@ -1386,14 +1400,105 @@ export default {
         this.$store.commit('setImagery', nextImagery);
       }
       this.$store.commit('setImageOverlay', null);
+
+      if (nextTopicConfig.zoom) {
+        console.log('watch activeTopicConfig is running, nextTopicConfig.zoom:', nextTopicConfig.zoom);
+        // this.$store.commit('setMapZoom', nextTopicConfig.zoom);
+        // this.$data.watchedZoom = nextTopicConfig.zoom;
+        if (this.$store.map) {
+          console.log('watch activeTopicConfig, this.$store.map.easeTo:', this.$store.map.easeTo, 'this.$store.state.map.center:', this.$store.state.map.center);
+          let currentCenter = this.$store.state.map.center;
+          let target = {
+            center: currentCenter,
+            // zoom: this.activeTopicConfig.zoom,
+            zoom: nextTopicConfig.zoom,
+            duration: 2000,
+          };
+          this.$store.map.easeTo(target);
+        } 
+      }
+    },
+    activeDorParcel(nextActiveDorParcel) {
+      // console.log('watch activeDorParcel is running, nextActiveDorParcel:', nextActiveDorParcel, 'this.$store.state.parcels.dor.data:', this.$store.state.parcels.dor.data);
+      let nextGeojson = this.$store.state.parcels.dor.data.filter(function(item) {
+        // console.log('in filter, item:', item, 'item.id:', item.id);
+        return item.id === nextActiveDorParcel;
+      });
+      // console.log('watch activeDorParcel is running, nextActiveDorParcel:', nextActiveDorParcel, 'nextGeojson:', nextGeojson);
+      if (this.$store.map) {
+        // console.log('watch activeDorParcel is running, map.getStyle():', this.$store.map.getStyle(), 'map.getStyle().layers:', this.$store.map.getStyle().layers, 'nextGeojson:', nextGeojson);
+      }
+      if (nextGeojson[0]) {
+        this.$data.geojsonParcelSource.data.geometry.coordinates = nextGeojson[0].geometry.coordinates;
+        console.log('watch activeDorParcel is running, nextGeojson:', nextGeojson, 'nextGeojson[0].geometry.coordinates[0]:', nextGeojson[0].geometry.coordinates[0]);
+        
+        if (this.activeTopicConfig.parcels === 'dor') {
+
+          let thePolygon;
+          let parcelBbox;
+          let vp;
+          let size = [300, 300];
+          let zooms = [ this.geocodeZoom ];
+
+          for (let parcel of this.$store.state.parcels.dor.data) {
+            // thePolygon = polygon(nextGeojson[0].geometry.coordinates);
+            thePolygon = polygon(parcel.geometry.coordinates);
+            parcelBbox = bbox(thePolygon);
+            vp = geoViewport.viewport(parcelBbox, size);
+            zooms.push(vp.zoom);
+          }
+          
+
+          // let currentZoom = this.$store.state.map.zoom;
+          
+          // Calculate a zoom level and centerpoint for this map.
+          
+          // let zooms;
+          // zooms = [ vp.zoom, this.geocodeZoom ];
+          
+          console.log('watch activeDorParcel is running, zooms:', zooms, 'vp.zoom:', vp.zoom, 'parcelBbox:', parcelBbox, 'nextGeojson:', nextGeojson, 'nextGeojson[0].geojson:', nextGeojson[0].geojson);
+
+          this.$store.commit('setMapZoom', Math.min(...zooms));
+          this.$data.watchedZoom = Math.min(...zooms);
+          // this.$store.commit('setMapZoom', this.geocodeZoom);
+          // this.$data.watchedZoom = this.geocodeZoom;
+        }
+
+      } else {
+        this.$data.geojsonParcelSource.data.geometry.coordinates = [];
+      }
+    },
+    pwdParcel(nextPwdParcel) {
+      console.log('watch geocode pwdParcel, nextPwdParcel:', nextPwdParcel);
+      if (this.activeTopicConfig.parcels === 'pwd' && nextPwdParcel) {
+
+        let thePolygon = polygon(nextPwdParcel.geometry.coordinates);
+        let parcelBbox = bbox(thePolygon);
+        
+        let size = [300, 300];
+        
+        // Calculate a zoom level and centerpoint for this map.
+        let vp = geoViewport.viewport(parcelBbox, size);
+
+        let zooms = [ vp.zoom, this.geocodeZoom ];
+        console.log('watch pwdParcel is running, zooms:', zooms, 'Math.min(...zooms):', Math.min(...zooms), 'vp.zoom:', vp.zoom, 'parcelBbox:', parcelBbox, 'nextPwdParcel:', nextPwdParcel);
+
+        this.$store.commit('setMapZoom', Math.min(...zooms));
+        this.$data.watchedZoom = Math.min(...zooms);
+        // this.$store.commit('setMapZoom', vp.zoom);
+        // this.$data.watchedZoom = vp.zoom;
+
+        // this.$store.commit('setMapZoom', this.geocodeZoom);
+        // this.$data.watchedZoom = this.geocodeZoom;
+      }
     },
     geocodeResult(nextGeocodeResult) {
       // console.log('watch geocodeResult is firing, nextGeocodeResult:', nextGeocodeResult, 'this.geocodeZoom:', this.geocodeZoom);
       if (nextGeocodeResult._featureId) {
-        // console.log('watch geocodeResult if is running');
+        console.log('watch geocodeResult if is running, this.pwdParcel:', this.pwdParcel, 'this.activeDorParcel:', this.activeDorParcel);
         this.$store.commit('setMapCenter', nextGeocodeResult.geometry.coordinates);
-        this.$store.commit('setMapZoom', this.geocodeZoom);
-        this.$data.watchedZoom = this.geocodeZoom;
+        // this.$store.commit('setMapZoom', this.geocodeZoom);
+        // this.$data.watchedZoom = this.geocodeZoom;
       } //else {
       //   console.log('watch geocodeResult else is running');
       //   this.$store.commit('setBasemap', 'pwd');

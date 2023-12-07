@@ -19,7 +19,7 @@
             </a>
             <div class="app-divide" />
             <div class="page-title-container">
-              <a href="#/">
+              <a :href="appLink">
                 <h1
                   class="page-title"
                   :style="mbHeaderStyle"
@@ -83,6 +83,10 @@ export default {
     return data;
   },
   computed: {
+    appLink() {
+      // console.log('HeaderComp appLink computed is running, window.location.origin:', window.location.origin);
+      return window.location.origin;
+    },
     activeTopic() {
       return this.$store.state.activeTopic;
     },
