@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.4.22 - 12/7/2023
+
+* incorporates all changes for adding new data to the nearby topic of atlas
+
 ### 4.4.21 - 11/10/2023
 
 * fixes issue that causes non-effecting error in console from MapPanel.vue when searching an address with the L&I topic open

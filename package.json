@@ -17,7 +17,7 @@
     "@mapbox/geo-viewport": "^0.5.0",
     "@phila/vue-comps": "3.0.9",
     "@phila/vue-datafetch": "2.2.18",
-    "@phila/vue-mapping": "3.1.20",
+    "@phila/vue-mapping": "3.1.21",
     "vue": "^2.7.10",
     "vue-i18n": "^8.22.0",
     "vue-router": "^3.4.6",
