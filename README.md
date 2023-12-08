@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.4.24 - 12/8/2023
+
+* uses @phila/vue-comps 3.0.10 which fixes bug with horizontal tables
+
 ### 4.4.23 - 12/8/2023
 
 * fixes bug with previous release where packages were npm linked
