@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.4.23 - 12/8/2023
+
+* fixes bug with previous release where packages were npm linked
+
 ### 4.4.22 - 12/7/2023
 
 * incorporates all changes for adding new data to the nearby topic of atlas
