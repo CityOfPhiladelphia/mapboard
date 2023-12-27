@@ -19,7 +19,42 @@
         slot="i18nBanner"
         class="hide-for-small-only"
       />
+      <lang-selector
+        slot="lang-selector-nav"
+        v-if="i18nEnabled && !i18nSelectorHidden"
+        :languages="i18nLanguages"
+      >
+      </lang-selector>
+
     </component>
+
+    <!-- <div
+      class="header-holder"
+    > -->
+      <!-- <app-header
+        :app-title="appTitle"
+        :app-subtitle="appSubTitle"
+        :app-link="appLink"
+        :is-sticky="false"
+        :branding-image="brandingImage"
+        :branding-link="brandingLink"
+        :isFluid="true"
+      >
+        <mobile-nav
+          slot="mobile-nav"
+          :links="footerLinks"
+        >
+        </mobile-nav>
+
+        <lang-selector
+          slot="lang-selector-nav"
+          v-if="i18nEnabled && !i18nSelectorHidden"
+          :languages="i18nLanguages"
+        >
+        </lang-selector>
+
+      </app-header> -->
+    <!-- </div> -->
 
     <component
       :is="healthCheck.type"
@@ -103,6 +138,16 @@ import i18nBanner from './i18nBanner.vue';
 import axios from 'axios';
 import qs from 'qs';
 
+import {
+  AppHeader,
+  MobileNav,
+  AppFooter,
+  InputForm,
+  Textbox,
+  Checkbox,
+  LangSelector,
+} from '@phila/phila-ui';
+
 export default {
   components: {
     CyclomediaWidget: () => import(/* webpackChunkName: "mbmb_pvm_CyclomediaWidget" */'@phila/vue-mapping/src/cyclomedia/Widget.vue'),
@@ -112,6 +157,8 @@ export default {
     PictometryViewCone: () => import(/* webpackChunkName: "mbmb_pvm_PictometryViewCone" */'@phila/vue-mapping/src/pictometry/ViewCone.vue'),
     Popover: () => import(/* webpackChunkName: "mbmb_pvc_Popover" */'@phila/vue-comps/src/components/Popover.vue'),
     i18nBanner,
+    AppHeader,
+    LangSelector,
   },
   data() {
     const data = {
@@ -124,6 +171,24 @@ export default {
     return data;
   },
   computed: {
+    appTitle() {
+      let value;
+      if (this.$config.app.title) {
+        value = this.$config.app.title;
+      } else if (this.i18nEnabled) {
+        value = this.$i18n.messages[this.i18nLocale].app.title;
+      }
+      return value;
+    },
+    appSubTitle() {
+      let value;
+      if (this.$config.app.subtitle) {
+        value = this.$config.app.subtitle;
+      } else if (this.i18nEnabled) {
+        value = this.$i18n.messages[this.i18nLocale].app.subtitle;
+      }
+      return value;
+    },
     sitePath() {
       if (process.env.VUE_APP_PUBLICPATH) {
         return window.location.origin + process.env.VUE_APP_PUBLICPATH;
