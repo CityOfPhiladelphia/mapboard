@@ -236,6 +236,8 @@ export default {
         width: 100%;
         border-bottom: 1px solid #96c9ff;
         a {
+          text-align: center;
+          font-weight: normal;
           padding: 0.75rem 2rem;
           color: $white;
           line-height: 1.1;
