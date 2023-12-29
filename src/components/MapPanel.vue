@@ -1521,6 +1521,19 @@ export default {
         this.$data.geojsonCollectionForTopicSource.data.features = [];
 
         for (let feature of nextGeojson) {
+          console.log('loop feature:', feature);
+          let parcelId;
+          let geometry;
+          if (feature.geojson.geometry.rings) {
+            geometry = feature.geojson.geometry.rings;
+          } else if (feature.geojson.geometry.coordinates) {
+            geometry = feature.geojson.geometry.coordinates;
+          }
+          if (feature.geojson.attributes) {
+            parcelId = feature.geojson.attributes.BIN;
+          } else if (feature.geojson.properties) {
+            parcelId = feature.geojson.properties.id;
+          }
           if (true) {
             this.$data.geojsonCollectionForTopicSource.data.features.push(
               {
@@ -1529,10 +1542,10 @@ export default {
                   'type': 'Feature',
                   'geometry': {
                     'type': 'Polygon',
-                    'coordinates': feature.geojson.geometry.rings,
+                    'coordinates': geometry,
                   },
                   'properties': {
-                    'parcelId': feature.geojson.attributes.BIN,
+                    'parcelId': parcelId,
                     'featureId': feature.geojson._featureId,
                   },
                 },
