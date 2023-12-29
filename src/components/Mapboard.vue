@@ -21,9 +21,9 @@
       />
       <lang-selector
         slot="lang-selector-nav"
-        v-if="i18nEnabled && !i18nSelectorHidden"
         :languages="i18nLanguages"
       >
+      <!-- v-if="i18nEnabled && !i18nSelectorHidden" -->
       </lang-selector>
 
     </component>
@@ -138,15 +138,17 @@ import i18nBanner from './i18nBanner.vue';
 import axios from 'axios';
 import qs from 'qs';
 
-import {
-  AppHeader,
-  MobileNav,
-  AppFooter,
-  InputForm,
-  Textbox,
-  Checkbox,
-  LangSelector,
-} from '@phila/phila-ui';
+import LangSelector from './LangSelector.vue';
+
+// import {
+//   AppHeader,
+//   MobileNav,
+//   AppFooter,
+//   InputForm,
+//   Textbox,
+//   Checkbox,
+//   LangSelector,
+// } from '@phila/phila-ui';
 
 export default {
   components: {
@@ -157,7 +159,7 @@ export default {
     PictometryViewCone: () => import(/* webpackChunkName: "mbmb_pvm_PictometryViewCone" */'@phila/vue-mapping/src/pictometry/ViewCone.vue'),
     Popover: () => import(/* webpackChunkName: "mbmb_pvc_Popover" */'@phila/vue-comps/src/components/Popover.vue'),
     i18nBanner,
-    AppHeader,
+    // AppHeader,
     LangSelector,
   },
   data() {
@@ -171,6 +173,23 @@ export default {
     return data;
   },
   computed: {
+    i18nLanguages() {
+      let values = [];
+      if (this.$config.i18n.languages) {
+        // console.log('in if, this.$config.i18n.languages');
+        values = this.$config.i18n.languages;
+      } else {
+        for (let key of Object.keys(this.$i18n.messages)) {
+          let value = {};
+          // console.log('in loop, key:', key, 'this.$i18n.locale:', this.$i18n.locale, 'this.$i18n.messages[key]:', this.$i18n.messages[key]);
+          value.language = key;
+          value.title = this.$i18n.messages[key].language;
+          values.push(value);
+        }
+      }
+      // console.log('end of i18nLanguages, values:', values);
+      return values;
+    },
     appTitle() {
       let value;
       if (this.$config.app.title) {

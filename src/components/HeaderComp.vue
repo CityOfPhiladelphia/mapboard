@@ -6,30 +6,35 @@
     <div class="combo-header">
       <header class="site-header app group">
         <div class="row expanded">
-          <div class="columns">
-            <a
-              href="//beta.phila.gov"
-              class="logo"
-            >
-              <img
-                :class="imgSize"
-                :src="imgSrc"
-                alt="City of Philadelphia"
+          <div class="columns small-21">
+            <!-- <div class="column is-6"> -->
+
+              <a
+                href="//beta.phila.gov"
+                class="logo"
               >
-            </a>
-            <div class="app-divide" />
-            <div class="page-title-container">
-              <a :href="appLink">
-                <h1
-                  class="page-title"
-                  :style="mbHeaderStyle"
+                <img
+                  :class="imgSize"
+                  :src="imgSrc"
+                  alt="City of Philadelphia"
                 >
-                  {{ headerText }}
-                </h1>
               </a>
+  
+              <div class="app-divide" />
+  
+              <div class="page-title-container">
+                <a :href="appLink">
+                  <h1
+                    class="page-title"
+                    :style="mbHeaderStyle"
+                  >
+                    {{ headerText }}
+                  </h1>
+                </a>
+              </div>
             </div>
 
-            <div
+            <!-- <div
               v-if="shouldShowi18nBanner"
               class="show-for-small-only small-2 globe-container"
             >
@@ -39,9 +44,16 @@
                 @language-selected="testMethod"
               />
 
-            </div>
+            </div> -->
 
-          </div>
+            <div class="columns small-3">
+              <slot
+                name="lang-selector-nav"
+                class="globe-container"
+              />
+              <!-- class="is-pulled-right globe-container" -->
+            </div>
+          <!-- </div> -->
         </div>
       </header>
 

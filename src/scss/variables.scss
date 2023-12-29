@@ -1,0 +1,86 @@
+@import './colors.scss';
+@import './derived-colors.scss';
+@import './fonts.scss';
+
+$family-sans-serif: 'Open Sans', BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+
+$family-secondary: Montserrat, BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+
+$radius: 0;
+$radius-large: 0;
+$notification-padding: 1rem 2.5rem 1rem 1rem;
+
+// NAVBAR OVERRIDES
+$navbar-item-img-max-height: 75px;
+$navbar-padding-vertical: 0.5rem;
+$navbar-padding-horizontal: 1rem;
+$navbar-background-color: $ben-franklin-blue-dark;
+$navbar-item-color: $white;
+$navbar-item-hover-background-color: transparent;
+$navbar-item-hover-color: $electric-blue;
+
+$navbar-dropdown-radius: 0;
+$navbar-dropdown-boxed-radius: 0;
+$navbar-dropdown-boxed-shadow: none;
+
+// FOOTER OVERRIDES
+$footer-background-color: $ben-franklin-blue-dark;
+$footer-padding: rem-calc(10px);
+$footer-color: $white;
+
+// INPUT OVERRIDES
+$input-background-color: $ghost-grey;
+$input-focus-box-shadow-size: none;
+$input-border-color: transparent;
+$input-hover-border-color: transparent;
+$input-focus-border-color: $electric-blue;
+$input-shadow: none;
+
+// TABS
+$tabs-boxed-link-hover-background-color: none;
+$tabs-link-hover-color: $ben-franklin-blue-dark;
+
+// TABLES
+$table-striped-row-even-background-color: $ghost-grey;
+
+// MODALS
+$modal-content-width: 760px;
+$modal-card-head-padding: 15px;
+$modal-card-body-padding: 15px;
+
+//TITLE OVERRIDE
+$title-line-height: 1.4;
+
+
+//Bulma unchanged defaults
+$body-background-color: $white;
+$body-size: 16px;
+$body-min-width: 300px;
+$body-rendering: optimizeLegibility;
+$body-weight: 400;
+
+
+//Bulma Existing and overwritten
+$button-padding-vertical: 0.75rem;
+$button-padding-horizontal: 1.5rem;
+
+$size-small: 0.875rem;
+$size-medium: 1rem;
+$size-normal: 1rem;
+$size-large: 1.125rem;
+
+$line-height-medium: 1.5rem;
+$line-height-large: 2rem;
+
+$body-line-height: 1.5rem;
+
+$size-1: 2rem;
+$size-2: 1.75rem;
+$size-3: 1.25rem;
+$size-4: 1.125rem;
+$size-5: $size-small;
+$size-6: $size-small;
+$size-7: $size-small;
+$link-hover: $ben-franklin-blue-dark;
+
+$tablet: 768px !default;

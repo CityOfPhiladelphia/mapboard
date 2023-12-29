@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@mapbox/geo-viewport": "^0.5.0",
-    "@phila/phila-ui": "2.1.13",
     "@phila/vue-comps": "https://github.com/CityOfPhiladelphia/phila-vue-comps#3c2edab",
     "@phila/vue-datafetch": "2.2.18",
     "@phila/vue-mapping": "3.1.21",
