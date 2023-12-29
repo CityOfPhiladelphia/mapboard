@@ -28,34 +28,6 @@
 
     </component>
 
-    <!-- <div
-      class="header-holder"
-    > -->
-      <!-- <app-header
-        :app-title="appTitle"
-        :app-subtitle="appSubTitle"
-        :app-link="appLink"
-        :is-sticky="false"
-        :branding-image="brandingImage"
-        :branding-link="brandingLink"
-        :isFluid="true"
-      >
-        <mobile-nav
-          slot="mobile-nav"
-          :links="footerLinks"
-        >
-        </mobile-nav>
-
-        <lang-selector
-          slot="lang-selector-nav"
-          v-if="i18nEnabled && !i18nSelectorHidden"
-          :languages="i18nLanguages"
-        >
-        </lang-selector>
-
-      </app-header> -->
-    <!-- </div> -->
-
     <component
       :is="healthCheck.type"
       v-for="(healthCheck, index) in this.$config.healthChecks"
@@ -140,16 +112,6 @@ import qs from 'qs';
 
 import LangSelector from './LangSelector.vue';
 
-// import {
-//   AppHeader,
-//   MobileNav,
-//   AppFooter,
-//   InputForm,
-//   Textbox,
-//   Checkbox,
-//   LangSelector,
-// } from '@phila/phila-ui';
-
 export default {
   components: {
     CyclomediaWidget: () => import(/* webpackChunkName: "mbmb_pvm_CyclomediaWidget" */'@phila/vue-mapping/src/cyclomedia/Widget.vue'),
@@ -159,7 +121,6 @@ export default {
     PictometryViewCone: () => import(/* webpackChunkName: "mbmb_pvm_PictometryViewCone" */'@phila/vue-mapping/src/pictometry/ViewCone.vue'),
     Popover: () => import(/* webpackChunkName: "mbmb_pvc_Popover" */'@phila/vue-comps/src/components/Popover.vue'),
     i18nBanner,
-    // AppHeader,
     LangSelector,
   },
   data() {
