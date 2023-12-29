@@ -14,11 +14,11 @@
         v-if="this.$config.alerts && this.$config.alerts.header != null"
         slot="alertBanner"
       />
-      <i18nBanner
+      <!-- <i18nBanner
         v-if="shouldShowi18nBanner"
         slot="i18nBanner"
         class="hide-for-small-only"
-      />
+      /> -->
       <lang-selector
         slot="lang-selector-nav"
         :languages="i18nLanguages"
@@ -105,7 +105,7 @@
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 // import 'mapbox-gl/dist/mapbox-gl.css';
-import i18nBanner from './i18nBanner.vue';
+// import i18nBanner from './i18nBanner.vue';
 
 import axios from 'axios';
 import qs from 'qs';
@@ -120,7 +120,7 @@ export default {
     PictometryPngMarker: () => import(/* webpackChunkName: "mbmb_pvm_PictometryPngMarker" */'@phila/vue-mapping/src/pictometry/PngMarker.vue'),
     PictometryViewCone: () => import(/* webpackChunkName: "mbmb_pvm_PictometryViewCone" */'@phila/vue-mapping/src/pictometry/ViewCone.vue'),
     Popover: () => import(/* webpackChunkName: "mbmb_pvc_Popover" */'@phila/vue-comps/src/components/Popover.vue'),
-    i18nBanner,
+    // i18nBanner,
     LangSelector,
   },
   data() {
