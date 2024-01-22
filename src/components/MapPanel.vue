@@ -318,6 +318,7 @@
         }"
         :size="marker.size"
         :fill-color="marker.color"
+        :color="marker.borderColor"
         :weight="marker.weight"
         :opacity="1"
         :anchor="'bottom'"
@@ -520,6 +521,7 @@ export default {
         geojsonForTopic: [],
         markersForAddress: [],
         markersForTopic: [],
+        reactiveCircleMarkers: [],
       },
       watchedZoom: null,
       accessToken: process.env.VUE_APP_MAPBOX_ACCESSTOKEN,
@@ -1470,7 +1472,7 @@ export default {
     },
     pwdParcel(nextPwdParcel) {
       console.log('watch geocode pwdParcel, nextPwdParcel:', nextPwdParcel);
-      if (this.activeTopicConfig.parcels === 'pwd' && nextPwdParcel) {
+      if (this.activeTopicConfig.parcels === 'pwd' && nextPwdParcel && !this.activeTopicConfig.zoomToShape) {
 
         let thePolygon = polygon(nextPwdParcel.geometry.coordinates);
         let parcelBbox = bbox(thePolygon);
@@ -1653,6 +1655,21 @@ export default {
       // console.log('exiting markersForTopic');
       this.checkBoundsChanges();
     },
+
+    reactiveCircleMarkers(nextReactiveCircleMarkers) {
+      console.log('watch reactiveCircleMarkers is running, nextReactiveCircleMarkers:', nextReactiveCircleMarkers);
+      let czts = this.activeTopicConfig.zoomToShape;
+      let dzts = this.$data.zoomToShape;
+      if (!czts || !czts.includes('reactiveCircleMarkers')) {
+        // if (!czts.includes('markersForTopic')) {
+        dzts.reactiveCircleMarkers = [];
+        return;
+      }
+      dzts.reactiveCircleMarkers = nextReactiveCircleMarkers;
+      // console.log('exiting markersForTopic');
+      this.checkBoundsChanges();
+    },
+
     fullScreenTopicsEnabled() {
       this.$nextTick(() => {
         if (this.mapType === 'leaflet') {
@@ -1912,6 +1929,13 @@ export default {
         if (czts.includes('markersForTopic') && this.markersForTopic[0].latlng[0] != null) {
           // console.log('in setMapToBounds, markersForTopic:', this.markersForTopic);
           for (let marker of this.markersForTopic) {
+            featureArray.push(point([ marker.latlng[1], marker.latlng[0] ]));
+            // featureArray.push(L.marker(marker.latlng))
+          }
+        }
+        if (czts.includes('reactiveCircleMarkers') && this.reactiveCircleMarkers[0].latlng[0] != null) {
+          console.log('in setMapToBounds, reactiveCircleMarkers:', this.reactiveCircleMarkers);
+          for (let marker of this.reactiveCircleMarkers) {
             featureArray.push(point([ marker.latlng[1], marker.latlng[0] ]));
             // featureArray.push(L.marker(marker.latlng))
           }
