@@ -44,7 +44,7 @@
       />
 
       <!-- v-if="shouldShowRasterLayer(key) && tiledLayers.includes(key)" -->
-      <MglRasterLayer
+      <!-- <MglRasterLayer
         v-for="(tiledOverlaySource, key) in tiledOverlaySources"
         v-if="tiledLayers.includes(key)"
         :key="key"
@@ -53,7 +53,7 @@
         :layer="tiledOverlaySource.layer"
         :source="tiledOverlaySource.source"
         :before="basemapsBefore"
-      />
+      /> -->
 
       <!-- <MglRasterLayer
         v-for="(tiledOverlaySource, key) in tiledOverlaySources"
@@ -66,7 +66,7 @@
         :before="basemapsBefore"
       /> -->
 
-      <MglRasterLayer
+      <!-- <MglRasterLayer
         v-for="(overlaySource, key) in overlaySources"
         v-if="activeDynamicMaps.includes(key)"
         :key="key"
@@ -76,10 +76,10 @@
         :source="overlaySource.source"
         :initial-opacity="100"
         :before="basemapsBefore"
-      />
+      /> -->
       <!-- :before="'geojsonParcelFill'" -->
 
-      <MglRasterLayer
+      <!-- <MglRasterLayer
         v-for="item in imageOverlayItems"
         v-if="shouldShowImageOverlay(item.data.properties.RECMAP)"
         :key="item.data.properties.RECMAP"
@@ -89,7 +89,7 @@
         :source="item.source.source"
         :initial-opacity="50"
         :before="basemapsBefore"
-      />
+      /> -->
       <!-- :before="'geojsonParcelFill'" -->
 
       <MglGeojsonLayer
@@ -351,25 +351,25 @@
       />
       <!-- @drawUndo="handleDrawUndo" -->
 
-      <MglButtonControl
-        :button-id="'buttonId-01'"
+      <MglImageryButtonControl
+        :button-id="'imagery-button'"
+        :image-align="'top'"
         :button-class="'right top-button-1'"
         :image-link="basemapImageLink"
-        :image-align="'top'"
         @click="handleBasemapToggleClick"
       />
 
-      <MglButtonControl
+      <MglPictButtonControl
+        :button-id="'pict-button'"
         v-if="shouldShowPictometryButton"
-        :button-id="'buttonId-02'"
         :button-class="pictometryActive ? 'right top-button-2 active' : 'right top-button-2 inactive'"
         :image-link="sitePath + '/images/pictometry.png'"
         @click="handlePictometryButtonClick"
       />
 
-      <MglButtonControl
+      <MglCycloButtonControl
+        :button-id="'cyclo-button'"
         v-if="shouldShowCyclomediaButton"
-        :button-id="'buttonId-03'"
         :button-class="cyclomediaActive ? 'right top-button-3 active' : 'right top-button-3 inactive'"
         :image-link="sitePath + '/images/cyclomedia.png'"
         @click="handleCyclomediaButtonClick"
@@ -480,6 +480,9 @@ export default {
     MglGeolocateControl: () => import(/* webpackChunkName: "pvm_MglGeolocateControl" */'@phila/vue-mapping/src/mapbox/UI/controls/GeolocateControl'),
     MglDistanceMeasureControl: () => import(/* webpackChunkName: "pvm_MglDrawDistanceMeasureControl" */'@phila/vue-mapping/src/mapbox/UI/controls/DistanceMeasureControl.vue'),
     MglRasterLayer: () => import(/* webpackChunkName: "pvm_MglRasterLayer" */'@phila/vue-mapping/src/mapbox/layer/RasterLayer.vue'),
+    MglImageryButtonControl: () => import(/* webpackChunkName: "pvm_MglImageryButtonControl" */'@phila/vue-mapping/src/mapbox/UI/controls/ImageryButtonControl.vue'),
+    MglPictButtonControl: () => import(/* webpackChunkName: "pvm_MglPictButtonControl" */'@phila/vue-mapping/src/mapbox/UI/controls/PictButtonControl.vue'),
+    MglCycloButtonControl: () => import(/* webpackChunkName: "pvm_MglCycloButtonControl" */'@phila/vue-mapping/src/mapbox/UI/controls/CycloButtonControl.vue'),
     MglButtonControl: () => import(/* webpackChunkName: "pvm_MglButtonControl" */'@phila/vue-mapping/src/mapbox/UI/controls/ButtonControl.vue'),
     MglControlContainer: () => import(/* webpackChunkName: "pvm_MglControlContainer" */'@phila/vue-mapping/src/mapbox/UI/controls/ControlContainer.vue'),
     MglImageLayer: () => import(/* webpackChunkName: "pvm_MglImageLayer" */'@phila/vue-mapping/src/mapbox/layer/ImageLayer'),
@@ -1823,7 +1826,7 @@ export default {
       ];
     },
     handleCyclomediaButtonClick(e) {
-      // console.log('handleCyclomediaButtonClick is running');
+      console.log('handleCyclomediaButtonClick is running');
       if (!this.cyclomediaInitializationBegun) {
         this.$store.commit('setCyclomediaInitializationBegun', true);
       }
@@ -1839,7 +1842,7 @@ export default {
       }
     },
     handlePictometryButtonClick(e) {
-      // console.log('handlePictometryButtonClick is running');
+      console.log('handlePictometryButtonClick is running');
       this.$store.commit('setPictometryActive', !this.$store.state.pictometry.active);
 
       if (this.isMobileOrTablet) {
@@ -1860,7 +1863,7 @@ export default {
       // console.log('after map resize happens');
     },
     handleBasemapToggleClick() {
-      // console.log('handleBasemapToggleClick, this.$store.map.getStyle().layers:', this.$store.map.getStyle().layers);
+      console.log('handleBasemapToggleClick, this.$store.map.getStyle().layers:', this.$store.map.getStyle().layers);
       const prevShouldShowBasemapSelectControl = this.$store.state.map.shouldShowBasemapSelectControl;
       const nextShouldShowBasemapSelectControl = !prevShouldShowBasemapSelectControl;
       this.$store.commit('setShouldShowBasemapSelectControl', nextShouldShowBasemapSelectControl);

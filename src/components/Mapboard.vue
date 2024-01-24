@@ -14,12 +14,13 @@
         v-if="this.$config.alerts && this.$config.alerts.header != null"
         slot="alertBanner"
       />
-      <!-- <i18nBanner
+      <i18nBanner
         v-if="shouldShowi18nBanner"
         slot="i18nBanner"
         class="hide-for-small-only"
-      /> -->
+      />
       <lang-selector
+        v-if="shouldShowi18nSelector"
         slot="lang-selector-nav"
         :languages="i18nLanguages"
       >
@@ -134,6 +135,10 @@ export default {
     return data;
   },
   computed: {
+    i18nEnabled() {
+      let value = this.$config.i18n && this.$config.i18n.enabled;
+      return value;
+    },
     i18nLanguages() {
       let values = [];
       if (this.$config.i18n.languages) {
@@ -183,12 +188,19 @@ export default {
     },
     shouldShowi18nBanner() {
       let topics;
-      if (this.$config.i18n && this.$config.i18n.topics) {
+      if (this.$config.i18n && this.$config.i18n.banner && this.$config.i18n.topics) {
         topics = this.$config.i18n.topics;
       }
       // console.log('shouldShowi18nBanner, topics:', topics);
       let value = false;
-      if (this.$config.i18n && this.$config.i18n.enabled && topics.includes(this.routerTopic)) {
+      if (this.$config.i18n && this.$config.i18n.enabled && this.$config.i18n.banner && topics.includes(this.routerTopic)) {
+        value = true;
+      }
+      return value;
+    },
+    shouldShowi18nSelector() {
+      let value = false;
+      if (this.$config.i18n && this.$config.i18n.enabled && this.$config.i18n.selector) {
         value = true;
       }
       return value;
