@@ -19,6 +19,14 @@
         slot="i18nBanner"
         class="hide-for-small-only"
       />
+      <lang-selector
+        v-if="shouldShowi18nSelector"
+        slot="lang-selector-nav"
+        :languages="i18nLanguages"
+      >
+      <!-- v-if="i18nEnabled && !i18nSelectorHidden" -->
+      </lang-selector>
+
     </component>
 
     <component
@@ -98,10 +106,12 @@
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 // import 'mapbox-gl/dist/mapbox-gl.css';
-import i18nBanner from './i18nBanner.vue';
+// import i18nBanner from './i18nBanner.vue';
 
 import axios from 'axios';
 import qs from 'qs';
+
+import LangSelector from './LangSelector.vue';
 
 export default {
   components: {
@@ -111,7 +121,8 @@ export default {
     PictometryPngMarker: () => import(/* webpackChunkName: "mbmb_pvm_PictometryPngMarker" */'@phila/vue-mapping/src/pictometry/PngMarker.vue'),
     PictometryViewCone: () => import(/* webpackChunkName: "mbmb_pvm_PictometryViewCone" */'@phila/vue-mapping/src/pictometry/ViewCone.vue'),
     Popover: () => import(/* webpackChunkName: "mbmb_pvc_Popover" */'@phila/vue-comps/src/components/Popover.vue'),
-    i18nBanner,
+    // i18nBanner,
+    LangSelector,
   },
   data() {
     const data = {
@@ -124,6 +135,45 @@ export default {
     return data;
   },
   computed: {
+    i18nEnabled() {
+      let value = this.$config.i18n && this.$config.i18n.enabled;
+      return value;
+    },
+    i18nLanguages() {
+      let values = [];
+      if (this.$config.i18n.languages) {
+        // console.log('in if, this.$config.i18n.languages');
+        values = this.$config.i18n.languages;
+      } else {
+        for (let key of Object.keys(this.$i18n.messages)) {
+          let value = {};
+          // console.log('in loop, key:', key, 'this.$i18n.locale:', this.$i18n.locale, 'this.$i18n.messages[key]:', this.$i18n.messages[key]);
+          value.language = key;
+          value.title = this.$i18n.messages[key].language;
+          values.push(value);
+        }
+      }
+      // console.log('end of i18nLanguages, values:', values);
+      return values;
+    },
+    appTitle() {
+      let value;
+      if (this.$config.app.title) {
+        value = this.$config.app.title;
+      } else if (this.i18nEnabled) {
+        value = this.$i18n.messages[this.i18nLocale].app.title;
+      }
+      return value;
+    },
+    appSubTitle() {
+      let value;
+      if (this.$config.app.subtitle) {
+        value = this.$config.app.subtitle;
+      } else if (this.i18nEnabled) {
+        value = this.$i18n.messages[this.i18nLocale].app.subtitle;
+      }
+      return value;
+    },
     sitePath() {
       if (process.env.VUE_APP_PUBLICPATH) {
         return window.location.origin + process.env.VUE_APP_PUBLICPATH;
@@ -138,12 +188,19 @@ export default {
     },
     shouldShowi18nBanner() {
       let topics;
-      if (this.$config.i18n && this.$config.i18n.topics) {
+      if (this.$config.i18n && this.$config.i18n.banner && this.$config.i18n.topics) {
         topics = this.$config.i18n.topics;
       }
       // console.log('shouldShowi18nBanner, topics:', topics);
       let value = false;
-      if (this.$config.i18n && this.$config.i18n.enabled && topics.includes(this.routerTopic)) {
+      if (this.$config.i18n && this.$config.i18n.enabled && this.$config.i18n.banner && topics.includes(this.routerTopic)) {
+        value = true;
+      }
+      return value;
+    },
+    shouldShowi18nSelector() {
+      let value = false;
+      if (this.$config.i18n && this.$config.i18n.enabled && this.$config.i18n.selector) {
         value = true;
       }
       return value;

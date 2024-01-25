@@ -158,62 +158,64 @@ export default {
     },
 
     reactiveCircleMarkers() {
-      // console.log('computed reactiveCircleMarkers is running');
-      const filteredData = this.$store.state.horizontalTables.filteredData;
-      // const filteredData = this.filteredData;
-      let circleMarkers = [];
+      console.log('computed reactiveCircleMarkers, this.createdComplete:', this.createdComplete, 'this.$config:', this.$config);
+      if (this.createdComplete) {
+        const filteredData = this.$store.state.horizontalTables.filteredData;
+        // const filteredData = this.filteredData;
+        let circleMarkers = [];
 
-      // get visible tables based on active topic
-      const tableIds = this.$store.getters.visibleTableIds;
+        // get visible tables based on active topic
+        const tableIds = this.$store.getters.visibleTableIds;
 
-      // console.log('computed circleMarkers is rerunning, filteredData:', filteredData, 'tableIds:', tableIds);
+        // console.log('computed circleMarkers is rerunning, filteredData:', filteredData, 'tableIds:', tableIds);
 
-      for (let tableId of tableIds) {
-        const tableConfig = this.getConfigForTable(tableId) || {};
-        // console.log('tableId:', tableId, 'tableConfig:', tableConfig);
-        const mapOverlay = (tableConfig.options || {}).mapOverlay;
+        for (let tableId of tableIds) {
+          const tableConfig = this.getConfigForTable(tableId) || {};
+          // console.log('tableId:', tableId, 'tableConfig:', tableConfig);
+          const mapOverlay = (tableConfig.options || {}).mapOverlay;
 
-        if (!mapOverlay || mapOverlay.marker !== 'circle') {
-          continue;
-        }
-
-        const items = filteredData[tableId];
-
-        if (items.length < 1) {
-          continue;
-        }
-
-        const style = mapOverlay.style;
-
-        // go through rows
-        for (let item of items) {
-          // console.log('tableId', tableId)
-          let latlng;
-
-          // TODO - get geometry field name from config
-          if (item.geometry) {
-            const [ x, y ] = item.geometry.coordinates;
-            latlng = [ y, x ];
-          } else if (item.lat) {
-            latlng = [ item.lat, item.lng ];
-            // if (item.point_x) {
-            //   latlng = [item.point_y, item.point_x];
-            // } else if (item.geocode_x) {
-            //   latlng = [item.geocode_y, item.geocode_x];
-            // }
+          if (!mapOverlay || mapOverlay.marker !== 'circle') {
+            continue;
           }
 
-          // check for active feature TODO - bind style props to state
-          let props = Object.assign({}, style);
-          props.size = 14;
-          props.latlng = latlng;
-          props.featureId = item._featureId;
-          props.tableId = tableId;
-          circleMarkers.push(props);
-        }
-      }
+          const items = filteredData[tableId];
 
-      return circleMarkers;
+          if (items.length < 1) {
+            continue;
+          }
+
+          const style = mapOverlay.style;
+
+          // go through rows
+          for (let item of items) {
+            // console.log('tableId', tableId)
+            let latlng;
+
+            // TODO - get geometry field name from config
+            if (item.geometry) {
+              const [ x, y ] = item.geometry.coordinates;
+              latlng = [ y, x ];
+            } else if (item.lat) {
+              latlng = [ item.lat, item.lng ];
+              // if (item.point_x) {
+              //   latlng = [item.point_y, item.point_x];
+              // } else if (item.geocode_x) {
+              //   latlng = [item.geocode_y, item.geocode_x];
+              // }
+            }
+
+            // check for active feature TODO - bind style props to state
+            let props = Object.assign({}, style);
+            props.size = 14;
+            props.latlng = latlng;
+            props.featureId = item._featureId;
+            props.tableId = tableId;
+            circleMarkers.push(props);
+          }
+        }
+
+        return circleMarkers;
+      }
     },
 
     // returns geojson parcels to be rendered on the map along with
@@ -329,41 +331,44 @@ export default {
     // these geojson features will have mouseover and mouseout events,
     // for highlighting horizontal table rows
     reactiveGeojsonFeatures() {
-      const features = [];
+      console.log('computed reactiveGeojsonFeatures, this.createdComplete:', this.createdComplete, 'this.$config:', this.$config);
+      if (this.createdComplete) {
+        const features = [];
 
-      const filteredData = this.$store.state.horizontalTables.filteredData;
-      // get visible tables based on active topic
-      const tableIds = this.$store.getters.visibleTableIds;
+        const filteredData = this.$store.state.horizontalTables.filteredData;
+        // get visible tables based on active topic
+        const tableIds = this.$store.getters.visibleTableIds;
 
-      for (let tableId of tableIds) {
-        const tableConfig = this.getConfigForTable(tableId) || {};
-        const mapOverlay = (tableConfig.options || {}).mapOverlay;
+        for (let tableId of tableIds) {
+          const tableConfig = this.getConfigForTable(tableId) || {};
+          const mapOverlay = (tableConfig.options || {}).mapOverlay;
 
-        if (!mapOverlay || mapOverlay.marker !== 'geojson') {
-          continue;
+          if (!mapOverlay || mapOverlay.marker !== 'geojson') {
+            continue;
+          }
+
+          const items = filteredData[tableId];
+
+          if (items.length < 1) {
+            continue;
+          }
+
+          const style = mapOverlay.style;
+          items.push(tableId);
+
+          // go through rows
+          for (let item of items) {
+            let props = Object.assign({}, style);
+
+            props.geojson = item.geometry;
+            props.key = item.id;
+            props.featureId = item._featureId || null;
+            props.tableId = items[items.length-1];
+            features.push(props);
+          }
         }
-
-        const items = filteredData[tableId];
-
-        if (items.length < 1) {
-          continue;
-        }
-
-        const style = mapOverlay.style;
-        items.push(tableId);
-
-        // go through rows
-        for (let item of items) {
-          let props = Object.assign({}, style);
-
-          props.geojson = item.geometry;
-          props.key = item.id;
-          props.featureId = item._featureId || null;
-          props.tableId = items[items.length-1];
-          features.push(props);
-        }
+        return features;
       }
-      return features;
     },
 
     leafletMarkers() {
@@ -413,6 +418,7 @@ export default {
     },
 
     getConfigForTable(tableId) {
+      // if (this.$config) {
       const topics = this.$config.topics || [];
 
       for (let topic of topics) {
@@ -441,6 +447,7 @@ export default {
           }
         }
       }
+      // }
     },
     bringMarkerToFront(circleMarker) {
       if (!circleMarker) {

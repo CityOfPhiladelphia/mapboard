@@ -6,30 +6,35 @@
     <div class="combo-header">
       <header class="site-header app group">
         <div class="row expanded">
-          <div class="columns">
-            <a
-              href="//beta.phila.gov"
-              class="logo"
-            >
-              <img
-                :class="imgSize"
-                :src="imgSrc"
-                alt="City of Philadelphia"
+          <div class="columns small-21">
+            <!-- <div class="column is-6"> -->
+
+              <a
+                href="//beta.phila.gov"
+                class="logo"
               >
-            </a>
-            <div class="app-divide" />
-            <div class="page-title-container">
-              <a :href="appLink">
-                <h1
-                  class="page-title"
-                  :style="mbHeaderStyle"
+                <img
+                  :class="imgSize"
+                  :src="imgSrc"
+                  alt="City of Philadelphia"
                 >
-                  {{ headerText }}
-                </h1>
               </a>
+  
+              <div class="app-divide" />
+  
+              <div class="page-title-container">
+                <a :href="appLink">
+                  <h1
+                    class="page-title"
+                    :style="mbHeaderStyle"
+                  >
+                    {{ headerText }}
+                  </h1>
+                </a>
+              </div>
             </div>
 
-            <div
+            <!-- <div
               v-if="shouldShowi18nBanner"
               class="show-for-small-only small-2 globe-container"
             >
@@ -39,9 +44,16 @@
                 @language-selected="testMethod"
               />
 
-            </div>
+            </div> -->
 
-          </div>
+            <div class="columns small-3">
+              <slot
+                name="lang-selector-nav"
+                class="globe-container"
+              />
+              <!-- class="is-pulled-right globe-container" -->
+            </div>
+          <!-- </div> -->
         </div>
       </header>
 
@@ -124,10 +136,21 @@ export default {
       return publicPath;
     },
     imgSrc() {
-      if (this.$store.state.windowDimensions.width >= 750) {
-        return window.location.origin + this.publicPath + '/images/city-of-philadelphia-yellow-white.png';
+      let imageName, smallImageName;
+      if (this.$config.headerImg) {
+        imageName = this.$config.headerImg;
       } else {
-        return window.location.origin + this.publicPath + '/images/city-of-philadelphia-bell.png';
+        imageName = 'city-of-philadelphia-yellow-white.png';
+      }
+      if (this.$config.smallHeaderImg) {
+        smallImageName = this.$config.smallHeaderImg;
+      } else {
+        smallImageName = 'city-of-philadelphia-bell.png';
+      }
+      if (this.$store.state.windowDimensions.width >= 750) {
+        return window.location.origin + this.publicPath + '/images/' + imageName; //city-of-philadelphia-yellow-white.png';
+      } else {
+        return window.location.origin + this.publicPath + '/images/' + smallImageName;//city-of-philadelphia-bell.png';
       }
     },
   },

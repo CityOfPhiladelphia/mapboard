@@ -28,6 +28,12 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.4.25 - 1/25/2024
+
+* uses @phila/vue-comps 3.0.11 - adds translation ability to many components
+* uses @phila/vue-mapping 3.1.22 - fixes long standing bug with mixed up imagery and cyclomedia buttons
+* general bug fixing for creation of voter hub
+
 ### 4.4.24 - 12/8/2023
 
 * uses @phila/vue-comps 3.0.10 which fixes bug with horizontal tables

@@ -175,6 +175,8 @@ export default {
       let value;
       if (this.greetings.includes(this.routerTopic)) {
         value = 'greeting' + this.routerTopic;
+      } else if (this.greetings.includes('default')) {
+        value = 'greetingdefault';
       } else {
         value = 'greeting';
       }
