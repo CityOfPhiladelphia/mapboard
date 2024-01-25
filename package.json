@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@mapbox/geo-viewport": "^0.5.0",
-    "@phila/vue-comps": "3.0.11",
+    "@phila/vue-comps": "3.0.12",
     "@phila/vue-datafetch": "2.2.18",
     "@phila/vue-mapping": "3.1.22",
     "vue": "^2.7.10",

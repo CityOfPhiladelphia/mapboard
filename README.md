@@ -28,6 +28,10 @@ Travis will now run a build and publish to NPM.
 
 ## Release Notes
 
+### 4.4.26 - 1/25/2024
+
+* uses @phila/vue-comps 3.0.12 - fixes cells of horizontal tables
+
 ### 4.4.25 - 1/25/2024
 
 * uses @phila/vue-comps 3.0.11 - adds translation ability to many components
