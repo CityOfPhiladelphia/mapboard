@@ -44,7 +44,7 @@
       />
 
       <!-- v-if="shouldShowRasterLayer(key) && tiledLayers.includes(key)" -->
-      <!-- <MglRasterLayer
+      <MglRasterLayer
         v-for="(tiledOverlaySource, key) in tiledOverlaySources"
         v-if="tiledLayers.includes(key)"
         :key="key"
@@ -53,7 +53,7 @@
         :layer="tiledOverlaySource.layer"
         :source="tiledOverlaySource.source"
         :before="basemapsBefore"
-      /> -->
+      />
 
       <!-- <MglRasterLayer
         v-for="(tiledOverlaySource, key) in tiledOverlaySources"
@@ -66,7 +66,7 @@
         :before="basemapsBefore"
       /> -->
 
-      <!-- <MglRasterLayer
+      <MglRasterLayer
         v-for="(overlaySource, key) in overlaySources"
         v-if="activeDynamicMaps.includes(key)"
         :key="key"
@@ -76,10 +76,10 @@
         :source="overlaySource.source"
         :initial-opacity="100"
         :before="basemapsBefore"
-      /> -->
+      />
       <!-- :before="'geojsonParcelFill'" -->
 
-      <!-- <MglRasterLayer
+      <MglRasterLayer
         v-for="item in imageOverlayItems"
         v-if="shouldShowImageOverlay(item.data.properties.RECMAP)"
         :key="item.data.properties.RECMAP"
@@ -89,7 +89,7 @@
         :source="item.source.source"
         :initial-opacity="50"
         :before="basemapsBefore"
-      /> -->
+      />
       <!-- :before="'geojsonParcelFill'" -->
 
       <MglGeojsonLayer
