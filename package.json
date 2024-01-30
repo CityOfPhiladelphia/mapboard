@@ -1,7 +1,7 @@
 {
   "name": "@phila/mapboard",
   "description": "A Vue.js component for data-rich web mapping",
-  "version": "4.4.26",
+  "version": "4.4.27",
   "author": "City of Philadelphia <maps@phila.gov>",
   "license": "MIT",
   "private": false,
