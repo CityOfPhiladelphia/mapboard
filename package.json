@@ -16,8 +16,8 @@
   "dependencies": {
     "@mapbox/geo-viewport": "^0.5.0",
     "@phila/vue-comps": "https://github.com/CityOfPhiladelphia/phila-vue-comps#8bddef9c5a9da16f5ba56069a2f41c3852b3f09d",
-    "@phila/vue-datafetch": "2.2.18",
-    "vue-i18n": "^8.22.0"
+    "vue-i18n": "^8.22.0",
+    "vue3-phila-vue-datafetch": "https://github.com/ajrothwell/vue3-phila-vue-datafetch#bd5ed4f"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",

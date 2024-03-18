@@ -1,5 +1,6 @@
 
-import Vue from 'vue';
+// import Vue from 'vue';
+import { createApp } from 'vue';
 import VueI18n from 'vue-i18n';
 import axios from 'axios';
 import createStore from './store';
@@ -13,7 +14,8 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import controllerMixin from '@phila/vue-datafetch/src/controller.js';
 
-import Router from 'vue-router';
+import { createRouter } from 'vue-router'
+// import Router from 'vue-router';
 // import router from './router';
 
 // conssole.log('in mapboard main.js, createStore:', createStore, 'controllerMixin:', controllerMixin);
@@ -140,13 +142,18 @@ function finishInit(config) {
   }
 
   // mount main vue
-  const vm = new Vue({
-    el: config.el || '#mapboard',
-    render: h => h(Mapboard),
-    router,
-    i18n,
-    store,
-  });
+  // const vm = new Vue({
+  //   el: config.el || '#mapboard',
+  //   render: h => h(Mapboard),
+  //   router,
+  //   i18n,
+  //   store,
+  // });
+  createApp(Mapboard)
+    .use(router)
+    .use(i18n)
+    .use(store)
+    .mount('#mapboard');
 }
 
 function initMapboard(clientConfig) {
