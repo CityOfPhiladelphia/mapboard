@@ -473,7 +473,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "@/scss/global.scss";
+@import "../scss/global.scss";
 
   /*don't highlight any form elements*/
   input:focus,
