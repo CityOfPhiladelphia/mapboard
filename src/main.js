@@ -13,7 +13,7 @@ import * as faAll from './fa.js';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 // import controllerMixin from '@phila/vue-datafetch/src/controller.js';
-import controllerMixin from 'vue3-phila-vue-datafetch/src/controller.js';
+import controllerMixin from '@phila/vue-datafetch/src/controller.js';
 
 import { createRouter } from 'vue-router';
 

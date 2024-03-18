@@ -104,7 +104,7 @@
 <script>
 // console.log('test Mapboard.vue, this:', this, 'this.$config:', this.$config);
 
-import 'maplibre-gl/dist/maplibre-gl.css';
+// import 'maplibre-gl/dist/maplibre-gl.css';
 // import 'mapbox-gl/dist/mapbox-gl.css';
 // import i18nBanner from './i18nBanner.vue';
 
@@ -211,16 +211,16 @@ export default {
     maintenanceResponse() {
       return this.$store.state.maintenanceResponse || null;
     },
-    mapPanelLoader() {
-      // console.log('computed mapPanelLoader is running');
-      if (this.fullScreenTopicsOnly) {
-        // console.log('if this.fullScreenTopicsOnly is true, returning');
-        return;
-      }
-      // console.log('else is true, importing mapPanel.vue');
-      return () => import(/* webpackChunkName: "mbmb_MapPanelLoader" */'./MapPanel.vue');//.then(console.log('after MapPanel import'))
+    // mapPanelLoader() {
+    //   // console.log('computed mapPanelLoader is running');
+    //   if (this.fullScreenTopicsOnly) {
+    //     // console.log('if this.fullScreenTopicsOnly is true, returning');
+    //     return;
+    //   }
+    //   // console.log('else is true, importing mapPanel.vue');
+    //   return () => import(/* webpackChunkName: "mbmb_MapPanelLoader" */'./MapPanel.vue');//.then(console.log('after MapPanel import'))
 
-    },
+    // },
     topicPanelLoader() {
       if (this.fullScreenMapOnly) {
         // console.log('if this.fullScreenMapOnly is true, returning');
