@@ -15,25 +15,15 @@
   },
   "dependencies": {
     "@mapbox/geo-viewport": "^0.5.0",
-    "@phila/vue-comps": "3.0.12",
+    "@phila/vue-comps": "https://github.com/CityOfPhiladelphia/phila-vue-comps#8bddef9c5a9da16f5ba56069a2f41c3852b3f09d",
     "@phila/vue-datafetch": "2.2.18",
-    "@phila/vue-mapping": "3.1.22",
-    "vue": "^2.7.10",
-    "vue-i18n": "^8.22.0",
-    "vue-router": "^3.4.6",
-    "vuex": "^3.5.1"
+    "vue-i18n": "^8.22.0"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.5.19",
-    "@vue/cli-plugin-eslint": "^4.5.19",
-    "@vue/cli-service": "^4.5.19",
     "babel-eslint": "^10.0.3",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.0.1",
-    "sass": "^1.54.9",
-    "sass-loader": "^8.0.0",
-    "vue-template-compiler": "^2.7.10",
-    "webpack-visualizer-plugin": "^0.1.11"
+    "sass": "^1.54.9"
   },
   "postcss": {
     "plugins": {

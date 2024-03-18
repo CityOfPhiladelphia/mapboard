@@ -40,7 +40,7 @@
       v-if="!maintenanceResponse"
       :class="shouldShowTopicPanel"
     />
-    <component
+    <!-- <component
       :is="mapPanelLoader"
       v-if="!maintenanceResponse"
       :class="shouldShowMapPanel"
@@ -84,7 +84,7 @@
           :h-fov="cycloHFov"
         />
       </pictometry-widget>
-    </component>
+    </component> -->
 
     <!-- <component
       :is="footerCompLoader"
