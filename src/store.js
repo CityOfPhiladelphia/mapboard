@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import isMobileDevice from './util/is-mobile-device';
 import pvdStore from '@phila/vue-datafetch/src/store.js';
-import pvmStore from '@phila/vue-mapping/src/store.js';
+// import pvmStore from '@phila/vue-mapping/src/store.js';
 import pvcStore from '@phila/vue-comps/src/store.js';
 import mergeDeep from './util/merge-deep';
 import axios from 'axios';
@@ -450,8 +450,8 @@ function createStore(config) {
     },
   };
 
-  let mergeStore = mergeDeep(pvdStore.store, pvmStore);
-  mergeStore = mergeDeep(mergeStore, pvcStore);
+  let mergeStore = mergeDeep(pvdStore.store, pvcStore);
+  // mergeStore = mergeDeep(mergeStore, pvcStore);
   mergeStore = mergeDeep(mergeStore, mb);
 
   // console.log('mergeStore:', mergeStore);

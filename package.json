@@ -14,6 +14,7 @@
     "lintFix": "vue-cli-service lint --fix"
   },
   "dependencies": {
+    "@fortawesome/vue-fontawesome": "3.0.6",
     "@mapbox/geo-viewport": "^0.5.0",
     "@phila/vue-comps": "https://github.com/CityOfPhiladelphia/phila-vue-comps#8bddef9c5a9da16f5ba56069a2f41c3852b3f09d",
     "@phila/vue-datafetch": "https://github.com/CityOfPhiladelphia/phila-vue-datafetch#25dbc51f15a4af890faea8018da616bbac94fb3a",
