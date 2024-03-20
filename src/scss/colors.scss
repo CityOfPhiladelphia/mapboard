@@ -1,0 +1,72 @@
+// City of Philadelphia Colors
+$ben-franklin-blue-light: hsl(208.3, 94.7%, 92.5%); //#daedfe
+$ben-franklin-blue: hsl(211.2, 72.8%, 47.6%); //#2176d2
+$ben-franklin-blue-dark: hsl(211.2, 81.1%, 31.2%); //#0f4d90
+$ben-franklin-blue-invert: hsl(0, 0%, 94.1%); //#f0f0f0
+
+$electric-blue: hsl(191.7, 92.9%, 55.7%); //#25CEF7
+
+$bell-yellow: hsl(47.9, 90.3%, 51.4%); //#f3c613
+$bell-yellow-light: hsl(49.8, 100%, 90.8%); //#fff7d0
+
+$phanatic-green-light: hsl(112.5, 69.6%, 91%); //#dcf8d8
+$phanatic-green: hsl(121.6, 38.6%, 37.1%); //#3a833c
+$phanatic-green-dark: hsl(120, 37.9%, 25.9%); //#295b29
+
+$love-park-red-light: hsl(0, 92%, 95.1%); //#fee7e7
+$love-park-red: hsl(14.1, 100%, 40%); //#cc3000
+$love-park-red-dark: hsl(12.9, 100%, 32.9%); //#a82400
+
+$flyers-orange: hsl(35, 100%, 48.8%); //#F99300
+
+$ghost-grey: hsl(0, 0%, 94.1%); //#f0f0f0
+$ghost-gray: hsl(0, 0%, 94.1%); //#f0f0f0
+$sidewalk-grey: hsl(0, 0%, 81.2%); //#cfcfcf
+$sidewalk-gray: hsl(0, 0%, 81.2%); //#cfcfcf
+
+$grey-light: $sidewalk-grey;
+$gray-light: $sidewalk-gray;
+$grey-medium: hsl(0, 0%, 63.1%); //#a1a1a1
+$gray-medium: hsl(0, 0%, 63.1%); //#a1a1a1
+$grey-dark: hsl(0, 0%, 26.7%); //#444444
+$gray-dark: hsl(0, 0%, 26.7%); //#444444
+
+$white: hsl(255, 100%, 100%); //#ffffff
+$black: hsl(0, 0%, 0%); //#000000
+$dark: $grey-dark;
+$dark-invert: $white;
+$light: $ghost-grey;
+$light-invert: $black;
+
+$success: $phanatic-green;
+$success-invert: $white;
+$success-light: $phanatic-green-light;
+$success-dark: $phanatic-green-dark;
+
+$warning: $bell-yellow;
+$warning-invert: $grey-dark;
+$warning-light: $bell-yellow-light;
+$warning-dark: $grey-dark;
+
+$danger: $love-park-red;
+$danger-invert: $white;
+$danger-light: $love-park-red-light;
+$danger-dark: $love-park-red-dark;
+
+$primary: $ben-franklin-blue;
+$primary-invert: $white;
+$primary-dark: $ben-franklin-blue-dark;
+$primary-light: $ben-franklin-blue-light;
+
+$link: $ben-franklin-blue;
+$link-invert: $white;
+$link-light: $ben-franklin-blue-light;
+$link-dark: $ben-franklin-blue-dark;
+
+$info: $ben-franklin-blue;
+$info-invert: $white;
+$info-light: $ben-franklin-blue-light;
+$info-dark: $ben-franklin-blue-dark;
+
+$title-color: $grey-dark;
+$error-light: $love-park-red-light;

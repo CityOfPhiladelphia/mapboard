@@ -1,0 +1,71 @@
+@font-face {
+  font-family: 'Montserrat';
+  src: local('Montserrat Regular'), local('Montserrat-Regular'),
+      url('https://www.phila.gov/assets/fonts/Montserrat/Montserrat-Regular.woff2') format('woff2'),
+      url('https://www.phila.gov/assets/fonts/Montserrat/Montserrat-Regular.woff') format('woff');      
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: local('Open Sans Italic'), local('OpenSans-Italic'),
+      url('https://www.phila.gov/assets/fonts/OpenSans/OpenSans-Italic.woff2') format('woff2'),
+      url('https://www.phila.gov/assets/fonts/OpenSans/OpenSans-Italic.woff') format('woff');      
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: local('Open Sans Bold Italic'), local('OpenSans-BoldItalic'),
+      url('https://www.phila.gov/assets/fonts/OpenSans/OpenSans-BoldItalic.woff2') format('woff2'),
+      url('https://www.phila.gov/assets/fonts/OpenSans/OpenSans-BoldItalic.woff') format('woff');      
+  font-weight: bold;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: local('Montserrat Bold'), local('Montserrat-Bold'),
+      url('https://www.phila.gov/assets/fonts/Montserrat/Montserrat-Bold.woff2') format('woff2'),
+      url('https://www.phila.gov/assets/fonts/Montserrat/Montserrat-Bold.woff') format('woff');      
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: local('Open Sans Bold'), local('OpenSans-Bold'),
+      url('https://www.phila.gov/assets/fonts/OpenSans/OpenSans-Bold.woff2') format('woff2'),
+      url('https://www.phila.gov/assets/fonts/OpenSans/OpenSans-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: local('Open Sans SemiBold Italic'), local('OpenSans-SemiBoldItalic'),
+      url('https://www.phila.gov/assets/fonts/OpenSans/OpenSans-SemiBoldItalic.woff2') format('woff2'),
+      url('https://www.phila.gov/assets/fonts/OpenSans/OpenSans-SemiBoldItalic.woff') format('woff');
+  font-weight: 600;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: local('Open Sans SemiBold'), local('OpenSans-SemiBold'),
+      url('https://www.phila.gov/assets/fonts/OpenSans/OpenSans-SemiBold.woff2') format('woff2'),
+      url('https://www.phila.gov/assets/fonts/OpenSans/OpenSans-SemiBold.woff') format('woff');    
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: local('Open Sans Regular'), local('OpenSans-Regular'),
+      url('https://www.phila.gov/assets/fonts/OpenSans/OpenSans-Regular.woff2') format('woff2'),
+      url('https://www.phila.gov/assets/fonts/OpenSans/OpenSans-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}

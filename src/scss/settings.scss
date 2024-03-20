@@ -158,7 +158,7 @@ $code-font-weight: $global-weight-normal;
 $code-background: color(ghost-gray);
 $code-border: 1px solid color(medium-gray);
 $code-padding: rem-calc(2 5 1);
-$anchor-color: color(dark-ben-franklin);
+$anchor-color: color(ben-franklin-blue-dark);
 $anchor-color-hover: scale-color($anchor-color, $lightness: -14%);
 $anchor-text-decoration: none;
 $anchor-text-decoration-hover: none;
@@ -216,7 +216,7 @@ $input-error-font-weight: $global-weight-bold;
 $accordion-background: color(ghost-gray);
 $accordion-plusminus: true;
 $accordion-title-font-size: rem-calc(12);
-$accordion-item-color: color(dark-ben-franklin);
+$accordion-item-color: color(ben-franklin-blue-dark);
 $accordion-item-background-hover: color(ghost-gray);
 $accordion-item-padding: 1.25rem 1rem;
 $accordion-content-background: white;
@@ -231,7 +231,7 @@ $accordionmenu-padding: $global-menu-padding;
 $accordionmenu-nested-margin: $global-menu-nested-margin;
 $accordionmenu-submenu-padding: $accordionmenu-padding;
 $accordionmenu-arrows: true;
-$accordionmenu-arrow-color: color(dark-ben-franklin);
+$accordionmenu-arrow-color: color(ben-franklin-blue-dark);
 $accordionmenu-item-background: null;
 $accordionmenu-border: null;
 $accordionmenu-submenu-toggle-background: null;
@@ -243,7 +243,7 @@ $accordionmenu-arrow-size: 6px;
 // 9. Badge
 // --------
 
-$badge-background: color(dark-ben-franklin);
+$badge-background: color(ben-franklin-blue-dark);
 $badge-color: white;
 $badge-color-alt: black;
 $badge-palette: $foundation-palette;
@@ -256,7 +256,7 @@ $badge-font-size: 0.6rem;
 
 $breadcrumbs-margin: 0;
 $breadcrumbs-item-font-size: rem-calc(11);
-$breadcrumbs-item-color: color(dark-ben-franklin);
+$breadcrumbs-item-color: color(ben-franklin-blue-dark);
 $breadcrumbs-item-color-current: color(dark-gray);
 $breadcrumbs-item-color-disabled: color(medium-gray);
 $breadcrumbs-item-margin: 0.75rem;
@@ -355,7 +355,7 @@ $drilldown-nested-margin: 0;
 $drilldown-background: color(ghost-gray);
 $drilldown-submenu-padding: $drilldown-padding;
 $drilldown-submenu-background: color(ghost-gray);
-$drilldown-arrow-color: color(dark-ben-franklin);
+$drilldown-arrow-color: color(ben-franklin-blue-dark);
 $drilldown-arrow-size: 6px;
 
 // 17. Dropdown
@@ -399,7 +399,7 @@ $flexbox-responsive-breakpoints: true;
 // 20. Forms
 // ---------
 
-$fieldset-border: 1px solid color(dark-ben-franklin);
+$fieldset-border: 1px solid color(ben-franklin-blue-dark);
 $fieldset-padding: rem-calc(20);
 $fieldset-margin: rem-calc(18 0);
 $legend-padding: rem-calc(0 3);
@@ -416,7 +416,7 @@ $form-label-font-size: rem-calc(14);
 $form-label-font-weight: $global-weight-bold;
 $form-label-line-height: 1.8;
 $select-background: white;
-$select-triangle-color: color(dark-ben-franklin);
+$select-triangle-color: color(ben-franklin-blue-dark);
 $select-radius: $global-radius;
 $input-color: color(dark-gray);
 $input-placeholder-color: color(medium-gray);
@@ -441,7 +441,7 @@ $form-button-radius: $global-radius;
 // 21. Label
 // ---------
 
-$label-background: color(dark-ben-franklin);
+$label-background: color(ben-franklin-blue-dark);
 $label-color: white;
 $label-color-alt: black;
 $label-palette: $foundation-palette;
@@ -524,7 +524,7 @@ $pagination-item-padding: rem-calc(3 10);
 $pagination-item-spacing: rem-calc(1);
 $pagination-radius: $global-radius;
 $pagination-item-background-hover: color(ghost-gray);
-$pagination-item-background-current: color(dark-ben-franklin);
+$pagination-item-background-current: color(ben-franklin-blue-dark);
 $pagination-item-color-current: white;
 $pagination-item-color-disabled: color(medium-gray);
 $pagination-ellipsis-color: black;
@@ -538,7 +538,7 @@ $pagination-arrows: true;
 $progress-height: 1rem;
 $progress-background: color(medium-gray);
 $progress-margin-bottom: $global-margin;
-$progress-meter-background: color(dark-ben-franklin);
+$progress-meter-background: color(ben-franklin-blue-dark);
 $progress-radius: $global-radius;
 
 // 29. Prototype Arrow
@@ -645,7 +645,7 @@ $prototype-separator-breakpoints: $global-prototype-breakpoints;
 $prototype-separator-align: center;
 $prototype-separator-height: rem-calc(2);
 $prototype-separator-width: 3rem;
-$prototype-separator-background: color(dark-ben-franklin);
+$prototype-separator-background: color(ben-franklin-blue-dark);
 $prototype-separator-margin-top: $global-margin;
 
 // 40. Prototype Shadow
@@ -732,7 +732,7 @@ $slider-background: color(ghost-gray);
 $slider-fill-background: color(medium-gray);
 $slider-handle-height: 1.4rem;
 $slider-handle-width: 1.4rem;
-$slider-handle-background: color(dark-ben-franklin);
+$slider-handle-background: color(ben-franklin-blue-dark);
 $slider-opacity-disabled: 0.25;
 $slider-radius: $global-radius;
 
@@ -740,7 +740,7 @@ $slider-radius: $global-radius;
 // ----------
 
 $switch-background: color(medium-gray);
-$switch-background-active: color(dark-ben-franklin);
+$switch-background-active: color(ben-franklin-blue-dark);
 $switch-height: 2rem;
 $switch-height-tiny: 1.5rem;
 $switch-height-small: 1.75rem;
@@ -779,9 +779,9 @@ $table-stack-breakpoint: small;
 
 $tab-margin: 0;
 $tab-background: white;
-$tab-color: color(dark-ben-franklin);
+$tab-color: color(ben-franklin-blue-dark);
 $tab-background-active: color(ghost-gray);
-$tab-active-color: color(dark-ben-franklin);
+$tab-active-color: color(ben-franklin-blue-dark);
 $tab-item-font-size: rem-calc(12);
 $tab-item-background-hover: white;
 $tab-item-padding: 1.25rem 1.5rem;
@@ -797,7 +797,7 @@ $tab-content-padding: 1rem;
 $thumbnail-border: solid 4px white;
 $thumbnail-margin-bottom: $global-margin;
 $thumbnail-shadow: 0 0 0 1px rgba(black, 0.2);
-$thumbnail-shadow-hover: 0 0 6px 1px rgba(color(dark-ben-franklin), 0.5);
+$thumbnail-shadow-hover: 0 0 6px 1px rgba(color(ben-franklin-blue-dark), 0.5);
 $thumbnail-transition: box-shadow 200ms ease-out;
 $thumbnail-radius: $global-radius;
 
@@ -805,10 +805,10 @@ $thumbnail-radius: $global-radius;
 // -------------
 
 $titlebar-background: transparent;
-$titlebar-color: color(dark-ben-franklin);
+$titlebar-color: color(ben-franklin-blue-dark);
 $titlebar-padding: 0;
 $titlebar-text-font-weight: normal;
-$titlebar-icon-color: color(dark-ben-franklin);
+$titlebar-icon-color: color(ben-franklin-blue-dark);
 $titlebar-icon-color-hover: color(medium-gray);
 $titlebar-icon-spacing: 0.25rem;
 

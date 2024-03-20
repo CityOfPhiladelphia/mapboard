@@ -118,14 +118,16 @@
 <script>
 
 import FullScreenTopicsToggleTab from '@phila/vue-comps/src/components/FullScreenTopicsToggleTab.vue';
+import { defineAsyncComponent } from 'vue'
+
 
 export default {
   components: {
     AnyHeader: () => import(/* webpackChunkName: "mbmp_pvc_AnyHeader" */'@phila/vue-comps/src/components/AnyHeader.vue'),
     Greeting: () => import(/* webpackChunkName: "mbmp_pvc_Greeting" */'@phila/vue-comps/src/components/Greeting.vue'),
-    TopicComponentGroup: () => import(/* webpackChunkName: "mbmp_pvc_TopicComponentGroup" */'@phila/vue-comps/src/components/TopicComponentGroup.vue'),
+    TopicComponentGroup: defineAsyncComponent(() => import(/* webpackChunkName: "mbmp_pvc_TopicComponentGroup" */'@phila/vue-comps/src/components/TopicComponentGroup.vue')),
     // Topic: () => import(/* webpackChunkName: "mbmp_pvc_Topic" */'@phila/vue-comps/src/components/Topic.vue'),
-    AddressInput: () => import(/* webpackChunkName: "mbmp_pvc_AddressInput" */'@phila/vue-comps/src/components/AddressInput.vue'),
+    AddressInput: defineAsyncComponent(() => import(/* webpackChunkName: "mbmp_pvc_AddressInput" */'@phila/vue-comps/src/components/AddressInput.vue')),
     AddressCandidateList: () => import(/* webpackChunkName: "mbmp_pvc_AddressCandidateList" */'@phila/vue-comps/src/components/AddressCandidateList.vue'),
     // FullScreenTopicsToggleTab: () => import(/* webpackChunkName: "mbmp_pvc_FullScreenTopicsToggleTab" */'@phila/vue-comps/src/components/FullScreenTopicsToggleTab.vue')
     FullScreenTopicsToggleTab,
@@ -500,7 +502,7 @@ export default {
         // const appFooterHeightNum = parseInt(window.getComputedStyle(document.getElementsByClassName('app-footer')[0]).getPropertyValue('height').replace('px', ''));
         const appFooterHeightNum = parseInt(document.getElementsByClassName('app-footer')[0].getBoundingClientRect().height);
 
-        // console.log('else is running, siteHeaderHeightNum:', siteHeaderHeightNum);
+        console.log('else is running, siteHeaderHeightNum:', siteHeaderHeightNum, 'appFooterHeightNum:', appFooterHeightNum, 'windowHeight:', windowHeight, 'this.shouldShowAddressHeader:', this.shouldShowAddressHeader);
 
         if (this.shouldShowAddressHeader) {
           if (document.getElementsByClassName('address-header')[0]) {
@@ -508,18 +510,18 @@ export default {
             const addressHeaderHeightNum = parseInt(document.getElementsByClassName('address-header')[0].getBoundingClientRect().height);
             if (addressHeaderHeightNum !== 0) {
               topicsHeight = windowHeight - siteHeaderHeightNum - appFooterHeightNum - addressHeaderHeightNum;
-              // console.log('handleWindowResize shouldShowAddressHeader and it was found, window-height:', windowHeight, 'SiteHeaderHeight:', siteHeaderHeightNum, 'addressHeaderHeight:', addressHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
+              console.log('handleWindowResize shouldShowAddressHeader and it was found, window-height:', windowHeight, 'SiteHeaderHeight:', siteHeaderHeightNum, 'addressHeaderHeight:', addressHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
             } else {
               topicsHeight = windowHeight - siteHeaderHeightNum - appFooterHeightNum - 103;
-              // console.log('handleWindowResize shouldShowAddressHeader and it was found to be 0 so it is using the hardcoded 103, window-height:', windowHeight, 'SiteHeaderHeight:', siteHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
+              console.log('handleWindowResize shouldShowAddressHeader and it was found to be 0 so it is using the hardcoded 103, window-height:', windowHeight, 'SiteHeaderHeight:', siteHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
             }
           } else {
             topicsHeight = windowHeight - siteHeaderHeightNum - appFooterHeightNum - 103;
-            // console.log('handleWindowResize shouldShowAddressHeader but it was not found so it is using the hardcoded 103, window-height:', windowHeight, 'SiteHeaderHeight:', siteHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
+            console.log('handleWindowResize shouldShowAddressHeader but it was not found so it is using the hardcoded 103, window-height:', windowHeight, 'SiteHeaderHeight:', siteHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
           }
         } else {
           topicsHeight = windowHeight - siteHeaderHeightNum - appFooterHeightNum;
-          // console.log('handleWindowResize shouldShowAddressHeader is NOT true, window-height:', windowHeight, 'SiteHeaderHeight:', siteHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
+          console.log('handleWindowResize shouldShowAddressHeader is NOT true, window-height:', windowHeight, 'SiteHeaderHeight:', siteHeaderHeightNum, 'appFooterHeight:', appFooterHeightNum, 'topicsHeight:', topicsHeight);
         }
       }
 

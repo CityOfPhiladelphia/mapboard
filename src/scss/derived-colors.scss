@@ -1,0 +1,14 @@
+$custom-colors: (
+  "ben-franklin-blue-light": ($ben-franklin-blue-light, $ben-franklin-blue),
+  "ben-franklin-blue": ($ben-franklin-blue, $white, $white, $ben-franklin-blue-dark),
+  "ben-franklin-blue-dark": ($ben-franklin-blue-dark, $white),
+  "electric-blue": ($electric-blue, $grey-dark),
+  "bell-yellow-light": ($bell-yellow-light, $grey-dark),
+  "bell-yellow": ($bell-yellow, $grey-dark, $bell-yellow-light),
+  "phanatic-green-light": ($phanatic-green-light, $phanatic-green),
+  "phanatic-green": ($phanatic-green, $white, $phanatic-green-light),
+  "phanatic-green-dark": ($phanatic-green-dark, $white),
+  "love-park-red-light": ($love-park-red-light, $love-park-red-dark),
+  "love-park-red": ($love-park-red, $white, $love-park-red-light, $love-park-red-dark),
+  "love-park-red-dark": ($love-park-red-dark, $white)
+) !default;

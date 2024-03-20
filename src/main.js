@@ -1,9 +1,10 @@
 
 // import Vue from 'vue';
 import { createApp } from 'vue';
-import VueI18n from 'vue-i18n';
+import { createStore } from 'vuex';
+// import VueI18n from 'vue-i18n';
 import axios from 'axios';
-import createStore from './store';
+import makeStore from './store';
 import configMixin from './util/config-mixin';
 import Mapboard from './components/Mapboard.vue';
 import mergeDeep from './util/merge-deep';
@@ -15,9 +16,9 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 // import controllerMixin from '@phila/vue-datafetch/src/controller.js';
 import controllerMixin from '@phila/vue-datafetch/src/controller.js';
 
-import { createRouter } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 
-// conssole.log('in mapboard main.js, createStore:', createStore, 'controllerMixin:', controllerMixin);
+// console.log('in mapboard main.js, createStore:', createStore, 'controllerMixin:', controllerMixin);
 
 // helper function to auto-assign ids to horizontal tables
 function assignTableIds(comps) {
@@ -68,7 +69,7 @@ function assignHorizontalTableGroupIds(comps) {
 }
 
 function finishInit(config) {
-  // console.log('finishInit is running, config:', config);
+  console.log('finishInit is running, config:', config);
 
   config.router.pattern = 'address-and-topic';
 
@@ -78,10 +79,13 @@ function finishInit(config) {
   }
 
   // make config accessible from each component via this.$config
-  Vue.use(configMixin, config);
+  // Vue.use(configMixin, config);
 
   // create store
-  const store = createStore(config);
+  const myStore = makeStore(config);
+  console.log('myStore:', myStore);
+  const store = createStore(myStore);
+
   // let opts = { config, store };
 
   let publicPath = '';
@@ -91,54 +95,59 @@ function finishInit(config) {
   }
   console.log('mapboard main.js publicPath:', publicPath);
 
-  Vue.use(Router);
-  let router = new Router({
-    mode: 'history',
-    routes: [
-      {
-        // path: '/:topic',
-        path: publicPath + '/:topic',
-        name: 'topic-only',
-      },
-      {
-        // path: '/:address',
-        path: publicPath + '/:address',
-        name: 'address-only',
-      },
-      {
-        // path: '/:address?/:topic?',
-        path: publicPath + '/:address?/:topic?',
-        name: 'address-and-topic',
-      },
-    ],
-  });
+  // Vue.use(Router);
+
+  // let router = new Router({
+  //   mode: 'history',
+  let routes = [
+    {
+      // path: '/:topic',
+      path: publicPath + '/:topic',
+      name: 'topic-only',
+    },
+    {
+      // path: '/:address',
+      path: publicPath + '/:address',
+      name: 'address-only',
+    },
+    {
+      // path: '/:address?/:topic?',
+      path: publicPath + '/:address?/:topic?',
+      name: 'address-and-topic',
+    },
+  ]
+  // });
+  const router = createRouter({
+    history: createWebHistory(),
+    routes 
+  })
 
   // mix in controller
-  Vue.use(controllerMixin, { config, store, router });
+  // Vue.use(controllerMixin, { config, store, router });
   // Vue.use(controllerMixin, { config });
 
-  Vue.use(VueI18n);
-  let i18nData;
-  if (config.i18n && config.i18n.data) {
-    i18nData = config.i18n.data;
-  } else {
-    i18nData = {};
-  }
-  const i18n = new VueI18n(i18nData);
+  // Vue.use(VueI18n);
+  // let i18nData;
+  // if (config.i18n && config.i18n.data) {
+  //   i18nData = config.i18n.data;
+  // } else {
+  //   i18nData = {};
+  // }
+  // const i18n = new VueI18n(i18nData);
 
   // console.log('in finishInit, config:', config, 'store:', store, 'opts.store:', opts.store);
   if (config.healthChecks) {
     store.dispatch('healthCheck', config.healthChecks);
   }
 
-  Vue.component('font-awesome-icon', FontAwesomeIcon);
+  // Vue.component('font-awesome-icon', FontAwesomeIcon);
   // Vue.config.productionTip = false
 
-  const customComps = config.customComps || [];
+  // const customComps = config.customComps || [];
   // console.log('mapboard main.js, customComps:', customComps);
-  for (let key of Object.keys(customComps)) {
-    Vue.component(key, customComps[key]);
-  }
+  // for (let key of Object.keys(customComps)) {
+  //   Vue.component(key, customComps[key]);
+  // }
 
   // mount main vue
   // const vm = new Vue({
@@ -148,11 +157,20 @@ function finishInit(config) {
   //   i18n,
   //   store,
   // });
+
+  let globalMixin = {
+    created() {
+      this.$config = config;
+    },
+  }
+
   createApp(Mapboard)
+    .mixin(globalMixin)
+    .use(controllerMixin, { config, store, router })
     .use(router)
-    .use(i18n)
     .use(store)
-    .mount('#mapboard');
+    .mount('#app');
+    // .use(i18n)
 }
 
 function initMapboard(clientConfig) {

@@ -1,5 +1,5 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
+// import Vue from 'vue';
+// import Vuex from 'vuex';
 import isMobileDevice from './util/is-mobile-device';
 import pvdStore from '@phila/vue-datafetch/src/store.js';
 // import pvmStore from '@phila/vue-mapping/src/store.js';
@@ -9,7 +9,7 @@ import axios from 'axios';
 import { format } from 'date-fns';
 
 // when you load vuex from a script tag this seems to happen automatically
-Vue.use(Vuex);
+// Vue.use(Vuex);
 
 // this grabs horizontal table ids from an array of topic components,
 // recursively
@@ -126,7 +126,7 @@ function createHorizontalTableGroups(config) {
   return horizontalTableGroups;
 }
 
-function createStore(config) {
+function makeStore(config) {
   const sources = pvdStore.createSources(config);
   const parcels = pvdStore.createParcels(config);
   // console.log('parcels:', parcels);
@@ -460,20 +460,21 @@ function createStore(config) {
   // mergeStore = mergeDeep(mergeStore, pvcStore);
 
   // reset the map center and zoom based on the config
-  if (config.map) {
-    mergeStore.state.map.center = config.map.center;
-    mergeStore.state.map.zoom = config.map.zoom;
-    mergeStore.state.pictometry.map.center = config.map.center;
-    mergeStore.state.pictometry.map.zoom = config.map.zoom;
-  }
+  // if (config.map) {
+  //   mergeStore.state.map.center = config.map.center;
+  //   mergeStore.state.map.zoom = config.map.zoom;
+  //   mergeStore.state.pictometry.map.center = config.map.center;
+  //   mergeStore.state.pictometry.map.zoom = config.map.zoom;
+  // }
 
   // TODO standardize how payloads are passed around/handled
-  return new Vuex.Store({
-    state: mergeStore.state,
-    getters: mergeStore.getters,
-    mutations: mergeStore.mutations,
-    actions: mergeStore.actions,
-  });
+  // return new Vuex.Store({
+  //   state: mergeStore.state,
+  //   getters: mergeStore.getters,
+  //   mutations: mergeStore.mutations,
+  //   actions: mergeStore.actions,
+  // });
+  return mergeStore;
 }
 
-export default createStore;
+export default makeStore;

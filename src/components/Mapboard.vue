@@ -29,12 +29,13 @@
 
     </component>
 
-    <component
+    <!-- <component
       :is="healthCheck.type"
       v-for="(healthCheck, index) in this.$config.healthChecks"
       v-if="healthCheck.type === maintenanceResponse"
       :key="index"
-    />
+    /> -->
+    
     <component
       :is="topicPanelLoader"
       v-if="!maintenanceResponse"
@@ -108,8 +109,10 @@
 // import 'mapbox-gl/dist/mapbox-gl.css';
 // import i18nBanner from './i18nBanner.vue';
 
+import { defineAsyncComponent } from 'vue'
+
 import axios from 'axios';
-import qs from 'qs';
+// import qs from 'qs';
 
 import LangSelector from './LangSelector.vue';
 
@@ -157,6 +160,7 @@ export default {
       return values;
     },
     appTitle() {
+      console.log('Mapboard.vue appTitle is running, this.$config.app.title:', this.$config.app.title);
       let value;
       if (this.$config.app.title) {
         value = this.$config.app.title;
@@ -227,7 +231,7 @@ export default {
         return;
       }
       // console.log('else is true, importing topicPanel.vue');
-      return () => import(/* webpackChunkName: "mbmb_TopicPanelLoader" */'./TopicPanel.vue');//.then(console.log('after TopicPanel import'))
+      return defineAsyncComponent(() => import(/* webpackChunkName: "mbmb_TopicPanelLoader" */'./TopicPanel.vue'));//.then(console.log('after TopicPanel import'))
 
     },
     headerCompLoader() {
@@ -236,7 +240,7 @@ export default {
         return;
       }
       // console.log('else is true, importing topicPanel.vue');
-      return () => import(/* webpackChunkName: "mbmb_headerCompLoader" */'./HeaderComp.vue');//.then(console.log('after HeaderComp import'))
+      return defineAsyncComponent(() => import(/* webpackChunkName: "mbmb_headerCompLoader" */'./HeaderComp.vue'));//.then(console.log('after HeaderComp import'))
     },
     shouldShowHeader() {
       if (this.$config.header) {
@@ -247,7 +251,7 @@ export default {
     },
 
     footerCompLoader() {
-      return () => import(/* webpackChunkName: "mbmb_footerCompLoader" */'./PhilaFooter.vue');//.then(console.log('after PhilaFooter import'))
+      return defineAsyncComponent(() => import(/* webpackChunkName: "mbmb_footerCompLoader" */'./PhilaFooter.vue'));//.then(console.log('after PhilaFooter import'))
     },
 
     rootClass() {
@@ -351,6 +355,7 @@ export default {
     },
   },
   created() {
+    console.log('Mapboard.vue created, this.$config:', this.$config, 'this.$controller:', this.$controller);
     // if (this.$config.plugin) {
     //   if (this.$config.plugin.enabled) {
     //     this.mbRootStyle.height = this.$config.plugin.height.toString() + 'px';
@@ -380,7 +385,8 @@ export default {
 
     if (this.$config.agoTokenNeeded) {
 
-      let data = qs.stringify({
+      // let data = qs.stringify({
+      let data = JSON.stringify({
         'f': 'json',
         'username': process.env.VUE_APP_AGO_USERNAME,
         'password': process.env.VUE_APP_AGO_PASSWORD,
@@ -473,7 +479,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "../scss/global.scss";
+// @import "@/scss/global.scss";
 
   /*don't highlight any form elements*/
   input:focus,

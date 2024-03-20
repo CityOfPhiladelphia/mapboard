@@ -1,6 +1,7 @@
-@import 'node_modules/foundation-sites/scss/foundation';
+@import 'node_modules/foundation-sites/scss/foundation.scss';
 
-@import 'settings';
+@import 'colors';
+// @import 'settings';
 
 @include foundation-global-styles;
 @include foundation-grid;
