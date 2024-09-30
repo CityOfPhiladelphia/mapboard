@@ -1,5 +1,7 @@
 # mapboard ([@phila/mapboard](https://www.npmjs.com/package/@phila/mapboard) in [npmjs.com](https://npmjs.com))
 
+This repo is deprecated.  mapboard is no longer used for atlas.phila.gov and cityatlas.phila.gov.
+
 Mapboard is a framework for building data-rich mapping applications for the City of Philadelphia.  It can be used as a template for creating any application which presents information about an address.  It *can* have either of the following two elements alone, or both side-by-side: the *map panel* and *topic panel*.
 
 ![Atlas](https://s3.amazonaws.com/mapboard-images/Mapboard4.jpg)
